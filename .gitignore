@@ -1,0 +1,35 @@
+# TypeScript incremental build states
+*.tsbuildinfo
+
+# Local state files & OS specifics
+.DS_Store
+node_modules/
+lib/
+dist/
+pack/
+providers/
+*.iml
+junit.xml
+
+# CDK Context & Staging files
+cdk.context.json
+.cdk.staging/
+cdk.out/
+*.tabl.json
+
+# Ignore files with sensitive environment variables
+.env
+.env.test
+# Next.js output
+.next/
+# Parcel cache
+.cache/
+# Ignore IDE configuration files
+.idea/
+.vscode/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
