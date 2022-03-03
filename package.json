@@ -1,6 +1,6 @@
 {
   "name": "@smorken/aws-cdk",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "author": "Scott Morken <scott.morken@phoenixcollege.edu>",
   "repository": {
@@ -8,9 +8,9 @@
     "url": "https://github.com/ss10sb/aws-cdk.git"
   },
   "main": "./lib/cjs/index.js",
-  "types": "./lib/types/index.d.ts",
+  "module": "./lib/esm/index.js",
   "scripts": {
-    "build": "rm -rf lib/* && tsc",
+    "build": "rm -rf lib/* && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && ./fixPackages",
     "lint": "eslint .",
     "dpdm": "dpdm --tree --circular ./src",
     "prepublish": "npm run build",
@@ -53,24 +53,8 @@
   },
   "exports": {
     ".": {
-      "import": "./lib/cjs/index.js"
-    },
-    "./core": {
-      "import": "./lib/cjs/core/index.js"
-    },
-    "./utils": {
-      "import": "./lib/cjs/utils/index.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "lib/index.d.ts": [
-        "lib/index.d.ts"
-      ],
-      "*": [
-        "lib/*",
-        "lib/*/index.d.ts"
-      ]
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
     }
   }
 }
