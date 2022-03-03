@@ -55,6 +55,94 @@
     ".": {
       "import": "./lib/esm/index.js",
       "require": "./lib/cjs/index.js"
+    },
+    "./alb": {
+      "import": "./lib/esm/alb/index.js",
+      "require": "./lib/cjs/alb/index.js"
+    },
+    "./config": {
+      "import": "./lib/esm/config/index.js",
+      "require": "./lib/cjs/config/index.js"
+    },
+    "./core": {
+      "import": "./lib/esm/core/index.js",
+      "require": "./lib/cjs/core/index.js"
+    },
+    "./dynamodb": {
+      "import": "./lib/esm/dynamodb/index.js",
+      "require": "./lib/cjs/dynamodb/index.js"
+    },
+    "./ecr": {
+      "import": "./lib/esm/ecr/index.js",
+      "require": "./lib/cjs/ecr/index.js"
+    },
+    "./ecs": {
+      "import": "./lib/esm/ecs/index.js",
+      "require": "./lib/cjs/ecs/index.js"
+    },
+    "./env": {
+      "import": "./lib/esm/env/index.js",
+      "require": "./lib/cjs/env/index.js"
+    },
+    "./permissions": {
+      "import": "./lib/esm/permissions/index.js",
+      "require": "./lib/cjs/permissions/index.js"
+    },
+    "./pipeline": {
+      "import": "./lib/esm/pipeline/index.js",
+      "require": "./lib/cjs/pipeline/index.js"
+    },
+    "./route53": {
+      "import": "./lib/esm/route53/index.js",
+      "require": "./lib/cjs/route53/index.js"
+    },
+    "./s3": {
+      "import": "./lib/esm/s3/index.js",
+      "require": "./lib/cjs/s3/index.js"
+    },
+    "./secret": {
+      "import": "./lib/esm/secret/index.js",
+      "require": "./lib/cjs/secret/index.js"
+    },
+    "./ses": {
+      "import": "./lib/esm/ses/index.js",
+      "require": "./lib/cjs/ses/index.js"
+    },
+    "./sqs": {
+      "import": "./lib/esm/sqs/index.js",
+      "require": "./lib/cjs/sqs/index.js"
+    },
+    "./stack": {
+      "import": "./lib/esm/stack/index.js",
+      "require": "./lib/cjs/stack/index.js"
+    },
+    "./stack-factory": {
+      "import": "./lib/esm/stack-factory/index.js",
+      "require": "./lib/cjs/stack-factory/index.js"
+    },
+    "./start-stop": {
+      "import": "./lib/esm/start-stop/index.js",
+      "require": "./lib/cjs/start-stop/index.js"
+    },
+    "./task": {
+      "import": "./lib/esm/task/index.js",
+      "require": "./lib/cjs/task/index.js"
+    },
+    "./utils": {
+      "import": "./lib/esm/utils/index.js",
+      "require": "./lib/cjs/utils/index.js"
+    },
+    "./utils/sdk": {
+      "import": "./lib/esm/utils/sdk/index.js",
+      "require": "./lib/cjs/utils/sdk/index.js"
+    },
+    "./utils/static-providers": {
+      "import": "./lib/esm/utils/static-providers/index.js",
+      "require": "./lib/cjs/utils/static-providers/index.js"
+    },
+    "./utils/testing": {
+      "import": "./lib/esm/utils/testing/index.js",
+      "require": "./lib/cjs/utils/testing/index.js"
     }
   }
 }
