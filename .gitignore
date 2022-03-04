@@ -10,6 +10,8 @@ pack/
 providers/
 *.iml
 junit.xml
+package
+*.tgz
 
 # CDK Context & Staging files
 cdk.context.json

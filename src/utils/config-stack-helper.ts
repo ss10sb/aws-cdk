@@ -1,7 +1,6 @@
 import {ConfigLoader, ConfigStack, ConfigStackProps, HelperRunProps, StackConfig} from "../config";
-import {App, Tags} from "aws-cdk-lib/core";
+import {App, StackProps, Tags} from "aws-cdk-lib";
 import {NamingHelper, Newable} from "../utils";
-import {StackProps} from "aws-cdk-lib";
 import {Construct} from "constructs";
 
 interface RunProps<T extends Record<string, any> = StackConfig> {

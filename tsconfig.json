@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
     "declaration": true,
     "esModuleInterop": true,
     "inlineSourceMap": false,
@@ -15,21 +14,24 @@
     "noFallthroughCasesInSwitch": true,
     "pretty": true,
     "resolveJsonModule": true,
-    "rootDir": "src",
     "skipLibCheck": true,
     "strict": true,
+    "target": "esnext",
     "traceResolution": false,
     "types": [
       "node",
       "jest"
-    ]
+    ],
+    "module": "CommonJS",
+    "outDir": "./dist"
   },
   "exclude": [
     "node_modules",
-    "lib"
+    "dist",
+    "test"
   ],
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "compileOnSave": false
 }

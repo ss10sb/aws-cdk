@@ -1,7 +1,7 @@
 import {Newable} from "../utils";
 import {ManualApprovalStep, StageDeployment, Step} from "aws-cdk-lib/pipelines";
 import {EnvConfig} from "../env";
-import deepmerge from "deepmerge";
+import * as deepmerge from "deepmerge";
 
 interface Actionable {
     stepClass: Newable<Step>,

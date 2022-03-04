@@ -1,7 +1,7 @@
 import {EnvConfig, EnvEnvironmentProps, EnvProps, EnvTasksAndServicesProps} from "./env-definitions";
 import {ConfigStack, ConfigStackProps} from "../config";
 import {Construct} from "constructs";
-import {Duration, StackProps} from "aws-cdk-lib";
+import {Duration, StackProps, Tags} from "aws-cdk-lib";
 import {
     ApplicationListenerRule,
     IApplicationListener,
@@ -9,7 +9,6 @@ import {
     IApplicationTargetGroup
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {IVpc} from "aws-cdk-lib/aws-ec2";
-import {Tags} from "aws-cdk-lib/core";
 import {AlbHelper, NamingHelper, VpcHelper} from "../utils";
 import {Route53ARecord} from "../route53";
 import {ARecord} from "aws-cdk-lib/aws-route53";

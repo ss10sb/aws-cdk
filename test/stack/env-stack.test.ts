@@ -1104,7 +1104,8 @@ describe('env stack', () => {
                                     'dynamodb:BatchWriteItem',
                                     'dynamodb:PutItem',
                                     'dynamodb:UpdateItem',
-                                    'dynamodb:DeleteItem'
+                                    'dynamodb:DeleteItem',
+                                    'dynamodb:DescribeTable'
                                 ],
                                 Effect: 'Allow',
                                 Resource: [
@@ -1505,7 +1506,8 @@ describe('env stack', () => {
                                     'dynamodb:BatchWriteItem',
                                     'dynamodb:PutItem',
                                     'dynamodb:UpdateItem',
-                                    'dynamodb:DeleteItem'
+                                    'dynamodb:DeleteItem',
+                                    'dynamodb:DescribeTable'
                                 ],
                                 Effect: 'Allow',
                                 Resource: [
@@ -1936,7 +1938,8 @@ describe('env stack', () => {
                                     'dynamodb:BatchWriteItem',
                                     'dynamodb:PutItem',
                                     'dynamodb:UpdateItem',
-                                    'dynamodb:DeleteItem'
+                                    'dynamodb:DeleteItem',
+                                    'dynamodb:DescribeTable'
                                 ],
                                 Effect: 'Allow',
                                 Resource: [
@@ -2449,7 +2452,8 @@ describe('env stack', () => {
                                     'dynamodb:BatchWriteItem',
                                     'dynamodb:PutItem',
                                     'dynamodb:UpdateItem',
-                                    'dynamodb:DeleteItem'
+                                    'dynamodb:DeleteItem',
+                                    'dynamodb:DescribeTable'
                                 ],
                                 Effect: 'Allow',
                                 Resource: [
@@ -2990,7 +2994,8 @@ describe('env stack', () => {
                                     'dynamodb:BatchWriteItem',
                                     'dynamodb:PutItem',
                                     'dynamodb:UpdateItem',
-                                    'dynamodb:DeleteItem'
+                                    'dynamodb:DeleteItem',
+                                    'dynamodb:DescribeTable'
                                 ],
                                 Effect: 'Allow',
                                 Resource: [

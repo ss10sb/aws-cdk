@@ -1,4 +1,4 @@
-import {EcsQueueWrapper, EcsStandardServiceWrapper, EcsTaskWrapper} from "../../src/ecs";
+import {EcsQueueWrapper, EcsStandardServiceWrapper, EcsTaskWrapper} from "./task-definitions";
 
 export enum FargateFactories {
     COMMANDS = 'commands',

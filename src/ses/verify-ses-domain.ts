@@ -4,7 +4,7 @@
  */
 import {CnameRecord, IHostedZone, MxRecord, TxtRecord} from 'aws-cdk-lib/aws-route53';
 import {Topic} from 'aws-cdk-lib/aws-sns';
-import {CfnOutput, Fn} from 'aws-cdk-lib/core';
+import {CfnOutput, Fn} from 'aws-cdk-lib';
 import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from 'aws-cdk-lib/custom-resources';
 import {EnvironmentPlaceholders} from 'aws-cdk-lib/cx-api';
 import {Effect, PolicyStatement} from 'aws-cdk-lib/aws-iam';

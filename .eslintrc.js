@@ -1,8 +1,8 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+        ecmaVersion: 'es2018',
+        sourceType: 'node',
     },
     extends: ['plugin:@typescript-eslint/recommended'],
     env: {
