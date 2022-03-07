@@ -3,8 +3,9 @@ import {ConfigEnvironments, ConfigStack, StackConfig} from "../../src/config";
 import {AlbTargetGroup} from "../../src/alb";
 import {VpcHelper} from "../../src/utils";
 import {EnvConfig} from "../../src/env";
-import {Match, Template} from "aws-cdk-lib/assertions";
+import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {TemplateHelper} from "../../dist/utils/testing";
 
 describe('alb target group', () => {
 
@@ -57,18 +58,48 @@ describe('alb target group', () => {
                 "provider": "vpc-provider"
             }
         ]);
-        Template.fromStack(stack).hasResourceProperties('AWS::ElasticLoadBalancingV2::TargetGroup', Match.objectEquals({
-            Name: "target-group",
-            Port: 80,
-            Protocol: "HTTP",
-            TargetGroupAttributes: [
-                {
-                    Key: "stickiness.enabled",
-                    Value: "false"
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        const expected = {
+            Resources: {
+                targetgroup897B0682: {
+                    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
+                    Properties: {
+                        Name: 'target-group',
+                        Port: 80,
+                        Protocol: 'HTTP',
+                        TargetGroupAttributes: [{Key: 'stickiness.enabled', Value: 'false'}],
+                        TargetType: 'ip',
+                        VpcId: 'vpc-12345'
+                    }
                 }
-            ],
-            TargetType: "ip",
-            VpcId: "vpc-12345"
-        }));
+            },
+            Parameters: {
+                BootstrapVersion: {
+                    Type: 'AWS::SSM::Parameter::Value<String>',
+                    Default: '/cdk-bootstrap/hnb659fds/version',
+                    Description: 'Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]'
+                }
+            },
+            Rules: {
+                CheckBootstrapVersion: {
+                    Assertions: [
+                        {
+                            Assert: {
+                                'Fn::Not': [
+                                    {
+                                        'Fn::Contains': [
+                                            ['1', '2', '3', '4', '5'],
+                                            {Ref: 'BootstrapVersion'}
+                                        ]
+                                    }
+                                ]
+                            },
+                            AssertDescription: "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+                        }
+                    ]
+                }
+            }
+        };
+        templateHelper.template.templateMatches(expected);
     });
 });

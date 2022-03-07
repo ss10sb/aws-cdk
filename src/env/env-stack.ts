@@ -4,6 +4,7 @@ import {Construct} from "constructs";
 import {Duration, StackProps, Tags} from "aws-cdk-lib";
 import {
     ApplicationListenerRule,
+    ApplicationTargetGroup,
     IApplicationListener,
     IApplicationLoadBalancer,
     IApplicationTargetGroup
@@ -25,6 +26,7 @@ import {ClusterFactory, FargateFactory, FargateTasksAndServices} from "../ecs";
 import {Secrets} from "../secret";
 import {StartStopFactory} from "../start-stop";
 import {PermissionsEnvStack} from "../permissions";
+import {AlbTargetGroupHealthCheck} from "../alb/alb-target-group-health-check";
 
 export class EnvStack<T extends EnvConfig> extends ConfigStack {
 
@@ -53,6 +55,7 @@ export class EnvStack<T extends EnvConfig> extends ConfigStack {
         const sesVerify = this.createSesVerifyDomain();
         const targetGroup = this.createTargetGroup();
         const listenerRule = this.createListenerRule(targetGroup);
+        this.configureTargetGroupHealthCheck(targetGroup);
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
@@ -80,6 +83,14 @@ export class EnvStack<T extends EnvConfig> extends ConfigStack {
             sesVerify: sesVerify,
             startStop: startStopFactory,
             table: table
+        });
+    }
+
+    private configureTargetGroupHealthCheck(targetGroup: ApplicationTargetGroup) {
+        new AlbTargetGroupHealthCheck(this, this.getName('tg'), {
+            targetGroup: targetGroup,
+            healthCheck: this.config.Parameters.healthCheck,
+            alarmEmails: this.config.Parameters.alarmEmails ?? []
         });
     }
 
@@ -174,7 +185,7 @@ export class EnvStack<T extends EnvConfig> extends ConfigStack {
         }
     }
 
-    private createTargetGroup(): IApplicationTargetGroup {
+    private createTargetGroup(): ApplicationTargetGroup {
         const albTargetGroup = new AlbTargetGroup(this, this.getName('tg'), this.vpc, <EnvConfig>this.config);
         return albTargetGroup.createApplicationTargetGroup();
     }

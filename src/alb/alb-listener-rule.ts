@@ -11,20 +11,19 @@ import {Construct} from "constructs";
 export class AlbListenerRule extends NonConstruct {
     readonly listener: IApplicationListener;
     readonly props: AlbListenerRuleProps;
-    readonly map: { [key: string]: any };
+    readonly map: Record<string, any> = {
+        hostHeaders: ListenerCondition.hostHeaders,
+        httpHeader: ListenerCondition.httpHeader,
+        httpRequestMethods: ListenerCondition.httpRequestMethods,
+        pathPatterns: ListenerCondition.pathPatterns,
+        queryStrings: ListenerCondition.queryStrings,
+        sourceIps: ListenerCondition.sourceIps
+    };
 
     constructor(scope: Construct, id: string, listener: IApplicationListener, props: AlbListenerRuleProps) {
         super(scope, id);
         this.listener = listener;
         this.props = props;
-        this.map = {
-            hostHeaders: ListenerCondition.hostHeaders,
-            httpHeader: ListenerCondition.httpHeader,
-            httpRequestMethods: ListenerCondition.httpRequestMethods,
-            pathPatterns: ListenerCondition.pathPatterns,
-            queryStrings: ListenerCondition.queryStrings,
-            sourceIps: ListenerCondition.sourceIps
-        }
     }
 
     createListenerRule(targetGroup: IApplicationTargetGroup): ApplicationListenerRule {
