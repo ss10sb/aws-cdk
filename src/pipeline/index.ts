@@ -4,6 +4,7 @@ export * from './code-pipeline-ecr-step';
 export * from './code-pipeline-ecr-steps';
 export * from './code-pipeline-env-stages';
 export * from './code-pipeline-pipeline';
+export * from './code-pipeline-run';
 export * from './code-pipeline-stage-steps';
 export * from './code-pipeline-synth-step';
 export * from './pipeline-definitions';

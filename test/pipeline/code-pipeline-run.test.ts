@@ -1,8 +1,12 @@
 import {ConfigEnvironments} from "../../src/config";
 import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {App, Stack} from "aws-cdk-lib";
-import {CodePipelineCodestarSource, CodePipelinePipeline, CodePipelineSynthStep} from "../../src/pipeline";
-import {CodePipelineRun} from "../../src/pipeline/code-pipeline-run";
+import {
+    CodePipelineCodestarSource,
+    CodePipelinePipeline,
+    CodePipelineRun,
+    CodePipelineSynthStep
+} from "../../src/pipeline";
 import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
 

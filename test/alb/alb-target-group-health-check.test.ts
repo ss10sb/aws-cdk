@@ -2,11 +2,10 @@ import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {App, Stack} from "aws-cdk-lib";
 import {VpcHelper} from "../../src/utils";
 import {ApplicationTargetGroup, Protocol} from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import {AlbTargetGroupHealthCheck} from "../../src/alb/alb-target-group-health-check";
+import {AlbListenerRule, AlbTargetGroupHealthCheck} from "../../src/alb";
 import {TemplateHelper} from "../../dist/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
 import {AlbHelper} from "../../dist/utils";
-import {AlbListenerRule} from "../../src/alb";
 
 describe('alb target group health check', () => {
 
@@ -46,7 +45,7 @@ describe('alb target group health check', () => {
                     Properties: {
                         HealthCheckPath: '/healthy',
                         HealthCheckProtocol: 'HTTP',
-                        TargetGroupAttributes: [ { Key: 'stickiness.enabled', Value: 'false' } ],
+                        TargetGroupAttributes: [{Key: 'stickiness.enabled', Value: 'false'}],
                         VpcId: 'vpc-12345'
                     }
                 },
@@ -54,24 +53,24 @@ describe('alb target group health check', () => {
                     Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
                     Properties: {
                         Actions: [
-                            { TargetGroupArn: { Ref: 'tg2DCFFD86' }, Type: 'forward' }
+                            {TargetGroupArn: {Ref: 'tg2DCFFD86'}, Type: 'forward'}
                         ],
                         Conditions: [
                             {
                                 Field: 'host-header',
-                                HostHeaderConfig: { Values: [ 'test.example.edu' ] }
+                                HostHeaderConfig: {Values: ['test.example.edu']}
                             }
                         ],
                         ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2',
                         Priority: 999
                     }
                 },
-                tghealthtopic71EA6D4D: { Type: 'AWS::SNS::Topic' },
+                tghealthtopic71EA6D4D: {Type: 'AWS::SNS::Topic'},
                 tghealthtopictestexamplecomFD3574A2: {
                     Type: 'AWS::SNS::Subscription',
                     Properties: {
                         Protocol: 'email',
-                        TopicArn: { Ref: 'tghealthtopic71EA6D4D' },
+                        TopicArn: {Ref: 'tghealthtopic71EA6D4D'},
                         Endpoint: 'test@example.com'
                     }
                 },
@@ -80,7 +79,7 @@ describe('alb target group health check', () => {
                     Properties: {
                         ComparisonOperator: 'GreaterThanOrEqualToThreshold',
                         EvaluationPeriods: 3,
-                        AlarmActions: [ { Ref: 'tghealthtopic71EA6D4D' } ],
+                        AlarmActions: [{Ref: 'tghealthtopic71EA6D4D'}],
                         Dimensions: [
                             {
                                 Name: 'LoadBalancer',
@@ -88,12 +87,12 @@ describe('alb target group health check', () => {
                             },
                             {
                                 Name: 'TargetGroup',
-                                Value: { 'Fn::GetAtt': [ 'tg2DCFFD86', 'TargetGroupFullName' ] }
+                                Value: {'Fn::GetAtt': ['tg2DCFFD86', 'TargetGroupFullName']}
                             }
                         ],
                         MetricName: 'UnHealthyHostCount',
                         Namespace: 'AWS/ApplicationELB',
-                        OKActions: [ { Ref: 'tghealthtopic71EA6D4D' } ],
+                        OKActions: [{Ref: 'tghealthtopic71EA6D4D'}],
                         Period: 60,
                         Statistic: 'Maximum',
                         Threshold: 1
@@ -115,8 +114,8 @@ describe('alb target group health check', () => {
                                 'Fn::Not': [
                                     {
                                         'Fn::Contains': [
-                                            [ '1', '2', '3', '4', '5' ],
-                                            { Ref: 'BootstrapVersion' }
+                                            ['1', '2', '3', '4', '5'],
+                                            {Ref: 'BootstrapVersion'}
                                         ]
                                     }
                                 ]

@@ -8,6 +8,7 @@ import {
     CodePipelineEnvStages,
     CodePipelinePipeline,
     CodePipelinePipelineProps,
+    CodePipelineRun,
     CodePipelineSynthStep,
     CodeStarSourceProps,
     PipelineNotificationRule,
@@ -15,7 +16,6 @@ import {
 } from "../pipeline";
 import {Wave} from "aws-cdk-lib/pipelines";
 import {ConfigStackHelper} from "../utils";
-import {CodePipelineRun} from "../pipeline/code-pipeline-run";
 import {PermissionsCodePipelineEcsStack} from "../permissions";
 
 export class CodePipelineEcsStack extends ConfigStack {

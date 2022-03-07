@@ -14,7 +14,7 @@ import {AlbHelper, NamingHelper, VpcHelper} from "../utils";
 import {Route53ARecord} from "../route53";
 import {ARecord} from "aws-cdk-lib/aws-route53";
 import {SesVerifyDomain, VerifySesDomain} from "../ses";
-import {AlbListenerRule, AlbTargetGroup} from "../alb";
+import {AlbListenerRule, AlbTargetGroup, AlbTargetGroupHealthCheck} from "../alb";
 import {Table} from "aws-cdk-lib/aws-dynamodb";
 import {Dynamodb} from "../dynamodb";
 import {Queue} from "aws-cdk-lib/aws-sqs";
@@ -26,7 +26,6 @@ import {ClusterFactory, FargateFactory, FargateTasksAndServices} from "../ecs";
 import {Secrets} from "../secret";
 import {StartStopFactory} from "../start-stop";
 import {PermissionsEnvStack} from "../permissions";
-import {AlbTargetGroupHealthCheck} from "../alb/alb-target-group-health-check";
 
 export class EnvStack<T extends EnvConfig> extends ConfigStack {
 
