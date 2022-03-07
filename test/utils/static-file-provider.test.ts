@@ -1,25 +1,25 @@
 import * as path from 'node:path';
-import {StaticProvider} from "../../src/utils";
+import {StaticFileProvider} from "../../src/utils";
 
 describe('static provider', () => {
 
     beforeEach(() => {
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         staticProvider.cleanup();
     });
 
     it('should set base directory to working directory when not set', () => {
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         expect(staticProvider.baseDirectory).toEqual(path.resolve(process.cwd(), staticProvider.defaultDirectory));
     });
 
     it('should return undefined when no file exists', () => {
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         expect(staticProvider.fetch('foo')).toEqual(undefined);
     });
 
     it('should put object when no object exists', () => {
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const data = {
             foo: "bar",
             hello: [
@@ -33,7 +33,7 @@ describe('static provider', () => {
     });
 
     it('should overwrite object when object exists', () => {
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const data1 = {
             foo: "bar",
             hello: [
@@ -56,7 +56,7 @@ describe('static provider', () => {
     });
 
     it('should not allow path traversal characters in name', () => {
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         expect(() => {
             staticProvider.getFileName('../../passwd');
         }).toThrowError();

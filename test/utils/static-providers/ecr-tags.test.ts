@@ -3,7 +3,7 @@ import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
 import {EcrTag} from "../../../src/utils/sdk";
 import {ConfigEnvironments} from "../../../src/config";
 import {EcrRepositories, EcrRepositoryType} from "../../../src/ecr";
-import {StaticProvider} from "../../../src/utils";
+import {StaticFileProvider} from "../../../src/utils";
 import {EcrTags} from "../../../src/utils/static-providers";
 
 const baseBuildConfig = {
@@ -20,7 +20,7 @@ const baseBuildConfig = {
 const mock = mockClient(ECRClient);
 
 beforeEach(() => {
-    const staticProvider = new StaticProvider();
+    const staticProvider = new StaticFileProvider();
     staticProvider.cleanup();
     mock.reset();
 });
@@ -30,7 +30,7 @@ describe('ecr tags static provider', () => {
     it('should fetch empty array when no data', () => {
         const ecrTag = new EcrTag({region: 'us-east-1'});
         const repositories = new EcrRepositories('my-repos', baseBuildConfig.Parameters.repositories);
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const ecrTags = new EcrTags(staticProvider, repositories, ecrTag);
         const tagResponses = ecrTags.fetch();
         expect(tagResponses).toBeInstanceOf(Array);
@@ -42,7 +42,7 @@ describe('ecr tags static provider', () => {
         const ecrTag = new EcrTag({region: 'us-east-1'});
         mock.on(DescribeImagesCommand).rejects('error!');
         const repositories = new EcrRepositories('my-repos', baseBuildConfig.Parameters.repositories);
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const ecrTags = new EcrTags(staticProvider, repositories, ecrTag);
         await ecrTags.put();
         const tagResponses = ecrTags.fetch();
@@ -88,7 +88,7 @@ describe('ecr tags static provider', () => {
             ]
         });
         const repositories = new EcrRepositories('my-repos', baseBuildConfig.Parameters.repositories);
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const ecrTags = new EcrTags(staticProvider, repositories, ecrTag);
         await ecrTags.put();
         const tagResponses = ecrTags.fetch();

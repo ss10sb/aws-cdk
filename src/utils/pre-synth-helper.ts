@@ -2,7 +2,7 @@ import {ConfigLoader} from "../config";
 import {NamingHelper} from "./naming-helper";
 import {ConfigStackHelper} from "./config-stack-helper";
 import {ConfigSsmParams, EcrTags} from "./static-providers";
-import {StaticProvider} from "./static-provider";
+import {StaticFileProvider} from "./static-file-provider";
 import {EcrTag, SsmParam, TagResponse} from "./sdk";
 import {ClientDefaults as SSMClientDefaults} from "@aws-sdk/client-ssm";
 import {EcrRepositories, EcrRepositoriesProps} from "../ecr";
@@ -24,11 +24,11 @@ export interface PreSynthHelperProps {
 export class PreSynthHelper {
 
     readonly props: PreSynthHelperProps;
-    readonly staticProvider: StaticProvider;
+    readonly staticProvider: StaticFileProvider;
 
     constructor(props: PreSynthHelperProps) {
         this.props = props;
-        this.staticProvider = new StaticProvider(this.props.staticProviderBaseDir);
+        this.staticProvider = new StaticFileProvider(this.props.staticProviderBaseDir);
     }
 
     async run(): Promise<PreSynthHelperResponse> {

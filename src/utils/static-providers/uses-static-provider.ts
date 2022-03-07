@@ -1,8 +1,8 @@
-import {StaticProvider} from "../static-provider";
+import {StaticFileProvider} from "../static-file-provider";
 
 export interface UsesStaticProvider<T> {
 
-    readonly staticProvider: StaticProvider;
+    readonly staticProvider: StaticFileProvider;
 
     put(): Promise<void>;
 

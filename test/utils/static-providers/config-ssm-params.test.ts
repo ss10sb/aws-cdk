@@ -1,7 +1,7 @@
 import {mockClient} from "aws-sdk-client-mock";
 import {ConfigEnvironments, ConfigStack} from "../../../src/config";
 import {App} from "aws-cdk-lib";
-import {ConfigStackHelper, NamingHelper, StaticProvider} from "../../../src/utils";
+import {ConfigStackHelper, NamingHelper, StaticFileProvider} from "../../../src/utils";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
 import {SsmParam} from "../../../src/utils/sdk";
 import {ConfigSsmParams} from "../../../src/utils/static-providers";
@@ -18,7 +18,7 @@ const baseBuildConfig = {
 const mock = mockClient(SSMClient);
 
 beforeEach(() => {
-    const staticProvider = new StaticProvider();
+    const staticProvider = new StaticFileProvider();
     staticProvider.cleanup();
     mock.reset();
 });
@@ -29,7 +29,7 @@ describe('config ssm params static provider', () => {
         const app = new App();
         const stack = new ConfigStack(app, 'test', baseBuildConfig, {}, stackProps);
         const ssmParam = new SsmParam({region: 'us-east-1'});
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const paramName = NamingHelper.configParamName(ConfigStackHelper.getMainStackName(stack.config));
         const ssmParams = new ConfigSsmParams(staticProvider, paramName, ssmParam);
         mock.on(GetParameterCommand, {
@@ -50,7 +50,7 @@ describe('config ssm params static provider', () => {
         const app = new App();
         const stack = new ConfigStack(app, 'test', baseBuildConfig, {}, stackProps);
         const ssmParam = new SsmParam({region: 'us-east-1'});
-        const staticProvider = new StaticProvider();
+        const staticProvider = new StaticFileProvider();
         const paramName = NamingHelper.configParamName(ConfigStackHelper.getMainStackName(stack.config));
         const ssmParams = new ConfigSsmParams(staticProvider, paramName, ssmParam);
         const config = ssmParams.fetch();

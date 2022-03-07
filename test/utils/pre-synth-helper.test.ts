@@ -2,7 +2,7 @@ import path from "node:path";
 import {mockClient} from "aws-sdk-client-mock";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
-import {PreSynthHelper, StaticProvider} from "../../src/utils";
+import {PreSynthHelper, StaticFileProvider} from "../../src/utils";
 import {ConfigEnvironments} from "../../src/config";
 import {EcrRepositoryType} from "../../src/ecr";
 
@@ -13,7 +13,7 @@ const mockSsm = mockClient(SSMClient);
 const mockEcr = mockClient(ECRClient);
 
 beforeEach(() => {
-    const staticProvider = new StaticProvider();
+    const staticProvider = new StaticFileProvider();
     staticProvider.cleanup();
     mockSsm.reset();
     mockEcr.reset();

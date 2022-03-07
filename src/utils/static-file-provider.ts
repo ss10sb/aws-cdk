@@ -1,7 +1,7 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 
-export class StaticProvider {
+export class StaticFileProvider {
 
     readonly baseDirectory: string;
     readonly defaultDirectory = 'cdk.out/providers';
@@ -22,7 +22,7 @@ export class StaticProvider {
     fetch<T = Record<string, any>>(name: string): T | undefined {
         const fileName = this.getFileName(name);
         if (this.exists(name)) {
-            return <T>StaticProvider.convertStringToJson(fs.readFileSync(fileName, 'utf-8'));
+            return <T>StaticFileProvider.convertStringToJson(fs.readFileSync(fileName, 'utf-8'));
         }
     }
 

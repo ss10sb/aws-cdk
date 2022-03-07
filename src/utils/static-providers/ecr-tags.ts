@@ -1,15 +1,15 @@
 import {UsesStaticProvider} from "./uses-static-provider";
 import {EcrTag, TagResponse} from "../sdk";
-import {StaticProvider} from "../static-provider";
+import {StaticFileProvider} from "../static-file-provider";
 import {EcrRepositories} from "../../ecr";
 
 export class EcrTags implements UsesStaticProvider<TagResponse[]> {
 
-    readonly staticProvider: StaticProvider;
+    readonly staticProvider: StaticFileProvider;
     readonly ecrRepositories: EcrRepositories;
     readonly ecrTag: EcrTag;
 
-    constructor(staticProvider: StaticProvider, ecrRepositories: EcrRepositories, ecrTag: EcrTag) {
+    constructor(staticProvider: StaticFileProvider, ecrRepositories: EcrRepositories, ecrTag: EcrTag) {
         this.staticProvider = staticProvider;
         this.ecrRepositories = ecrRepositories;
         this.ecrTag = ecrTag;

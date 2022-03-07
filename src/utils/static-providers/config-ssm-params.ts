@@ -1,15 +1,15 @@
 import {UsesStaticProvider} from "./uses-static-provider";
 import {BaseConfig} from "../../config";
-import {StaticProvider} from "../static-provider";
+import {StaticFileProvider} from "../static-file-provider";
 import {SsmParam, SsmParamResponse} from "../sdk";
 
 export class ConfigSsmParams<T extends BaseConfig> implements UsesStaticProvider<T> {
 
-    readonly staticProvider: StaticProvider;
+    readonly staticProvider: StaticFileProvider;
     readonly paramName: string;
     readonly ssmParam: SsmParam;
 
-    constructor(staticProvider: StaticProvider, paramName: string, ssmParam: SsmParam) {
+    constructor(staticProvider: StaticFileProvider, paramName: string, ssmParam: SsmParam) {
         this.staticProvider = staticProvider;
         this.paramName = paramName;
         this.ssmParam = ssmParam;

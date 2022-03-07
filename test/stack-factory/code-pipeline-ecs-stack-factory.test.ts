@@ -1,7 +1,7 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {mockClient} from "aws-sdk-client-mock";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
-import {PreSynthHelper, StaticProvider} from "../../src/utils";
+import {PreSynthHelper, StaticFileProvider} from "../../src/utils";
 import {ConfigEnvironments} from "../../src/config";
 import {EcrRepositoryType} from "../../src/ecr";
 import {DetailType} from "aws-cdk-lib/aws-codestarnotifications";
@@ -31,7 +31,7 @@ beforeEach(() => {
     mockSsm.reset();
     mockEcr.reset();
     resetStaticProps();
-    const staticProvider = new StaticProvider();
+    const staticProvider = new StaticFileProvider();
     staticProvider.cleanup();
 });
 

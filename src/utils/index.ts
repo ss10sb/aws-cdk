@@ -7,5 +7,5 @@ export * from './pre-synth-helper';
 export * from './route53-helper';
 export * from './secret-config-helper';
 export * from './ssm-helper';
-export * from './static-provider';
+export * from './static-file-provider';
 export * from './vpc-helper';
