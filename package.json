@@ -1,6 +1,6 @@
 {
   "name": "@smorken/aws-cdk",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "license": "MIT",
   "author": "Scott Morken <scott.morken@phoenixcollege.edu>",
   "repository": {
@@ -115,7 +115,7 @@
       "require": "./dist/utils/sdk/index.js"
     },
     "./utils/static-providers": {
-      "require": "./dist/utils/static-provider/index.js"
+      "require": "./dist/utils/static-providers/index.js"
     },
     "./utils/testing": {
       "require": "./dist/utils/testing/index.js"
