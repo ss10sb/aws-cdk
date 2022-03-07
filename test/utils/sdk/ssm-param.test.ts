@@ -4,10 +4,11 @@ import {SsmParam} from "../../../src/utils/sdk";
 
 const mock = mockClient(SSMClient);
 
+beforeEach(() => {
+    mock.reset();
+});
+
 describe('ssm param', () => {
-    beforeEach(() => {
-        mock.reset();
-    });
 
     it('should fail on error', async () => {
         const ssmParam = new SsmParam({region: 'us-east-1'});

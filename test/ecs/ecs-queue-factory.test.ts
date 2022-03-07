@@ -14,7 +14,7 @@ const ecrRepoProps = {
 
 describe('ecs queue factory', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

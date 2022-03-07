@@ -5,7 +5,7 @@ import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('vpc helper', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

@@ -24,7 +24,7 @@ const ecrRepoProps = {
 
 describe('ecs task factory', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

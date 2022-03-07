@@ -9,6 +9,7 @@ import {EnvConfig} from "../env";
 import {CodePipelineEcrSteps} from "./code-pipeline-ecr-steps";
 import {CodePipelineEnvStages} from "./code-pipeline-env-stages";
 import {PipelineNotificationRule} from "./pipeline-notification-rule";
+import {CodePipelineRun} from "./code-pipeline-run";
 
 export interface SourceProps {
     owner: string;
@@ -59,4 +60,10 @@ export interface CodePipelineEcsStackServicesProps {
     repositoryFactory: EcrRepositoryFactory;
     synthStep: CodePipelineSynthStep;
     notificationRule?: PipelineNotificationRule;
+    runSchedule?: CodePipelineRun;
+}
+
+export interface CodePipelineRunProps {
+    pipeline: CodePipelinePipeline;
+    schedule: string;
 }

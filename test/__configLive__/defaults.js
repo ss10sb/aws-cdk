@@ -4,7 +4,14 @@ const {EcrRepositoryType} = require("../../src/ecr");
 const {PipelineNotificationEvents} = require("aws-cdk-lib/aws-codepipeline");
 const {DetailType} = require("aws-cdk-lib/aws-codestarnotifications");
 const {Protocol} = require("aws-cdk-lib/aws-elasticloadbalancingv2");
-const {TaskServiceType, ContainerType, ContainerEntryPoint, ContainerCommand, ScalableTypes, SchedulableTypes} = require("../../src/ecs");
+const {
+    TaskServiceType,
+    ContainerType,
+    ContainerEntryPoint,
+    ContainerCommand,
+    ScalableTypes,
+    SchedulableTypes
+} = require("../../src/ecs");
 
 module.exports = {
     Name: common.Name,
@@ -29,6 +36,7 @@ module.exports = {
             ],
             emails: ['admin@example.edu']
         },
+        runPipelineSchedule: 'cron(0 8 ? * 2#1 *)'
     },
     Environments: [
         {
@@ -166,7 +174,7 @@ module.exports = {
                 subdomain: common.subdomain,
                 targetGroup: {},
                 steps: {
-                    ManualApprovalStep: {}
+                    manualApproval: {}
                 },
                 tasks: [
                     {

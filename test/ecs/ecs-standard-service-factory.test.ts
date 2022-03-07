@@ -24,7 +24,7 @@ const ecrRepoProps = {
 
 describe('ecs standard service factory', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

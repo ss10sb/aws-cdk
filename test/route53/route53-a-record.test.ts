@@ -8,7 +8,7 @@ const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 
 describe('route53 a record', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

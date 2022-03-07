@@ -7,7 +7,7 @@ const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 
 describe('alb helper', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

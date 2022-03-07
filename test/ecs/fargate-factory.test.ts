@@ -24,7 +24,7 @@ const ecrRepoProps = {
 
 describe('fargate factory', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

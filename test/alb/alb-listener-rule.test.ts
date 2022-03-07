@@ -9,7 +9,7 @@ import {TemplateHelper} from "../../src/utils/testing";
 
 describe('alb listener rule', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

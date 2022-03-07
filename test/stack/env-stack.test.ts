@@ -17,7 +17,7 @@ import {Protocol} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
 describe('env stack', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

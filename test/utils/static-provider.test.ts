@@ -3,7 +3,7 @@ import {StaticProvider} from "../../src/utils";
 
 describe('static provider', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         const staticProvider = new StaticProvider();
         staticProvider.cleanup();
     });

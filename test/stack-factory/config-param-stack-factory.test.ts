@@ -39,7 +39,7 @@ describe('config param stack factory', () => {
                     Type: 'String',
                     Value: JSON.stringify(expected),
                     Name: '/pcc-shared-test/config',
-                    Tags: { App: 'test', College: 'PCC', Environment: 'shared' },
+                    Tags: {App: 'test', College: 'PCC', Environment: 'shared'},
                     Tier: 'Standard'
                 }
             })
@@ -59,7 +59,7 @@ describe('config param stack factory', () => {
                     Type: 'String',
                     Value: JSON.stringify(expected),
                     Name: '/pcc-shared-test/config',
-                    Tags: { App: 'test', College: 'PCC', Environment: 'shared' },
+                    Tags: {App: 'test', College: 'PCC', Environment: 'shared'},
                     Tier: 'Standard'
                 }
             })
@@ -83,7 +83,8 @@ function getExpected() {
                 "detailType": "FULL",
                 "events": ["codepipeline-pipeline-pipeline-execution-failed", "codepipeline-pipeline-pipeline-execution-succeeded", "codepipeline-pipeline-manual-approval-needed"],
                 "emails": ["admin@example.edu"]
-            }
+            },
+            "runPipelineSchedule": "cron(0 8 ? * 2#1 *)"
         },
         "Environments": [{
             "AWSAccountId": "11111",
@@ -180,7 +181,7 @@ function getExpected() {
                 "listenerRule": {"priority": 100, "conditions": {"hostHeaders": ["test.example.edu"]}},
                 "subdomain": "test",
                 "targetGroup": {},
-                "steps": {"ManualApprovalStep": {}},
+                "steps": {"manualApproval": {}},
                 "tasks": [{
                     "type": "createruntask",
                     "taskDefinition": {

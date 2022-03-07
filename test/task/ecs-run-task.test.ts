@@ -6,11 +6,11 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing";
 import {VpcHelper} from "../../src/utils";
 
-describe('ecs run task', () => {
+beforeEach(() => {
+    resetStaticProps();
+});
 
-    beforeEach(() => {
-        resetStaticProps();
-    });
+describe('ecs run task', () => {
 
     it('should create a create ecs run task using defaults', () => {
         const app = new App();

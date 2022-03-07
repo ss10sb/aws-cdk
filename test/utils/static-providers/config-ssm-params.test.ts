@@ -17,16 +17,13 @@ const baseBuildConfig = {
 
 const mock = mockClient(SSMClient);
 
+beforeEach(() => {
+    const staticProvider = new StaticProvider();
+    staticProvider.cleanup();
+    mock.reset();
+});
+
 describe('config ssm params static provider', () => {
-
-    afterEach(() => {
-        const staticProvider = new StaticProvider();
-        staticProvider.cleanup();
-    });
-
-    beforeEach(() => {
-        mock.reset();
-    });
 
     it('should put config and fetch', async () => {
         const app = new App();

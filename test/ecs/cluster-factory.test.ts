@@ -7,7 +7,7 @@ import {TemplateHelper} from "../../src/utils/testing";
 
 describe('cluster factory', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

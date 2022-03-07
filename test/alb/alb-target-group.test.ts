@@ -8,7 +8,7 @@ import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('alb target group', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

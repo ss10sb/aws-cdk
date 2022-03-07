@@ -19,15 +19,13 @@ const baseBuildConfig = {
 
 const mock = mockClient(ECRClient);
 
-describe('ecr tags static provider', () => {
-    afterEach(() => {
-        const staticProvider = new StaticProvider();
-        staticProvider.cleanup();
-    });
+beforeEach(() => {
+    const staticProvider = new StaticProvider();
+    staticProvider.cleanup();
+    mock.reset();
+});
 
-    beforeEach(() => {
-        mock.reset();
-    });
+describe('ecr tags static provider', () => {
 
     it('should fetch empty array when no data', () => {
         const ecrTag = new EcrTag({region: 'us-east-1'});

@@ -8,7 +8,7 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 
 describe('start stop factory', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

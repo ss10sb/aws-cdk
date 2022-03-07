@@ -4,11 +4,11 @@ import {EcrTag} from "../../../src/utils/sdk";
 
 const mock = mockClient(ECRClient);
 
-describe('ecr tag', () => {
+beforeEach(() => {
+    mock.reset();
+})
 
-    beforeEach(() => {
-        mock.reset();
-    })
+describe('ecr tag', () => {
 
     it('should return 1 when error', async () => {
         const ecrTag = new EcrTag({region: 'us-east-1'});

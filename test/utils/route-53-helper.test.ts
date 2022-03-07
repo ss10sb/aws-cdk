@@ -4,7 +4,7 @@ import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('route 53 helper', () => {
 
-    afterEach(() => {
+    beforeEach(() => {
         resetStaticProps();
     });
 

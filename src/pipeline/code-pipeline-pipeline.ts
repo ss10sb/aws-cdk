@@ -4,6 +4,7 @@ import {CodePipeline, CodePipelineProps, DockerCredential} from "aws-cdk-lib/pip
 import {Construct} from "constructs";
 import {LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
 import {IRepository} from "aws-cdk-lib/aws-ecr";
+import {Pipeline} from "aws-cdk-lib/aws-codepipeline";
 
 export class CodePipelinePipeline extends NonConstruct {
 
@@ -17,6 +18,15 @@ export class CodePipelinePipeline extends NonConstruct {
         super(scope, id);
         this.props = props;
         this.pipeline = this.createCodePipeline();
+    }
+
+    getBuiltPipeline(): Pipeline {
+        try {
+            return this.pipeline.pipeline;
+        } catch (e) {
+            this.pipeline.buildPipeline();
+        }
+        return this.pipeline.pipeline;
     }
 
     protected createCodePipeline(): CodePipeline {
