@@ -13,6 +13,7 @@ export class CodePipelinePipeline extends NonConstruct {
     readonly defaults: Record<string, any> = {
         crossAccountKeys: true
     }
+    built = false;
 
     constructor(scope: Construct, id: string, props: CodePipelinePipelineProps) {
         super(scope, id);
@@ -20,12 +21,15 @@ export class CodePipelinePipeline extends NonConstruct {
         this.pipeline = this.createCodePipeline();
     }
 
-    getBuiltPipeline(): Pipeline {
-        try {
-            return this.pipeline.pipeline;
-        } catch (e) {
+    buildPipeline(): void {
+        if (!this.built) {
             this.pipeline.buildPipeline();
+            this.built = true;
         }
+    }
+
+    getBuiltPipeline(): Pipeline {
+        this.buildPipeline();
         return this.pipeline.pipeline;
     }
 

@@ -4,7 +4,6 @@ import {ConfigStackHelper} from "../../src/utils";
 import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import * as util from "util";
 
 describe('code pipeline ecs stack', () => {
 
@@ -180,9 +179,9 @@ describe('code pipeline ecs stack', () => {
             }
         ]);
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.inspect();
-        // const expected = getExpected();
-        // templateHelper.template.templateMatches(expected);
+        //templateHelper.inspect();
+        const expected = getExpected();
+        templateHelper.template.templateMatches(expected);
     });
 });
 

@@ -10,3 +10,4 @@ export * from './code-pipeline-synth-step';
 export * from './pipeline-definitions';
 export * from './pipeline-notification-rule';
 export * from './pipeline-notification-targets';
+export * from './pipeline-notify-on';

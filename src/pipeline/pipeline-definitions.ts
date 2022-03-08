@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/no-empty-interface: "off" */
-import {DetailType, INotificationRuleSource, INotificationRuleTarget} from "aws-cdk-lib/aws-codestarnotifications";
-import {PipelineNotificationEvents} from "aws-cdk-lib/aws-codepipeline";
+import {DetailType, INotificationRuleTarget} from "aws-cdk-lib/aws-codestarnotifications";
+import {Pipeline, PipelineNotificationEvents} from "aws-cdk-lib/aws-codepipeline";
+import {CodePipeline} from "aws-cdk-lib/pipelines";
 
 export interface PipelineNotificationRuleConfig {
     detailType?: DetailType;
@@ -14,5 +15,5 @@ export interface PipelineNotificationTargetProps extends PipelineNotificationRul
 }
 
 export interface PipelineNotificationRuleProps extends PipelineNotificationTargetProps {
-    source: INotificationRuleSource;
+    source: CodePipeline | Pipeline;
 }

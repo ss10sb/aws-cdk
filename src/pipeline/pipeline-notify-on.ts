@@ -1,26 +1,22 @@
 import {NonConstruct} from "../core";
-import {Construct} from "constructs";
 import {PipelineNotificationRuleProps} from "./pipeline-definitions";
-import {
-    INotificationRule,
-    INotificationRuleTarget,
-    NotificationRule as NotificationRuleAws
-} from "aws-cdk-lib/aws-codestarnotifications";
+import {INotificationRule, INotificationRuleTarget} from "aws-cdk-lib/aws-codestarnotifications";
+import {Construct} from "constructs";
 import {PipelineNotificationTargets} from "./pipeline-notification-targets";
-import {CodePipeline} from "aws-cdk-lib/pipelines";
 import {IPipeline} from "aws-cdk-lib/aws-codepipeline";
+import {CodePipeline} from "aws-cdk-lib/pipelines";
 
-export class PipelineNotificationRule extends NonConstruct {
+export class PipelineNotifyOn extends NonConstruct {
 
     readonly props: PipelineNotificationRuleProps;
     readonly targets: INotificationRuleTarget[];
-    readonly notificationRule: INotificationRule;
+    notificationRules: INotificationRule[] = [];
 
     constructor(scope: Construct, id: string, props: PipelineNotificationRuleProps) {
         super(scope, id);
         this.props = props;
         this.targets = this.createTargets();
-        this.notificationRule = this.createNotificationRule();
+        this.createNotifyOnRules();
     }
 
     protected createTargets(): INotificationRuleTarget[] {
@@ -28,13 +24,13 @@ export class PipelineNotificationRule extends NonConstruct {
         return notificationTargets.targets;
     }
 
-    protected createNotificationRule(): INotificationRule {
-        return new NotificationRuleAws(this.scope, this.mixNameWithId('notification-rule'), {
-            source: this.getSource(),
-            events: this.props.events,
-            detailType: this.props.detailType ?? undefined,
-            targets: this.targets
-        });
+    protected createNotifyOnRules(): void {
+        for (const target of this.targets) {
+            this.notificationRules.push(this.getSource().notifyOn(this.id, target, {
+                detailType: this.props.detailType,
+                events: this.props.events
+            }));
+        }
     }
 
     protected getSource(): IPipeline {

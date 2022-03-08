@@ -12,7 +12,8 @@ import {
     CodePipelineSynthStep,
     CodeStarSourceProps,
     PipelineNotificationRule,
-    PipelineNotificationRuleProps
+    PipelineNotificationRuleProps,
+    PipelineNotifyOn
 } from "../pipeline";
 import {Wave} from "aws-cdk-lib/pipelines";
 import {ConfigStackHelper} from "../utils";
@@ -47,6 +48,7 @@ export class CodePipelineEcsStack extends ConfigStack {
             environments: this.config.Environments ?? []
         });
         const notificationRule = this.createPipelineNotifications(pipeline);
+        //const notificationRules = this.createPipelineNotifyOnRules(pipeline);
         const runSchedule = this.createPipelineRunSchedule(pipeline);
         const servicesProps = {
             repositoryFactory: ecrRepositoryFactory,
@@ -93,14 +95,26 @@ export class CodePipelineEcsStack extends ConfigStack {
     }
 
     private createPipelineNotifications(pipeline: CodePipelinePipeline): PipelineNotificationRule | undefined {
-        if (this.config.Parameters?.pipelineNotifications) {
+        if (this.config.Parameters?.pipelineNotification) {
             const props: PipelineNotificationRuleProps = {
                 source: pipeline.getBuiltPipeline(),
-                detailType: this.config.Parameters.pipelineNotifications?.detailType,
-                events: this.config.Parameters.pipelineNotifications?.events ?? [],
-                emails: this.config.Parameters.pipelineNotifications?.emails ?? []
+                detailType: this.config.Parameters.pipelineNotification?.detailType,
+                events: this.config.Parameters.pipelineNotification?.events ?? [],
+                emails: this.config.Parameters.pipelineNotification?.emails ?? []
             };
             return new PipelineNotificationRule(this, this.node.id, props);
+        }
+    }
+
+    private createPipelineNotifyOnRules(pipeline: CodePipelinePipeline): PipelineNotifyOn | undefined {
+        if (this.config.Parameters?.pipelineNotification) {
+            const props: PipelineNotificationRuleProps = {
+                source: pipeline.getBuiltPipeline(),
+                detailType: this.config.Parameters.pipelineNotification?.detailType,
+                events: this.config.Parameters.pipelineNotification?.events ?? [],
+                emails: this.config.Parameters.pipelineNotification?.emails ?? []
+            };
+            return new PipelineNotifyOn(this, this.node.id, props);
         }
     }
 
