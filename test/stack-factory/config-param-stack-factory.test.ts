@@ -1,5 +1,5 @@
 import {ConfigParamStackFactory} from "../../src/stack-factory";
-import path from "node:path";
+import path from "path";
 import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {buildConfigParamStack} from "../../src";

@@ -1,4 +1,4 @@
-import path from "node:path";
+import path from "path";
 import {mockClient} from "aws-sdk-client-mock";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";

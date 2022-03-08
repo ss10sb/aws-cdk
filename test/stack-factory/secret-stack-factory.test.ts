@@ -1,5 +1,5 @@
 import {SecretStackFactory} from "../../src/stack-factory";
-import path from "node:path";
+import path from "path";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {buildSecretStacks} from "../../src";
 

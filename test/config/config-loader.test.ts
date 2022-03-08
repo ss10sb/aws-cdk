@@ -1,5 +1,5 @@
 import {ConfigLoader} from "../../src/config";
-import * as path from 'node:path';
+import * as path from 'path';
 
 const configDir = path.join(__dirname, '/../__config__');
 

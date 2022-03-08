@@ -4,7 +4,7 @@ import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
 import {PreSynthHelper, StaticFileProvider} from "../../src/utils";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
 import {CodePipelineEcsStackFactory} from "../../src/stack-factory";
-import path from "node:path";
+import path from "path";
 import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
 import {buildCodePipelineEcsStack} from "../../src";

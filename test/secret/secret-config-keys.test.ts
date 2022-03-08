@@ -1,6 +1,6 @@
 import {ConfigEnvironments} from "../../src/config";
 import {SecretConfigKeys} from "../../src/secret";
-import path from "node:path";
+import path from "path";
 
 const configDir = path.join(__dirname, '/../__config__');
 
