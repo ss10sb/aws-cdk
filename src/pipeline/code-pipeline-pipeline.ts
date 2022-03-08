@@ -56,7 +56,7 @@ export class CodePipelinePipeline extends NonConstruct {
 
     protected getRepositoryArray(): IRepository[] {
         const repos: IRepository[] = [];
-        for (const ecrRepo of this.props.repositoryFactory.ecrRepositories.getEcrRepositories()) {
+        for (const ecrRepo of this.props.repositoryFactory.getEcrRepositories()) {
             if (ecrRepo.repository) {
                 repos.push(ecrRepo.repository);
             }

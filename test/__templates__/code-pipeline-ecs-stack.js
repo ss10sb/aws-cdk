@@ -1,6 +1,70 @@
 const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
+        nginxecrC430EE7B: {
+            Type: 'AWS::ECR::Repository',
+            Properties: {
+                ImageScanningConfiguration: {ScanOnPush: true},
+                LifecyclePolicy: {
+                    LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
+                },
+                RepositoryName: 'pcc-test/nginx',
+                RepositoryPolicyText: {
+                    Version: '2012-10-17',
+                    Statement: [
+                        {
+                            Effect: 'Allow',
+                            Principal: {
+                                AWS: [
+                                    'arn:aws:iam::11111:root',
+                                    'arn:aws:iam::22222:root'
+                                ]
+                            },
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:BatchGetImage',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:DescribeImages'
+                            ]
+                        }
+                    ]
+                }
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
+        phpfpmecr3C5F411B: {
+            Type: 'AWS::ECR::Repository',
+            Properties: {
+                ImageScanningConfiguration: {ScanOnPush: true},
+                LifecyclePolicy: {
+                    LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
+                },
+                RepositoryName: 'pcc-test/phpfpm',
+                RepositoryPolicyText: {
+                    Version: '2012-10-17',
+                    Statement: [
+                        {
+                            Effect: 'Allow',
+                            Principal: {
+                                AWS: [
+                                    'arn:aws:iam::11111:root',
+                                    'arn:aws:iam::22222:root'
+                                ]
+                            },
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:BatchGetImage',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:DescribeImages'
+                            ]
+                        }
+                    ]
+                }
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
         pccsharedtestsynthsteprole88CEA341: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -13,12 +77,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestsynthsteproleDefaultPolicyCA85F73E: {
@@ -157,6 +216,29 @@ module.exports = {
                         },
                         {
                             Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                        },
+                        {
+                            Action: 'ecr:GetAuthorizationToken',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                        },
+                        {
+                            Action: [
                                 'ssm:DescribeParameters',
                                 'ssm:GetParameters',
                                 'ssm:GetParameter',
@@ -259,12 +341,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -306,12 +383,7 @@ module.exports = {
                     BlockPublicPolicy: true,
                     IgnorePublicAcls: true,
                     RestrictPublicBuckets: true
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -445,12 +517,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineRoleDefaultPolicy44AD6A4A: {
@@ -575,6 +642,26 @@ module.exports = {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
                             Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Resource: {
                                 'Fn::Join': [
                                     '',
                                     [
@@ -663,7 +750,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"3b6a035bb04bf76cf2c0f21ec4bf82e37ec46d46f87dd4f6ae4957c2a9e2f549"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"bbe4f87967d17ea51fa6e2840388e015851b2919e0e5048191750a161f0b632b"}]'
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -692,7 +779,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"e1765eb88567e2a43e3b39a74a030917b784e3a19c1ec4bd66be7bc3884f9f34"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"77bb2f857c68cb4607273c1f80f54d8fa18a9ff2731535b15ae7b0cae6e29876"}]'
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -777,6 +864,55 @@ module.exports = {
                             }
                         ],
                         Name: 'Assets'
+                    },
+                    {
+                        Actions: [
+                            {
+                                ActionTypeId: {
+                                    Category: 'Build',
+                                    Owner: 'AWS',
+                                    Provider: 'CodeBuild',
+                                    Version: '1'
+                                },
+                                Configuration: {
+                                    ProjectName: {
+                                        Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
+                                    }
+                                },
+                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
+                                Name: 'nginx-ecr-step',
+                                RoleArn: {
+                                    'Fn::GetAtt': [
+                                        'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746',
+                                        'Arn'
+                                    ]
+                                },
+                                RunOrder: 1
+                            },
+                            {
+                                ActionTypeId: {
+                                    Category: 'Build',
+                                    Owner: 'AWS',
+                                    Provider: 'CodeBuild',
+                                    Version: '1'
+                                },
+                                Configuration: {
+                                    ProjectName: {
+                                        Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
+                                    }
+                                },
+                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
+                                Name: 'phpfpm-ecr-step',
+                                RoleArn: {
+                                    'Fn::GetAtt': [
+                                        'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9',
+                                        'Arn'
+                                    ]
+                                },
+                                RunOrder: 1
+                            }
+                        ],
+                        Name: 'ecr-build'
                     },
                     {
                         Actions: [
@@ -949,12 +1085,7 @@ module.exports = {
                     Type: 'S3'
                 },
                 Name: 'pcc-shared-test-code-pipeline',
-                RestartExecutionOnUpdate: true,
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                RestartExecutionOnUpdate: true
             },
             DependsOn: [
                 'pccsharedtestcodepipelinePipelineRoleDefaultPolicy44AD6A4A',
@@ -984,12 +1115,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicyEB25EB7D: {
@@ -1099,23 +1225,87 @@ module.exports = {
                     'Fn::GetAtt': ['pccsharedtestsynthsteprole88CEA341', 'Arn']
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
-                        '        "npm ci",\n' +
-                        '        "npm run build",\n' +
-                        '        "npx cdk synth"\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  },\n' +
-                        '  "artifacts": {\n' +
-                        '    "base-directory": "cdk.out",\n' +
-                        '    "files": "**/*"\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "pre_build": {\n' +
+                                '      "commands": [\n' +
+                                '        "mkdir $HOME/.cdk",\n' +
+                                `        "echo '{\\"version\\":\\"1.0\\",\\"domainCredentials\\":{\\"`,
+                                {
+                                    'Fn::Select': [
+                                        0,
+                                        {
+                                            'Fn::Split': [
+                                                '/',
+                                                {
+                                                    'Fn::Join': [
+                                                        '',
+                                                        [
+                                                            {
+                                                                'Fn::Select': [
+                                                                    4,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.dkr.ecr.',
+                                                            {
+                                                                'Fn::Select': [
+                                                                    3,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.',
+                                                            {Ref: 'AWS::URLSuffix'},
+                                                            '/',
+                                                            {Ref: 'nginxecrC430EE7B'}
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
+                                '        "npm ci",\n' +
+                                '        "npm run build",\n' +
+                                '        "npx cdk synth"\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  },\n' +
+                                '  "artifacts": {\n' +
+                                '    "base-directory": "cdk.out",\n' +
+                                '    "files": [\n' +
+                                '      "**/*"\n' +
+                                '    ]\n' +
+                                '  }\n' +
+                                '}'
+                            ]
+                        ]
+                    },
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -1125,12 +1315,7 @@ module.exports = {
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
                         'Arn'
                     ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleD6C9AD9C: {
@@ -1156,12 +1341,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleDefaultPolicy5F0D9D54: {
@@ -1217,12 +1397,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyFB633819: {
@@ -1278,12 +1453,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleDefaultPolicyBFED234F: {
@@ -1339,12 +1509,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleDefaultPolicyBCBC689A: {
@@ -1400,12 +1565,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRoleDefaultPolicyC896FBC6: {
@@ -1438,6 +1598,318 @@ module.exports = {
                 ]
             }
         },
+        pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA: {
+            Type: 'AWS::CodeBuild::Project',
+            Properties: {
+                Artifacts: {Type: 'CODEPIPELINE'},
+                Environment: {
+                    ComputeType: 'BUILD_GENERAL1_SMALL',
+                    EnvironmentVariables: [
+                        {
+                            Name: 'ECR_URI',
+                            Type: 'PLAINTEXT',
+                            Value: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        {
+                                            'Fn::Select': [
+                                                4,
+                                                {
+                                                    'Fn::Split': [
+                                                        ':',
+                                                        {
+                                                            'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        '.dkr.ecr.',
+                                        {
+                                            'Fn::Select': [
+                                                3,
+                                                {
+                                                    'Fn::Split': [
+                                                        ':',
+                                                        {
+                                                            'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        '.',
+                                        {Ref: 'AWS::URLSuffix'},
+                                        '/',
+                                        {Ref: 'nginxecrC430EE7B'}
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Name: 'DOCKER_NAME',
+                            Type: 'PLAINTEXT',
+                            Value: 'nginx'
+                        },
+                        {Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1'},
+                        {
+                            Name: 'ECR_REGION',
+                            Type: 'PLAINTEXT',
+                            Value: 'us-west-2'
+                        }
+                    ],
+                    Image: 'aws/codebuild/standard:5.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: true,
+                    Type: 'LINUX_CONTAINER'
+                },
+                ServiceRole: {
+                    'Fn::GetAtt': ['pccsharedtestecrsteproleF733193B', 'Arn']
+                },
+                Source: {
+                    BuildSpec: '{\n' +
+                        '  "version": "0.2",\n' +
+                        '  "phases": {\n' +
+                        '    "build": {\n' +
+                        '      "commands": [\n' +
+                        '        "echo Login to AWS ECR",\n' +
+                        '        "aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin $ECR_URI",\n' +
+                        '        "echo Build started on `date`",\n' +
+                        '        "echo \\"Building the Docker image: $ECR_URI:$IMAGE_TAG\\"",\n' +
+                        '        "docker build -t $ECR_URI:latest -t $ECR_URI:$IMAGE_TAG -f docker/Dockerfile.$DOCKER_NAME .",\n' +
+                        '        "echo Pushing the Docker image...",\n' +
+                        '        "docker push $ECR_URI:$IMAGE_TAG",\n' +
+                        '        "docker push $ECR_URI:latest",\n' +
+                        '        "echo Build completed on `date`"\n' +
+                        '      ]\n' +
+                        '    }\n' +
+                        '  }\n' +
+                        '}',
+                    Type: 'CODEPIPELINE'
+                },
+                Cache: {Type: 'NO_CACHE'},
+                Description: 'Pipeline step pcc-shared-test/Pipeline/ecr-build/nginx-ecr-step',
+                EncryptionKey: {
+                    'Fn::GetAtt': [
+                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                        'Arn'
+                    ]
+                }
+            }
+        },
+        pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {
+                                AWS: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':iam::12344:root'
+                                        ]
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRoleDefaultPolicyA9E48EEE: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA',
+                                    'Arn'
+                                ]
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRoleDefaultPolicyA9E48EEE',
+                Roles: [
+                    {
+                        Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746'
+                    }
+                ]
+            }
+        },
+        pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85: {
+            Type: 'AWS::CodeBuild::Project',
+            Properties: {
+                Artifacts: {Type: 'CODEPIPELINE'},
+                Environment: {
+                    ComputeType: 'BUILD_GENERAL1_SMALL',
+                    EnvironmentVariables: [
+                        {
+                            Name: 'ECR_URI',
+                            Type: 'PLAINTEXT',
+                            Value: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        {
+                                            'Fn::Select': [
+                                                4,
+                                                {
+                                                    'Fn::Split': [
+                                                        ':',
+                                                        {
+                                                            'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        '.dkr.ecr.',
+                                        {
+                                            'Fn::Select': [
+                                                3,
+                                                {
+                                                    'Fn::Split': [
+                                                        ':',
+                                                        {
+                                                            'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        '.',
+                                        {Ref: 'AWS::URLSuffix'},
+                                        '/',
+                                        {Ref: 'phpfpmecr3C5F411B'}
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Name: 'DOCKER_NAME',
+                            Type: 'PLAINTEXT',
+                            Value: 'phpfpm'
+                        },
+                        {Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1'},
+                        {
+                            Name: 'ECR_REGION',
+                            Type: 'PLAINTEXT',
+                            Value: 'us-west-2'
+                        }
+                    ],
+                    Image: 'aws/codebuild/standard:5.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: true,
+                    Type: 'LINUX_CONTAINER'
+                },
+                ServiceRole: {
+                    'Fn::GetAtt': ['pccsharedtestecrsteproleF733193B', 'Arn']
+                },
+                Source: {
+                    BuildSpec: '{\n' +
+                        '  "version": "0.2",\n' +
+                        '  "phases": {\n' +
+                        '    "build": {\n' +
+                        '      "commands": [\n' +
+                        '        "echo Login to AWS ECR",\n' +
+                        '        "aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin $ECR_URI",\n' +
+                        '        "echo Build started on `date`",\n' +
+                        '        "echo \\"Building the Docker image: $ECR_URI:$IMAGE_TAG\\"",\n' +
+                        '        "docker build -t $ECR_URI:latest -t $ECR_URI:$IMAGE_TAG -f docker/Dockerfile.$DOCKER_NAME .",\n' +
+                        '        "echo Pushing the Docker image...",\n' +
+                        '        "docker push $ECR_URI:$IMAGE_TAG",\n' +
+                        '        "docker push $ECR_URI:latest",\n' +
+                        '        "echo Build completed on `date`"\n' +
+                        '      ]\n' +
+                        '    }\n' +
+                        '  }\n' +
+                        '}',
+                    Type: 'CODEPIPELINE'
+                },
+                Cache: {Type: 'NO_CACHE'},
+                Description: 'Pipeline step pcc-shared-test/Pipeline/ecr-build/phpfpm-ecr-step',
+                EncryptionKey: {
+                    'Fn::GetAtt': [
+                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                        'Arn'
+                    ]
+                }
+            }
+        },
+        pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {
+                                AWS: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':iam::12344:root'
+                                        ]
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleDefaultPolicy2F1D1696: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85',
+                                    'Arn'
+                                ]
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleDefaultPolicy2F1D1696',
+                Roles: [
+                    {
+                        Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9'
+                    }
+                ]
+            }
+        },
         pccsharedtestcodepipelinePipelinepccprodtestmanualApprovalstepCodePipelineActionRoleE6079BF9: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -1461,11 +1933,54 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
+                }
+            }
+        },
+        pccsharedtestcodepipelinePipelineEventsRoleD1B4EBBF: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'events.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        pccsharedtestcodepipelinePipelineEventsRoleDefaultPolicyB7DAF9BB: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'codepipeline:StartPipelineExecution',
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':codepipeline:us-west-2:12344:',
+                                        {
+                                            Ref: 'pccsharedtestcodepipelinePipeline63991321'
+                                        }
+                                    ]
+                                ]
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
                 },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                PolicyName: 'pccsharedtestcodepipelinePipelineEventsRoleDefaultPolicyB7DAF9BB',
+                Roles: [
+                    {
+                        Ref: 'pccsharedtestcodepipelinePipelineEventsRoleD1B4EBBF'
+                    }
                 ]
             }
         },
@@ -1481,12 +1996,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyB7B41B80: {
@@ -1625,6 +2135,29 @@ module.exports = {
                                     'Arn'
                                 ]
                             }
+                        },
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                        },
+                        {
+                            Action: 'ecr:GetAuthorizationToken',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
                         }
                     ],
                     Version: '2012-10-17'
@@ -1655,21 +2188,83 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g aws-cdk@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk -a . deploy pcc-shared-test --require-approval=never --verbose"\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "pre_build": {\n' +
+                                '      "commands": [\n' +
+                                '        "mkdir $HOME/.cdk",\n' +
+                                `        "echo '{\\"version\\":\\"1.0\\",\\"domainCredentials\\":{\\"`,
+                                {
+                                    'Fn::Select': [
+                                        0,
+                                        {
+                                            'Fn::Split': [
+                                                '/',
+                                                {
+                                                    'Fn::Join': [
+                                                        '',
+                                                        [
+                                                            {
+                                                                'Fn::Select': [
+                                                                    4,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.dkr.ecr.',
+                                                            {
+                                                                'Fn::Select': [
+                                                                    3,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.',
+                                                            {Ref: 'AWS::URLSuffix'},
+                                                            '/',
+                                                            {Ref: 'nginxecrC430EE7B'}
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "install": {\n' +
+                                '      "commands": [\n' +
+                                '        "npm install -g aws-cdk@2"\n' +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cdk -a . deploy pcc-shared-test --require-approval=never --verbose"\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  }\n' +
+                                '}'
+                            ]
+                        ]
+                    },
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -1680,12 +2275,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Name: 'pcc-shared-test-code-pipeline-selfupdate',
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                Name: 'pcc-shared-test-code-pipeline-selfupdate'
             }
         },
         pccsharedtestcodepipelineAssetsFileRole8E4F3120: {
@@ -1716,12 +2306,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelineAssetsFileRoleDefaultPolicy628F3D15: {
@@ -1823,6 +2408,29 @@ module.exports = {
                                     'Arn'
                                 ]
                             }
+                        },
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                        },
+                        {
+                            Action: 'ecr:GetAuthorizationToken',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
                         }
                     ],
                     Version: '2012-10-17'
@@ -1851,7 +2459,69 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-sdlc-test\/pccsharedtestpccsdlcteststack[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2[\\s\\S]*assembly-pcc-shared-test-pcc-prod-test\/pccsharedtestpccprodteststack[\\s\\S]*\.assets\.json[\\s\\S]*22222-us-west-2'),
+                    BuildSpec: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "pre_build": {\n' +
+                                '      "commands": [\n' +
+                                '        "mkdir $HOME/.cdk",\n' +
+                                `        "echo '{\\"version\\":\\"1.0\\",\\"domainCredentials\\":{\\"`,
+                                {
+                                    'Fn::Select': [
+                                        0,
+                                        {
+                                            'Fn::Split': [
+                                                '/',
+                                                {
+                                                    'Fn::Join': [
+                                                        '',
+                                                        [
+                                                            {
+                                                                'Fn::Select': [
+                                                                    4,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.dkr.ecr.',
+                                                            {
+                                                                'Fn::Select': [
+                                                                    3,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.',
+                                                            {Ref: 'AWS::URLSuffix'},
+                                                            '/',
+                                                            {Ref: 'nginxecrC430EE7B'}
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-sdlc-test\/pccsharedtestpccsdlcteststack[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2[\\s\\S]*assembly-pcc-shared-test-pcc-prod-test\/pccsharedtestpccprodteststack[\\s\\S]*\.assets\.json[\\s\\S]*22222-us-west-2')
+                            ]
+                        ]
+                    },
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -1861,12 +2531,7 @@ module.exports = {
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
                         'Arn'
                     ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7: {
@@ -1887,7 +2552,69 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-sdlc-test\/pccsharedtestpccsdlcteststack[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2'),
+                    BuildSpec: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "pre_build": {\n' +
+                                '      "commands": [\n' +
+                                '        "mkdir $HOME/.cdk",\n' +
+                                `        "echo '{\\"version\\":\\"1.0\\",\\"domainCredentials\\":{\\"`,
+                                {
+                                    'Fn::Select': [
+                                        0,
+                                        {
+                                            'Fn::Split': [
+                                                '/',
+                                                {
+                                                    'Fn::Join': [
+                                                        '',
+                                                        [
+                                                            {
+                                                                'Fn::Select': [
+                                                                    4,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.dkr.ecr.',
+                                                            {
+                                                                'Fn::Select': [
+                                                                    3,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.',
+                                                            {Ref: 'AWS::URLSuffix'},
+                                                            '/',
+                                                            {Ref: 'nginxecrC430EE7B'}
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-sdlc-test\/pccsharedtestpccsdlcteststack[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2')
+                            ]
+                        ]
+                    },
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -1897,12 +2624,7 @@ module.exports = {
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
                         'Arn'
                     ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset37A91F8F0: {
@@ -1923,7 +2645,69 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-sdlc-test\/pccsharedtestpccsdlcteststack[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2'),
+                    BuildSpec: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "pre_build": {\n' +
+                                '      "commands": [\n' +
+                                '        "mkdir $HOME/.cdk",\n' +
+                                `        "echo '{\\"version\\":\\"1.0\\",\\"domainCredentials\\":{\\"`,
+                                {
+                                    'Fn::Select': [
+                                        0,
+                                        {
+                                            'Fn::Split': [
+                                                '/',
+                                                {
+                                                    'Fn::Join': [
+                                                        '',
+                                                        [
+                                                            {
+                                                                'Fn::Select': [
+                                                                    4,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.dkr.ecr.',
+                                                            {
+                                                                'Fn::Select': [
+                                                                    3,
+                                                                    {
+                                                                        'Fn::Split': [
+                                                                            ':',
+                                                                            {
+                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            '.',
+                                                            {Ref: 'AWS::URLSuffix'},
+                                                            '/',
+                                                            {Ref: 'nginxecrC430EE7B'}
+                                                        ]
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-sdlc-test\/pccsharedtestpccsdlcteststack[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2')
+                            ]
+                        ]
+                    },
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -1933,12 +2717,7 @@ module.exports = {
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
                         'Arn'
                     ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestecrsteproleF733193B: {
@@ -1953,12 +2732,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
+                }
             }
         },
         pccsharedtestecrsteproleDefaultPolicy2494C479: {
@@ -1966,6 +2740,179 @@ module.exports = {
             Properties: {
                 PolicyDocument: {
                     Statement: [
+                        {
+                            Action: [
+                                'logs:CreateLogGroup',
+                                'logs:CreateLogStream',
+                                'logs:PutLogEvents'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
+                                            {
+                                                Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
+                                            {
+                                                Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
+                                            },
+                                            ':*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            Action: [
+                                'codebuild:CreateReportGroup',
+                                'codebuild:CreateReport',
+                                'codebuild:UpdateReport',
+                                'codebuild:BatchPutTestCases',
+                                'codebuild:BatchPutCodeCoverages'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':codebuild:us-west-2:12344:report-group/',
+                                        {
+                                            Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
+                                        },
+                                        '-*'
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': [
+                                        'pccsharedtestcodepipelinePipelineArtifactsBucket1DB2956C',
+                                        'Arn'
+                                    ]
+                                },
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            {
+                                                'Fn::GetAtt': [
+                                                    'pccsharedtestcodepipelinePipelineArtifactsBucket1DB2956C',
+                                                    'Arn'
+                                                ]
+                                            },
+                                            '/*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            Action: ['kms:Decrypt', 'kms:DescribeKey'],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'kms:Decrypt',
+                                'kms:Encrypt',
+                                'kms:ReEncrypt*',
+                                'kms:GenerateDataKey*'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'logs:CreateLogGroup',
+                                'logs:CreateLogStream',
+                                'logs:PutLogEvents'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
+                                            {
+                                                Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
+                                            {
+                                                Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
+                                            },
+                                            ':*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            Action: [
+                                'codebuild:CreateReportGroup',
+                                'codebuild:CreateReport',
+                                'codebuild:UpdateReport',
+                                'codebuild:BatchPutTestCases',
+                                'codebuild:BatchPutCodeCoverages'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':codebuild:us-west-2:12344:report-group/',
+                                        {
+                                            Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
+                                        },
+                                        '-*'
+                                    ]
+                                ]
+                            }
+                        },
                         {
                             Action: [
                                 'ecr:BatchCheckLayerAvailability',
@@ -2016,79 +2963,36 @@ module.exports = {
                 Roles: [{Ref: 'pccsharedtestecrsteproleF733193B'}]
             }
         },
-        nginxecrC430EE7B: {
-            Type: 'AWS::ECR::Repository',
+        pccsharedtestrunschedule083A89E8: {
+            Type: 'AWS::Events::Rule',
             Properties: {
-                ImageScanningConfiguration: {ScanOnPush: true},
-                LifecyclePolicy: {
-                    LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
-                },
-                RepositoryName: 'pcc-test/nginx',
-                RepositoryPolicyText: {
-                    Version: '2012-10-17',
-                    Statement: [
-                        {
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: [
-                                    'arn:aws:iam::11111:root',
-                                    'arn:aws:iam::22222:root'
+                ScheduleExpression: 'cron(0 8 ? * 2#1 *)',
+                State: 'ENABLED',
+                Targets: [
+                    {
+                        Arn: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    'arn:',
+                                    {Ref: 'AWS::Partition'},
+                                    ':codepipeline:us-west-2:12344:',
+                                    {
+                                        Ref: 'pccsharedtestcodepipelinePipeline63991321'
+                                    }
                                 ]
-                            },
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:BatchGetImage',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:DescribeImages'
+                            ]
+                        },
+                        Id: 'Target0',
+                        RoleArn: {
+                            'Fn::GetAtt': [
+                                'pccsharedtestcodepipelinePipelineEventsRoleD1B4EBBF',
+                                'Arn'
                             ]
                         }
-                    ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    }
                 ]
-            },
-            UpdateReplacePolicy: 'Retain',
-            DeletionPolicy: 'Retain'
-        },
-        phpfpmecr3C5F411B: {
-            Type: 'AWS::ECR::Repository',
-            Properties: {
-                ImageScanningConfiguration: {ScanOnPush: true},
-                LifecyclePolicy: {
-                    LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
-                },
-                RepositoryName: 'pcc-test/phpfpm',
-                RepositoryPolicyText: {
-                    Version: '2012-10-17',
-                    Statement: [
-                        {
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: [
-                                    'arn:aws:iam::11111:root',
-                                    'arn:aws:iam::22222:root'
-                                ]
-                            },
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:BatchGetImage',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:DescribeImages'
-                            ]
-                        }
-                    ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            },
-            UpdateReplacePolicy: 'Retain',
-            DeletionPolicy: 'Retain'
+            }
         }
     },
     Parameters: {

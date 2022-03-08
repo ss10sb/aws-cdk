@@ -69,7 +69,9 @@ export class CodePipelineEcsStack extends ConfigStack {
         if (!this.ecrRepositories) {
             this.ecrRepositories = new EcrRepositories(ConfigStackHelper.getAppName(this.config), this.config.Parameters?.repositories ?? {repositories: []});
         }
-        return new EcrRepositoryFactory(this, this.node.id, this.ecrRepositories);
+        const factory = new EcrRepositoryFactory(this, this.node.id, this.ecrRepositories);
+        factory.create();
+        return factory;
     }
 
     private createEcrSteps(props: CodePipelineEcrStepsProps): CodePipelineEcrSteps {
