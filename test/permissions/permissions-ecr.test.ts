@@ -39,7 +39,7 @@ describe('permissions ecr', () => {
                         },
                         RepositoryName: 'stack/nginx',
                         RepositoryPolicyText: {
-                            Version: '2012-10-07',
+                            Version: '2012-10-17',
                             Statement: [
                                 {
                                     Effect: 'Allow',
@@ -71,7 +71,7 @@ describe('permissions ecr', () => {
                         },
                         RepositoryName: 'stack/phpfpm',
                         RepositoryPolicyText: {
-                            Version: '2012-10-07',
+                            Version: '2012-10-17',
                             Statement: [
                                 {
                                     Effect: 'Allow',

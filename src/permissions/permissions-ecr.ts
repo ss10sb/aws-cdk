@@ -21,7 +21,7 @@ export class PermissionsEcr {
             }
             const cfnRepo = ecrRepo.repository.node.defaultChild as CfnRepository;
             cfnRepo.repositoryPolicyText = {
-                "Version": "2012-10-07",
+                "Version": "2012-10-17",
                 "Statement": [
                     {
                         "Effect": "Allow",

@@ -2025,7 +2025,7 @@ module.exports = {
                 },
                 RepositoryName: 'pcc-test/nginx',
                 RepositoryPolicyText: {
-                    Version: '2012-10-07',
+                    Version: '2012-10-17',
                     Statement: [
                         {
                             Effect: 'Allow',
@@ -2062,7 +2062,7 @@ module.exports = {
                 },
                 RepositoryName: 'pcc-test/phpfpm',
                 RepositoryPolicyText: {
-                    Version: '2012-10-07',
+                    Version: '2012-10-17',
                     Statement: [
                         {
                             Effect: 'Allow',
