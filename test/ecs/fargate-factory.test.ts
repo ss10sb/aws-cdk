@@ -904,7 +904,7 @@ describe('fargate factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: phpfpmContainerRef},
-                                            ':stack/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -1011,7 +1011,7 @@ describe('fargate factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: phpfpmContainerRef},
-                                            ':stack/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -1111,7 +1111,7 @@ describe('fargate factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: nginxContainerRef},
-                                            ':stack/nginx'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -1167,7 +1167,7 @@ describe('fargate factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: phpfpmContainerRef},
-                                            ':stack/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -1285,7 +1285,7 @@ describe('fargate factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: phpfpmContainerRef},
-                                            ':stack/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },

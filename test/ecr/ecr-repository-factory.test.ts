@@ -3,6 +3,7 @@ import {EcrRepositories, EcrRepositoriesProps, EcrRepositoryFactory, EcrReposito
 import {App} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing";
+import {EcrImage} from "aws-cdk-lib/aws-ecs";
 
 const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 
@@ -27,7 +28,7 @@ describe('ecr repositories', () => {
         factory.create();
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -86,7 +87,7 @@ describe('ecr repositories', () => {
         factory.create();
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -188,7 +189,7 @@ describe('ecr repositories', () => {
         factory.create();
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -231,10 +232,7 @@ describe('ecr repositories', () => {
         const ecrRepositories = new EcrRepositories('my-repos', baseBuildConfig.Parameters.repositories);
         const factory = new EcrRepositoryFactory(stack, 'my-repos', ecrRepositories);
         factory.create();
-        const image = factory.getContainerImageByName(EcrRepositoryType.PHPFPM);
-        expect(image).toEqual(expect.objectContaining({
-            tagOrDigest: 'my-repos/phpfpm',
-            imageName: expect.any(String)
-        }));
+        const image = <EcrImage>factory.getContainerImageByName(EcrRepositoryType.PHPFPM);
+        expect(image.imageName).toMatch(new RegExp(/^\${Token.*\.dkr\.ecr\.\${Token.*\.\${Token\[AWS\.URLSuffix.*\/\${Token.*:1/));
     });
 });

@@ -1,6 +1,7 @@
 import {Stage} from "aws-cdk-lib";
 import {EnvConfig, EnvProps} from "./env-definitions";
 import {EnvStack} from "./env-stack";
+import {ConfigStackHelper} from "../utils";
 
 export class EnvStage extends Stage {
 
@@ -9,7 +10,8 @@ export class EnvStage extends Stage {
             account: this.getAccountId(config),
             region: this.getRegion(config)
         }
-        const stack = new EnvStack(this, 'stack', config, envProps, {}, {
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new EnvStack(this, name, config, envProps, {}, {
             env: env
         });
         stack.build();

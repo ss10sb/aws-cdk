@@ -483,7 +483,7 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'stackcodepipelinePipelinepccprodmyappmanualApprovalstepCodePipelineActionRoleDA8E54FC',
+                                    'stackcodepipelinePipelinepccprodmyappstagemanualApprovalstepCodePipelineActionRoleE9F6D5A2',
                                     'Arn'
                                 ]
                             }
@@ -610,7 +610,7 @@ module.exports = {
                                     Version: '1'
                                 },
                                 Configuration: {
-                                    StackName: 'pcc-sdlc-myapp-stack',
+                                    StackName: 'pcc-sdlc-myapp-stage-pcc-sdlc-myapp',
                                     Capabilities: 'CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND',
                                     RoleArn: {
                                         'Fn::Join': [
@@ -622,10 +622,10 @@ module.exports = {
                                             ]
                                         ]
                                     },
-                                    TemplateConfiguration: 'stack_synth_step_Output::assembly-stack-pcc-sdlc-myapp/stackpccsdlcmyappstack489B6F6C.template.json.config.json',
+                                    TemplateConfiguration: 'stack_synth_step_Output::assembly-stack-pcc-sdlc-myapp-stage/stackpccsdlcmyappstagepccsdlcmyappFE329F20.template.json.config.json',
                                     ActionMode: 'CHANGE_SET_REPLACE',
                                     ChangeSetName: 'PipelineChange',
-                                    TemplatePath: 'stack_synth_step_Output::assembly-stack-pcc-sdlc-myapp/stackpccsdlcmyappstack489B6F6C.template.json'
+                                    TemplatePath: 'stack_synth_step_Output::assembly-stack-pcc-sdlc-myapp-stage/stackpccsdlcmyappstagepccsdlcmyappFE329F20.template.json'
                                 },
                                 InputArtifacts: [{Name: 'stack_synth_step_Output'}],
                                 Name: 'Prepare',
@@ -650,7 +650,7 @@ module.exports = {
                                     Version: '1'
                                 },
                                 Configuration: {
-                                    StackName: 'pcc-sdlc-myapp-stack',
+                                    StackName: 'pcc-sdlc-myapp-stage-pcc-sdlc-myapp',
                                     ActionMode: 'CHANGE_SET_EXECUTE',
                                     ChangeSetName: 'PipelineChange'
                                 },
@@ -669,7 +669,7 @@ module.exports = {
                                 RunOrder: 2
                             }
                         ],
-                        Name: 'pcc-sdlc-myapp'
+                        Name: 'pcc-sdlc-myapp-stage'
                     },
                     {
                         Actions: [
@@ -683,7 +683,7 @@ module.exports = {
                                 Name: 'manualApproval-step',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelinepccprodmyappmanualApprovalstepCodePipelineActionRoleDA8E54FC',
+                                        'stackcodepipelinePipelinepccprodmyappstagemanualApprovalstepCodePipelineActionRoleE9F6D5A2',
                                         'Arn'
                                     ]
                                 },
@@ -697,7 +697,7 @@ module.exports = {
                                     Version: '1'
                                 },
                                 Configuration: {
-                                    StackName: 'pcc-prod-myapp-stack',
+                                    StackName: 'pcc-prod-myapp-stage-pcc-prod-myapp',
                                     Capabilities: 'CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND',
                                     RoleArn: {
                                         'Fn::Join': [
@@ -709,13 +709,13 @@ module.exports = {
                                             ]
                                         ]
                                     },
-                                    TemplateConfiguration: 'stack_synth_step_Output::assembly-stack-pcc-prod-myapp/stackpccprodmyappstackC1AF4AED.template.json.config.json',
+                                    TemplateConfiguration: 'stack_synth_step_Output::assembly-stack-pcc-prod-myapp-stage/stackpccprodmyappstagepccprodmyapp83D0E40C.template.json.config.json',
                                     ActionMode: 'CHANGE_SET_REPLACE',
                                     ChangeSetName: 'PipelineChange',
-                                    TemplatePath: 'stack_synth_step_Output::assembly-stack-pcc-prod-myapp/stackpccprodmyappstackC1AF4AED.template.json'
+                                    TemplatePath: 'stack_synth_step_Output::assembly-stack-pcc-prod-myapp-stage/stackpccprodmyappstagepccprodmyapp83D0E40C.template.json'
                                 },
                                 InputArtifacts: [{Name: 'stack_synth_step_Output'}],
-                                Name: 'stack.Prepare',
+                                Name: 'pcc-prod-myapp.Prepare',
                                 Region: 'us-west-2',
                                 RoleArn: {
                                     'Fn::Join': [
@@ -737,11 +737,11 @@ module.exports = {
                                     Version: '1'
                                 },
                                 Configuration: {
-                                    StackName: 'pcc-prod-myapp-stack',
+                                    StackName: 'pcc-prod-myapp-stage-pcc-prod-myapp',
                                     ActionMode: 'CHANGE_SET_EXECUTE',
                                     ChangeSetName: 'PipelineChange'
                                 },
-                                Name: 'stack.Deploy',
+                                Name: 'pcc-prod-myapp.Deploy',
                                 Region: 'us-west-2',
                                 RoleArn: {
                                     'Fn::Join': [
@@ -756,7 +756,7 @@ module.exports = {
                                 RunOrder: 3
                             }
                         ],
-                        Name: 'pcc-prod-myapp'
+                        Name: 'pcc-prod-myapp-stage'
                     }
                 ],
                 ArtifactStores: [
@@ -1143,7 +1143,7 @@ module.exports = {
                 ]
             }
         },
-        stackcodepipelinePipelinepccprodmyappmanualApprovalstepCodePipelineActionRoleDA8E54FC: {
+        stackcodepipelinePipelinepccprodmyappstagemanualApprovalstepCodePipelineActionRoleE9F6D5A2: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {

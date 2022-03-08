@@ -185,7 +185,7 @@ describe('task definition factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: templateHelper.startsWithMatch('nginxecr')},
-                                            ':my-repos/nginx'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -236,7 +236,7 @@ describe('task definition factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: templateHelper.startsWithMatch('phpfpmecr')},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },

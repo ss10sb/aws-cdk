@@ -117,7 +117,7 @@ describe('container factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: containerRefMatch},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -336,7 +336,7 @@ describe('container factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: containerRefMatch},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -560,7 +560,7 @@ describe('container factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: containerRefMatch},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -885,7 +885,7 @@ describe('container factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: containerRefMatch},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },

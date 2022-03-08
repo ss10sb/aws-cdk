@@ -72,7 +72,7 @@ export class EcrRepositoryFactory extends NonConstruct {
 
     private makeContainerImageByEcrRepository(ecrRepository: EcrRepository): ContainerImage | undefined {
         if (ecrRepository.repository) {
-            return ContainerImage.fromEcrRepository(ecrRepository.repository, ecrRepository.repositoryName);
+            return ContainerImage.fromEcrRepository(ecrRepository.repository, ecrRepository.imageTag);
         }
     }
 }

@@ -3,7 +3,7 @@ import {CodePipelineEnvStageProps} from "./code-pipeline-definitions";
 import {StageDeployment} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
 import {EnvConfig, EnvProps, EnvStage} from "../env";
-import {ConfigStackHelper} from "../utils";
+import {ConfigStackHelper, NamingHelper} from "../utils";
 import {CodePipelineStageSteps} from "./code-pipeline-stage-steps";
 
 export class CodePipelineEnvStages extends NonConstruct {
@@ -18,7 +18,7 @@ export class CodePipelineEnvStages extends NonConstruct {
     }
 
     protected getStageName(envConfig: EnvConfig): string {
-        return ConfigStackHelper.getMainStackName(envConfig);
+        return NamingHelper.fromParts([ConfigStackHelper.getMainStackName(envConfig), 'stage']);
     }
 
     public createEnvStageFromEnvironment(envConfig: EnvConfig, envProps: EnvProps): EnvStage {

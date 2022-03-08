@@ -265,7 +265,7 @@ describe('ecs task factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: templateHelper.startsWithMatch('phpfpmecr')},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -721,7 +721,7 @@ describe('ecs task factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: templateHelper.startsWithMatch('phpfpmecr')},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
@@ -1253,7 +1253,7 @@ describe('ecs task factory', () => {
                                             {Ref: 'AWS::URLSuffix'},
                                             '/',
                                             {Ref: templateHelper.startsWithMatch('phpfpmecr')},
-                                            ':my-repos/phpfpm'
+                                            ':1'
                                         ]
                                     ]
                                 },
