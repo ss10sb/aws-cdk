@@ -2,8 +2,43 @@ import {EcrRepositories} from "../ecr";
 import {IGrantable, PolicyStatement} from "aws-cdk-lib/aws-iam";
 import {FargateTasksAndServices, Wrapper} from "../ecs";
 import {TaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {CfnRepository} from "aws-cdk-lib/aws-ecr";
 
 export class PermissionsEcr {
+
+    static replacePolicyTextForAccountIds(accountIds: string[], repositories: EcrRepositories): void {
+        function accountArns(accountIds: string[]): string[] {
+            const arns: string[] = [];
+            for (const accountId of accountIds) {
+                arns.push(`arn:aws:iam::${accountId}:root`);
+            }
+            return arns;
+        }
+
+        for (const ecrRepo of repositories.getEcrRepositories()) {
+            if (!ecrRepo.repository) {
+                continue;
+            }
+            const cfnRepo = ecrRepo.repository.node.defaultChild as CfnRepository;
+            cfnRepo.repositoryPolicyText = {
+                "Version": "2012-10-07",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": accountArns(accountIds)
+                        },
+                        "Action": [
+                            "ecr:BatchCheckLayerAvailability",
+                            "ecr:BatchGetImage",
+                            "ecr:GetDownloadUrlForLayer",
+                            "ecr:DescribeImages"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
 
     static accountIdsCanPullFromEcr(accountIds: string[], repositories: EcrRepositories): void {
         for (const ecrRepo of repositories.getEcrRepositories()) {

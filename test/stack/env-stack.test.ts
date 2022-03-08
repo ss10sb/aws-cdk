@@ -4,7 +4,7 @@ import {EnvStack} from "../../src/env";
 import {ConfigEnvironments} from "../../src/config";
 import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {TemplateHelper} from "../../src/utils/testing";
-import {Match, Template} from "aws-cdk-lib/assertions";
+import {Template} from "aws-cdk-lib/assertions";
 import {
     ContainerCommand,
     ContainerEntryPoint,

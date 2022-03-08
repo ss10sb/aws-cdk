@@ -2,25 +2,12 @@ import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {mockClient} from "aws-sdk-client-mock";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
 import {PreSynthHelper, StaticFileProvider} from "../../src/utils";
-import {ConfigEnvironments} from "../../src/config";
-import {EcrRepositoryType} from "../../src/ecr";
-import {DetailType} from "aws-cdk-lib/aws-codestarnotifications";
-import {PipelineNotificationEvents} from "aws-cdk-lib/aws-codepipeline";
-import {Protocol} from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import {
-    ContainerCommand,
-    ContainerEntryPoint,
-    ContainerType,
-    ScalableTypes,
-    SchedulableTypes,
-    TaskServiceType
-} from "../../src/ecs";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
 import {CodePipelineEcsStackFactory} from "../../src/stack-factory";
 import path from "node:path";
 import {TemplateHelper} from "../../src/utils/testing";
-import {Match, Template} from "aws-cdk-lib/assertions";
-import {buildCodePipelineCdsStack} from "../../src";
+import {Template} from "aws-cdk-lib/assertions";
+import {buildCodePipelineEcsStack} from "../../src";
 
 const configDir = path.join(__dirname, '/../__config__');
 
@@ -143,7 +130,7 @@ describe('code pipeline ecs stack factory', () => {
             configDir: configDir,
             clientConfig: {}
         });
-        const stack = await buildCodePipelineCdsStack({
+        const stack = await buildCodePipelineEcsStack({
             preSynthHelper: preSynthHelper
         }, {
             stackProps: {

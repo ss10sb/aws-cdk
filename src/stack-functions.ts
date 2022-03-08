@@ -9,7 +9,7 @@ import {
 import {CodePipelineEcsStack, ConfigParamStack, SecretStack} from "./stack";
 import {HelperRunProps} from "./config";
 
-export async function buildCodePipelineCdsStack(props: CodePipelineEcsStackFactoryProps, helperRunProps?: HelperRunProps): Promise<CodePipelineEcsStack> {
+export async function buildCodePipelineEcsStack(props: CodePipelineEcsStackFactoryProps, helperRunProps?: HelperRunProps): Promise<CodePipelineEcsStack> {
     const factory = new CodePipelineEcsStackFactory(props);
     await factory.initialize();
     return factory.buildStack(helperRunProps);

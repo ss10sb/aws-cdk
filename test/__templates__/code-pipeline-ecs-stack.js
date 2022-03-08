@@ -2025,98 +2025,24 @@ module.exports = {
                 },
                 RepositoryName: 'pcc-test/nginx',
                 RepositoryPolicyText: {
+                    Version: '2012-10-07',
                     Statement: [
                         {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
                             Effect: 'Allow',
                             Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::11111:role/pcc-sdlc-test-stackkdefweb0execroleed3fbbd66f0e344890c3'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::22222:role/pcc-prod-test-stackkdefweb0execrole8d7f4f11839e6ea1d643'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: 'ecr:DescribeImages',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
+                                AWS: [
+                                    'arn:aws:iam::11111:root',
+                                    'arn:aws:iam::22222:root'
+                                ]
+                            },
                             Action: [
                                 'ecr:BatchCheckLayerAvailability',
                                 'ecr:BatchGetImage',
                                 'ecr:GetDownloadUrlForLayer',
                                 'ecr:DescribeImages'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: [
-                                    {
-                                        'Fn::Join': [
-                                            '',
-                                            [
-                                                'arn:',
-                                                {Ref: 'AWS::Partition'},
-                                                ':iam::11111:root'
-                                            ]
-                                        ]
-                                    },
-                                    {
-                                        'Fn::Join': [
-                                            '',
-                                            [
-                                                'arn:',
-                                                {Ref: 'AWS::Partition'},
-                                                ':iam::22222:root'
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            }
+                            ]
                         }
-                    ],
-                    Version: '2012-10-17'
+                    ]
                 },
                 Tags: [
                     {Key: 'App', Value: 'test'},
@@ -2136,198 +2062,24 @@ module.exports = {
                 },
                 RepositoryName: 'pcc-test/phpfpm',
                 RepositoryPolicyText: {
+                    Version: '2012-10-07',
                     Statement: [
                         {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
                             Effect: 'Allow',
                             Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::11111:role/pcc-sdlc-test-stackruntask0execroleaff2c9a7c0e1d6ec09ef'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::11111:role/pcc-sdlc-test-stackruntask0execroled1b4f1917f0f9f848166'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::11111:role/pcc-sdlc-test-stackkdefweb0execroleed3fbbd66f0e344890c3'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::22222:role/pcc-prod-test-stackruntask0execroled4aee1811de3a0dba97b'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::22222:role/pcc-prod-test-stackruntask0execrole27a4e29c853da43d7f43'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::22222:role/pcc-prod-test-stackledtask0execrole7f5d6a94af3cc2eb4480'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::22222:role/pcc-prod-test-stackkdefweb0execrole8d7f4f11839e6ea1d643'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            Action: 'ecr:DescribeImages',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        },
-                        {
+                                AWS: [
+                                    'arn:aws:iam::11111:root',
+                                    'arn:aws:iam::22222:root'
+                                ]
+                            },
                             Action: [
                                 'ecr:BatchCheckLayerAvailability',
                                 'ecr:BatchGetImage',
                                 'ecr:GetDownloadUrlForLayer',
                                 'ecr:DescribeImages'
-                            ],
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: [
-                                    {
-                                        'Fn::Join': [
-                                            '',
-                                            [
-                                                'arn:',
-                                                {Ref: 'AWS::Partition'},
-                                                ':iam::11111:root'
-                                            ]
-                                        ]
-                                    },
-                                    {
-                                        'Fn::Join': [
-                                            '',
-                                            [
-                                                'arn:',
-                                                {Ref: 'AWS::Partition'},
-                                                ':iam::22222:root'
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            }
+                            ]
                         }
-                    ],
-                    Version: '2012-10-17'
+                    ]
                 },
                 Tags: [
                     {Key: 'App', Value: 'test'},

@@ -8,7 +8,7 @@ import {
     CodePipelineSynthStep
 } from "../../src/pipeline";
 import {TemplateHelper} from "../../src/utils/testing";
-import {Match, Template} from "aws-cdk-lib/assertions";
+import {Template} from "aws-cdk-lib/assertions";
 
 describe('code pipeline env stages', () => {
     it('should create stages for pipeline', () => {

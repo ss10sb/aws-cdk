@@ -54,8 +54,20 @@ export class PermissionsCodePipelineEcsStack extends NonConstruct {
     }
 
     private environmentPermissions() {
-        this.accountsCanDescribeEcr();
-        this.accountsCanPullFromEcr();
+        // "fix" until aws fixes the automatic policy text by resource (needs * or something at the end)
+        this.replaceEcrPolicyText();
+        //this.accountsCanDescribeEcr();
+        //this.accountsCanPullFromEcr();
+    }
+
+    private replaceEcrPolicyText() {
+        const accountIds: string[] = [];
+        for (const envConfig of this.environments) {
+            if (envConfig.AWSAccountId) {
+                accountIds.push(envConfig.AWSAccountId);
+            }
+        }
+        PermissionsEcr.replacePolicyTextForAccountIds(accountIds, this.props.repositoryFactory.ecrRepositories);
     }
 
     private synthStepPermissions() {

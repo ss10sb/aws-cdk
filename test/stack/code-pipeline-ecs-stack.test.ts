@@ -4,6 +4,7 @@ import {ConfigStackHelper} from "../../src/utils";
 import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import * as util from "util";
 
 describe('code pipeline ecs stack', () => {
 
@@ -191,10 +192,10 @@ function getConfig(): Record<string, any> {
 function getExpected() {
     const template = require('../__templates__/code-pipeline-ecs-stack');
     // remove "Tags" since they are set in the ConfigStackHelper utility
-    for (const [key, resource] of Object.entries(template.Resources)) {
-        // @ts-ignore
-        if (resource.Properties.Tags) {
-            // @ts-ignore
+    let k: keyof typeof template.Resources;
+    for (k in template.Resources) {
+        const resource = template.Resources[k];
+        if (resource.Properties?.Tags) {
             delete resource.Properties.Tags;
         }
     }

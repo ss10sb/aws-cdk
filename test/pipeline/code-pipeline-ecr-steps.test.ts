@@ -4,7 +4,7 @@ import {CodePipeline, ShellStep} from "aws-cdk-lib/pipelines";
 import {ConfigEnvironments} from "../../src/config";
 import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {TemplateHelper} from "../../src/utils/testing";
-import {Match, Template} from "aws-cdk-lib/assertions";
+import {Template} from "aws-cdk-lib/assertions";
 import {ConfigStackHelper} from "../../src/utils";
 
 describe('code pipeline ecr steps', () => {
