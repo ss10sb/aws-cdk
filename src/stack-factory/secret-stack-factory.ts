@@ -30,7 +30,7 @@ export class SecretStackFactory {
     }
 
     private buildStack(environment: EnvConfig, props?: HelperRunProps): SecretStack {
-        const secretsConfig = this.getSecretConfig(environment.Environment);
+        const secretsConfig = this.getSecretConfig(environment.Environment, environment?.NameSuffix);
         this.addBaseConfigItems(environment, secretsConfig);
         return ConfigStackHelper.executeStack<SecretStack, SecretsConfig>(this.app, SecretStack, secretsConfig, props);
     }
@@ -41,8 +41,8 @@ export class SecretStackFactory {
         this.initialized = true;
     }
 
-    private getSecretConfig(env: string): SecretsConfig {
-        return SecretConfigHelper.getSecretsConfig(env, undefined, this.props.configDir);
+    private getSecretConfig(env: string, suffix?: string): SecretsConfig {
+        return SecretConfigHelper.getSecretsConfig(env, suffix, this.props.configDir);
     }
 
     private addBaseConfigItems(envConfig: EnvConfig, config: Record<string, any>) {

@@ -42,6 +42,17 @@ describe('secret test factory', () => {
         Template.fromStack(stacks[0]).hasResource('AWS::SecretsManager::Secret', Match.objectEquals(expectedSecrets[0]));
         Template.fromStack(stacks[1]).hasResource('AWS::SecretsManager::Secret', Match.objectEquals(expectedSecrets[1]));
     });
+
+    it('should create secret for each environment with suffix', () => {
+        const stackFactory = new SecretStackFactory({
+            configDir: path.join(__dirname, '/../__configSuffixLive__')
+        });
+        stackFactory.initialize();
+        const stacks = stackFactory.buildStacks();
+        const expectedSecrets = getExpectedSecretsWithSuffix();
+        Template.fromStack(stacks[0]).hasResource('AWS::SecretsManager::Secret', Match.objectEquals(expectedSecrets[0]));
+        Template.fromStack(stacks[1]).hasResource('AWS::SecretsManager::Secret', Match.objectEquals(expectedSecrets[1]));
+    });
 });
 
 function getExpectedSecrets() {
@@ -71,6 +82,45 @@ function getExpectedSecrets() {
                     SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod","APP_URL":"https://test.example.edu"}'
                 },
                 Name: 'pcc-prod-test-secrets/environment',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        }
+    ];
+}
+
+function getExpectedSecretsWithSuffix() {
+    return [
+        {
+            Type: 'AWS::SecretsManager::Secret',
+            Properties: {
+                GenerateSecretString: {
+                    GenerateStringKey: 'salt',
+                    SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod-abc","APP_URL":"https://test.example.edu"}'
+                },
+                Name: 'pcc-prod-test-abc-secrets/environment',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        {
+            Type: 'AWS::SecretsManager::Secret',
+            Properties: {
+                GenerateSecretString: {
+                    GenerateStringKey: 'salt',
+                    SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod-def","APP_URL":"https://test.example.edu"}'
+                },
+                Name: 'pcc-prod-test-def-secrets/environment',
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
