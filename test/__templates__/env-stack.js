@@ -882,7 +882,7 @@ module.exports = {
                                     },
                                     '.',
                                     { Ref: 'AWS::URLSuffix' },
-                                    '/pcc-myapp/phpfpm:pcc-myapp/phpfpm'
+                                    '/pcc-myapp/phpfpm:1'
                                 ]
                             ]
                         },
@@ -1300,7 +1300,7 @@ module.exports = {
                                     },
                                     '.',
                                     { Ref: 'AWS::URLSuffix' },
-                                    '/pcc-myapp/phpfpm:pcc-myapp/phpfpm'
+                                    '/pcc-myapp/phpfpm:1'
                                 ]
                             ]
                         },
@@ -1750,7 +1750,7 @@ module.exports = {
                                     },
                                     '.',
                                     { Ref: 'AWS::URLSuffix' },
-                                    '/pcc-myapp/phpfpm:pcc-myapp/phpfpm'
+                                    '/pcc-myapp/phpfpm:1'
                                 ]
                             ]
                         },
@@ -2253,7 +2253,7 @@ module.exports = {
                                     },
                                     '.',
                                     { Ref: 'AWS::URLSuffix' },
-                                    '/pcc-myapp/nginx:pcc-myapp/nginx'
+                                    '/pcc-myapp/nginx:1'
                                 ]
                             ]
                         },
@@ -2345,7 +2345,7 @@ module.exports = {
                                     },
                                     '.',
                                     { Ref: 'AWS::URLSuffix' },
-                                    '/pcc-myapp/phpfpm:pcc-myapp/phpfpm'
+                                    '/pcc-myapp/phpfpm:1'
                                 ]
                             ]
                         },
@@ -2826,7 +2826,7 @@ module.exports = {
                                     },
                                     '.',
                                     { Ref: 'AWS::URLSuffix' },
-                                    '/pcc-myapp/phpfpm:pcc-myapp/phpfpm'
+                                    '/pcc-myapp/phpfpm:1'
                                 ]
                             ]
                         },

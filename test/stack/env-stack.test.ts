@@ -221,9 +221,8 @@ describe('env stack', () => {
             }
         ]);
         const templateHelper = new TemplateHelper(Template.fromStack(envStack));
-        templateHelper.inspect();
-        // const expected = require('../__templates__/env-stack');
-        // templateHelper.template.templateMatches(expected);
+        const expected = require('../__templates__/env-stack');
+        templateHelper.template.templateMatches(expected);
     });
 });
 

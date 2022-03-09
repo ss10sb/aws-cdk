@@ -26,6 +26,7 @@ import {ClusterFactory, FargateFactory, FargateTasksAndServices} from "../ecs";
 import {Secrets} from "../secret";
 import {StartStopFactory} from "../start-stop";
 import {PermissionsEnvStack} from "../permissions";
+import {resetStaticProps} from "../utils/reset-static-props";
 
 export class EnvStack<T extends EnvConfig> extends ConfigStack {
 
@@ -43,6 +44,7 @@ export class EnvStack<T extends EnvConfig> extends ConfigStack {
     }
 
     preBuild() {
+        resetStaticProps();
         const albArn = AlbHelper.getAlbArnFromConfigOrParam(this, this.config);
         this.listener = AlbHelper.getApplicationListener(this, this.config, albArn);
         this.alb = AlbHelper.getAlbByArn(this, albArn);

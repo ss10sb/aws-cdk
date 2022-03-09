@@ -61,18 +61,18 @@ describe('code pipeline ecs stack factory', () => {
             filter: {
                 tagStatus: TagStatus.TAGGED
             },
-            repositoryName: 'pcc-shared-stack/nginx'
+            repositoryName: 'pcc-stack/nginx'
         }).rejects('error!');
         mockEcr.on(DescribeImagesCommand, {
             filter: {
                 tagStatus: TagStatus.TAGGED
             },
-            repositoryName: 'pcc-shared-stack/phpfpm'
+            repositoryName: 'pcc-stack/phpfpm'
         }).resolves({
             imageDetails: [
                 {
                     registryId: "abc123",
-                    repositoryName: "pcc-shared-stack/phpfpm",
+                    repositoryName: "pcc-stack/phpfpm",
                     imageTags: ['5', '3', 'foo'],
                 }
             ]
@@ -110,18 +110,18 @@ describe('code pipeline ecs stack factory', () => {
             filter: {
                 tagStatus: TagStatus.TAGGED
             },
-            repositoryName: 'pcc-shared-stack/nginx'
+            repositoryName: 'pcc-stack/nginx'
         }).rejects('error!');
         mockEcr.on(DescribeImagesCommand, {
             filter: {
                 tagStatus: TagStatus.TAGGED
             },
-            repositoryName: 'pcc-shared-stack/phpfpm'
+            repositoryName: 'pcc-stack/phpfpm'
         }).resolves({
             imageDetails: [
                 {
                     registryId: "abc123",
-                    repositoryName: "pcc-shared-stack/phpfpm",
+                    repositoryName: "pcc-stack/phpfpm",
                     imageTags: ['5', '3', 'foo'],
                 }
             ]
@@ -143,6 +143,56 @@ describe('code pipeline ecs stack factory', () => {
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
         templateHelper.template.templateMatches(getExpected());
     });
+
+    it('should create a pipeline stack with suffixes', async () => {
+        mockSsm.on(GetParameterCommand, {
+            Name: '/pcc-shared-test/config'
+        }).resolves({
+            Parameter: {
+                Value: JSON.stringify(require('../__configSuffixLive__/defaults')),
+                Name: '/pcc-shared-test/config'
+            }
+        });
+        mockEcr.on(DescribeImagesCommand, {
+            filter: {
+                tagStatus: TagStatus.TAGGED
+            },
+            repositoryName: 'pcc-stack/nginx'
+        }).rejects('error!');
+        mockEcr.on(DescribeImagesCommand, {
+            filter: {
+                tagStatus: TagStatus.TAGGED
+            },
+            repositoryName: 'pcc-stack/phpfpm'
+        }).resolves({
+            imageDetails: [
+                {
+                    registryId: "abc123",
+                    repositoryName: "pcc-shared-stack/phpfpm",
+                    imageTags: ['5', '3', 'foo'],
+                }
+            ]
+        });
+        const preSynthHelper = new PreSynthHelper({
+            configDir: path.join(__dirname, '/../__configSuffixLive__'),
+            clientConfig: {}
+        });
+        const stackFactory = new CodePipelineEcsStackFactory({
+            preSynthHelper: preSynthHelper
+        });
+        await stackFactory.initialize();
+        const stack = stackFactory.buildStack({
+            stackProps: {
+                env: {
+                    account: '12344',
+                    region: 'us-west-2'
+                }
+            }
+        });
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        templateHelper.template.templateMatches(getExpectedWithSuffixes());
+    });
+
 });
 
 function getConfig(): Record<string, any> {
@@ -151,4 +201,8 @@ function getConfig(): Record<string, any> {
 
 function getExpected() {
     return require('../__templates__/code-pipeline-ecs-stack');
+}
+
+function getExpectedWithSuffixes() {
+    return require('../__templates__/code-pipeline-ecs-stack.suffixed');
 }
