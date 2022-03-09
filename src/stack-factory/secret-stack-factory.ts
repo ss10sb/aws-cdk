@@ -46,7 +46,7 @@ export class SecretStackFactory {
     }
 
     private addBaseConfigItems(envConfig: EnvConfig, config: Record<string, any>) {
-        const addKeys = ['Name', 'College', 'Environment'];
+        const addKeys = ['Name', 'College', 'Environment', 'NameSuffix'];
         for (const key of addKeys) {
             const val = envConfig[key];
             if (val && !config[key]) {
