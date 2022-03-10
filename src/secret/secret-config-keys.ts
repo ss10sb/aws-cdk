@@ -18,7 +18,7 @@ export class SecretConfigKeys {
     }
 
     private getSecretKeys(config: Record<string, any>): string[] {
-        const secretsConfig = SecretConfigHelper.getSecretsConfig(config.Environment, config.Namesuffix, this.configDir);
+        const secretsConfig = SecretConfigHelper.getSecretsConfig(config.Environment, config.NameSuffix, this.configDir);
         return this.convertSecretsToKeys(secretsConfig);
     }
 

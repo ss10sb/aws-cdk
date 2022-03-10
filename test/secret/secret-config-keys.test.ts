@@ -34,4 +34,13 @@ describe('secret config keys', () => {
         expect(config.Environments[0].Parameters.secretKeys.length).toEqual(1);
         expect(config.Environments[0].Parameters.secretKeys[0]).toEqual('FOO');
     });
+
+    it('should add secret keys to config with suffix', () => {
+        const config = require('../__configSuffixLive__/defaults');
+        const secretKeys = new SecretConfigKeys(path.join(__dirname, '/../__configSuffixLive__'));
+        secretKeys.addSecretKeys(config);
+        const expected = ['ADMIN_USER_ID', 'APP_NAME', 'APP_KEY', 'APP_URL'];
+        expect(config.Environments[0].Parameters.secretKeys).toEqual(expected);
+        expect(config.Environments[1].Parameters.secretKeys).toEqual(expected);
+    });
 });
