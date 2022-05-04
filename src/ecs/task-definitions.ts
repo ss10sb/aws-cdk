@@ -18,6 +18,7 @@ import {Secrets} from "../secret";
 import {ContainerCommandFactory} from "./container-command-factory";
 import {IApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {TaskDefinitionFactory} from "./task-definition-factory";
+import {ScalingInterval} from "aws-cdk-lib/aws-applicationautoscaling";
 
 export enum TaskServiceType {
     WEB_SERVICE = 'web',
@@ -73,6 +74,7 @@ export interface EcsQueueConfigProps extends BaseServiceAndTaskProps {
     readonly memoryLimitMiB?: number;
     readonly minScalingCapacity?: number;
     readonly maxScalingCapacity?: number;
+    readonly scalingSteps?: ScalingInterval[];
 }
 
 export interface EcsQueueFactoryProps {

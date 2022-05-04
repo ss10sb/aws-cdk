@@ -32,6 +32,7 @@ describe('config ssm params static provider', () => {
         const staticProvider = new StaticFileProvider();
         const paramName = NamingHelper.configParamName(ConfigStackHelper.getMainStackName(stack.config));
         const ssmParams = new ConfigSsmParams(staticProvider, paramName, ssmParam);
+        mock.reset();
         mock.on(GetParameterCommand, {
             Name: '/pcc-prod-test/config'
         }).resolves({

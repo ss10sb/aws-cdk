@@ -44,7 +44,8 @@ export class EcsQueueFactory extends AbstractFactory {
             environment: this.getEnvironment(props.hasEnv ?? false),
             logDriver: this.getLogging(name, props),
             retentionPeriod: props.retentionPeriodInDays ? Duration.days(props.retentionPeriodInDays) : undefined,
-            maxReceiveCount: props.maxReceiveCount ?? undefined
+            maxReceiveCount: props.maxReceiveCount ?? undefined,
+            scalingSteps: props.scalingSteps ?? undefined,
         });
         return {
             type: props.type,
