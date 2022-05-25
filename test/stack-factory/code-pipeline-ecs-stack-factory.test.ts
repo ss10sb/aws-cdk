@@ -14,12 +14,20 @@ const configDir = path.join(__dirname, '/../__config__');
 const mockSsm = mockClient(SSMClient);
 const mockEcr = mockClient(ECRClient);
 
-beforeEach(() => {
+function cleanup() {
     mockSsm.reset();
     mockEcr.reset();
     resetStaticProps();
     const staticProvider = new StaticFileProvider();
     staticProvider.cleanup();
+}
+
+beforeEach(() => {
+    cleanup();
+});
+
+afterAll(() => {
+    cleanup();
 });
 
 describe('code pipeline ecs stack factory', () => {

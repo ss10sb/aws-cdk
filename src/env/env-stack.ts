@@ -64,6 +64,7 @@ export class EnvStack<T extends EnvConfig> extends ConfigStack {
         const tasksAndServices = this.createTasksAndServices({
             cluster: cluster,
             targetGroup: targetGroup,
+            queue: queue,
             repositoryFactory: this.envProps.repositoryFactory,
             environment: this.getEnvironmentForContainers({
                 table: table,
@@ -141,11 +142,7 @@ export class EnvStack<T extends EnvConfig> extends ConfigStack {
                 maxReceiveCount: this.config.Parameters?.queue?.maxReceiveCount ?? 3
             }
         }
-        const queue = sqs.create(props);
-        if (this.config.Parameters?.queue) {
-            this.config.Parameters.queue.queue = queue;
-        }
-        return queue;
+        return sqs.create(props);
     }
 
     private createQueueDeadLetter(): Queue {

@@ -7,6 +7,7 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {VpcHelper} from "../../src/utils";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {TemplateHelper} from "../../src/utils/testing";
+import {Sqs} from "../../src/sqs";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
@@ -525,5 +526,33 @@ describe('ecs queue factory', () => {
                 })
             }
         ]);
+    });
+
+    it('should create queue factory with premade queue', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const cluster = new Cluster(stack, 'cluster', {
+            vpc: VpcHelper.getVpcById(stack, 'vpcId')
+        });
+        const ecrRepositories = new EcrRepositories('my-repos', ecrRepoProps);
+        const sqs = new Sqs(stack, 'sqs');
+        const queue = sqs.create({});
+        const ecsQueueFactory = new EcsQueueFactory(stack, 'queue', {
+            cluster: cluster,
+            queue: queue,
+            repositoryFactory: new EcrRepositoryFactory(stack, 'ecr-repos', ecrRepositories),
+            secrets: new Secrets(stack, 'stack'),
+            commandFactory: new ContainerCommandFactory(stack, 'commands', {})
+        });
+        ecsQueueFactory.create({
+            type: TaskServiceType.QUEUE_SERVICE,
+            image: EcrRepositoryType.PHPFPM,
+            cpu: 256
+        });
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        const expected = require('../__templates__/ecs-queue-factory.queue');
+        templateHelper.template.templateMatches(expected);
     });
 });

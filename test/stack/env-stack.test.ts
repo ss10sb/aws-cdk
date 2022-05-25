@@ -224,7 +224,56 @@ describe('env stack', () => {
         const expected = require('../__templates__/env-stack');
         templateHelper.template.templateMatches(expected);
     });
+
+    it('should create env stack using premade queue', () => {
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
+        const envConfig = getEnvConfigForQueue();
+        const app = new App();
+        const stack = new Stack(app, 'pcc-shared-stack', stackProps);
+        const ecrRepositories = new EcrRepositories(ConfigStackHelper.getAppName(envConfig), {
+            repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
+        });
+        const factory = new EcrRepositoryFactory(stack, ConfigStackHelper.getAppName(envConfig), ecrRepositories);
+        factory.create();
+        const name = ConfigStackHelper.getMainStackName(envConfig);
+        const envStack = new EnvStack(stack, name, envConfig, {
+            repositoryFactory: factory
+        }, {}, envStackProps);
+        envStack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(envStack));
+        const expected = require('../__templates__/env-stack.queue');
+        templateHelper.template.templateMatches(expected);
+    });
 });
+
+function getEnvConfigForQueue() {
+    return {
+        AWSAccountId: '2222',
+        AWSRegion: 'us-west-2',
+        Name: 'myapp',
+        College: 'PCC',
+        Environment: ConfigEnvironments.SDLC,
+        Version: "0.0.0",
+        Parameters: {
+            listenerRule: {
+                priority: 100,
+                conditions: {
+                    hostHeaders: ['test.dev.example.edu']
+                }
+            },
+            targetGroup: {},
+            queue: {
+                type: TaskServiceType.QUEUE_SERVICE,
+                image: EcrRepositoryType.PHPFPM,
+                cpu: 256,
+                hasDeadLetterQueue: true
+            },
+            services: [],
+            tasks: []
+        }
+    };
+}
 
 function getEnvConfig() {
     return {

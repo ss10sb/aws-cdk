@@ -1,4 +1,4 @@
-import {App} from "aws-cdk-lib/core";
+import {App} from "aws-cdk-lib";
 import {ConfigEnvironments} from "../../src/config";
 import {SecretStack} from "../../src/stack";
 import {TemplateHelper} from "../../src/utils/testing";

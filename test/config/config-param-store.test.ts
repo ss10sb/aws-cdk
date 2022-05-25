@@ -1,4 +1,4 @@
-import {App} from "aws-cdk-lib/core";
+import {App} from "aws-cdk-lib";
 import {BaseConfig, ConfigParamStore, ConfigStack, StackConfig} from "../../src/config";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {ParameterTier, ParameterType} from "aws-cdk-lib/aws-ssm";
