@@ -1,4 +1,4 @@
-import {ConfigLoader} from "../../src/config";
+import {ConfigEnvironments, ConfigLoader} from "../../src/config";
 import * as path from 'path';
 
 const configDir = path.join(__dirname, '/../__config__');
@@ -126,6 +126,27 @@ describe('config loader', () => {
         expect(typedLoader.load('aws')).toEqual(defaultEnv);
     });
 
+    it('should use testclass from js file', () => {
+        const defaultEnv = {
+            AWSAccountId: "100",
+            AWSRegion: 'us-west-2',
+            Name: 'Stack',
+            College: 'PCC',
+            Environment: 'sdlc',
+            Version: '0.0.0',
+            Parameters: {
+                testclass: {
+                    name: 'foo'
+                }
+            },
+            Environments: []
+        };
+        const typedLoader = new ConfigLoader(configDir);
+        const config = typedLoader.load('testclassconfig')
+        expect(config).toEqual(defaultEnv);
+        expect(config.Parameters.testclass.toConfig()).toEqual({name: 'foo'});
+    });
+
     it('should use base instead of defaults when set', () => {
         const defaultEnv = {
             Name: 'secrets',
@@ -162,6 +183,30 @@ describe('config loader', () => {
         };
         const typedLoader = new ConfigLoader(configDir, 'secrets');
         expect(typedLoader.load('prod')).toEqual(defaultEnv);
+    });
+
+    it('should use configBase and configEnv and configSuffix', () => {
+        const defaultEnv = {
+            Name: 'secrets',
+            NameSuffix: 'foo',
+            College: 'PCC',
+            Environment: ConfigEnvironments.SDLC,
+            Version: "0.0.0",
+            Parameters: {
+                secrets: [
+                    {
+                        key: 'FOO',
+                        value: 'sdlc.foo'
+                    },
+                    {
+                        key: 'BAR',
+                        value: 'sdlc.bar'
+                    }
+                ]
+            }
+        };
+        const typedLoader = new ConfigLoader(configDir, 'secrets');
+        expect(typedLoader.load('sdlc', 'foo')).toEqual(defaultEnv);
     });
 
     it('should load multiple configs when multiple envs are requested', () => {

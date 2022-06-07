@@ -1,6 +1,11 @@
 module.exports = {
     Resources: {
-        stacksynthsteproleE441D089: {
+        repoBEC318EA: {
+            Type: 'AWS::ECR::Repository',
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
+        stackecrsteproleA96EA46E: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -15,7 +20,7 @@ module.exports = {
                 }
             }
         },
-        stacksynthsteproleDefaultPolicy3376ECB6: {
+        stackecrsteproleDefaultPolicy6EC74578: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -36,7 +41,7 @@ module.exports = {
                                             { Ref: 'AWS::Partition' },
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
-                                                Ref: 'stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E'
+                                                Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
                                             }
                                         ]
                                     ]
@@ -49,7 +54,7 @@ module.exports = {
                                             { Ref: 'AWS::Partition' },
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
-                                                Ref: 'stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E'
+                                                Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
                                             },
                                             ':*'
                                         ]
@@ -74,7 +79,7 @@ module.exports = {
                                         { Ref: 'AWS::Partition' },
                                         ':codebuild:us-pipeline:123pipeline:report-group/',
                                         {
-                                            Ref: 'stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E'
+                                            Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
                                         },
                                         '-*'
                                     ]
@@ -82,23 +87,12 @@ module.exports = {
                             }
                         },
                         {
-                            Action: [
-                                's3:GetObject*',
-                                's3:GetBucket*',
-                                's3:List*',
-                                's3:DeleteObject*',
-                                's3:PutObject',
-                                's3:PutObjectLegalHold',
-                                's3:PutObjectRetention',
-                                's3:PutObjectTagging',
-                                's3:PutObjectVersionTagging',
-                                's3:Abort*'
-                            ],
+                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                        'pipelinePipelineArtifactsBucketC2CD5B5E',
                                         'Arn'
                                     ]
                                 },
@@ -108,7 +102,7 @@ module.exports = {
                                         [
                                             {
                                                 'Fn::GetAtt': [
-                                                    'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                                    'pipelinePipelineArtifactsBucketC2CD5B5E',
                                                     'Arn'
                                                 ]
                                             },
@@ -117,103 +111,21 @@ module.exports = {
                                     ]
                                 }
                             ]
-                        },
-                        {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:DescribeKey',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                    'Arn'
-                                ]
-                            }
                         }
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stacksynthsteproleDefaultPolicy3376ECB6',
-                Roles: [ { Ref: 'stacksynthsteproleE441D089' } ]
+                PolicyName: 'stackecrsteproleDefaultPolicy6EC74578',
+                Roles: [ { Ref: 'stackecrsteproleA96EA46E' } ]
             }
         },
-        stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262: {
-            Type: 'AWS::KMS::Key',
-            Properties: {
-                KeyPolicy: {
-                    Statement: [
-                        {
-                            Action: 'kms:*',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':iam::123pipeline:root'
-                                        ]
-                                    ]
-                                }
-                            },
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                }
-            },
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        stackcodepipelinePipelineArtifactsBucketEncryptionKeyAlias70A86EFC: {
-            Type: 'AWS::KMS::Alias',
-            Properties: {
-                AliasName: 'alias/codepipeline-stackstackcodepipelinepipelineb00707c5',
-                TargetKeyId: {
-                    'Fn::GetAtt': [
-                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                        'Arn'
-                    ]
-                }
-            },
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        stackcodepipelinePipelineArtifactsBucket38CD8833: {
+        pipelinePipelineArtifactsBucketC2CD5B5E: {
             Type: 'AWS::S3::Bucket',
             Properties: {
                 BucketEncryption: {
                     ServerSideEncryptionConfiguration: [
                         {
-                            ServerSideEncryptionByDefault: {
-                                KMSMasterKeyID: {
-                                    'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                        'Arn'
-                                    ]
-                                },
-                                SSEAlgorithm: 'aws:kms'
-                            }
+                            ServerSideEncryptionByDefault: { SSEAlgorithm: 'aws:kms' }
                         }
                     ]
                 },
@@ -227,10 +139,10 @@ module.exports = {
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
         },
-        stackcodepipelinePipelineArtifactsBucketPolicy7CFA0C8C: {
+        pipelinePipelineArtifactsBucketPolicy10A41055: {
             Type: 'AWS::S3::BucketPolicy',
             Properties: {
-                Bucket: { Ref: 'stackcodepipelinePipelineArtifactsBucket38CD8833' },
+                Bucket: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
                 PolicyDocument: {
                     Statement: [
                         {
@@ -241,7 +153,7 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                        'pipelinePipelineArtifactsBucketC2CD5B5E',
                                         'Arn'
                                     ]
                                 },
@@ -251,7 +163,7 @@ module.exports = {
                                         [
                                             {
                                                 'Fn::GetAtt': [
-                                                    'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                                    'pipelinePipelineArtifactsBucketC2CD5B5E',
                                                     'Arn'
                                                 ]
                                             },
@@ -266,7 +178,7 @@ module.exports = {
                 }
             }
         },
-        stackcodepipelinePipelineRoleABF819A4: {
+        pipelinePipelineRole7016E5DF: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -281,7 +193,7 @@ module.exports = {
                 }
             }
         },
-        stackcodepipelinePipelineRoleDefaultPolicy71C0C6F5: {
+        pipelinePipelineRoleDefaultPolicy16010F3E: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -303,7 +215,7 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                        'pipelinePipelineArtifactsBucketC2CD5B5E',
                                         'Arn'
                                     ]
                                 },
@@ -313,7 +225,7 @@ module.exports = {
                                         [
                                             {
                                                 'Fn::GetAtt': [
-                                                    'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                                    'pipelinePipelineArtifactsBucketC2CD5B5E',
                                                     'Arn'
                                                 ]
                                             },
@@ -324,17 +236,11 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:DescribeKey',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
+                            Action: 'sts:AssumeRole',
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
+                                    'pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleFA3ACF67',
                                     'Arn'
                                 ]
                             }
@@ -343,35 +249,20 @@ module.exports = {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
                             Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleF6B61542',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelineCodeBuildActionRole59833F96',
-                                    'Arn'
-                                ]
+                                'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
                             }
                         }
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stackcodepipelinePipelineRoleDefaultPolicy71C0C6F5',
-                Roles: [ { Ref: 'stackcodepipelinePipelineRoleABF819A4' } ]
+                PolicyName: 'pipelinePipelineRoleDefaultPolicy16010F3E',
+                Roles: [ { Ref: 'pipelinePipelineRole7016E5DF' } ]
             }
         },
-        stackcodepipelinePipelineEA58A55A: {
+        pipelinePipeline4163A4B1: {
             Type: 'AWS::CodePipeline::Pipeline',
             Properties: {
-                RoleArn: {
-                    'Fn::GetAtt': [ 'stackcodepipelinePipelineRoleABF819A4', 'Arn' ]
-                },
+                RoleArn: { 'Fn::GetAtt': [ 'pipelinePipelineRole7016E5DF', 'Arn' ] },
                 Stages: [
                     {
                         Actions: [
@@ -391,7 +282,7 @@ module.exports = {
                                 OutputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleF6B61542',
+                                        'pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleFA3ACF67',
                                         'Arn'
                                     ]
                                 },
@@ -411,18 +302,15 @@ module.exports = {
                                 },
                                 Configuration: {
                                     ProjectName: {
-                                        Ref: 'stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E'
+                                        Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"3b6a035bb04bf76cf2c0f21ec4bf82e37ec46d46f87dd4f6ae4957c2a9e2f549"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"7cd296bac0003a4c4776b050354569b6c09669d39870b1e481ca303d03dd48a4"}]'
                                 },
                                 InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
-                                Name: 'stack-synth-step',
-                                OutputArtifacts: [ { Name: 'stack_synth_step_Output' } ],
+                                Name: 'synth',
+                                OutputArtifacts: [ { Name: 'synth_Output' } ],
                                 RoleArn: {
-                                    'Fn::GetAtt': [
-                                        'stackcodepipelineCodeBuildActionRole59833F96',
-                                        'Arn'
-                                    ]
+                                    'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
                                 },
                                 RunOrder: 1
                             }
@@ -440,46 +328,57 @@ module.exports = {
                                 },
                                 Configuration: {
                                     ProjectName: {
-                                        Ref: 'stackcodepipelineUpdatePipelineSelfMutation739BDEE5'
+                                        Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                     },
                                     EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
                                 },
-                                InputArtifacts: [ { Name: 'stack_synth_step_Output' } ],
+                                InputArtifacts: [ { Name: 'synth_Output' } ],
                                 Name: 'SelfMutate',
                                 RoleArn: {
-                                    'Fn::GetAtt': [
-                                        'stackcodepipelineCodeBuildActionRole59833F96',
-                                        'Arn'
-                                    ]
+                                    'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
                                 },
                                 RunOrder: 1
                             }
                         ],
                         Name: 'UpdatePipeline'
+                    },
+                    {
+                        Actions: [
+                            {
+                                ActionTypeId: {
+                                    Category: 'Build',
+                                    Owner: 'AWS',
+                                    Provider: 'CodeBuild',
+                                    Version: '1'
+                                },
+                                Configuration: {
+                                    ProjectName: {
+                                        Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
+                                    }
+                                },
+                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                                Name: 'build-something-ecr-step',
+                                RoleArn: {
+                                    'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
+                                },
+                                RunOrder: 1
+                            }
+                        ],
+                        Name: 'ecr'
                     }
                 ],
                 ArtifactStore: {
-                    EncryptionKey: {
-                        Id: {
-                            'Fn::GetAtt': [
-                                'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                'Arn'
-                            ]
-                        },
-                        Type: 'KMS'
-                    },
-                    Location: { Ref: 'stackcodepipelinePipelineArtifactsBucket38CD8833' },
+                    Location: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
                     Type: 'S3'
                 },
-                Name: 'stack-code-pipeline',
                 RestartExecutionOnUpdate: true
             },
             DependsOn: [
-                'stackcodepipelinePipelineRoleDefaultPolicy71C0C6F5',
-                'stackcodepipelinePipelineRoleABF819A4'
+                'pipelinePipelineRoleDefaultPolicy16010F3E',
+                'pipelinePipelineRole7016E5DF'
             ]
         },
-        stackcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleF6B61542: {
+        pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleFA3ACF67: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -505,7 +404,7 @@ module.exports = {
                 }
             }
         },
-        stackcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicy9FFA0505: {
+        pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicyBE5A6722: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -532,7 +431,7 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                        'pipelinePipelineArtifactsBucketC2CD5B5E',
                                         'Arn'
                                     ]
                                 },
@@ -542,7 +441,7 @@ module.exports = {
                                         [
                                             {
                                                 'Fn::GetAtt': [
-                                                    'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                                    'pipelinePipelineArtifactsBucketC2CD5B5E',
                                                     'Arn'
                                                 ]
                                             },
@@ -553,22 +452,6 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:DescribeKey',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
                             Action: [ 's3:PutObjectAcl', 's3:PutObjectVersionAcl' ],
                             Effect: 'Allow',
                             Resource: {
@@ -577,7 +460,7 @@ module.exports = {
                                     [
                                         {
                                             'Fn::GetAtt': [
-                                                'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                                'pipelinePipelineArtifactsBucketC2CD5B5E',
                                                 'Arn'
                                             ]
                                         },
@@ -589,15 +472,144 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stackcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicy9FFA0505',
+                PolicyName: 'pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicyBE5A6722',
                 Roles: [
                     {
-                        Ref: 'stackcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleF6B61542'
+                        Ref: 'pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleFA3ACF67'
                     }
                 ]
             }
         },
-        stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E: {
+        pipelinePipelineBuildsynthCdkBuildProjectRole540A6912: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: { Service: 'codebuild.amazonaws.com' }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        pipelinePipelineBuildsynthCdkBuildProjectRoleDefaultPolicyD900621D: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'logs:CreateLogGroup',
+                                'logs:CreateLogStream',
+                                'logs:PutLogEvents'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            { Ref: 'AWS::Partition' },
+                                            ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                            {
+                                                Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            { Ref: 'AWS::Partition' },
+                                            ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                            {
+                                                Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
+                                            },
+                                            ':*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            Action: [
+                                'codebuild:CreateReportGroup',
+                                'codebuild:CreateReport',
+                                'codebuild:UpdateReport',
+                                'codebuild:BatchPutTestCases',
+                                'codebuild:BatchPutCodeCoverages'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        { Ref: 'AWS::Partition' },
+                                        ':codebuild:us-pipeline:123pipeline:report-group/',
+                                        {
+                                            Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
+                                        },
+                                        '-*'
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                's3:GetObject*',
+                                's3:GetBucket*',
+                                's3:List*',
+                                's3:DeleteObject*',
+                                's3:PutObject',
+                                's3:PutObjectLegalHold',
+                                's3:PutObjectRetention',
+                                's3:PutObjectTagging',
+                                's3:PutObjectVersionTagging',
+                                's3:Abort*'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': [
+                                        'pipelinePipelineArtifactsBucketC2CD5B5E',
+                                        'Arn'
+                                    ]
+                                },
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            {
+                                                'Fn::GetAtt': [
+                                                    'pipelinePipelineArtifactsBucketC2CD5B5E',
+                                                    'Arn'
+                                                ]
+                                            },
+                                            '/*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pipelinePipelineBuildsynthCdkBuildProjectRoleDefaultPolicyD900621D',
+                Roles: [
+                    {
+                        Ref: 'pipelinePipelineBuildsynthCdkBuildProjectRole540A6912'
+                    }
+                ]
+            }
+        },
+        pipelinePipelineBuildsynthCdkBuildProject2CCFF688: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
@@ -608,17 +620,19 @@ module.exports = {
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
-                ServiceRole: { 'Fn::GetAtt': [ 'stacksynthsteproleE441D089', 'Arn' ] },
+                ServiceRole: {
+                    'Fn::GetAtt': [
+                        'pipelinePipelineBuildsynthCdkBuildProjectRole540A6912',
+                        'Arn'
+                    ]
+                },
                 Source: {
                     BuildSpec: '{\n' +
                         '  "version": "0.2",\n' +
                         '  "phases": {\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
-                        '        "npm ci",\n' +
-                        '        "npm run build",\n' +
-                        '        "npx cdk synth"\n' +
+                        '        "npm"\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  },\n' +
@@ -630,58 +644,104 @@ module.exports = {
                     Type: 'CODEPIPELINE'
                 },
                 Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step stack/Pipeline/Build/stack-synth-step',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                        'Arn'
-                    ]
-                }
+                Description: 'Pipeline step stack/Pipeline/Build/synth',
+                EncryptionKey: 'alias/aws/s3'
             }
         },
-        stackcodepipelinePipelineEventsRole1573207C: {
-            Type: 'AWS::IAM::Role',
+        pipelinePipelineecrbuildsomethingecrstepEA7F14E6: {
+            Type: 'AWS::CodeBuild::Project',
             Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
+                Artifacts: { Type: 'CODEPIPELINE' },
+                Environment: {
+                    ComputeType: 'BUILD_GENERAL1_SMALL',
+                    EnvironmentVariables: [
                         {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: { Service: 'events.amazonaws.com' }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                }
-            }
-        },
-        stackcodepipelinePipelineEventsRoleDefaultPolicy50924F9C: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'codepipeline:StartPipelineExecution',
-                            Effect: 'Allow',
-                            Resource: {
+                            Name: 'ECR_URI',
+                            Type: 'PLAINTEXT',
+                            Value: {
                                 'Fn::Join': [
                                     '',
                                     [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':codepipeline:us-pipeline:123pipeline:',
-                                        { Ref: 'stackcodepipelinePipelineEA58A55A' }
+                                        {
+                                            'Fn::Select': [
+                                                4,
+                                                {
+                                                    'Fn::Split': [
+                                                        ':',
+                                                        {
+                                                            'Fn::GetAtt': [ 'repoBEC318EA', 'Arn' ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        '.dkr.ecr.',
+                                        {
+                                            'Fn::Select': [
+                                                3,
+                                                {
+                                                    'Fn::Split': [
+                                                        ':',
+                                                        {
+                                                            'Fn::GetAtt': [ 'repoBEC318EA', 'Arn' ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        '.',
+                                        { Ref: 'AWS::URLSuffix' },
+                                        '/',
+                                        { Ref: 'repoBEC318EA' }
                                     ]
                                 ]
                             }
+                        },
+                        {
+                            Name: 'DOCKER_NAME',
+                            Type: 'PLAINTEXT',
+                            Value: 'build-something'
+                        },
+                        { Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1' },
+                        {
+                            Name: 'ECR_REGION',
+                            Type: 'PLAINTEXT',
+                            Value: 'us-pipeline'
                         }
                     ],
-                    Version: '2012-10-17'
+                    Image: 'aws/codebuild/standard:5.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: true,
+                    Type: 'LINUX_CONTAINER'
                 },
-                PolicyName: 'stackcodepipelinePipelineEventsRoleDefaultPolicy50924F9C',
-                Roles: [ { Ref: 'stackcodepipelinePipelineEventsRole1573207C' } ]
+                ServiceRole: { 'Fn::GetAtt': [ 'stackecrsteproleA96EA46E', 'Arn' ] },
+                Source: {
+                    BuildSpec: '{\n' +
+                        '  "version": "0.2",\n' +
+                        '  "phases": {\n' +
+                        '    "build": {\n' +
+                        '      "commands": [\n' +
+                        '        "echo Login to AWS ECR",\n' +
+                        '        "aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin $ECR_URI",\n' +
+                        '        "echo Build started on `date`",\n' +
+                        '        "echo \\"Building the Docker image: $ECR_URI:$IMAGE_TAG\\"",\n' +
+                        '        "docker build -t $ECR_URI:latest -t $ECR_URI:$IMAGE_TAG -f docker/Dockerfile.$DOCKER_NAME .",\n' +
+                        '        "echo Pushing the Docker image...",\n' +
+                        '        "docker push $ECR_URI:$IMAGE_TAG",\n' +
+                        '        "docker push $ECR_URI:latest",\n' +
+                        '        "echo Build completed on `date`"\n' +
+                        '      ]\n' +
+                        '    }\n' +
+                        '  }\n' +
+                        '}',
+                    Type: 'CODEPIPELINE'
+                },
+                Cache: { Type: 'NO_CACHE' },
+                Description: 'Pipeline step stack/Pipeline/ecr/build-something-ecr-step',
+                EncryptionKey: 'alias/aws/s3'
             }
         },
-        stackcodepipelineCodeBuildActionRole59833F96: {
+        pipelineCodeBuildActionRole4D1FDB53: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -710,7 +770,7 @@ module.exports = {
                 }
             }
         },
-        stackcodepipelineCodeBuildActionRoleDefaultPolicy79374964: {
+        pipelineCodeBuildActionRoleDefaultPolicyE3C51929: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -724,7 +784,7 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E',
+                                    'pipelinePipelineBuildsynthCdkBuildProject2CCFF688',
                                     'Arn'
                                 ]
                             }
@@ -738,7 +798,21 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'stackcodepipelineUpdatePipelineSelfMutation739BDEE5',
+                                    'pipelineUpdatePipelineSelfMutation14A96D2F',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pipelinePipelineecrbuildsomethingecrstepEA7F14E6',
                                     'Arn'
                                 ]
                             }
@@ -746,11 +820,11 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stackcodepipelineCodeBuildActionRoleDefaultPolicy79374964',
-                Roles: [ { Ref: 'stackcodepipelineCodeBuildActionRole59833F96' } ]
+                PolicyName: 'pipelineCodeBuildActionRoleDefaultPolicyE3C51929',
+                Roles: [ { Ref: 'pipelineCodeBuildActionRole4D1FDB53' } ]
             }
         },
-        stackcodepipelineUpdatePipelineSelfMutationRoleA17E13D7: {
+        pipelineUpdatePipelineSelfMutationRole91820177: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -765,7 +839,7 @@ module.exports = {
                 }
             }
         },
-        stackcodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyAAFEF469: {
+        pipelineUpdatePipelineSelfMutationRoleDefaultPolicy095404B8: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -786,7 +860,7 @@ module.exports = {
                                             { Ref: 'AWS::Partition' },
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
-                                                Ref: 'stackcodepipelineUpdatePipelineSelfMutation739BDEE5'
+                                                Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                             }
                                         ]
                                     ]
@@ -799,7 +873,7 @@ module.exports = {
                                             { Ref: 'AWS::Partition' },
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
-                                                Ref: 'stackcodepipelineUpdatePipelineSelfMutation739BDEE5'
+                                                Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                             },
                                             ':*'
                                         ]
@@ -824,7 +898,7 @@ module.exports = {
                                         { Ref: 'AWS::Partition' },
                                         ':codebuild:us-pipeline:123pipeline:report-group/',
                                         {
-                                            Ref: 'stackcodepipelineUpdatePipelineSelfMutation739BDEE5'
+                                            Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                         },
                                         '-*'
                                     ]
@@ -857,7 +931,7 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                        'pipelinePipelineArtifactsBucketC2CD5B5E',
                                         'Arn'
                                     ]
                                 },
@@ -867,7 +941,7 @@ module.exports = {
                                         [
                                             {
                                                 'Fn::GetAtt': [
-                                                    'stackcodepipelinePipelineArtifactsBucket38CD8833',
+                                                    'pipelinePipelineArtifactsBucketC2CD5B5E',
                                                     'Arn'
                                                 ]
                                             },
@@ -876,44 +950,15 @@ module.exports = {
                                     ]
                                 }
                             ]
-                        },
-                        {
-                            Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                    'Arn'
-                                ]
-                            }
                         }
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stackcodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyAAFEF469',
-                Roles: [
-                    {
-                        Ref: 'stackcodepipelineUpdatePipelineSelfMutationRoleA17E13D7'
-                    }
-                ]
+                PolicyName: 'pipelineUpdatePipelineSelfMutationRoleDefaultPolicy095404B8',
+                Roles: [ { Ref: 'pipelineUpdatePipelineSelfMutationRole91820177' } ]
             }
         },
-        stackcodepipelineUpdatePipelineSelfMutation739BDEE5: {
+        pipelineUpdatePipelineSelfMutation14A96D2F: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
@@ -925,10 +970,7 @@ module.exports = {
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
-                    'Fn::GetAtt': [
-                        'stackcodepipelineUpdatePipelineSelfMutationRoleA17E13D7',
-                        'Arn'
-                    ]
+                    'Fn::GetAtt': [ 'pipelineUpdatePipelineSelfMutationRole91820177', 'Arn' ]
                 },
                 Source: {
                     BuildSpec: '{\n' +
@@ -950,43 +992,8 @@ module.exports = {
                 },
                 Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                        'Arn'
-                    ]
-                },
-                Name: 'stack-code-pipeline-selfupdate'
-            }
-        },
-        stackrunscheduleD00DDDA7: {
-            Type: 'AWS::Events::Rule',
-            Properties: {
-                ScheduleExpression: 'cron(0 8 ? * 2#1 *)',
-                State: 'ENABLED',
-                Targets: [
-                    {
-                        Arn: {
-                            'Fn::Join': [
-                                '',
-                                [
-                                    'arn:',
-                                    { Ref: 'AWS::Partition' },
-                                    ':codepipeline:us-pipeline:123pipeline:',
-                                    { Ref: 'stackcodepipelinePipelineEA58A55A' }
-                                ]
-                            ]
-                        },
-                        Id: 'Target0',
-                        RoleArn: {
-                            'Fn::GetAtt': [
-                                'stackcodepipelinePipelineEventsRole1573207C',
-                                'Arn'
-                            ]
-                        }
-                    }
-                ]
+                EncryptionKey: 'alias/aws/s3'
             }
         }
     }
-}
+};

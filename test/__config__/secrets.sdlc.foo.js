@@ -8,6 +8,10 @@ module.exports = {
                 {
                     key: 'FOO',
                     value: 'sdlc.foo'
+                },
+                {
+                    key: 'BAR',
+                    value: 'sdlc.bar'
                 }
             ]
     }

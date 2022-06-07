@@ -162,11 +162,11 @@ describe('utils', () => {
                 secrets: [
                     {
                         key: 'FOO',
-                        value: 'sdlc'
+                        value: 'sdlc.foo'
                     },
                     {
-                        key: 'FOO',
-                        value: 'sdlc.foo'
+                        key: 'BAR',
+                        value: 'sdlc.bar'
                     }
                 ]
             }

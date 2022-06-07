@@ -4,7 +4,7 @@ module.exports = {
         nginxecrC430EE7B: {
             Type: 'AWS::ECR::Repository',
             Properties: {
-                ImageScanningConfiguration: {ScanOnPush: true},
+                ImageScanningConfiguration: { ScanOnPush: true },
                 LifecyclePolicy: {
                     LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
                 },
@@ -30,9 +30,9 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             },
             UpdateReplacePolicy: 'Retain',
@@ -41,7 +41,7 @@ module.exports = {
         phpfpmecr3C5F411B: {
             Type: 'AWS::ECR::Repository',
             Properties: {
-                ImageScanningConfiguration: {ScanOnPush: true},
+                ImageScanningConfiguration: { ScanOnPush: true },
                 LifecyclePolicy: {
                     LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
                 },
@@ -67,9 +67,9 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             },
             UpdateReplacePolicy: 'Retain',
@@ -83,15 +83,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'codebuild.amazonaws.com'}
+                            Principal: { Service: 'codebuild.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -113,7 +113,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
@@ -126,7 +126,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
@@ -151,7 +151,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':codebuild:us-west-2:12344:report-group/',
                                         {
                                             Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
@@ -236,7 +236,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -250,7 +250,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         },
                         {
                             Action: [
@@ -265,7 +265,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':ssm:us-west-2:12344:parameter/pcc-shared-test/config'
                                     ]
                                 ]
@@ -274,12 +274,12 @@ module.exports = {
                         {
                             Action: 'ecr:DescribeImages',
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:DescribeImages',
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         },
                         {
                             Action: 'sts:AssumeRole',
@@ -295,7 +295,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccsharedtestsynthsteproleDefaultPolicyCA85F73E',
-                Roles: [{Ref: 'pccsharedtestsynthsteprole88CEA341'}]
+                Roles: [ { Ref: 'pccsharedtestsynthsteprole88CEA341' } ]
             }
         },
         pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728: {
@@ -312,7 +312,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::12344:root'
                                         ]
                                     ]
@@ -321,7 +321,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['kms:Decrypt', 'kms:DescribeKey'],
+                            Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
@@ -329,7 +329,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::11111:role/cdk-hnb659fds-deploy-role-11111-us-west-2'
                                         ]
                                     ]
@@ -338,7 +338,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['kms:Decrypt', 'kms:DescribeKey'],
+                            Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
@@ -346,7 +346,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::22222:role/cdk-hnb659fds-deploy-role-22222-us-west-2'
                                         ]
                                     ]
@@ -358,9 +358,9 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -405,9 +405,9 @@ module.exports = {
                     RestrictPublicBuckets: true
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             },
             UpdateReplacePolicy: 'Retain',
@@ -423,9 +423,9 @@ module.exports = {
                     Statement: [
                         {
                             Action: 's3:*',
-                            Condition: {Bool: {'aws:SecureTransport': 'false'}},
+                            Condition: { Bool: { 'aws:SecureTransport': 'false' } },
                             Effect: 'Deny',
-                            Principal: {AWS: '*'},
+                            Principal: { AWS: '*' },
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
@@ -450,7 +450,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
+                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
@@ -458,7 +458,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::11111:role/cdk-hnb659fds-deploy-role-11111-us-west-2'
                                         ]
                                     ]
@@ -488,7 +488,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
+                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
@@ -496,7 +496,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::22222:role/cdk-hnb659fds-deploy-role-22222-us-west-2'
                                         ]
                                     ]
@@ -538,15 +538,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'codepipeline.amazonaws.com'}
+                            Principal: { Service: 'codepipeline.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -623,67 +623,7 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleD6C9AD9C',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole43E65CE8',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleBD598FC4',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleA42AF81D',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRole1715D82C',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9',
+                                    'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                     'Arn'
                                 ]
                             }
@@ -696,7 +636,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':iam::11111:role/cdk-hnb659fds-deploy-role-11111-us-west-2'
                                     ]
                                 ]
@@ -720,7 +660,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':iam::22222:role/cdk-hnb659fds-deploy-role-22222-us-west-2'
                                     ]
                                 ]
@@ -730,14 +670,14 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccsharedtestcodepipelinePipelineRoleDefaultPolicy44AD6A4A',
-                Roles: [{Ref: 'pccsharedtestcodepipelinePipelineRole7DA95E27'}]
+                Roles: [ { Ref: 'pccsharedtestcodepipelinePipelineRole7DA95E27' } ]
             }
         },
         pccsharedtestcodepipelinePipeline63991321: {
             Type: 'AWS::CodePipeline::Pipeline',
             Properties: {
                 RoleArn: {
-                    'Fn::GetAtt': ['pccsharedtestcodepipelinePipelineRole7DA95E27', 'Arn']
+                    'Fn::GetAtt': [ 'pccsharedtestcodepipelinePipelineRole7DA95E27', 'Arn' ]
                 },
                 Stages: [
                     {
@@ -755,7 +695,7 @@ module.exports = {
                                     BranchName: 'main'
                                 },
                                 Name: 'repoOwner_repoName',
-                                OutputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
+                                OutputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRole8F4DC317',
@@ -782,12 +722,12 @@ module.exports = {
                                     },
                                     EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"bbe4f87967d17ea51fa6e2840388e015851b2919e0e5048191750a161f0b632b"}]'
                                 },
-                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
+                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'pcc-shared-test-synth-step',
-                                OutputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                OutputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleD6C9AD9C',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -811,11 +751,11 @@ module.exports = {
                                     },
                                     EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"77bb2f857c68cb4607273c1f80f54d8fa18a9ff2731535b15ae7b0cae6e29876"}]'
                                 },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'SelfMutate',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole43E65CE8',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -838,11 +778,11 @@ module.exports = {
                                         Ref: 'pccsharedtestcodepipelineAssetsFileAsset148AEC34D'
                                     }
                                 },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'FileAsset1',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleBD598FC4',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -860,11 +800,11 @@ module.exports = {
                                         Ref: 'pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7'
                                     }
                                 },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'FileAsset2',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleA42AF81D',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -882,11 +822,11 @@ module.exports = {
                                         Ref: 'pccsharedtestcodepipelineAssetsFileAsset37A91F8F0'
                                     }
                                 },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'FileAsset3',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRole1715D82C',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -909,11 +849,11 @@ module.exports = {
                                         Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
                                     }
                                 },
-                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
+                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'nginx-ecr-step',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -931,11 +871,11 @@ module.exports = {
                                         Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
                                     }
                                 },
-                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
+                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'phpfpm-ecr-step',
                                 RoleArn: {
                                     'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9',
+                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
                                         'Arn'
                                     ]
                                 },
@@ -961,7 +901,7 @@ module.exports = {
                                             '',
                                             [
                                                 'arn:',
-                                                {Ref: 'AWS::Partition'},
+                                                { Ref: 'AWS::Partition' },
                                                 ':iam::11111:role/cdk-hnb659fds-cfn-exec-role-11111-us-west-2'
                                             ]
                                         ]
@@ -971,14 +911,14 @@ module.exports = {
                                     ChangeSetName: 'PipelineChange',
                                     TemplatePath: 'pcc_shared_test_synth_step_Output::assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.template.json'
                                 },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'Prepare',
                                 RoleArn: {
                                     'Fn::Join': [
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::11111:role/cdk-hnb659fds-deploy-role-11111-us-west-2'
                                         ]
                                     ]
@@ -1003,7 +943,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::11111:role/cdk-hnb659fds-deploy-role-11111-us-west-2'
                                         ]
                                     ]
@@ -1046,7 +986,7 @@ module.exports = {
                                             '',
                                             [
                                                 'arn:',
-                                                {Ref: 'AWS::Partition'},
+                                                { Ref: 'AWS::Partition' },
                                                 ':iam::22222:role/cdk-hnb659fds-cfn-exec-role-22222-us-west-2'
                                             ]
                                         ]
@@ -1056,14 +996,14 @@ module.exports = {
                                     ChangeSetName: 'PipelineChange',
                                     TemplatePath: 'pcc_shared_test_synth_step_Output::assembly-pcc-shared-test-pcc-prod-test-def-stage/pccsharedtestpccprodtestdefstagepccprodtestdef27A5C606.template.json'
                                 },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
+                                InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'pcc-prod-test-def.Prepare',
                                 RoleArn: {
                                     'Fn::Join': [
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::22222:role/cdk-hnb659fds-deploy-role-22222-us-west-2'
                                         ]
                                     ]
@@ -1088,7 +1028,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::22222:role/cdk-hnb659fds-deploy-role-22222-us-west-2'
                                         ]
                                     ]
@@ -1117,9 +1057,9 @@ module.exports = {
                 Name: 'pcc-shared-test-code-pipeline',
                 RestartExecutionOnUpdate: true,
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             },
             DependsOn: [
@@ -1141,7 +1081,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::12344:root'
                                         ]
                                     ]
@@ -1152,9 +1092,9 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -1222,7 +1162,7 @@ module.exports = {
                             }
                         },
                         {
-                            Action: ['s3:PutObjectAcl', 's3:PutObjectVersionAcl'],
+                            Action: [ 's3:PutObjectAcl', 's3:PutObjectVersionAcl' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::Join': [
@@ -1253,7 +1193,7 @@ module.exports = {
         pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:5.0',
@@ -1262,7 +1202,7 @@ module.exports = {
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
-                    'Fn::GetAtt': ['pccsharedtestsynthsteprole88CEA341', 'Arn']
+                    'Fn::GetAtt': [ 'pccsharedtestsynthsteprole88CEA341', 'Arn' ]
                 },
                 Source: {
                     BuildSpec: {
@@ -1293,7 +1233,7 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
@@ -1307,16 +1247,16 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
                                                                 ]
                                                             },
                                                             '.',
-                                                            {Ref: 'AWS::URLSuffix'},
+                                                            { Ref: 'AWS::URLSuffix' },
                                                             '/',
-                                                            {Ref: 'nginxecrC430EE7B'}
+                                                            { Ref: 'nginxecrC430EE7B' }
                                                         ]
                                                     ]
                                                 }
@@ -1348,7 +1288,7 @@ module.exports = {
                     },
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/Build/pcc-shared-test-synth-step',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -1357,321 +1297,16 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleD6C9AD9C: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleDefaultPolicy5F0D9D54: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleDefaultPolicy5F0D9D54',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCodePipelineActionRoleD6C9AD9C'
-                    }
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole43E65CE8: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyFB633819: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicyFB633819',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole43E65CE8'
-                    }
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleBD598FC4: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleDefaultPolicyBFED234F: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelineAssetsFileAsset148AEC34D',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleDefaultPolicyBFED234F',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineAssetsFileAsset1CodePipelineActionRoleBD598FC4'
-                    }
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleA42AF81D: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleDefaultPolicyBCBC689A: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleDefaultPolicyBCBC689A',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineAssetsFileAsset2CodePipelineActionRoleA42AF81D'
-                    }
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRole1715D82C: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRoleDefaultPolicyC896FBC6: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelineAssetsFileAsset37A91F8F0',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRoleDefaultPolicyC896FBC6',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineAssetsFileAsset3CodePipelineActionRole1715D82C'
-                    }
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
         pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     EnvironmentVariables: [
@@ -1689,7 +1324,7 @@ module.exports = {
                                                     'Fn::Split': [
                                                         ':',
                                                         {
-                                                            'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                            'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                         }
                                                     ]
                                                 }
@@ -1703,16 +1338,16 @@ module.exports = {
                                                     'Fn::Split': [
                                                         ':',
                                                         {
-                                                            'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                            'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                         }
                                                     ]
                                                 }
                                             ]
                                         },
                                         '.',
-                                        {Ref: 'AWS::URLSuffix'},
+                                        { Ref: 'AWS::URLSuffix' },
                                         '/',
-                                        {Ref: 'nginxecrC430EE7B'}
+                                        { Ref: 'nginxecrC430EE7B' }
                                     ]
                                 ]
                             }
@@ -1722,7 +1357,7 @@ module.exports = {
                             Type: 'PLAINTEXT',
                             Value: 'nginx'
                         },
-                        {Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1'},
+                        { Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1' },
                         {
                             Name: 'ECR_REGION',
                             Type: 'PLAINTEXT',
@@ -1735,7 +1370,7 @@ module.exports = {
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
-                    'Fn::GetAtt': ['pccsharedtestecrsteproleF733193B', 'Arn']
+                    'Fn::GetAtt': [ 'pccsharedtestecrsteproleF733193B', 'Arn' ]
                 },
                 Source: {
                     BuildSpec: '{\n' +
@@ -1758,7 +1393,7 @@ module.exports = {
                         '}',
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/ecr-build/nginx-ecr-step',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -1767,77 +1402,16 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRoleDefaultPolicyA9E48EEE: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRoleDefaultPolicyA9E48EEE',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstepCodePipelineActionRole514C3746'
-                    }
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
         pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     EnvironmentVariables: [
@@ -1855,7 +1429,7 @@ module.exports = {
                                                     'Fn::Split': [
                                                         ':',
                                                         {
-                                                            'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                            'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                         }
                                                     ]
                                                 }
@@ -1869,16 +1443,16 @@ module.exports = {
                                                     'Fn::Split': [
                                                         ':',
                                                         {
-                                                            'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                            'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                         }
                                                     ]
                                                 }
                                             ]
                                         },
                                         '.',
-                                        {Ref: 'AWS::URLSuffix'},
+                                        { Ref: 'AWS::URLSuffix' },
                                         '/',
-                                        {Ref: 'phpfpmecr3C5F411B'}
+                                        { Ref: 'phpfpmecr3C5F411B' }
                                     ]
                                 ]
                             }
@@ -1888,7 +1462,7 @@ module.exports = {
                             Type: 'PLAINTEXT',
                             Value: 'phpfpm'
                         },
-                        {Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1'},
+                        { Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1' },
                         {
                             Name: 'ECR_REGION',
                             Type: 'PLAINTEXT',
@@ -1901,7 +1475,7 @@ module.exports = {
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
-                    'Fn::GetAtt': ['pccsharedtestecrsteproleF733193B', 'Arn']
+                    'Fn::GetAtt': [ 'pccsharedtestecrsteproleF733193B', 'Arn' ]
                 },
                 Source: {
                     BuildSpec: '{\n' +
@@ -1924,7 +1498,7 @@ module.exports = {
                         '}',
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/ecr-build/phpfpm-ecr-step',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -1933,70 +1507,9 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
-                ]
-            }
-        },
-        pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleDefaultPolicy2F1D1696: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleDefaultPolicy2F1D1696',
-                Roles: [
-                    {
-                        Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepCodePipelineActionRoleA197DAF9'
-                    }
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2014,7 +1527,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::12344:root'
                                         ]
                                     ]
@@ -2025,9 +1538,9 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2039,15 +1552,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'events.amazonaws.com'}
+                            Principal: { Service: 'events.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2064,7 +1577,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':codepipeline:us-west-2:12344:',
                                         {
                                             Ref: 'pccsharedtestcodepipelinePipeline63991321'
@@ -2084,6 +1597,154 @@ module.exports = {
                 ]
             }
         },
+        pccsharedtestcodepipelineCodeBuildActionRole574D2B54: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Condition: {
+                                Bool: { 'aws:ViaAWSService': 'codepipeline.amazonaws.com' }
+                            },
+                            Effect: 'Allow',
+                            Principal: {
+                                AWS: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            { Ref: 'AWS::Partition' },
+                                            ':iam::12344:root'
+                                        ]
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                Tags: [
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
+                ]
+            }
+        },
+        pccsharedtestcodepipelineCodeBuildActionRoleDefaultPolicy1CB8FCEC: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelineAssetsFileAsset148AEC34D',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelineAssetsFileAsset37A91F8F0',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'codebuild:BatchGetBuilds',
+                                'codebuild:StartBuild',
+                                'codebuild:StopBuild'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85',
+                                    'Arn'
+                                ]
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsharedtestcodepipelineCodeBuildActionRoleDefaultPolicy1CB8FCEC',
+                Roles: [
+                    {
+                        Ref: 'pccsharedtestcodepipelineCodeBuildActionRole574D2B54'
+                    }
+                ]
+            }
+        },
         pccsharedtestcodepipelineUpdatePipelineSelfMutationRole2CFEB79A: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -2092,15 +1753,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'codebuild.amazonaws.com'}
+                            Principal: { Service: 'codebuild.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2122,7 +1783,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
@@ -2135,7 +1796,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
@@ -2160,7 +1821,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':codebuild:us-west-2:12344:report-group/',
                                         {
                                             Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
@@ -2174,7 +1835,7 @@ module.exports = {
                             Action: 'sts:AssumeRole',
                             Condition: {
                                 'ForAnyValue:StringEquals': {
-                                    'iam:ResourceTag/aws-cdk:bootstrap-role': ['image-publishing', 'file-publishing', 'deploy']
+                                    'iam:ResourceTag/aws-cdk:bootstrap-role': [ 'image-publishing', 'file-publishing', 'deploy' ]
                                 }
                             },
                             Effect: 'Allow',
@@ -2191,7 +1852,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
+                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Resource: [
                                 {
@@ -2217,7 +1878,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: ['kms:Decrypt', 'kms:DescribeKey'],
+                            Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -2248,7 +1909,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -2262,7 +1923,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         }
                     ],
                     Version: '2012-10-17'
@@ -2278,7 +1939,7 @@ module.exports = {
         pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:5.0',
@@ -2321,7 +1982,7 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
@@ -2335,16 +1996,16 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
                                                                 ]
                                                             },
                                                             '.',
-                                                            {Ref: 'AWS::URLSuffix'},
+                                                            { Ref: 'AWS::URLSuffix' },
                                                             '/',
-                                                            {Ref: 'nginxecrC430EE7B'}
+                                                            { Ref: 'nginxecrC430EE7B' }
                                                         ]
                                                     ]
                                                 }
@@ -2372,7 +2033,7 @@ module.exports = {
                     },
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/UpdatePipeline/SelfMutate',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -2382,9 +2043,9 @@ module.exports = {
                 },
                 Name: 'pcc-shared-test-code-pipeline-selfupdate',
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2396,7 +2057,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'codebuild.amazonaws.com'}
+                            Principal: { Service: 'codebuild.amazonaws.com' }
                         },
                         {
                             Action: 'sts:AssumeRole',
@@ -2407,7 +2068,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':iam::12344:root'
                                         ]
                                     ]
@@ -2418,9 +2079,9 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2441,7 +2102,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':logs:us-west-2:12344:log-group:/aws/codebuild/*'
                                     ]
                                 ]
@@ -2461,7 +2122,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':codebuild:us-west-2:12344:report-group/*'
                                     ]
                                 ]
@@ -2489,7 +2150,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
+                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Resource: [
                                 {
@@ -2515,7 +2176,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: ['kms:Decrypt', 'kms:DescribeKey'],
+                            Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -2531,7 +2192,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -2545,21 +2206,21 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccsharedtestcodepipelineAssetsFileRoleDefaultPolicy628F3D15',
                 Roles: [
-                    {Ref: 'pccsharedtestcodepipelineAssetsFileRole8E4F3120'}
+                    { Ref: 'pccsharedtestcodepipelineAssetsFileRole8E4F3120' }
                 ]
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset148AEC34D: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:5.0',
@@ -2602,7 +2263,7 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
@@ -2616,16 +2277,16 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
                                                                 ]
                                                             },
                                                             '.',
-                                                            {Ref: 'AWS::URLSuffix'},
+                                                            { Ref: 'AWS::URLSuffix' },
                                                             '/',
-                                                            {Ref: 'nginxecrC430EE7B'}
+                                                            { Ref: 'nginxecrC430EE7B' }
                                                         ]
                                                     ]
                                                 }
@@ -2633,13 +2294,28 @@ module.exports = {
                                         }
                                     ]
                                 },
-                                Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-prod-test-abc-stage\/pccsharedtestpccprodtestabcstagepccprodtestabc[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2[\\s\\S]*assembly-pcc-shared-test-pcc-prod-test-def-stage\/pccsharedtestpccprodtestdefstagepccprodtestdef[\\s\\S]*\.assets\.json[\\s\\S]*22222-us-west-2')
+                                `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "install": {\n' +
+                                '      "commands": [\n' +
+                                '        "npm install -g cdk-assets@2"\n' +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"9ab58259097ac1249b4061ac6e823f78810b11c4c760a30324f6d012fe8e6440:11111-us-west-2\\"",\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-def-stage/pccsharedtestpccprodtestdefstagepccprodtestdef27A5C606.assets.json\\" --verbose publish \\"9ab58259097ac1249b4061ac6e823f78810b11c4c760a30324f6d012fe8e6440:22222-us-west-2\\""\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  }\n' +
+                                '}'
                             ]
                         ]
                     },
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset1',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -2648,16 +2324,16 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:5.0',
@@ -2700,7 +2376,7 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
@@ -2714,16 +2390,16 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
                                                                 ]
                                                             },
                                                             '.',
-                                                            {Ref: 'AWS::URLSuffix'},
+                                                            { Ref: 'AWS::URLSuffix' },
                                                             '/',
-                                                            {Ref: 'nginxecrC430EE7B'}
+                                                            { Ref: 'nginxecrC430EE7B' }
                                                         ]
                                                     ]
                                                 }
@@ -2731,13 +2407,27 @@ module.exports = {
                                         }
                                     ]
                                 },
-                                Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-prod-test-abc-stage\/pccsharedtestpccprodtestabcstagepccprodtestabc[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2')
+                                `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "install": {\n' +
+                                '      "commands": [\n' +
+                                '        "npm install -g cdk-assets@2"\n' +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"c012c7fd0e4894113249eb5c826403161dd1c6a34234610b37c7bad30532d0e0:11111-us-west-2\\""\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  }\n' +
+                                '}'
                             ]
                         ]
                     },
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset2',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -2746,16 +2436,16 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset37A91F8F0: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
+                Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:5.0',
@@ -2798,7 +2488,7 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
@@ -2812,16 +2502,16 @@ module.exports = {
                                                                         'Fn::Split': [
                                                                             ':',
                                                                             {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                                                'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                                             }
                                                                         ]
                                                                     }
                                                                 ]
                                                             },
                                                             '.',
-                                                            {Ref: 'AWS::URLSuffix'},
+                                                            { Ref: 'AWS::URLSuffix' },
                                                             '/',
-                                                            {Ref: 'nginxecrC430EE7B'}
+                                                            { Ref: 'nginxecrC430EE7B' }
                                                         ]
                                                     ]
                                                 }
@@ -2829,13 +2519,27 @@ module.exports = {
                                         }
                                     ]
                                 },
-                                Match.stringLikeRegexp('[\\s\\S]*assembly-pcc-shared-test-pcc-prod-test-abc-stage\/pccsharedtestpccprodtestabcstagepccprodtestabc[\\s\\S]*\.assets\.json[\\s\\S]*11111-us-west-2')
+                                `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "install": {\n' +
+                                '      "commands": [\n' +
+                                '        "npm install -g cdk-assets@2"\n' +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"e5032a7ed03a7762b99560439c17f58d046a35d40ebf64ba70c63157df388563:11111-us-west-2\\""\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  }\n' +
+                                '}'
                             ]
                         ]
                     },
                     Type: 'CODEPIPELINE'
                 },
-                Cache: {Type: 'NO_CACHE'},
+                Cache: { Type: 'NO_CACHE' },
                 Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset3',
                 EncryptionKey: {
                     'Fn::GetAtt': [
@@ -2844,9 +2548,9 @@ module.exports = {
                     ]
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2858,15 +2562,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'codebuild.amazonaws.com'}
+                            Principal: { Service: 'codebuild.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -2888,7 +2592,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
@@ -2901,7 +2605,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
@@ -2926,7 +2630,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':codebuild:us-west-2:12344:report-group/',
                                         {
                                             Ref: 'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA'
@@ -2937,7 +2641,7 @@ module.exports = {
                             }
                         },
                         {
-                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
+                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Resource: [
                                 {
@@ -2963,7 +2667,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: ['kms:Decrypt', 'kms:DescribeKey'],
+                            Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -3000,7 +2704,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
@@ -3013,7 +2717,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':logs:us-west-2:12344:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
@@ -3038,7 +2742,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':codebuild:us-west-2:12344:report-group/',
                                         {
                                             Ref: 'pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85'
@@ -3055,7 +2759,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -3070,7 +2774,7 @@ module.exports = {
                                 'ecr:CompleteLayerUpload'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: [
@@ -3079,7 +2783,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         },
                         {
                             Action: [
@@ -3089,22 +2793,22 @@ module.exports = {
                                 'ecr:CompleteLayerUpload'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccsharedtestecrsteproleDefaultPolicy2494C479',
-                Roles: [{Ref: 'pccsharedtestecrsteproleF733193B'}]
+                Roles: [ { Ref: 'pccsharedtestecrsteproleF733193B' } ]
             }
         },
         pccsharedtestnotificationruletopic0AF49361: {
             Type: 'AWS::SNS::Topic',
             Properties: {
                 Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'shared'}
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'shared' }
                 ]
             }
         },
@@ -3112,7 +2816,7 @@ module.exports = {
             Type: 'AWS::SNS::Subscription',
             Properties: {
                 Protocol: 'email',
-                TopicArn: {Ref: 'pccsharedtestnotificationruletopic0AF49361'},
+                TopicArn: { Ref: 'pccsharedtestnotificationruletopic0AF49361' },
                 Endpoint: 'admin@example.edu'
             }
         },
@@ -3124,14 +2828,14 @@ module.exports = {
                         {
                             Action: 'sns:Publish',
                             Effect: 'Allow',
-                            Principal: {Service: 'codestar-notifications.amazonaws.com'},
-                            Resource: {Ref: 'pccsharedtestnotificationruletopic0AF49361'},
+                            Principal: { Service: 'codestar-notifications.amazonaws.com' },
+                            Resource: { Ref: 'pccsharedtestnotificationruletopic0AF49361' },
                             Sid: '0'
                         }
                     ],
                     Version: '2012-10-17'
                 },
-                Topics: [{Ref: 'pccsharedtestnotificationruletopic0AF49361'}]
+                Topics: [ { Ref: 'pccsharedtestnotificationruletopic0AF49361' } ]
             }
         },
         pccsharedtestnotificationrule7C099986: {
@@ -3149,19 +2853,19 @@ module.exports = {
                         '',
                         [
                             'arn:',
-                            {Ref: 'AWS::Partition'},
+                            { Ref: 'AWS::Partition' },
                             ':codepipeline:us-west-2:12344:',
-                            {Ref: 'pccsharedtestcodepipelinePipeline63991321'}
+                            { Ref: 'pccsharedtestcodepipelinePipeline63991321' }
                         ]
                     ]
                 },
                 Targets: [
                     {
-                        TargetAddress: {Ref: 'pccsharedtestnotificationruletopic0AF49361'},
+                        TargetAddress: { Ref: 'pccsharedtestnotificationruletopic0AF49361' },
                         TargetType: 'SNS'
                     }
                 ],
-                Tags: {App: 'test', College: 'PCC', Environment: 'shared'}
+                Tags: { App: 'test', College: 'PCC', Environment: 'shared' }
             }
         },
         pccsharedtestrunschedule083A89E8: {
@@ -3176,7 +2880,7 @@ module.exports = {
                                 '',
                                 [
                                     'arn:',
-                                    {Ref: 'AWS::Partition'},
+                                    { Ref: 'AWS::Partition' },
                                     ':codepipeline:us-west-2:12344:',
                                     {
                                         Ref: 'pccsharedtestcodepipelinePipeline63991321'
@@ -3194,36 +2898,6 @@ module.exports = {
                     }
                 ]
             }
-        }
-    },
-    Parameters: {
-        pccsharedtestconfiglookupParameter: {
-            Type: 'AWS::SSM::Parameter::Value<String>',
-            Default: '/pcc-shared-test/config'
-        },
-        BootstrapVersion: {
-            Type: 'AWS::SSM::Parameter::Value<String>',
-            Default: '/cdk-bootstrap/hnb659fds/version',
-            Description: 'Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]'
-        }
-    },
-    Rules: {
-        CheckBootstrapVersion: {
-            Assertions: [
-                {
-                    Assert: {
-                        'Fn::Not': [
-                            {
-                                'Fn::Contains': [
-                                    ['1', '2', '3', '4', '5'],
-                                    {Ref: 'BootstrapVersion'}
-                                ]
-                            }
-                        ]
-                    },
-                    AssertDescription: "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
-                }
-            ]
         }
     }
 };

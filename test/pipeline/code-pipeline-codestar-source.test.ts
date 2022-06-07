@@ -77,7 +77,7 @@ describe('code pipeline codestar source', () => {
                                         OutputArtifacts: [{Name: 'synth_Output'}],
                                         RoleArn: {
                                             'Fn::GetAtt': [
-                                                templateHelper.startsWithMatch('pipelinePipelineBuildsynthCodePipelineActionRole'),
+                                                templateHelper.startsWithMatch('pipelineCodeBuildActionRole'),
                                                 'Arn'
                                             ]
                                         },
@@ -105,7 +105,7 @@ describe('code pipeline codestar source', () => {
                                         Name: 'SelfMutate',
                                         RoleArn: {
                                             'Fn::GetAtt': [
-                                                templateHelper.startsWithMatch('pipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole'),
+                                                templateHelper.startsWithMatch('pipelineCodeBuildActionRole'),
                                                 'Arn'
                                             ]
                                         },
@@ -202,7 +202,7 @@ describe('code pipeline codestar source', () => {
                                         OutputArtifacts: [{Name: 'synth_Output'}],
                                         RoleArn: {
                                             'Fn::GetAtt': [
-                                                templateHelper.startsWithMatch('pipelinePipelineBuildsynthCodePipelineActionRole'),
+                                                templateHelper.startsWithMatch('pipelineCodeBuildActionRole'),
                                                 'Arn'
                                             ]
                                         },
@@ -230,7 +230,7 @@ describe('code pipeline codestar source', () => {
                                         Name: 'SelfMutate',
                                         RoleArn: {
                                             'Fn::GetAtt': [
-                                                templateHelper.startsWithMatch('pipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole'),
+                                                templateHelper.startsWithMatch('pipelineCodeBuildActionRole'),
                                                 'Arn'
                                             ]
                                         },

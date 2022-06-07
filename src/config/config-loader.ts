@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as deepmerge from "deepmerge";
+import merge from "lodash/merge";
 
 export class ConfigLoader {
 
@@ -50,7 +50,7 @@ export class ConfigLoader {
                 overrideEnvSuffix = this.getFromBase(this.getEnvSuffixBase(envBase, suffix));
             }
         }
-        return deepmerge.all([defaultEnv, overrideEnv, overrideEnvSuffix]);
+        return merge({}, defaultEnv, overrideEnv, overrideEnvSuffix);
     }
 
     private getFromBase(base: string): Record<string, any> {
