@@ -343,7 +343,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '9ab58259097ac1249b4061ac6e823f78810b11c4c760a30324f6d012fe8e6440.zip'
+                    S3Key: '6dbd112fe448437b3438da4382c72fccbb7d2ee1543db222620d7447fffebc50.zip'
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -352,7 +352,7 @@ module.exports = {
                     ]
                 },
                 Handler: 'index.handler',
-                Runtime: 'nodejs12.x',
+                Runtime: 'nodejs14.x',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},
@@ -3245,7 +3245,7 @@ module.exports = {
                 Runtime: 'nodejs14.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'e5032a7ed03a7762b99560439c17f58d046a35d40ebf64ba70c63157df388563.zip'
+                    S3Key: 'ae967c277459e8936ac565a71d34ea5dcff7b98e556466c36a4d6da023a2d9aa.zip'
                 },
                 Role: {
                     'Fn::GetAtt': [

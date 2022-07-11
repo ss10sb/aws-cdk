@@ -878,7 +878,7 @@ describe('ecs task factory', () => {
                         },
                         FunctionName: 'create-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs12.x',
+                        Runtime: 'nodejs14.x',
                         Timeout: 120
                     },
                     DependsOn: [
@@ -1431,7 +1431,7 @@ describe('ecs task factory', () => {
                         },
                         FunctionName: 'update-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs12.x',
+                        Runtime: 'nodejs14.x',
                         Timeout: 120
                     },
                     DependsOn: [

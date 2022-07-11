@@ -1626,7 +1626,7 @@ describe('fargate factory', () => {
                         },
                         FunctionName: 'create-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs12.x',
+                        Runtime: 'nodejs14.x',
                         Timeout: 120
                     },
                     DependsOn: [

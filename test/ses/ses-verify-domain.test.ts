@@ -201,7 +201,7 @@ describe('ses verify domain', () => {
                 ]
             },
             "Handler": "index.handler",
-            "Runtime": "nodejs12.x",
+            "Runtime": "nodejs14.x",
             "Timeout": 120
         }));
     });

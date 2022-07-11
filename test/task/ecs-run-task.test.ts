@@ -105,7 +105,7 @@ describe('ecs run task', () => {
                         },
                         FunctionName: 'create-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs12.x',
+                        Runtime: 'nodejs14.x',
                         Timeout: 120
                     },
                     DependsOn: [
@@ -268,7 +268,7 @@ describe('ecs run task', () => {
                         },
                         FunctionName: 'update-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs12.x',
+                        Runtime: 'nodejs14.x',
                         Timeout: 120
                     },
                     DependsOn: [
