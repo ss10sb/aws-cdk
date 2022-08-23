@@ -2529,7 +2529,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"ae967c277459e8936ac565a71d34ea5dcff7b98e556466c36a4d6da023a2d9aa:11111-us-west-2\\""\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8:11111-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +

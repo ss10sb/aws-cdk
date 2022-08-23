@@ -3245,7 +3245,7 @@ module.exports = {
                 Runtime: 'nodejs14.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'ae967c277459e8936ac565a71d34ea5dcff7b98e556466c36a4d6da023a2d9aa.zip'
+                    S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
                 },
                 Role: {
                     'Fn::GetAtt': [
