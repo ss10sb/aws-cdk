@@ -1,8 +1,8 @@
-import {ConfigParamStackFactory} from "../../src/stack-factory";
 import path from "path";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {buildConfigParamStack} from "../../src";
+import {buildConfigParamStack} from "../../src/stack-functions";
+import {ConfigParamStackFactory} from "../../src/stack-factory/config-param-stack-factory";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
 
 const configDir = path.join(__dirname, '/../__configLive__');
 

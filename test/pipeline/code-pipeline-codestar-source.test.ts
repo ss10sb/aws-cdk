@@ -1,8 +1,8 @@
 import {App, Stack} from "aws-cdk-lib";
-import {CodePipelineCodestarSource} from "../../src/pipeline";
 import {CodePipeline, ShellStep} from "aws-cdk-lib/pipelines";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
 
 describe('code pipeline codestar source', () => {
 

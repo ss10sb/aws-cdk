@@ -1,10 +1,11 @@
 import {mockClient} from "aws-sdk-client-mock";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
-import {EcrTag} from "../../../src/utils/sdk";
-import {ConfigEnvironments} from "../../../src/config";
-import {EcrRepositories, EcrRepositoryType} from "../../../src/ecr";
-import {StaticFileProvider} from "../../../src/utils";
-import {EcrTags} from "../../../src/utils/static-providers";
+import {EcrTag} from "../../../src/utils/sdk/ecr-tag";
+import {EcrRepositoryType} from "../../../src/ecr/ecr-definitions";
+import {EcrRepositories} from "../../../src/ecr/ecr-repositories";
+import {EcrTags} from "../../../src/utils/static-providers/ecr-tags";
+import {StaticFileProvider} from "../../../src/utils/static-file-provider";
+import {ConfigEnvironments} from "../../../src/config/config-definitions";
 
 const baseBuildConfig = {
     Name: 'test',

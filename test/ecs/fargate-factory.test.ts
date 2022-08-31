@@ -1,22 +1,20 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {App, Stack} from "aws-cdk-lib";
-import {
-    ClusterFactory,
-    ContainerCommand,
-    ContainerEntryPoint,
-    ContainerType,
-    FargateFactory,
-    ScalableTypes,
-    TaskServiceType
-} from "../../src/ecs";
-import {Secrets} from "../../src/secret";
-import {VpcHelper} from "../../src/utils";
-import {EnvConfig} from "../../src/env";
-import {ConfigEnvironments} from "../../src/config";
-import {AlbTargetGroup} from "../../src/alb";
-import {TemplateHelper} from "../../src/utils/testing";
+import {ClusterFactory} from "../../src/ecs/cluster-factory";
+import {ContainerCommand, ContainerEntryPoint} from "../../src/ecs/container-command-factory";
+import {ScalableTypes, TaskServiceType} from "../../src/ecs/task-definitions";
+import {Secrets} from "../../src/secret/secrets";
+import {ContainerType} from "../../src/ecs/container-definitions";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {FargateFactory} from "../../src/ecs/fargate-factory";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {EnvConfig} from "../../src/env/env-base-stack";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {AlbTargetGroup} from "../../src/alb/alb-target-group";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
@@ -60,8 +58,8 @@ describe('fargate factory', () => {
             vpc: vpc
         });
         const cluster = clusterFactory.create();
-        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc, envConfig);
-        const targetGroup = albTargetGroup.createApplicationTargetGroup();
+        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc);
+        const targetGroup = albTargetGroup.create(envConfig.Parameters.targetGroup ?? {});
         const fargateFactory = new FargateFactory(stack, 'stack', {
             commandFactoryProps: {},
             containerFactoryProps: {

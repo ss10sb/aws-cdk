@@ -1,18 +1,22 @@
-import {NonConstruct} from "../core";
-import {PipelineNotificationRuleProps} from "./pipeline-definitions";
 import {INotificationRule, INotificationRuleTarget} from "aws-cdk-lib/aws-codestarnotifications";
 import {Construct} from "constructs";
 import {PipelineNotificationTargets} from "./pipeline-notification-targets";
-import {IPipeline} from "aws-cdk-lib/aws-codepipeline";
+import {IPipeline, Pipeline} from "aws-cdk-lib/aws-codepipeline";
 import {CodePipeline} from "aws-cdk-lib/pipelines";
+import {PipelineNotificationRuleConfig} from "./pipeline-definitions";
+import {NonConstruct} from "../core/non-construct";
+
+export interface PipelineNotificationOnRuleProps extends PipelineNotificationRuleConfig {
+    source: CodePipeline | Pipeline;
+}
 
 export class PipelineNotifyOn extends NonConstruct {
 
-    readonly props: PipelineNotificationRuleProps;
+    readonly props: PipelineNotificationOnRuleProps;
     readonly targets: INotificationRuleTarget[];
     notificationRules: INotificationRule[] = [];
 
-    constructor(scope: Construct, id: string, props: PipelineNotificationRuleProps) {
+    constructor(scope: Construct, id: string, props: PipelineNotificationOnRuleProps) {
         super(scope, id);
         this.props = props;
         this.targets = this.createTargets();

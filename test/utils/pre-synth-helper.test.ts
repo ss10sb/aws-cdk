@@ -2,9 +2,10 @@ import path from "path";
 import {mockClient} from "aws-sdk-client-mock";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
-import {PreSynthHelper, StaticFileProvider} from "../../src/utils";
-import {ConfigEnvironments} from "../../src/config";
-import {EcrRepositoryType} from "../../src/ecr";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {PreSynthHelper} from "../../src/utils/pre-synth-helper";
+import {StaticFileProvider} from "../../src/utils/static-file-provider";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
 
 const configDir = path.join(__dirname, '/../__config__');
 const clientConfig = {region: 'us-east-1'};
@@ -58,11 +59,14 @@ describe('pre synth helper', () => {
         mockEcr.onAnyCommand().resolves({});
         const response = await preSynthHelper.run();
         expect(response.config).toEqual(config);
-        expect(response.ecrRepositories.id).toEqual('pcc-stack');
-        expect(response.ecrRepositories.getEcrRepositories().length).toEqual(1);
-        expect(response.tagResponses.length).toEqual(1);
+        expect(response.ecrRepositories?.id).toEqual('pcc-stack');
+        expect(response.ecrRepositories?.getEcrRepositories().length).toEqual(1);
+        expect(response.tagResponses?.length).toEqual(1);
+        // @ts-ignore
         expect(response.tagResponses[0].repositoryName).toEqual('pcc-stack/phpfpm');
+        // @ts-ignore
         expect(response.tagResponses[0].imageTag).toEqual('1');
+        // @ts-ignore
         expect(response.tagResponses[0].exists).toEqual(false);
     });
 
@@ -107,11 +111,14 @@ describe('pre synth helper', () => {
         });
         const response = await preSynthHelper.run();
         expect(response.config).toEqual(config);
-        expect(response.ecrRepositories.id).toEqual('pcc-stack');
-        expect(response.ecrRepositories.getEcrRepositories().length).toEqual(1);
-        expect(response.tagResponses.length).toEqual(1);
+        expect(response.ecrRepositories?.id).toEqual('pcc-stack');
+        expect(response.ecrRepositories?.getEcrRepositories().length).toEqual(1);
+        expect(response.tagResponses?.length).toEqual(1);
+        // @ts-ignore
         expect(response.tagResponses[0].repositoryName).toEqual('pcc-stack/phpfpm');
+        // @ts-ignore
         expect(response.tagResponses[0].imageTag).toEqual('6');
+        // @ts-ignore
         expect(response.tagResponses[0].exists).toEqual(true);
     });
 });

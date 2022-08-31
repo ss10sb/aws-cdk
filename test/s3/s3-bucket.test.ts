@@ -1,6 +1,6 @@
 import {App, Stack} from "aws-cdk-lib";
-import {S3Bucket} from "../../src/s3";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {S3Bucket} from "../../src/s3/s3-bucket";
 
 describe('s3', () => {
 

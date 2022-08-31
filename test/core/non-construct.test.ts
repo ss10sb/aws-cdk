@@ -1,5 +1,5 @@
-import {NonConstruct} from "../../src/core";
 import {App} from "aws-cdk-lib";
+import {NonConstruct} from "../../src/core/non-construct";
 
 describe('non construct', () => {
 

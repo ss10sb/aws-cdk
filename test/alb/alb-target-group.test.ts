@@ -1,11 +1,12 @@
 import {App} from "aws-cdk-lib";
-import {ConfigEnvironments, ConfigStack, StackConfig} from "../../src/config";
-import {AlbTargetGroup} from "../../src/alb";
-import {VpcHelper} from "../../src/utils";
-import {EnvConfig} from "../../src/env";
 import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {TemplateHelper} from "../../dist/utils/testing";
+import {ConfigEnvironments, StackConfig} from "../../src/config/config-definitions";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EnvConfig} from "../../src/env/env-base-stack";
+import {AlbTargetGroup} from "../../src/alb/alb-target-group";
+import {ConfigStack} from "../../src/config/config-stack";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 describe('alb target group', () => {
 
@@ -40,8 +41,8 @@ describe('alb target group', () => {
         }
         const stack = new ConfigStack(app, 'test', buildConfig, {}, stackProps);
         const vpc = VpcHelper.getVpcFromConfig(stack, buildConfig);
-        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc, envConfig);
-        albTargetGroup.createApplicationTargetGroup();
+        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc);
+        albTargetGroup.create(envConfig.Parameters.targetGroup ?? {});
         expect(app.synth().manifest.missing).toEqual([
             {
                 "key": "vpc-provider:account=12344:filter.isDefault=false:filter.tag:Name=pcc-prod-vpc01/vpc:region=us-east-1:returnAsymmetricSubnets=true",

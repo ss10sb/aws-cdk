@@ -1,6 +1,12 @@
-import {EcrRepositoriesProps} from "../ecr";
-import {EnvConfig} from "../env";
 import {StackProps} from "aws-cdk-lib";
+import {EnvConfig} from "../env/env-base-stack";
+import {EcrRepositoriesProps} from "../ecr/ecr-repositories";
+
+export enum PhpVersion {
+    PHP80 = 'php80',
+    PHP81 = 'php81',
+    PHP82 = 'php82',
+}
 
 export enum ConfigEnvironments {
     PROD = 'prod',
@@ -16,7 +22,6 @@ export interface BaseConfig extends Record<string, any> {
     readonly College: string;
     readonly Environment: string;
     readonly Version?: string;
-
 }
 
 export interface StackConfig extends BaseConfig {
@@ -29,14 +34,11 @@ export interface StackConfig extends BaseConfig {
 export interface BaseParameters extends Record<string, any> {
     readonly vpcId?: string;
     readonly albArn?: string;
+    readonly phpVersion?: PhpVersion;
 }
 
 export interface ConfigParameters extends BaseParameters {
     readonly repositories?: EcrRepositoriesProps;
-}
-
-export interface ConfigStackProps {
-    suffix?: string;
 }
 
 export interface HelperRunProps {

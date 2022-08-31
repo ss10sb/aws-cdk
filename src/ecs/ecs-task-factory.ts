@@ -1,17 +1,31 @@
-import {AbstractFactory} from "../core";
 import {
-    EcsTaskConfigProps,
-    EcsTaskFactoryProps,
-    EcsTaskWrapper,
+    EcsServiceAndTaskConfigProps,
+    Schedulable,
     SchedulableTypes,
-    TaskServiceType
+    TaskServiceType, Wrapper
 } from "./task-definitions";
-import {FargatePlatformVersion, TaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {Cluster, FargatePlatformVersion, TaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
 import {CronOptions, Schedule} from "aws-cdk-lib/aws-events";
 import {ScheduledFargateTask} from "aws-cdk-lib/aws-ecs-patterns";
-import {EcsRunTask, EcsRunTaskProps} from "../task";
 import {TaskDefinitionFactory} from "./task-definition-factory";
+import {EcsRunTask, EcsRunTaskProps} from "../task/ecs-run-task";
+import {AbstractFactory} from "../core/abstract-factory";
+
+export interface EcsTaskFactoryProps {
+    readonly cluster: Cluster;
+    readonly taskDefinitionFactory: TaskDefinitionFactory;
+}
+
+export interface EcsTaskConfigProps extends EcsServiceAndTaskConfigProps {
+    readonly skipCreateTask?: boolean;
+    readonly schedule?: Schedulable;
+    readonly enabled?: boolean;
+}
+
+export interface EcsTaskWrapper extends Wrapper {
+    readonly wrapper: ScheduledFargateTask | EcsRunTask;
+}
 
 export class EcsTaskFactory extends AbstractFactory {
 

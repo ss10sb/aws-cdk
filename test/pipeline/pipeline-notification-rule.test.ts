@@ -1,9 +1,10 @@
 import {App, Stack} from "aws-cdk-lib";
-import {CodePipelineCodestarSource, PipelineNotificationRule} from "../../src/pipeline";
 import {CodePipeline, ShellStep} from "aws-cdk-lib/pipelines";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {PipelineNotificationEvents} from "aws-cdk-lib/aws-codepipeline";
+import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
+import {PipelineNotificationRule} from "../../src/pipeline/pipeline-notification-rule";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
 
 describe('pipeline notification rule', () => {
 

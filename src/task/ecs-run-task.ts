@@ -1,10 +1,19 @@
 import {Construct} from "constructs";
 import {Connections, IConnectable, ISecurityGroup, IVpc, SecurityGroup, SubnetType} from "aws-cdk-lib/aws-ec2";
 import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from "aws-cdk-lib/custom-resources";
-import {FargateTaskDefinition, ICluster, LaunchType} from "aws-cdk-lib/aws-ecs";
-import {EcsRunTaskProps} from "./ecs-run-task-definitions";
-import {NamingHelper} from "../utils";
+import {FargatePlatformVersion, FargateTaskDefinition, ICluster, LaunchType} from "aws-cdk-lib/aws-ecs";
 import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {NamingHelper} from "../utils/naming-helper";
+
+export interface EcsRunTaskProps {
+    readonly vpc?: IVpc;
+    readonly cluster: ICluster;
+    readonly taskDefinition: FargateTaskDefinition;
+    readonly securityGroup?: ISecurityGroup;
+    readonly fargatePlatformVersion?: FargatePlatformVersion;
+    readonly runOnUpdate?: boolean;
+    readonly runOnCreate?: boolean;
+}
 
 export class EcsRunTask extends Construct implements IConnectable {
 

@@ -1,22 +1,21 @@
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {App, Stack} from "aws-cdk-lib";
 import {Cluster} from "aws-cdk-lib/aws-ecs";
-import {VpcHelper} from "../../src/utils";
-import {AlbTargetGroup} from "../../src/alb";
-import {EnvConfig} from "../../src/env";
-import {ConfigEnvironments} from "../../src/config";
-import {
-    ContainerCommandFactory,
-    ContainerFactory,
-    EcsStandardServiceFactory,
-    ScalableTypes,
-    TaskDefinitionFactory,
-    TaskServiceType
-} from "../../src/ecs";
-import {Secrets} from "../../src/secret";
-import {TemplateHelper} from "../../src/utils/testing";
+import {ScalableTypes, TaskServiceType} from "../../src/ecs/task-definitions";
+import {TaskDefinitionFactory} from "../../src/ecs/task-definition-factory";
+import {Secrets} from "../../src/secret/secrets";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EcsStandardServiceFactory} from "../../src/ecs/ecs-standard-service-factory";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {EnvConfig} from "../../src/env/env-base-stack";
+import {AlbTargetGroup} from "../../src/alb/alb-target-group";
+import {ContainerFactory} from "../../src/ecs/container-factory";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {ContainerCommandFactory} from "../../src/ecs/container-command-factory";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
@@ -52,8 +51,8 @@ describe('ecs standard service factory', () => {
                 tasks: []
             }
         }
-        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc, envConfig);
-        const targetGroup = albTargetGroup.createApplicationTargetGroup();
+        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc);
+        const targetGroup = albTargetGroup.create(envConfig.Parameters.targetGroup ?? {});
         const ecrRepositories = new EcrRepositories('my-repos', ecrRepoProps);
         const standardServiceFactory = new EcsStandardServiceFactory(stack, 'service', {
             cluster: cluster,

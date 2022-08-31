@@ -1,9 +1,12 @@
-import {ConfigEnvironments, ConfigStack} from "../../src/config";
-import {EcrRepositories, EcrRepositoriesProps, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {App} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {TemplateHelper} from "../../src/utils/testing";
 import {EcrImage} from "aws-cdk-lib/aws-ecs";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {EcrRepositories, EcrRepositoriesProps} from "../../src/ecr/ecr-repositories";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {ConfigStack} from "../../src/config/config-stack";
 
 const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 

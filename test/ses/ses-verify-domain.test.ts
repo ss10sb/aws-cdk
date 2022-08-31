@@ -1,7 +1,7 @@
 import {App, Stack} from "aws-cdk-lib";
-import {SesVerifyDomain} from "../../src/ses";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {SesVerifyDomain} from "../../src/ses/ses-verify-domain";
 
 describe('ses verify domain', () => {
 

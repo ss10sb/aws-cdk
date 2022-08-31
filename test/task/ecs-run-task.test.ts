@@ -1,10 +1,10 @@
 import {App, Stack} from "aws-cdk-lib";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {Cluster, FargateTaskDefinition} from "aws-cdk-lib/aws-ecs";
-import {EcsRunTask} from "../../src/task";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {TemplateHelper} from "../../src/utils/testing";
-import {VpcHelper} from "../../src/utils";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {VpcHelper} from "../../src/utils/vpc-helper";
+import {EcsRunTask} from "../../src/task/ecs-run-task";
 
 beforeEach(() => {
     resetStaticProps();
@@ -26,7 +26,7 @@ describe('ecs run task', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('Custom::AWS',  [
+        templateHelper.expected('Custom::AWS', [
             {
                 key: 'runtaskcreatefn',
                 properties: Match.objectEquals({
@@ -61,7 +61,7 @@ describe('ecs run task', () => {
                 })
             }
         ]);
-        templateHelper.expected('Custom::LogRetention',  [
+        templateHelper.expected('Custom::LogRetention', [
             {
                 key: '^AWS.*LogRetention.*',
                 properties: Match.objectEquals({
@@ -87,7 +87,7 @@ describe('ecs run task', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::Lambda::Function',  [
+        templateHelper.expected('AWS::Lambda::Function', [
             {
                 key: '^AWS.*',
                 properties: Match.objectEquals({
@@ -171,7 +171,7 @@ describe('ecs run task', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('Custom::AWS',  [
+        templateHelper.expected('Custom::AWS', [
             {
                 key: 'runtaskupdatefn',
                 properties: Match.objectEquals({
@@ -224,7 +224,7 @@ describe('ecs run task', () => {
                 })
             }
         ]);
-        templateHelper.expected('Custom::LogRetention',  [
+        templateHelper.expected('Custom::LogRetention', [
             {
                 key: '^AWS.*LogRetention.*',
                 properties: Match.objectEquals({
@@ -250,7 +250,7 @@ describe('ecs run task', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::Lambda::Function',  [
+        templateHelper.expected('AWS::Lambda::Function', [
             {
                 key: '^AWS.*',
                 properties: Match.objectEquals({

@@ -1,7 +1,8 @@
 import {App} from "aws-cdk-lib";
-import {ConfigEnvironments, ConfigStack} from "../../src/config";
-import {AlbHelper} from "../../src/utils";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {AlbHelper} from "../../src/utils/alb-helper";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {ConfigStack} from "../../src/config/config-stack";
 
 const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 

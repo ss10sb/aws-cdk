@@ -1,8 +1,9 @@
-import {EcrRepositories} from "../ecr";
 import {IGrantable, PolicyStatement} from "aws-cdk-lib/aws-iam";
-import {FargateTasksAndServices, Wrapper} from "../ecs";
 import {TaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {CfnRepository} from "aws-cdk-lib/aws-ecr";
+import {EcrRepositories} from "../ecr/ecr-repositories";
+import {FargateTasksAndServices} from "../ecs/fargate-factory";
+import {Wrapper} from "../ecs/task-definitions";
 
 export class PermissionsEcr {
 

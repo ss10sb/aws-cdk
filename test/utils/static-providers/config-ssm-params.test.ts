@@ -1,10 +1,13 @@
 import {mockClient} from "aws-sdk-client-mock";
-import {ConfigEnvironments, ConfigStack} from "../../../src/config";
 import {App} from "aws-cdk-lib";
-import {ConfigStackHelper, NamingHelper, StaticFileProvider} from "../../../src/utils";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
-import {SsmParam} from "../../../src/utils/sdk";
-import {ConfigSsmParams} from "../../../src/utils/static-providers";
+import {SsmParam} from "../../../src/utils/sdk/ssm-param";
+import {ConfigSsmParams} from "../../../src/utils/static-providers/config-ssm-params";
+import {NamingHelper} from "../../../src/utils/naming-helper";
+import {StaticFileProvider} from "../../../src/utils/static-file-provider";
+import {ConfigEnvironments} from "../../../src/config/config-definitions";
+import {ConfigStack} from "../../../src/config/config-stack";
+import {ConfigStackHelper} from "../../../src/utils/config-stack-helper";
 
 const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 

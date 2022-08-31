@@ -1,5 +1,5 @@
-import {ConfigEnvironments} from "../../src/config";
-import {SecretConfigHelper} from "../../src/utils";
+import {SecretConfigHelper} from "../../src/utils/secret-config-helper";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
 
 describe('secret config helper', () => {
 

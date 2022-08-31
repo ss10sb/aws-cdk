@@ -1,6 +1,10 @@
-import {NonConstruct} from "../core";
-import {SesVerifyDomainProps} from "./ses-definitions";
 import {VerifySesDomain} from "./verify-ses-domain";
+import {NonConstruct} from "../core/non-construct";
+
+export interface SesVerifyDomainProps {
+    subdomain: string;
+    hostedZone: string;
+}
 
 export class SesVerifyDomain extends NonConstruct {
 

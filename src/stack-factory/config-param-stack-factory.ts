@@ -1,9 +1,11 @@
 import {ConfigParamStackFactoryProps, StackFactory} from "./stack-factory-definitions";
 import {App} from "aws-cdk-lib";
-import {ConfigLoader, ConfigStack, HelperRunProps} from "../config";
-import {ConfigStackHelper} from "../utils";
-import {ConfigParamStack} from "../stack";
-import {SecretConfigKeys} from "../secret";
+import {ConfigStack} from "../config/config-stack";
+import {HelperRunProps} from "../config/config-definitions";
+import {ConfigStackHelper} from "../utils/config-stack-helper";
+import {ConfigParamStack} from "../stack/config-param-stack";
+import {SecretConfigKeys} from "../secret/secret-config-keys";
+import {ConfigLoader} from "../config/config-loader";
 
 export class ConfigParamStackFactory implements StackFactory {
 

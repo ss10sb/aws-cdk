@@ -1,6 +1,6 @@
 import {App, Stack} from "aws-cdk-lib";
-import {Route53Helper} from "../../src/utils";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {Route53Helper} from "../../src/utils/route53-helper";
 
 describe('route 53 helper', () => {
 

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {StaticFileProvider} from "../../src/utils";
+import {StaticFileProvider} from "../../src/utils/static-file-provider";
 
 describe('static provider', () => {
 

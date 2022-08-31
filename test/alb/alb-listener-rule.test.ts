@@ -1,11 +1,14 @@
 import {App} from "aws-cdk-lib";
-import {ConfigEnvironments, ConfigStack, StackConfig} from "../../src/config";
-import {AlbListenerRule, AlbTargetGroup} from "../../src/alb";
-import {EnvConfig} from "../../src/env";
-import {AlbHelper, VpcHelper} from "../../src/utils";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {TemplateHelper} from "../../src/utils/testing";
+import {ConfigEnvironments, StackConfig} from "../../src/config/config-definitions";
+import {EnvConfig} from "../../src/env/env-base-stack";
+import {ConfigStack} from "../../src/config/config-stack";
+import {VpcHelper} from "../../src/utils/vpc-helper";
+import {AlbTargetGroup} from "../../src/alb/alb-target-group";
+import {AlbHelper} from "../../src/utils/alb-helper";
+import {AlbListenerRule} from "../../src/alb/alb-listener-rule";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
 
 describe('alb listener rule', () => {
 
@@ -40,11 +43,13 @@ describe('alb listener rule', () => {
         }
         const stack = new ConfigStack(app, 'test', buildConfig, {}, stackProps);
         const vpc = VpcHelper.getVpcFromConfig(stack, buildConfig);
-        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc, envConfig);
-        const targetGroup = albTargetGroup.createApplicationTargetGroup();
-        const albListener = AlbHelper.getApplicationListener(stack, buildConfig, 'arn');
-        const albListenerRule = new AlbListenerRule(stack, 'listener-rule', albListener, envConfig.Parameters.listenerRule);
-        albListenerRule.createListenerRule(targetGroup);
+        if (envConfig.Parameters.targetGroup && envConfig.Parameters.listenerRule) {
+            const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc);
+            const targetGroup = albTargetGroup.create(envConfig.Parameters.targetGroup);
+            const albListener = AlbHelper.getApplicationListener(stack, buildConfig, 'arn');
+            const albListenerRule = new AlbListenerRule(stack, 'listener-rule', albListener);
+            albListenerRule.create(targetGroup, envConfig.Parameters.listenerRule);
+        }
         expect(app.synth().manifest.missing).toEqual([
             {
                 "key": "vpc-provider:account=12344:filter.isDefault=false:filter.tag:Name=pcc-prod-vpc01/vpc:region=us-east-1:returnAsymmetricSubnets=true",

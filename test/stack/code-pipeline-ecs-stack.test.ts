@@ -1,9 +1,9 @@
 import {App} from "aws-cdk-lib";
-import {CodePipelineEcsStack} from "../../src/stack";
-import {ConfigStackHelper} from "../../src/utils";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {CodePipelineEcsStack} from "../../src/stack/code-pipeline-ecs-stack";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {ConfigStackHelper} from "../../src/utils/config-stack-helper";
 
 describe('code pipeline ecs stack', () => {
 

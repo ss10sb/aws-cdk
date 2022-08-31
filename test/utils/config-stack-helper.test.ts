@@ -1,7 +1,8 @@
-import {BaseConfig, ConfigEnvironments, ConfigStack} from "../../src/config";
 import {App} from "aws-cdk-lib";
 import {resolve} from "path";
-import {ConfigStackHelper} from "../../src/utils";
+import {BaseConfig, ConfigEnvironments} from "../../src/config/config-definitions";
+import {ConfigStack} from "../../src/config/config-stack";
+import {ConfigStackHelper} from "../../src/utils/config-stack-helper";
 
 const configDir = resolve(__dirname, './../__config__/');
 

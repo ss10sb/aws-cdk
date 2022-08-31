@@ -1,16 +1,47 @@
-import {AbstractFactory} from "../core";
 import {
-    EcsStandardServiceConfigProps,
-    EcsStandardServiceFactoryProps,
-    EcsStandardServiceProps,
-    EcsStandardServiceWrapper,
+    EcsServiceAndTaskConfigProps,
     ScalableProps,
-    ScalableTypes
+    ScalableTypes, Wrapper
 } from "./task-definitions";
-import {BaseService, Cluster, FargatePlatformVersion, FargateService, ScalableTaskCount} from "aws-cdk-lib/aws-ecs";
+import {
+    BaseService,
+    Cluster,
+    FargatePlatformVersion,
+    FargateService,
+    ScalableTaskCount,
+    TaskDefinition
+} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
 import {TaskDefinitionFactory} from "./task-definition-factory";
 import {IApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {AbstractFactory} from "../core/abstract-factory";
+
+export interface EcsStandardServiceFactoryProps {
+    readonly cluster: Cluster;
+    readonly targetGroup: IApplicationTargetGroup;
+    readonly taskDefinitionFactory: TaskDefinitionFactory;
+}
+
+export interface EcsStandardServiceBaseProps {
+    readonly name: string;
+    readonly cluster: Cluster;
+    readonly taskDefinition: TaskDefinition;
+    readonly serviceProps: EcsStandardServiceConfigProps;
+}
+
+export interface EcsStandardServiceProps extends EcsStandardServiceBaseProps {
+    readonly targetGroup: IApplicationTargetGroup;
+}
+
+export interface EcsStandardServiceConfigProps extends EcsServiceAndTaskConfigProps {
+    readonly assignPublicIp?: boolean;
+    readonly scalable?: ScalableProps;
+    readonly attachToTargetGroup: boolean;
+}
+
+export interface EcsStandardServiceWrapper extends Wrapper {
+    readonly wrapper: BaseService;
+}
 
 export class EcsStandardServiceFactory extends AbstractFactory {
 

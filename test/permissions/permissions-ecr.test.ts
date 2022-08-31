@@ -1,9 +1,11 @@
-import {ConfigEnvironments} from "../../src/config";
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {App, Stack} from "aws-cdk-lib";
 import {Template} from "aws-cdk-lib/assertions";
-import {TemplateHelper} from "../../src/utils/testing";
-import {PermissionsEcr} from "../../src/permissions";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {PermissionsEcr} from "../../src/permissions/permissions-ecr";
 
 const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 

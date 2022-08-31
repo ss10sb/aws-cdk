@@ -1,8 +1,16 @@
-import {NonConstruct} from "../core";
-import {CodeBuildStep, IFileSetProducer} from "aws-cdk-lib/pipelines";
-import {CodePipelineSynthStepProps} from "./code-pipeline-definitions";
+import {CodeBuildStep, CodePipelineSource, IFileSetProducer} from "aws-cdk-lib/pipelines";
 import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {Construct} from "constructs";
+import {EnvBuildType} from "../env/env-definitions";
+import {NonConstruct} from "../core/non-construct";
+import {PhpVersion} from "../config/config-definitions";
+import {PhpVersionHelper} from "../utils/php-version-helper";
+
+export interface CodePipelineSynthStepProps {
+    input: CodePipelineSource | CodeBuildStep;
+    type?: EnvBuildType;
+    phpVersion?: PhpVersion;
+}
 
 export class CodePipelineSynthStep extends NonConstruct {
 
@@ -21,19 +29,59 @@ export class CodePipelineSynthStep extends NonConstruct {
 
     protected createSynth(): IFileSetProducer | CodeBuildStep {
         return new CodeBuildStep(this.mixNameWithId('synth-step'), {
-            input: this.props.source,
+            input: this.props.input,
+            installCommands: this.getInstallCommands(),
             commands: this.getCommands(),
-            role: this.role
+            role: this.role,
+            buildEnvironment: {
+                buildImage: PhpVersionHelper.awsImageFromProps(this.props)
+            }
         });
     }
 
     protected getCommands(): string[] {
-        return [
+        const commands: string[] = [];
+        commands.push(...this.getCommandsForBuildType(this.getBuildType()));
+        commands.push(...[
             this.getCopyCommand(),
             'npm ci',
             'npm run build',
             'npx cdk synth',
-        ];
+        ]);
+        return commands;
+    }
+
+    protected getInstallCommands(): string[] {
+        const commands: string[] = [];
+        commands.push(...this.getInstallCommandsForBuildType(this.getBuildType()));
+        return commands;
+    }
+
+    protected getInstallCommandsForBuildType(type: EnvBuildType): string[] {
+        if (type === EnvBuildType.ECS) {
+            return [];
+        }
+        if (type === EnvBuildType.LAMBDA) {
+            return [];
+        }
+        return [];
+    }
+
+    protected getCommandsForBuildType(type: EnvBuildType): string[] {
+        if (type === EnvBuildType.ECS) {
+            return [];
+        }
+        if (type === EnvBuildType.LAMBDA) {
+            return [];
+        }
+        return [];
+    }
+
+    protected getBuildType(): EnvBuildType {
+        if (this.props.type) {
+            return this.props.type;
+        }
+        return EnvBuildType.ECS;
     }
 
     protected getCopyCommand(): string {

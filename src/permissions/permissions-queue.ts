@@ -1,8 +1,36 @@
-import {FargateTasksAndServices, TaskServiceType, Wrapper} from "../ecs";
 import {Queue} from "aws-cdk-lib/aws-sqs";
 import {TaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {IFunction} from "aws-cdk-lib/aws-lambda";
+import {Functions, FunctionType, FunctionWrapper} from "../lambda/lambda-definitions";
+import {FargateTasksAndServices} from "../ecs/fargate-factory";
+import {TaskServiceType, Wrapper} from "../ecs/task-definitions";
 
 export class PermissionsQueue {
+
+    static functionsCanUseQueue(functions: Functions, queue: Queue): void {
+        this.wrappedFunctionsCanUseQueue(functions.functions, queue);
+        if (functions.queue) {
+            this.wrappedFunctionsCanUseQueue([functions.queue], queue);
+        }
+    }
+
+    static wrappedFunctionsCanUseQueue(wrapped: FunctionWrapper[], queue: Queue): void {
+        for (const funcWrap of wrapped) {
+            this.functionCanUseQueue(funcWrap.lambdaFunction, queue, funcWrap.type);
+        }
+    }
+
+    static functionCanUseQueue(func: IFunction, queue: Queue, type: FunctionType): void {
+        const senders: FunctionType[] = [FunctionType.EVENT, FunctionType.SCHEDULED, FunctionType.WEB];
+        const consumers: FunctionType[] = [FunctionType.QUEUE];
+        if (senders.includes(type)) {
+            queue.grantSendMessages(func.grantPrincipal);
+        }
+        if (consumers.includes(type)) {
+            queue.grantPurge(func.grantPrincipal);
+            queue.grantConsumeMessages(func.grantPrincipal);
+        }
+    }
 
     static tasksServicesCanUseQueue(ts: FargateTasksAndServices, queue: Queue): void {
         this.wrappedCanUseQueue(ts.services, queue);

@@ -1,8 +1,28 @@
-import {FargateTasksAndServices, Wrapper} from "../ecs";
 import {Bucket} from "aws-cdk-lib/aws-s3";
 import {TaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {IFunction} from "aws-cdk-lib/aws-lambda";
+import {Functions, FunctionType, FunctionWrapper} from "../lambda/lambda-definitions";
+import {FargateTasksAndServices} from "../ecs/fargate-factory";
+import {Wrapper} from "../ecs/task-definitions";
 
 export class PermissionsS3 {
+
+    static functionsCanReadWriteS3(functions: Functions, s3: Bucket): void {
+        this.wrappedFunctionsCanReadWriteS3(functions.functions, s3);
+        if (functions.queue) {
+            this.wrappedFunctionsCanReadWriteS3([functions.queue], s3);
+        }
+    }
+
+    static wrappedFunctionsCanReadWriteS3(wrapped: FunctionWrapper[], s3: Bucket): void {
+        for (const funcWrap of wrapped) {
+            this.functionCanReadWriteS3(funcWrap.lambdaFunction, s3, funcWrap.type);
+        }
+    }
+
+    static functionCanReadWriteS3(func: IFunction, s3: Bucket, type: FunctionType): void {
+        s3.grantReadWrite(func.grantPrincipal);
+    }
 
     static tasksServicesCanReadWriteS3(ts: FargateTasksAndServices, s3: Bucket): void {
         this.wrappedCanReadWriteS3(ts.services, s3);

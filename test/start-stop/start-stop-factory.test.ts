@@ -1,10 +1,10 @@
 import {App, Stack} from "aws-cdk-lib";
 import {Cluster} from "aws-cdk-lib/aws-ecs";
-import {VpcHelper} from "../../src/utils";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {StartStopFactory} from "../../src/start-stop";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {VpcHelper} from "../../src/utils/vpc-helper";
+import {StartStopFactory} from "../../src/start-stop/start-stop-factory";
 
 describe('start stop factory', () => {
 

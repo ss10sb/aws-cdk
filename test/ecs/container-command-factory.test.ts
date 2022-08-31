@@ -1,5 +1,5 @@
 import {App, Stage} from "aws-cdk-lib";
-import {ContainerCommand, ContainerCommandFactory, ContainerEntryPoint} from "../../src/ecs";
+import {ContainerCommand, ContainerCommandFactory, ContainerEntryPoint} from "../../src/ecs/container-command-factory";
 
 describe('container command factory', () => {
 

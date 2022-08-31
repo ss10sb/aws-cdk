@@ -1,5 +1,6 @@
-import {BaseConfig, ConfigEnvironments, ConfigParameters, ConfigStack, StackConfig} from "../../src/config";
 import {App} from "aws-cdk-lib";
+import {BaseConfig, ConfigEnvironments, ConfigParameters, StackConfig} from "../../src/config/config-definitions";
+import {ConfigStack} from "../../src/config/config-stack";
 
 export interface OtherConfig extends StackConfig {
     readonly Parameters: OtherParameters;

@@ -1,6 +1,6 @@
 import {mockClient} from "aws-sdk-client-mock";
 import {DescribeImagesCommand, ECRClient} from "@aws-sdk/client-ecr";
-import {EcrTag} from "../../../src/utils/sdk";
+import {EcrTag} from "../../../src/utils/sdk/ecr-tag";
 
 const mock = mockClient(ECRClient);
 

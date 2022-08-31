@@ -1,5 +1,5 @@
-import {SecretItem, SecretsConfig} from "../secret";
 import {ConfigStackHelper} from "./config-stack-helper";
+import {SecretItem, SecretsConfig} from "../secret/secret-definitions";
 
 export class SecretConfigHelper {
 

@@ -1,20 +1,41 @@
-import {Stage} from "aws-cdk-lib";
-import {EnvConfig, EnvProps} from "./env-definitions";
-import {EnvStack} from "./env-stack";
-import {ConfigStackHelper} from "../utils";
+import {StackProps, Stage} from "aws-cdk-lib";
+import {EnvBuildType} from "./env-definitions";
+import {EnvEcsProps, EnvEcsStack} from "./env-ecs-stack";
+import {EnvLambdaProps, EnvLambdaStack} from "./env-lambda-stack";
+import {EnvConfig} from "./env-base-stack";
+import {ConfigStackHelper} from "../utils/config-stack-helper";
+import {ConfigStackProps} from "../config/config-stack";
+import {EnvBuildTypeHelper} from "../utils/env-build-type-helper";
 
 export class EnvStage extends Stage {
 
-    build(config: EnvConfig, envProps: EnvProps) {
+    stack!: EnvEcsStack<EnvConfig> | EnvLambdaStack<EnvConfig> | undefined;
+
+    build(config: EnvConfig, envProps: Record<string, any>) {
         const env = {
             account: this.getAccountId(config),
             region: this.getRegion(config)
         }
         const name = ConfigStackHelper.getMainStackName(config);
-        const stack = new EnvStack(this, name, config, envProps, {}, {
-            env: env
-        });
-        stack.build();
+        this.stack = this.buildStack(name, config, {}, {env: env}, envProps);
+    }
+
+    protected buildStack(name: string, config: EnvConfig, configStackProps: ConfigStackProps, stackProps: StackProps, envProps: Record<string, any>) {
+        const buildType = this.getBuildType(config);
+        if (buildType === EnvBuildType.ECS) {
+            const stack = new EnvEcsStack(this, name, config, configStackProps, stackProps, <EnvEcsProps>envProps);
+            stack.build();
+            return stack;
+        }
+        if (buildType === EnvBuildType.LAMBDA) {
+            const stack = new EnvLambdaStack(this, name, config, configStackProps, stackProps, <EnvLambdaProps>envProps);
+            stack.build();
+            return stack;
+        }
+    }
+
+    protected getBuildType(envConfig: EnvConfig): EnvBuildType {
+        return EnvBuildTypeHelper.getType(envConfig);
     }
 
     protected getRegion(config: EnvConfig): string {

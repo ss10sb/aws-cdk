@@ -1,3 +1,4 @@
+
 export interface SecretsConfig extends Record<string, any> {
     readonly Parameters: SecretsParameters;
 }

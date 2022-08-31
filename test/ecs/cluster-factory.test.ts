@@ -1,9 +1,9 @@
 import {App, Stack} from "aws-cdk-lib";
-import {VpcHelper} from "../../src/utils";
-import {ClusterFactory} from "../../src/ecs";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {TemplateHelper} from "../../src/utils/testing";
+import {ClusterFactory} from "../../src/ecs/cluster-factory";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 describe('cluster factory', () => {
 

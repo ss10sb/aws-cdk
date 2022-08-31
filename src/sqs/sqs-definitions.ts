@@ -1,9 +1,7 @@
-import {DeadLetterQueue, QueueEncryption} from "aws-cdk-lib/aws-sqs";
-import {Duration} from "aws-cdk-lib";
-
-export interface SqsProps {
-    queueName?: string;
-    encryption?: QueueEncryption;
-    deadLetterQueue?: DeadLetterQueue;
-    retentionPeriod?: Duration;
+export interface QueueConfigProps {
+    readonly hasSecrets?: boolean;
+    readonly hasEnv?: boolean;
+    readonly hasDeadLetterQueue?: boolean;
+    readonly retentionPeriodInDays?: number;
+    readonly maxReceiveCount?: number;
 }

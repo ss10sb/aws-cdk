@@ -1,14 +1,14 @@
-import {ConfigEnvironments} from "../../src/config";
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {App, Stack} from "aws-cdk-lib";
-import {
-    CodePipelineCodestarSource,
-    CodePipelinePipeline,
-    CodePipelineRun,
-    CodePipelineSynthStep
-} from "../../src/pipeline";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
+import {CodePipelineSynthStep} from "../../src/pipeline/code-pipeline-synth-step";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {CodePipelinePipeline} from "../../src/pipeline/code-pipeline-pipeline";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {CodePipelineRun} from "../../src/pipeline/code-pipeline-run";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
 
 describe('code pipeline run', () => {
 

@@ -1,0 +1,4 @@
+*.map
+*.test.*
+setup-package.*
+version.txt

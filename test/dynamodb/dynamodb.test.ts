@@ -1,7 +1,7 @@
 import {App, Stack} from "aws-cdk-lib";
-import {Dynamodb} from "../../src/dynamodb";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {TemplateHelper} from "../../src/utils/testing";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {Dynamodb} from "../../src/dynamodb/dynamodb";
 
 describe('dynamodb table create', () => {
 

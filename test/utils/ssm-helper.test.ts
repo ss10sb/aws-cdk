@@ -1,7 +1,7 @@
 import {App, Stack} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {SsmHelper} from "../../src/utils";
 import {ParameterTier, ParameterType} from "aws-cdk-lib/aws-ssm";
+import {SsmHelper} from "../../src/utils/ssm-helper";
 
 describe('ssm utils', () => {
 

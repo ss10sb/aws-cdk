@@ -1,6 +1,7 @@
-import {PreSynthHelper} from "../utils";
-import {ConfigStack, HelperRunProps} from "../config";
 import {App} from "aws-cdk-lib";
+import {ConfigStack} from "../config/config-stack";
+import {HelperRunProps} from "../config/config-definitions";
+import {PreSynthHelper} from "../utils/pre-synth-helper";
 
 export interface StackFactory {
     readonly app: App;
@@ -12,8 +13,16 @@ export interface StackFactory {
     buildStack(props?: HelperRunProps): ConfigStack;
 }
 
-export interface CodePipelineEcsStackFactoryProps {
+export interface CodePipelineStackFactoryProps {
     preSynthHelper: PreSynthHelper;
+}
+
+export interface CodePipelineEcsStackFactoryProps extends CodePipelineStackFactoryProps {
+
+}
+
+export interface CodePipelineLambdaStackFactoryProps extends CodePipelineStackFactoryProps {
+
 }
 
 export interface ConfigParamStackFactoryProps {

@@ -1,8 +1,13 @@
-import {NonConstruct} from "../core";
 import {Rule, Schedule} from "aws-cdk-lib/aws-events";
 import {Construct} from "constructs";
-import {CodePipelineRunProps} from "./code-pipeline-definitions";
 import {CodePipeline as CodePipelineTarget} from "aws-cdk-lib/aws-events-targets";
+import {CodePipelinePipeline} from "./code-pipeline-pipeline";
+import {NonConstruct} from "../core/non-construct";
+
+export interface CodePipelineRunProps {
+    pipeline: CodePipelinePipeline;
+    schedule: string;
+}
 
 export class CodePipelineRun extends NonConstruct {
 

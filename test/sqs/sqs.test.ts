@@ -1,6 +1,6 @@
 import {App, Stack} from "aws-cdk-lib";
-import {Sqs} from "../../src/sqs";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {Sqs} from "../../src/sqs/sqs";
 
 describe('sqs', () => {
 

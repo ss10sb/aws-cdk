@@ -1,8 +1,9 @@
 import {App, aws_lambda, Stack} from "aws-cdk-lib";
-import {StartStopEvent, StartStopLambdaEventStatus} from "../../src/start-stop";
 import {Cluster} from "aws-cdk-lib/aws-ecs";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {StartStopEvent} from "../../src/start-stop/start-stop-event";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {StartStopLambdaEventStatus} from "../../src/start-stop/start-stop-definitions";
 
 describe('start stop event', () => {
     it('should create an event', () => {

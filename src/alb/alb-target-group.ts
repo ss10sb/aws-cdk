@@ -1,22 +1,24 @@
-import {NonConstruct} from "../core";
 import {IVpc} from "aws-cdk-lib/aws-ec2";
-import {EnvConfig} from "../env";
 import {Construct} from "constructs";
 import {ApplicationProtocol, ApplicationTargetGroup, TargetType} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {NonConstruct} from "../core/non-construct";
+
+export interface AlbTargetGroupProps {
+    readonly port?: number;
+    readonly protocol?: ApplicationProtocol;
+    readonly targetType?: TargetType;
+}
 
 export class AlbTargetGroup extends NonConstruct {
 
     readonly vpc: IVpc;
-    readonly config: EnvConfig;
 
-    constructor(scope: Construct, id: string, vpc: IVpc, config: EnvConfig) {
+    constructor(scope: Construct, id: string, vpc: IVpc) {
         super(scope, id);
         this.vpc = vpc;
-        this.config = config;
     }
 
-    createApplicationTargetGroup(): ApplicationTargetGroup {
-        const props = this.config.Parameters.targetGroup ?? {};
+    create(props: AlbTargetGroupProps): ApplicationTargetGroup {
         return new ApplicationTargetGroup(this.scope, this.id, {
             port: props.port ?? 80,
             vpc: this.vpc,

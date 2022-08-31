@@ -1,15 +1,29 @@
-import {NonConstruct} from "../core";
-import {CodePipelineEnvStageProps} from "./code-pipeline-definitions";
 import {StageDeployment} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
-import {EnvConfig, EnvProps, EnvStage} from "../env";
-import {ConfigStackHelper, NamingHelper} from "../utils";
 import {CodePipelineStageSteps} from "./code-pipeline-stage-steps";
+import {CodePipelinePipeline} from "./code-pipeline-pipeline";
+import {EnvConfig} from "../env/env-base-stack";
+import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
+import {EnvStage} from "../env/env-stage";
+import {NonConstruct} from "../core/non-construct";
+import {ConfigStackHelper} from "../utils/config-stack-helper";
+import {NamingHelper} from "../utils/naming-helper";
+
+export interface CodePipelineEnvStageProps {
+    pipeline: CodePipelinePipeline;
+    repositoryFactory?: EcrRepositoryFactory;
+    environments: EnvConfig[];
+}
+
+export interface CodePipelineStageDeployment {
+    deployment: StageDeployment;
+    envStage: EnvStage;
+}
 
 export class CodePipelineEnvStages extends NonConstruct {
 
     readonly props: CodePipelineEnvStageProps;
-    readonly stages: StageDeployment[];
+    readonly stages: CodePipelineStageDeployment[];
 
     constructor(scope: Construct, id: string, props: CodePipelineEnvStageProps) {
         super(scope, id);
@@ -21,7 +35,7 @@ export class CodePipelineEnvStages extends NonConstruct {
         return NamingHelper.fromParts([ConfigStackHelper.getMainStackName(envConfig), 'stage']);
     }
 
-    public createEnvStageFromEnvironment(envConfig: EnvConfig, envProps: EnvProps): EnvStage {
+    public createEnvStageFromEnvironment(envConfig: EnvConfig, envProps: Record<string, any>): EnvStage {
         const name = this.getStageName(envConfig);
         const env = {
             account: envConfig.AWSAccountId ?? process.env.CDK_DEFAULT_ACCOUNT,
@@ -34,8 +48,8 @@ export class CodePipelineEnvStages extends NonConstruct {
         return stage;
     }
 
-    protected createEnvironmentStages(): StageDeployment[] {
-        const stages: StageDeployment[] = [];
+    protected createEnvironmentStages(): CodePipelineStageDeployment[] {
+        const stages: CodePipelineStageDeployment[] = [];
         for (const envConfig of this.props.environments) {
             const deploy: boolean = envConfig.Parameters.deploy ?? true;
             if (deploy) {
@@ -44,7 +58,10 @@ export class CodePipelineEnvStages extends NonConstruct {
                 });
                 const stage = this.props.pipeline.pipeline.addStage(envStage);
                 this.stepsFromEnvironment(stage, envConfig);
-                stages.push(stage);
+                stages.push({
+                    envStage: envStage,
+                    deployment: stage
+                });
             }
         }
         return stages;

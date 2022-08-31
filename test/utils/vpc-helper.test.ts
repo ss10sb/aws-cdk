@@ -1,7 +1,8 @@
-import {ConfigEnvironments, ConfigStack} from "../../src/config";
-import {VpcHelper} from "../../src/utils";
 import {App} from "aws-cdk-lib";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {ConfigStack} from "../../src/config/config-stack";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 describe('vpc helper', () => {
 

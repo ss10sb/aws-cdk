@@ -1,22 +1,40 @@
-import {AbstractFactory} from "../core";
-import {FargateFactories, FargateFactoryProps, FargateTasksAndServices} from "./fargate-factory-definitions";
 import {Construct} from "constructs";
-import {ContainerCommandFactory} from "./container-command-factory";
-import {ContainerCommandFactoryProps, ContainerFactoryProps} from "./container-definitions";
-import {ContainerFactory} from "./container-factory";
-import {EcsQueueFactory} from "./ecs-queue-factory";
+import {ContainerCommandFactory, ContainerCommandFactoryProps} from "./container-command-factory";
+import {ContainerFactory, ContainerFactoryProps} from "./container-factory";
+import {EcsQueueConfigProps, EcsQueueFactory, EcsQueueFactoryProps, EcsQueueWrapper} from "./ecs-queue-factory";
+import {TaskDefinitionFactory, TaskDefinitionFactoryProps} from "./task-definition-factory";
 import {
-    EcsQueueConfigProps,
-    EcsQueueFactoryProps,
     EcsStandardServiceConfigProps,
-    EcsStandardServiceFactoryProps,
-    EcsTaskConfigProps,
-    EcsTaskFactoryProps,
-    TaskDefinitionFactoryProps
-} from "./task-definitions";
-import {TaskDefinitionFactory} from "./task-definition-factory";
-import {EcsStandardServiceFactory} from "./ecs-standard-service-factory";
-import {EcsTaskFactory} from "./ecs-task-factory";
+    EcsStandardServiceFactory,
+    EcsStandardServiceFactoryProps, EcsStandardServiceWrapper
+} from "./ecs-standard-service-factory";
+import {EcsTaskConfigProps, EcsTaskFactory, EcsTaskFactoryProps, EcsTaskWrapper} from "./ecs-task-factory";
+import {AbstractFactory} from "../core/abstract-factory";
+
+export enum FargateFactories {
+    COMMANDS = 'commands',
+    CONTAINERS = 'containers',
+    QUEUES = 'queues',
+    SERVICES = 'services',
+    TASKDEFINITIONS = 'taskdefinitions',
+    TASKS = 'tasks'
+}
+
+// these are generic record sets so that they can be modified in the fargate factory
+export interface FargateFactoryProps {
+    commandFactoryProps: Record<string, any>;
+    containerFactoryProps: Record<string, any>;
+    queueFactoryProps: Record<string, any>;
+    standardServiceFactoryProps: Record<string, any>;
+    taskDefinitionFactoryProps: Record<string, any>;
+    taskFactoryProps: Record<string, any>;
+}
+
+export interface FargateTasksAndServices {
+    tasks: EcsTaskWrapper[];
+    services: EcsStandardServiceWrapper[];
+    queue?: EcsQueueWrapper;
+}
 
 export class FargateFactory extends AbstractFactory {
 

@@ -1,10 +1,11 @@
 import {SecretStackFactoryProps} from "./stack-factory-definitions";
 import {App} from "aws-cdk-lib";
-import {SecretStack} from "../stack";
-import {HelperRunProps} from "../config";
-import {ConfigStackHelper, SecretConfigHelper} from "../utils";
-import {EnvConfig} from "../env";
-import {SecretsConfig} from "../secret";
+import {EnvConfig} from "../env/env-base-stack";
+import {SecretStack} from "../stack/secret-stack";
+import {HelperRunProps} from "../config/config-definitions";
+import {ConfigStackHelper} from "../utils/config-stack-helper";
+import {SecretsConfig} from "../secret/secret-definitions";
+import {SecretConfigHelper} from "../utils/secret-config-helper";
 
 export class SecretStackFactory {
 

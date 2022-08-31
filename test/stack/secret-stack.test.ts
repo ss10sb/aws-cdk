@@ -1,8 +1,8 @@
 import {App} from "aws-cdk-lib";
-import {ConfigEnvironments} from "../../src/config";
-import {SecretStack} from "../../src/stack";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {SecretStack} from "../../src/stack/secret-stack";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
 
 describe('secret stack', () => {
 
@@ -28,23 +28,27 @@ describe('secret stack', () => {
         const stack = new SecretStack(app, 'secret-stack', secretConfig);
         stack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.expected('AWS::SecretsManager::Secret',  [
-            {
-                key: 'pccprodtestsecret',
-                properties: Match.objectEquals({
+        // templateHelper.inspect();
+        const expected = {
+            Resources: {
+                pccprodtestsecret5187B937: {
                     Type: 'AWS::SecretsManager::Secret',
                     Properties: {
-                        GenerateSecretString: {
-                            GenerateStringKey: 'salt',
-                            SecretStringTemplate: '{"FOO":"bar","FIZZ":"buzz"}'
-                        },
+                        GenerateSecretString: { GenerateStringKey: 'salt', SecretStringTemplate: '{}' },
                         Name: 'pcc-prod-test-secrets/environment'
                     },
                     UpdateReplacePolicy: 'Delete',
                     DeletionPolicy: 'Delete'
-                })
+                }
+            },
+            Outputs: {
+                secretArn: {
+                    Value: { Ref: 'pccprodtestsecret5187B937' },
+                    Export: { Name: 'pcc-prod-test-secret-arn' }
+                }
             }
-        ]);
+        };
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create secrets with name suffix', () => {
@@ -70,22 +74,26 @@ describe('secret stack', () => {
         const stack = new SecretStack(app, 'secret-stack', secretConfig);
         stack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.expected('AWS::SecretsManager::Secret',  [
-            {
-                key: 'pccprodtestsubsecret',
-                properties: Match.objectEquals({
+        // templateHelper.inspect();
+        const expected = {
+            Resources: {
+                pccprodtestsubsecret0BDA5364: {
                     Type: 'AWS::SecretsManager::Secret',
                     Properties: {
-                        GenerateSecretString: {
-                            GenerateStringKey: 'salt',
-                            SecretStringTemplate: '{"FOO":"bar","FIZZ":"buzz"}'
-                        },
+                        GenerateSecretString: { GenerateStringKey: 'salt', SecretStringTemplate: '{}' },
                         Name: 'pcc-prod-test-sub-secrets/environment'
                     },
                     UpdateReplacePolicy: 'Delete',
                     DeletionPolicy: 'Delete'
-                })
+                }
+            },
+            Outputs: {
+                secretArn: {
+                    Value: { Ref: 'pccprodtestsubsecret0BDA5364' },
+                    Export: { Name: 'pcc-prod-test-sub-secret-arn' }
+                }
             }
-        ]);
+        };
+        templateHelper.template.templateMatches(expected);
     });
 });

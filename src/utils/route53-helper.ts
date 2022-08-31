@@ -15,4 +15,10 @@ export class Route53Helper {
         this.hostedZoneLookups[domain] = hostedZone;
         return hostedZone;
     }
+
+    public static getDomainFromConfig(config: Record<string, any>): string | undefined {
+        if (config.Parameters?.subdomain && config.Parameters?.hostedZoneDomain) {
+            return `${config.Parameters.subdomain}.${config.Parameters.hostedZoneDomain}`;
+        }
+    }
 }

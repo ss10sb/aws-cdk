@@ -1,7 +1,7 @@
 import {App, Stack} from "aws-cdk-lib";
-import {StartStopFunction} from "../../src/start-stop";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {StartStopFunction} from "../../src/start-stop/start-stop-function";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
 
 describe('start stop function', () => {
     it('should create lambda function with defaults', () => {

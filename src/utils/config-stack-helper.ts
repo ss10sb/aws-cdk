@@ -1,7 +1,10 @@
-import {ConfigLoader, ConfigStack, ConfigStackProps, HelperRunProps, StackConfig} from "../config";
 import {App, StackProps, Tags} from "aws-cdk-lib";
-import {NamingHelper, Newable} from "../utils";
 import {Construct} from "constructs";
+import {Newable} from "./newable";
+import {NamingHelper} from "./naming-helper";
+import {HelperRunProps, StackConfig} from "../config/config-definitions";
+import {ConfigLoader} from "../config/config-loader";
+import {ConfigStack, ConfigStackProps} from "../config/config-stack";
 
 interface RunProps<T extends Record<string, any> = StackConfig> {
     configEnv?: string;
@@ -73,7 +76,7 @@ export class ConfigStackHelper {
     }
 
     public static getRegion(config?: Record<string, any>): string {
-        return config?.AWSRegions ?? process.env.CDK_DEFAULT_REGION;
+        return config?.AWSRegion ?? process.env.CDK_DEFAULT_REGION;
     }
 
     public static fromEnvironments<S extends ConfigStack = ConfigStack, T extends Record<string, any> = StackConfig>(

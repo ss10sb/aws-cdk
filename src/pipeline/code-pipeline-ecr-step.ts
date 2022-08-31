@@ -1,9 +1,19 @@
-import {NonConstruct} from "../core";
-import {CodePipelineEcrStepProps} from "./code-pipeline-definitions";
 import {CodeBuildStep} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
 import {Stack} from "aws-cdk-lib";
 import {LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
+import {IRepository} from "aws-cdk-lib/aws-ecr";
+import {CodePipelineCodestarSource} from "./code-pipeline-codestar-source";
+import {IRole} from "aws-cdk-lib/aws-iam";
+import {NonConstruct} from "../core/non-construct";
+
+export interface CodePipelineEcrStepProps {
+    readonly name: string;
+    readonly repository: IRepository;
+    readonly imageTag: string;
+    readonly source: CodePipelineCodestarSource;
+    readonly role: IRole;
+}
 
 export class CodePipelineEcrStep extends NonConstruct {
 

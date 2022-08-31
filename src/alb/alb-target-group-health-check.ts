@@ -1,11 +1,17 @@
-import {AlbTargetGroupHealthCheckProps} from "./alb-definitions";
-import {NonConstruct} from "../core";
 import {Construct} from "constructs";
 import {Topic} from "aws-cdk-lib/aws-sns";
 import {EmailSubscription} from "aws-cdk-lib/aws-sns-subscriptions";
 import {Alarm} from "aws-cdk-lib/aws-cloudwatch";
 import {Duration} from "aws-cdk-lib";
 import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
+import {ApplicationTargetGroup, HealthCheck} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {NonConstruct} from "../core/non-construct";
+
+export interface AlbTargetGroupHealthCheckProps {
+    readonly targetGroup: ApplicationTargetGroup;
+    readonly healthCheck?: HealthCheck;
+    readonly alarmEmails?: string[];
+}
 
 export class AlbTargetGroupHealthCheck extends NonConstruct {
 

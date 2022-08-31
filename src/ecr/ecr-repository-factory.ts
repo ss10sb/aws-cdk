@@ -1,10 +1,9 @@
-import {EcrRepository} from "./ecr-definitions";
 import {Construct} from "constructs";
 import {Repository} from "aws-cdk-lib/aws-ecr";
 import {ContainerImage} from "aws-cdk-lib/aws-ecs";
 import {RemovalPolicy} from "aws-cdk-lib";
-import {NonConstruct} from "../core";
-import {EcrRepositories} from "./ecr-repositories";
+import {EcrRepositories, EcrRepository} from "./ecr-repositories";
+import {NonConstruct} from "../core/non-construct";
 
 export class EcrRepositoryFactory extends NonConstruct {
     readonly ecrRepositories: EcrRepositories;

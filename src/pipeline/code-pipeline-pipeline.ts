@@ -1,10 +1,22 @@
-import {NonConstruct} from "../core";
-import {CodePipelinePipelineProps} from "./code-pipeline-definitions";
 import {CodePipeline, CodePipelineProps, DockerCredential} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
-import {LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
+import {IBuildImage, LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
 import {IRepository} from "aws-cdk-lib/aws-ecr";
 import {Pipeline} from "aws-cdk-lib/aws-codepipeline";
+import {CodePipelineCodestarSource} from "./code-pipeline-codestar-source";
+import {CodePipelineSynthStep} from "./code-pipeline-synth-step";
+import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
+import {NonConstruct} from "../core/non-construct";
+import {PhpVersion} from "../config/config-definitions";
+import {PhpVersionHelper} from "../utils/php-version-helper";
+
+export interface CodePipelinePipelineProps {
+    source: CodePipelineCodestarSource;
+    synth: CodePipelineSynthStep;
+    repositoryFactory?: EcrRepositoryFactory;
+    crossAccountKeys?: boolean;
+    phpVersion?: PhpVersion;
+}
 
 export class CodePipelinePipeline extends NonConstruct {
 
@@ -45,7 +57,7 @@ export class CodePipelinePipeline extends NonConstruct {
             crossAccountKeys: this.props.crossAccountKeys ?? this.defaults.crossAccountKeys,
             assetPublishingCodeBuildDefaults: {
                 buildEnvironment: {
-                    buildImage: LinuxBuildImage.STANDARD_5_0,
+                    buildImage: PhpVersionHelper.awsImageFromProps(this.props),
                     privileged: true,
                     environmentVariables: {}
                 }
@@ -60,9 +72,11 @@ export class CodePipelinePipeline extends NonConstruct {
 
     protected getRepositoryArray(): IRepository[] {
         const repos: IRepository[] = [];
-        for (const ecrRepo of this.props.repositoryFactory.getEcrRepositories()) {
-            if (ecrRepo.repository) {
-                repos.push(ecrRepo.repository);
+        if (this.props.repositoryFactory) {
+            for (const ecrRepo of this.props.repositoryFactory.getEcrRepositories()) {
+                if (ecrRepo.repository) {
+                    repos.push(ecrRepo.repository);
+                }
             }
         }
         return repos;

@@ -1,5 +1,6 @@
-import {ConfigEnvironments, ConfigLoader} from "../../src/config";
 import * as path from 'path';
+import {ConfigLoader} from "../../src/config/config-loader";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
 
 const configDir = path.join(__dirname, '/../__config__');
 

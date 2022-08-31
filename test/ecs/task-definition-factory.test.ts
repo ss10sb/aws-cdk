@@ -1,9 +1,14 @@
 import {App, Stack} from "aws-cdk-lib";
-import {ContainerCommandFactory, ContainerFactory, TaskDefinitionFactory, TaskServiceType} from "../../src/ecs";
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
-import {Secrets} from "../../src/secret";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {TemplateHelper} from "../../src/utils/testing";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {TaskDefinitionFactory} from "../../src/ecs/task-definition-factory";
+import {Secrets} from "../../src/secret/secrets";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {TaskServiceType} from "../../src/ecs/task-definitions";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {ContainerFactory} from "../../src/ecs/container-factory";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {ContainerCommandFactory} from "../../src/ecs/container-command-factory";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]

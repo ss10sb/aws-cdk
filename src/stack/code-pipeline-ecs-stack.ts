@@ -1,25 +1,15 @@
-import {ConfigStack} from "../config";
-import {EcrRepositories, EcrRepositoryFactory} from "../ecr";
-import {
-    CodePipelineCodestarSource,
-    CodePipelineEcrSteps,
-    CodePipelineEcrStepsProps,
-    CodePipelineEnvStageProps,
-    CodePipelineEnvStages,
-    CodePipelinePipeline,
-    CodePipelinePipelineProps,
-    CodePipelineRun,
-    CodePipelineSynthStep,
-    CodeStarSourceProps,
-    PipelineNotificationRule,
-    PipelineNotificationRuleProps,
-    PipelineNotifyOn
-} from "../pipeline";
 import {Wave} from "aws-cdk-lib/pipelines";
-import {ConfigStackHelper} from "../utils";
-import {PermissionsCodePipelineEcsStack} from "../permissions";
+import {CodePipelineBaseStack} from "./code-pipeline-base-stack";
+import {EcrRepositories} from "../ecr/ecr-repositories";
+import {CodeStarSourceProps} from "../pipeline/code-pipeline-codestar-source";
+import {EnvBuildType} from "../env/env-definitions";
+import {CodePipelinePipeline, CodePipelinePipelineProps} from "../pipeline/code-pipeline-pipeline";
+import {PermissionsCodePipelineEcsStack} from "../permissions/permissions-code-pipeline-ecs-stack";
+import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
+import {ConfigStackHelper} from "../utils/config-stack-helper";
+import {CodePipelineEcrSteps, CodePipelineEcrStepsProps} from "../pipeline/code-pipeline-ecr-steps";
 
-export class CodePipelineEcsStack extends ConfigStack {
+export class CodePipelineEcsStack extends CodePipelineBaseStack {
 
     ecrRepositories!: EcrRepositories;
 
@@ -30,7 +20,7 @@ export class CodePipelineEcsStack extends ConfigStack {
     exec() {
         const ecrRepositoryFactory = this.createEcrRepositoryFactory();
         const pipelineSource = this.createCodestarSource(<CodeStarSourceProps>this.config.Parameters?.sourceProps);
-        const synthStep = this.createSynthStep(pipelineSource);
+        const synthStep = this.createSynthStep(pipelineSource, EnvBuildType.ECS);
         const codePipelineProps: CodePipelinePipelineProps = {
             source: pipelineSource,
             repositoryFactory: ecrRepositoryFactory,
@@ -63,10 +53,6 @@ export class CodePipelineEcsStack extends ConfigStack {
         new PermissionsCodePipelineEcsStack(this, this.node.id, servicesProps, this.config.Environments ?? []);
     }
 
-    private createCodestarSource(codeStarSourceProps: CodeStarSourceProps): CodePipelineCodestarSource {
-        return new CodePipelineCodestarSource(this, this.node.id, codeStarSourceProps);
-    }
-
     private createEcrRepositoryFactory(): EcrRepositoryFactory {
         if (!this.ecrRepositories) {
             this.ecrRepositories = new EcrRepositories(ConfigStackHelper.getAppName(this.config), this.config.Parameters?.repositories ?? {repositories: []});
@@ -83,53 +69,6 @@ export class CodePipelineEcsStack extends ConfigStack {
     private createEcrWave(pipeline: CodePipelinePipeline, ecrSteps: CodePipelineEcrSteps): Wave {
         return pipeline.pipeline.addWave('ecr-build', {
             post: ecrSteps.steps
-        });
-    }
-
-    private createEnvironmentStages(props: CodePipelineEnvStageProps): CodePipelineEnvStages {
-        return new CodePipelineEnvStages(this, this.node.id, props);
-    }
-
-    private createPipeline(codePipelineProps: CodePipelinePipelineProps): CodePipelinePipeline {
-        return new CodePipelinePipeline(this, this.node.id, codePipelineProps);
-    }
-
-    private createPipelineNotifications(pipeline: CodePipelinePipeline): PipelineNotificationRule | undefined {
-        if (this.config.Parameters?.pipelineNotification) {
-            const props: PipelineNotificationRuleProps = {
-                source: pipeline.getBuiltPipeline(),
-                detailType: this.config.Parameters.pipelineNotification?.detailType,
-                events: this.config.Parameters.pipelineNotification?.events ?? [],
-                emails: this.config.Parameters.pipelineNotification?.emails ?? []
-            };
-            return new PipelineNotificationRule(this, this.node.id, props);
-        }
-    }
-
-    private createPipelineNotifyOnRules(pipeline: CodePipelinePipeline): PipelineNotifyOn | undefined {
-        if (this.config.Parameters?.pipelineNotification) {
-            const props: PipelineNotificationRuleProps = {
-                source: pipeline.getBuiltPipeline(),
-                detailType: this.config.Parameters.pipelineNotification?.detailType,
-                events: this.config.Parameters.pipelineNotification?.events ?? [],
-                emails: this.config.Parameters.pipelineNotification?.emails ?? []
-            };
-            return new PipelineNotifyOn(this, this.node.id, props);
-        }
-    }
-
-    private createPipelineRunSchedule(pipeline: CodePipelinePipeline): CodePipelineRun | undefined {
-        if (this.config.Parameters?.runPipelineSchedule) {
-            return new CodePipelineRun(this, this.node.id, {
-                pipeline: pipeline,
-                schedule: this.config.Parameters.runPipelineSchedule
-            });
-        }
-    }
-
-    private createSynthStep(pipelineSource: CodePipelineCodestarSource): CodePipelineSynthStep {
-        return new CodePipelineSynthStep(this, this.node.id, {
-            source: pipelineSource.source
         });
     }
 }

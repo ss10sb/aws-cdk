@@ -1,10 +1,11 @@
 import {App, Stack} from "aws-cdk-lib";
-import {CodePipelineCodestarSource, CodePipelineEcrStep} from "../../src/pipeline";
 import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {Repository} from "aws-cdk-lib/aws-ecr";
 import {CodePipeline, ShellStep} from "aws-cdk-lib/pipelines";
+import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
+import {CodePipelineEcrStep} from "../../src/pipeline/code-pipeline-ecr-step";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
 
 describe('code pipeline ecr step', () => {
 

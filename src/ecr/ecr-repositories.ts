@@ -1,7 +1,21 @@
-import {EcrRepositoriesProps, EcrRepository} from "./ecr-definitions";
+import {EcrRepositoryType} from "./ecr-definitions";
 import {IRepository} from "aws-cdk-lib/aws-ecr";
-import {NamingHelper} from "../utils";
-import {TagResponse} from "../utils/sdk";
+import {ContainerImage} from "aws-cdk-lib/aws-ecs";
+import {TagResponse} from "../utils/sdk/ecr-tag";
+import {NamingHelper} from "../utils/naming-helper";
+
+export interface EcrRepositoriesProps {
+    repositories: EcrRepository[] | string[];
+}
+
+export interface EcrRepository {
+    name: string | EcrRepositoryType;
+    repositoryName: string;
+    exists: boolean;
+    imageTag?: string;
+    repository?: IRepository;
+    containerImage?: ContainerImage;
+}
 
 export class EcrRepositories {
 

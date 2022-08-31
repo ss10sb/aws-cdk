@@ -1,10 +1,22 @@
-import {AbstractFactory} from "../core";
-import {TaskDefinitionFactoryProps, TaskDefinitionProps, TaskServiceType} from "./task-definitions";
+import {TaskServiceType} from "./task-definitions";
 import {Compatibility, NetworkMode, TaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
 import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {PhysicalName} from "aws-cdk-lib";
-import {ContainerFactory} from "./container-factory";
+import {ContainerFactory, ContainerProps} from "./container-factory";
+import {AbstractFactory} from "../core/abstract-factory";
+
+export interface TaskDefinitionFactoryProps {
+    readonly containerFactory: ContainerFactory;
+}
+
+export interface TaskDefinitionProps {
+    readonly compatibility?: Compatibility;
+    readonly networkMode?: NetworkMode;
+    readonly cpu: string;
+    readonly memoryMiB: string;
+    readonly containers: ContainerProps[];
+}
 
 export class TaskDefinitionFactory extends AbstractFactory {
 

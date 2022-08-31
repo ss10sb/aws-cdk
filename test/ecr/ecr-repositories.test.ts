@@ -1,5 +1,6 @@
-import {ConfigEnvironments} from "../../src/config";
-import {EcrRepositories, EcrRepositoriesProps, EcrRepositoryType} from "../../src/ecr";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {EcrRepositories, EcrRepositoriesProps} from "../../src/ecr/ecr-repositories";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
 
 const baseBuildConfig = {
     Name: 'test',

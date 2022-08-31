@@ -4,24 +4,22 @@ import {
     ContainerDependency,
     ContainerDependencyCondition,
     ContainerImage,
-    LogDriver,
+    LogDriver, PortMapping,
     Secret,
     TaskDefinition
 } from "aws-cdk-lib/aws-ecs";
-import {AbstractFactory} from "../core";
 import {
-    ContainerCommand,
-    ContainerEntryPoint,
-    ContainerFactoryProps,
-    ContainerProps,
     ContainerType
 } from "./container-definitions";
 import {Construct} from "constructs";
 import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {RemovalPolicy} from "aws-cdk-lib";
-import {Secrets} from "../secret";
-import {ContainerCommandFactory} from "./container-command-factory";
-import {TaskServiceType} from "../ecs";
+import {ContainerCommand, ContainerCommandFactory, ContainerEntryPoint} from "./container-command-factory";
+import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
+import {Secrets} from "../secret/secrets";
+import {EcrRepositoryType} from "../ecr/ecr-definitions";
+import {AbstractFactory} from "../core/abstract-factory";
+import {TaskServiceType} from "./task-definitions";
 
 interface ContainerDependencies {
     dependencies: ContainerDependency[];
@@ -65,6 +63,30 @@ class ContainerDependencyFactory {
     addDependsOn(container: ContainerDefinition): void {
         this.containerDependencies.dependsOn.push(container);
     }
+}
+
+export interface ContainerFactoryProps {
+    readonly repositoryFactory: EcrRepositoryFactory;
+    readonly secretKeys?: string[];
+    readonly environment?: Record<string, string>;
+    readonly commandFactory: ContainerCommandFactory;
+    readonly secrets: Secrets;
+}
+
+export interface ContainerProps {
+    readonly type?: ContainerType;
+    readonly image: EcrRepositoryType | string;
+    readonly entryPoint?: ContainerEntryPoint;
+    readonly command?: ContainerCommand;
+    readonly additionalCommand?: string[];
+    readonly cpu: number;
+    readonly memoryLimitMiB: number;
+    readonly portMappings?: PortMapping[];
+    readonly hasSecrets?: boolean;
+    readonly hasEnv?: boolean;
+    readonly essential?: boolean;
+    readonly dependency?: boolean;
+    readonly dependsOn?: boolean;
 }
 
 export class ContainerFactory extends AbstractFactory {

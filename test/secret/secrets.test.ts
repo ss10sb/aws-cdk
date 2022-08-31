@@ -1,6 +1,6 @@
 import {App, Stack} from "aws-cdk-lib";
-import {Secrets} from "../../src/secret";
 import {Match, Template} from "aws-cdk-lib/assertions";
+import {Secrets} from "../../src/secret/secrets";
 
 describe('secrets', () => {
 
@@ -24,6 +24,22 @@ describe('secrets', () => {
             "GenerateSecretString": {
                 "GenerateStringKey": "salt",
                 "SecretStringTemplate": "{\"FOO\":\"fooval\",\"BAR\":\"barval\"}"
+            },
+            "Name": "secrets-secrets/environment"
+        }));
+    });
+
+    it('should create a new empty secret', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const secrets = new Secrets(stack, 'secrets');
+        secrets.createEmptySecret();
+        const template = Template.fromStack(stack);
+        template.hasResourceProperties('AWS::SecretsManager::Secret', Match.objectEquals({
+            "GenerateSecretString": {
+                "GenerateStringKey": "salt",
+                "SecretStringTemplate": "{}"
             },
             "Name": "secrets-secrets/environment"
         }));

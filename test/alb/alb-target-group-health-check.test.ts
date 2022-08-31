@@ -1,11 +1,12 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {App, Stack} from "aws-cdk-lib";
-import {VpcHelper} from "../../src/utils";
 import {ApplicationTargetGroup, Protocol} from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import {AlbListenerRule, AlbTargetGroupHealthCheck} from "../../src/alb";
-import {TemplateHelper} from "../../dist/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
-import {AlbHelper} from "../../dist/utils";
+import {AlbListenerRule} from "../../src/alb/alb-listener-rule";
+import {AlbTargetGroupHealthCheck} from "../../src/alb/alb-target-group-health-check";
+import {AlbHelper} from "../../src/utils/alb-helper";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 describe('alb target group health check', () => {
 
@@ -22,13 +23,13 @@ describe('alb target group health check', () => {
             vpc: vpc
         });
         const albListener = AlbHelper.getApplicationListener(stack, {}, 'arn');
-        const albListenerRule = new AlbListenerRule(stack, 'listener-rule', albListener, {
+        const albListenerRule = new AlbListenerRule(stack, 'listener-rule', albListener);
+        albListenerRule.create(targetGroup, {
             priority: 999,
             conditions: {
                 hostHeaders: ['test.example.edu']
             }
         });
-        albListenerRule.createListenerRule(targetGroup);
         new AlbTargetGroupHealthCheck(stack, 'tg', {
             targetGroup: targetGroup,
             healthCheck: {

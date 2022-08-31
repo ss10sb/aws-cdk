@@ -1,17 +1,12 @@
 const common = require('./_common');
-const {ConfigEnvironments} = require("../../src/config");
-const {EcrRepositoryType} = require("../../src/ecr");
+const {ConfigEnvironments} = require("../../src/config/config-definitions");
 const {PipelineNotificationEvents} = require("aws-cdk-lib/aws-codepipeline");
 const {DetailType} = require("aws-cdk-lib/aws-codestarnotifications");
 const {Protocol} = require("aws-cdk-lib/aws-elasticloadbalancingv2");
-const {
-    TaskServiceType,
-    ContainerType,
-    ContainerEntryPoint,
-    ContainerCommand,
-    ScalableTypes,
-    SchedulableTypes
-} = require("../../src/ecs");
+const {EcrRepositoryType} = require("../../src/ecr/ecr-definitions");
+const {TaskServiceType, ScalableTypes, SchedulableTypes} = require("../../src/ecs/task-definitions");
+const {ContainerType} = require("../../src/ecs/container-definitions");
+const {ContainerEntryPoint, ContainerCommand} = require("../../src/ecs/container-command-factory");
 
 module.exports = {
     Name: common.Name,

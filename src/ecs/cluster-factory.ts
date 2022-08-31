@@ -1,11 +1,16 @@
-import {AbstractFactory} from "../core";
-import {ClusterFactoryProps} from "./cluster-definitions";
 import {Construct} from "constructs";
 import {Cluster} from "aws-cdk-lib/aws-ecs";
 import {Alarm} from "aws-cdk-lib/aws-cloudwatch";
-import {Topic} from "aws-cdk-lib/aws-sns";
-import {SnsAction} from "aws-cdk-lib/aws-cloudwatch-actions";
-import {EmailSubscription} from "aws-cdk-lib/aws-sns-subscriptions";
+import {IVpc} from "aws-cdk-lib/aws-ec2";
+import {AbstractFactory} from "../core/abstract-factory";
+import {AlarmSubscriptionHelper} from "../utils/alarm-subscription-helper";
+
+export interface ClusterFactoryProps {
+    alarmEmails?: string[];
+    vpc: IVpc;
+    securityGroupIds?: string[];
+    containerInsights?: boolean;
+}
 
 export class ClusterFactory extends AbstractFactory {
 
@@ -29,9 +34,9 @@ export class ClusterFactory extends AbstractFactory {
 
     private createAlarms(cluster: Cluster): void {
         if (this.props.alarmEmails && this.props.alarmEmails.length) {
+            const alarmSubHelper = new AlarmSubscriptionHelper(this.scope, this.mixNameWithId('cluster-alarm-topic'));
+            alarmSubHelper.addSubscriptions(this.props.alarmEmails);
             const alarms: Alarm[] = []
-            const topic = new Topic(this.scope, this.mixNameWithId('cluster-alarm-topic'));
-            this.addSubscriptions(topic, this.props.alarmEmails);
             alarms.push(cluster.metricCpuUtilization().createAlarm(this.scope, this.mixNameWithId('cluster-cpu-alarm'), {
                 threshold: 90,
                 evaluationPeriods: 1
@@ -40,20 +45,7 @@ export class ClusterFactory extends AbstractFactory {
                 threshold: 90,
                 evaluationPeriods: 1
             }));
-            this.addActions(alarms, topic);
-        }
-    }
-
-    private addActions(alarms: Alarm[], topic: Topic): void {
-        for (const alarm of alarms) {
-            alarm.addAlarmAction(new SnsAction(topic));
-            alarm.addOkAction(new SnsAction(topic));
-        }
-    }
-
-    private addSubscriptions(topic: Topic, emails: string[]): void {
-        for (const email of emails) {
-            topic.addSubscription(new EmailSubscription(email));
+            alarmSubHelper.addActions(alarms);
         }
     }
 }

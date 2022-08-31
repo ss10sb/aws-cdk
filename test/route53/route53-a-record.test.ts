@@ -1,8 +1,14 @@
 import {App, Stack} from "aws-cdk-lib";
-import {Route53ARecord} from "../../src/route53";
-import {AlbHelper} from "../../src/utils";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import path from "path";
+import {AlbHelper} from "../../src/utils/alb-helper";
+import {WebDistribution} from "../../src/cloudfront/web-distribution";
+import {Route53ARecord} from "../../src/route53/route53-a-record";
+import {PhpHttpApi} from "../../src/lambda/php-http-api";
+import {PhpBrefFunction} from "../../src/lambda/php-bref-function";
+import {BrefRuntime} from "../../src/lambda/bref-definitions";
+import {AcmCertificate} from "../../src/acm/acm-certificate";
 
 const stackProps = {env: {region: 'us-east-1', account: '12344'}};
 
@@ -12,7 +18,7 @@ describe('route53 a record', () => {
         resetStaticProps();
     });
 
-    it('should create a record', () => {
+    it('should create a record for alb', () => {
         const app = new App();
         const stack = new Stack(app, 'stack', stackProps);
         const alb = AlbHelper.getAlbByArn(stack, 'arn:alb');
@@ -71,6 +77,53 @@ describe('route53 a record', () => {
             "AliasTarget": {
                 "DNSName": "dualstack.my-load-balancer-1234567890.us-west-2.elb.amazonaws.com",
                 "HostedZoneId": Match.stringLikeRegexp("^.*EXAMPLE")
+            },
+            "Comment": "route53: foo.example.edu",
+            "HostedZoneId": "DUMMY"
+        }));
+    });
+
+    it('should create a record for cf distribution', () => {
+        const app = new App();
+        const stack = new Stack(app, 'stack', stackProps);
+        const cert = new AcmCertificate(stack, 'cert');
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
+        const func = phpbrefFun.create('f1', {
+            appPath: path.join(__dirname, '..', '__codebase__'),
+            brefRuntime: BrefRuntime.PHP81FPM
+        });
+        const phpHttpApi = new PhpHttpApi(stack, 'http-api');
+        const api = phpHttpApi.create({lambdaFunction: func});
+        const webDistribution = new WebDistribution(stack, 'distribution');
+        const dist = webDistribution.create({
+            httpApi: api,
+            domainName: 'foo.bar.com',
+            certificate: c,
+            webAclId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters'
+        });
+        const route53ARecord = new Route53ARecord(stack, 'route53', dist, 'example.edu');
+        route53ARecord.createARecord('foo');
+        const template = Template.fromStack(stack);
+        template.hasResourceProperties('AWS::Route53::RecordSet', Match.objectEquals({
+            "Name": "foo.example.edu.",
+            "Type": "A",
+            "AliasTarget": {
+                "DNSName": {
+                    "Fn::GetAtt": [
+                        "distributioncfwdED870F34",
+                        "DomainName"
+                    ]
+                },
+                "HostedZoneId": {
+                    "Fn::FindInMap": [
+                        "AWSCloudFrontPartitionHostedZoneIdMap",
+                        {
+                            "Ref": "AWS::Partition"
+                        },
+                        "zoneId"
+                    ]
+                }
             },
             "Comment": "route53: foo.example.edu",
             "HostedZoneId": "DUMMY"

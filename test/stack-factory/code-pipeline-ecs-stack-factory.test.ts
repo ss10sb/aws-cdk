@@ -1,13 +1,14 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {mockClient} from "aws-sdk-client-mock";
 import {GetParameterCommand, SSMClient} from "@aws-sdk/client-ssm";
-import {PreSynthHelper, StaticFileProvider} from "../../src/utils";
 import {DescribeImagesCommand, ECRClient, TagStatus} from "@aws-sdk/client-ecr";
-import {CodePipelineEcsStackFactory} from "../../src/stack-factory";
 import path from "path";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
-import {buildCodePipelineEcsStack} from "../../src";
+import {PreSynthHelper} from "../../src/utils/pre-synth-helper";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {StaticFileProvider} from "../../src/utils/static-file-provider";
+import {buildCodePipelineEcsStack} from "../../src/stack-functions";
+import {CodePipelineEcsStackFactory} from "../../src/stack-factory/code-pipeline-ecs-stack-factory";
 
 const configDir = path.join(__dirname, '/../__config__');
 

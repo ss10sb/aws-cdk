@@ -1,9 +1,10 @@
 import {Construct} from "constructs";
-import {NamingHelper, SsmHelper} from "../utils";
 import {StringParameter} from "aws-cdk-lib/aws-ssm";
 import {Arn, Stack} from "aws-cdk-lib";
-import {NonConstruct} from "../core";
 import {ConfigEnvironments} from "./config-definitions";
+import { NonConstruct } from "../core/non-construct";
+import {SsmHelper} from "../utils/ssm-helper";
+import {NamingHelper} from "../utils/naming-helper";
 
 export class ConfigParamStore extends NonConstruct {
 

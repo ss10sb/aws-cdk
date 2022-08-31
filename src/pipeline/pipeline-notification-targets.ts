@@ -1,10 +1,13 @@
-import {NonConstruct} from "../core";
 import {INotificationRuleTarget} from "aws-cdk-lib/aws-codestarnotifications";
 import {Construct} from "constructs";
-import {PipelineNotificationTargetProps} from "./pipeline-definitions";
+import {PipelineNotificationRuleConfig} from "./pipeline-definitions";
 import {Topic} from "aws-cdk-lib/aws-sns";
 import {EmailSubscription} from "aws-cdk-lib/aws-sns-subscriptions";
+import {NonConstruct} from "../core/non-construct";
 
+export interface PipelineNotificationTargetProps extends PipelineNotificationRuleConfig {
+
+}
 export class PipelineNotificationTargets extends NonConstruct {
 
     readonly props: PipelineNotificationTargetProps;

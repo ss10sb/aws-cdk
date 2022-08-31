@@ -1,6 +1,10 @@
-import {ConfigEnvironments, ConfigStackProps} from "./config-definitions";
+import {ConfigEnvironments} from "./config-definitions";
 import {Stack, StackProps} from "aws-cdk-lib";
 import {Construct} from "constructs";
+
+export interface ConfigStackProps {
+    suffix?: string;
+}
 
 export class ConfigStack extends Stack {
 

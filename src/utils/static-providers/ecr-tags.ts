@@ -1,7 +1,7 @@
 import {UsesStaticProvider} from "./uses-static-provider";
-import {EcrTag, TagResponse} from "../sdk";
 import {StaticFileProvider} from "../static-file-provider";
-import {EcrRepositories} from "../../ecr";
+import {EcrTag, TagResponse} from "../sdk/ecr-tag";
+import {EcrRepositories} from "../../ecr/ecr-repositories";
 
 export class EcrTags implements UsesStaticProvider<TagResponse[]> {
 

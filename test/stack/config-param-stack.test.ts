@@ -1,9 +1,9 @@
 import {App} from "aws-cdk-lib";
-import {ConfigParamStack} from "../../src/stack";
-import {ConfigEnvironments} from "../../src/config";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {ConfigStackHelper} from "../../src/utils";
+import {ConfigParamStack} from "../../src/stack/config-param-stack";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {ConfigStackHelper} from "../../src/utils/config-stack-helper";
 
 describe('config param stack', () => {
 

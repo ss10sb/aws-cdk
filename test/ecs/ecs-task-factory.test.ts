@@ -1,22 +1,19 @@
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {App, Stack} from "aws-cdk-lib";
-import {VpcHelper} from "../../src/utils";
 import {Cluster} from "aws-cdk-lib/aws-ecs";
-import {
-    ContainerCommand,
-    ContainerCommandFactory,
-    ContainerEntryPoint,
-    ContainerFactory,
-    ContainerType,
-    EcsTaskFactory,
-    SchedulableTypes,
-    TaskDefinitionFactory,
-    TaskServiceType
-} from "../../src/ecs";
-import {Secrets} from "../../src/secret";
-import {TemplateHelper} from "../../src/utils/testing";
+import {ContainerCommand, ContainerCommandFactory, ContainerEntryPoint} from "../../src/ecs/container-command-factory";
+import {TaskDefinitionFactory} from "../../src/ecs/task-definition-factory";
+import {Secrets} from "../../src/secret/secrets";
+import {ContainerType} from "../../src/ecs/container-definitions";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EcsTaskFactory} from "../../src/ecs/ecs-task-factory";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {SchedulableTypes, TaskServiceType} from "../../src/ecs/task-definitions";
+import {ContainerFactory} from "../../src/ecs/container-factory";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]

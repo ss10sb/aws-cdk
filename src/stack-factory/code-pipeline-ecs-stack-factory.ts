@@ -1,9 +1,9 @@
 import {App} from "aws-cdk-lib";
-import {HelperRunProps, StackConfig} from "../config";
-import {ConfigStackHelper} from "../utils";
-import {EcrRepositories} from "../ecr";
-import {CodePipelineEcsStack} from "../stack";
 import {CodePipelineEcsStackFactoryProps, StackFactory} from "./stack-factory-definitions";
+import {EcrRepositories} from "../ecr/ecr-repositories";
+import {CodePipelineEcsStack} from "../stack/code-pipeline-ecs-stack";
+import {HelperRunProps, StackConfig} from "../config/config-definitions";
+import {ConfigStackHelper} from "../utils/config-stack-helper";
 
 export class CodePipelineEcsStackFactory implements StackFactory {
 
@@ -22,7 +22,7 @@ export class CodePipelineEcsStackFactory implements StackFactory {
     async initialize() {
         const preSynthHelperResponse = await this.props.preSynthHelper.run();
         this.paramConfig = preSynthHelperResponse.config;
-        this.ecrRepositories = preSynthHelperResponse.ecrRepositories;
+        this.ecrRepositories = <EcrRepositories>preSynthHelperResponse.ecrRepositories;
         this.initialized = true;
     }
 

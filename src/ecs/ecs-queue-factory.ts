@@ -1,13 +1,42 @@
-import {AbstractFactory} from "../core";
-import {EcsQueueConfigProps, EcsQueueFactoryProps, EcsQueueWrapper} from "./task-definitions";
-import {ContainerImage, FargatePlatformVersion, LogDriver, Secret} from "aws-cdk-lib/aws-ecs";
-import {ContainerCommand, ContainerEntryPoint} from "./container-definitions";
+import {BaseServiceAndTaskProps, Wrapper} from "./task-definitions";
+import {Cluster, ContainerImage, FargatePlatformVersion, LogDriver, Secret} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
 import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {Duration, RemovalPolicy} from "aws-cdk-lib";
-import {Secrets} from "../secret";
-import {EcrRepositoryType} from "../ecr";
 import {QueueProcessingFargateService} from "aws-cdk-lib/aws-ecs-patterns";
+import {ContainerCommand, ContainerCommandFactory, ContainerEntryPoint} from "./container-command-factory";
+import {Command} from "@aws-sdk/client-ssm";
+import {ScalingInterval} from "aws-cdk-lib/aws-applicationautoscaling";
+import {Queue} from "aws-cdk-lib/aws-sqs";
+import {QueueConfigProps} from "../sqs/sqs-definitions";
+import {EcrRepositoryType} from "../ecr/ecr-definitions";
+import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
+import {Secrets} from "../secret/secrets";
+import {AbstractFactory} from "../core/abstract-factory";
+
+export interface EcsQueueConfigProps extends BaseServiceAndTaskProps, QueueConfigProps {
+    readonly image: EcrRepositoryType | string;
+    readonly command?: Command;
+    readonly cpu: number;
+    readonly memoryLimitMiB?: number;
+    readonly minScalingCapacity?: number;
+    readonly maxScalingCapacity?: number;
+    readonly scalingSteps?: ScalingInterval[];
+}
+
+export interface EcsQueueFactoryProps {
+    readonly cluster: Cluster;
+    readonly repositoryFactory: EcrRepositoryFactory;
+    readonly secretKeys?: string[];
+    readonly environment?: Record<string, string>;
+    readonly secrets: Secrets;
+    readonly commandFactory: ContainerCommandFactory;
+    readonly queue?: Queue;
+}
+
+export interface EcsQueueWrapper extends Wrapper {
+    readonly wrapper: QueueProcessingFargateService;
+}
 
 export class EcsQueueFactory extends AbstractFactory {
 

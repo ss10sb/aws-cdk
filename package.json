@@ -8,14 +8,20 @@
     "url": "https://github.com/ss10sb/aws-cdk.git"
   },
   "scripts": {
-    "build": "rm -rf dist/* && tsc",
+    "compile": "tsc",
+    "clean": "rm -rf dist",
+    "prebuildpackage": "npm run clean && npm run compile && node dist/setup-package.js",
+    "buildpackage": "cd dist && npm pack",
     "lint": "eslint .",
-    "prepare": "rm -rf dist/* && npm run build",
+    "madge": "madge --ts-config ./tsconfig.json --circular --extensions ts ./src",
     "test": "jest",
     "watch": "tsc -w"
   },
   "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "^2.38.1-alpha",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.38.1-alpha",
     "@aws-sdk/client-ecr": "^3.154.0",
+    "@aws-sdk/client-secrets-manager": "^3.154.0",
     "@aws-sdk/client-ssm": "^3.154.0",
     "aws-cdk-lib": "^2.38.1",
     "constructs": "^10.1.84",
@@ -29,14 +35,15 @@
     "@typescript-eslint/parser": "^5.34.0",
     "@typescript-eslint/eslint-plugin": "^5.34.0",
     "aws-cdk-lib": "^2.38.1",
-    "aws-sdk-client-mock": "^1.0.0",
+    "aws-sdk-client-mock": "^2.0.0",
     "constructs": "^10.1.84",
     "eslint": "^8.22.0",
     "jest": "^28.1.3",
+    "madge": "^5.0.1",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
     "tslib": "^2.4.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.8.2"
   },
   "optionalDependencies": {
     "fsevents": "^2.3.2"
@@ -45,81 +52,5 @@
     "aws-cdk-lib": "^2.38.1",
     "constructs": "^10.1.84"
   },
-  "files": [
-    "dist/**/*"
-  ],
-  "type": "commonjs",
-  "main": "./dist/index.js",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js"
-    },
-    "./package.json": "./package.json",
-    "./alb": {
-      "require": "./dist/alb/index.js"
-    },
-    "./config": {
-      "require": "./dist/config/index.js"
-    },
-    "./core": {
-      "require": "./dist/core/index.js"
-    },
-    "./dynamodb": {
-      "require": "./dist/dynamodb/index.js"
-    },
-    "./ecr": {
-      "require": "./dist/ecr/index.js"
-    },
-    "./ecs": {
-      "require": "./dist/ecs/index.js"
-    },
-    "./env": {
-      "require": "./dist/env/index.js"
-    },
-    "./permissions": {
-      "require": "./dist/permissions/index.js"
-    },
-    "./pipeline": {
-      "require": "./dist/pipeline/index.js"
-    },
-    "./route53": {
-      "require": "./dist/route53/index.js"
-    },
-    "./s3": {
-      "require": "./dist/s3/index.js"
-    },
-    "./secret": {
-      "require": "./dist/secret/index.js"
-    },
-    "./ses": {
-      "require": "./dist/ses/index.js"
-    },
-    "./sqs": {
-      "require": "./dist/sqs/index.js"
-    },
-    "./stack": {
-      "require": "./dist/stack/index.js"
-    },
-    "./stack-factory": {
-      "require": "./dist/stack-factory/index.js"
-    },
-    "./start-stop": {
-      "require": "./dist/start-stop/index.js"
-    },
-    "./task": {
-      "require": "./dist/task/index.js"
-    },
-    "./utils": {
-      "require": "./dist/utils/index.js"
-    },
-    "./utils/sdk": {
-      "require": "./dist/utils/sdk/index.js"
-    },
-    "./utils/static-providers": {
-      "require": "./dist/utils/static-providers/index.js"
-    },
-    "./utils/testing": {
-      "require": "./dist/utils/testing/index.js"
-    }
-  }
+  "type": "commonjs"
 }

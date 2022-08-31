@@ -1,8 +1,8 @@
-import {NonConstruct} from "../core";
 import {ISecret, Secret} from "aws-cdk-lib/aws-secretsmanager";
 import {SecretItem} from "./secret-definitions";
-import {SecretConfigHelper} from "../utils";
-import {aws_ecs} from "aws-cdk-lib";
+import {aws_ecs, SecretValue} from "aws-cdk-lib";
+import {NonConstruct} from "../core/non-construct";
+import {SecretConfigHelper} from "../utils/secret-config-helper";
 
 export class Secrets extends NonConstruct {
 
@@ -11,6 +11,13 @@ export class Secrets extends NonConstruct {
     fetch(): ISecret {
         if (!this.secret) {
             this.secret = Secret.fromSecretNameV2(this.scope, `${this.id}-secret-lookup`, this.getSecretName());
+        }
+        return this.secret;
+    }
+
+    fetchByArn(arn: string): ISecret {
+        if (!this.secret) {
+            this.secret = Secret.fromSecretCompleteArn(this.scope, `${this.id}-secret-lookup-arn`, arn);
         }
         return this.secret;
     }
@@ -26,6 +33,25 @@ export class Secrets extends NonConstruct {
     getEcsSecrets(keys: string[]): Record<string, aws_ecs.Secret> {
         const secret = this.fetch();
         return this.getEcsSecretsFromSecret(keys, secret);
+    }
+
+    getReferencesFromSecret(keys: string[], secret: ISecret): Record<string, string> {
+        const secrets: Record<string, string> = {};
+        for (const key of keys) {
+            secrets[key] = this.getReferenceFromSecret(key, secret);
+        }
+        return secrets;
+    }
+
+    getReferenceFromSecret(key: string, secret: ISecret): string {
+        const s = SecretValue.secretsManager(secret.secretArn, {
+            jsonField: key
+        });
+        return s.toString();
+    }
+
+    createEmptySecret(): Secret {
+        return this.create([]);
     }
 
     create(secretItems: SecretItem[]): Secret {

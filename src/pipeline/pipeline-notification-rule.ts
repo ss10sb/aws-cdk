@@ -1,6 +1,4 @@
-import {NonConstruct} from "../core";
 import {Construct} from "constructs";
-import {PipelineNotificationRuleProps} from "./pipeline-definitions";
 import {
     INotificationRule,
     INotificationRuleTarget,
@@ -8,7 +6,14 @@ import {
 } from "aws-cdk-lib/aws-codestarnotifications";
 import {PipelineNotificationTargets} from "./pipeline-notification-targets";
 import {CodePipeline} from "aws-cdk-lib/pipelines";
-import {IPipeline} from "aws-cdk-lib/aws-codepipeline";
+import {IPipeline, Pipeline} from "aws-cdk-lib/aws-codepipeline";
+import {PipelineNotificationRuleConfig} from "./pipeline-definitions";
+import {NonConstruct} from "../core/non-construct";
+
+
+export interface PipelineNotificationRuleProps extends PipelineNotificationRuleConfig {
+    source: CodePipeline | Pipeline;
+}
 
 export class PipelineNotificationRule extends NonConstruct {
 

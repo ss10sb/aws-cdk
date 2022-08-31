@@ -1,9 +1,17 @@
-import {NonConstruct} from "../core";
-import {StartStopFactoryProps, StartStopLambdaEventStatus} from "./start-stop-definitions";
-import {StartStopFunction} from "./start-stop-function";
+import {StartStopLambdaEventStatus} from "./start-stop-definitions";
+import {StartStopFunction, StartStopFunctionProps} from "./start-stop-function";
 import {StartStopEvent} from "./start-stop-event";
 import {Construct} from "constructs";
 import {ICluster} from "aws-cdk-lib/aws-ecs";
+import {NonConstruct} from "../core/non-construct";
+
+export interface StartStopFactoryProps {
+    readonly start?: string;
+    readonly stop: string;
+    startStopFunctionProps?: StartStopFunctionProps;
+}
+
+
 
 export class StartStopFactory extends NonConstruct {
 

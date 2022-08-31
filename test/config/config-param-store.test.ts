@@ -1,7 +1,9 @@
 import {App} from "aws-cdk-lib";
-import {BaseConfig, ConfigParamStore, ConfigStack, StackConfig} from "../../src/config";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {ParameterTier, ParameterType} from "aws-cdk-lib/aws-ssm";
+import {BaseConfig, StackConfig} from "../../src/config/config-definitions";
+import {ConfigParamStore} from "../../src/config/config-param-store";
+import {ConfigStack} from "../../src/config/config-stack";
 
 describe('config param store', () => {
 

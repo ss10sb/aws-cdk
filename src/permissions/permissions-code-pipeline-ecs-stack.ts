@@ -1,14 +1,15 @@
-import {NonConstruct} from "../core";
 import {Construct} from "constructs";
-import {CodePipelineEcsStackServicesProps} from "../pipeline";
 import {Stack} from "aws-cdk-lib";
 import {PermissionsEcr} from "./permissions-ecr";
-import {EnvConfig} from "../env";
 import {PermissionsParameter} from "./permissions-parameter";
 import {IGrantable} from "aws-cdk-lib/aws-iam";
-import {NamingHelper, SsmHelper} from "../utils";
 import {IStringParameter} from "aws-cdk-lib/aws-ssm";
 import {PermissionsBootstrap} from "./permissions-bootstrap";
+import {EnvConfig} from "../env/env-base-stack";
+import { NonConstruct } from "../core/non-construct";
+import { CodePipelineEcsStackServicesProps } from "../pipeline/code-pipeline-definitions";
+import {NamingHelper} from "../utils/naming-helper";
+import {SsmHelper} from "../utils/ssm-helper";
 
 export class PermissionsCodePipelineEcsStack extends NonConstruct {
 

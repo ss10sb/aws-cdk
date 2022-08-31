@@ -1,8 +1,21 @@
-import {NonConstruct} from "../core";
-import {StartStopEventProps, StartStopLambdaEventProps} from "./start-stop-definitions";
 import {Rule, RuleTargetInput, Schedule} from "aws-cdk-lib/aws-events";
 import {Construct} from "constructs";
 import {LambdaFunction} from "aws-cdk-lib/aws-events-targets";
+import {aws_lambda} from "aws-cdk-lib";
+import {StartStopLambdaEventStatus} from "./start-stop-definitions";
+import {NonConstruct} from "../core/non-construct";
+
+
+
+export interface StartStopEventProps {
+    readonly lambdaFunction: aws_lambda.Function;
+}
+
+export interface StartStopLambdaEventProps {
+    readonly clusterArn: string;
+    readonly status: StartStopLambdaEventStatus;
+    readonly schedule: string;
+}
 
 export class StartStopEvent extends NonConstruct {
 

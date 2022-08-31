@@ -1,6 +1,6 @@
-import {SecretConfigHelper} from "../utils";
 import {SecretsConfig} from "./secret-definitions";
-import {StackConfig} from "../config";
+import {StackConfig} from "../config/config-definitions";
+import {SecretConfigHelper} from "../utils/secret-config-helper";
 
 export class SecretConfigKeys {
 

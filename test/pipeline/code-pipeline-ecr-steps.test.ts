@@ -1,11 +1,14 @@
 import {App, Stack} from "aws-cdk-lib";
-import {CodePipelineCodestarSource, CodePipelineEcrSteps} from "../../src/pipeline";
 import {CodePipeline, ShellStep} from "aws-cdk-lib/pipelines";
-import {ConfigEnvironments} from "../../src/config";
-import {EcrRepositories, EcrRepositoryFactory, EcrRepositoryType} from "../../src/ecr";
-import {TemplateHelper} from "../../src/utils/testing";
 import {Template} from "aws-cdk-lib/assertions";
-import {ConfigStackHelper} from "../../src/utils";
+import {EcrRepositoryType} from "../../src/ecr/ecr-definitions";
+import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
+import {CodePipelineEcrSteps} from "../../src/pipeline/code-pipeline-ecr-steps";
+import {EcrRepositories} from "../../src/ecr/ecr-repositories";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
+import {ConfigEnvironments} from "../../src/config/config-definitions";
+import {ConfigStackHelper} from "../../src/utils/config-stack-helper";
 
 describe('code pipeline ecr steps', () => {
 

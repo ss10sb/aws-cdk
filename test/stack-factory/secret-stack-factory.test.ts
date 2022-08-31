@@ -1,7 +1,7 @@
-import {SecretStackFactory} from "../../src/stack-factory";
 import path from "path";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {buildSecretStacks} from "../../src";
+import {SecretStackFactory} from "../../src/stack-factory/secret-stack-factory";
+import {buildSecretStacks} from "../../src/stack-functions";
 
 const configDir = path.join(__dirname, '/../__configLive__');
 
@@ -62,7 +62,7 @@ function getExpectedSecrets() {
             Properties: {
                 GenerateSecretString: {
                     GenerateStringKey: 'salt',
-                    SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:/sdlc","APP_URL":"https://test.sdlc.example.edu"}'
+                    SecretStringTemplate: '{}'
                 },
                 Name: 'pcc-sdlc-test-secrets/environment',
                 Tags: [
@@ -79,7 +79,7 @@ function getExpectedSecrets() {
             Properties: {
                 GenerateSecretString: {
                     GenerateStringKey: 'salt',
-                    SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod","APP_URL":"https://test.example.edu"}'
+                    SecretStringTemplate: '{}'
                 },
                 Name: 'pcc-prod-test-secrets/environment',
                 Tags: [
@@ -101,7 +101,7 @@ function getExpectedSecretsWithSuffix() {
             Properties: {
                 GenerateSecretString: {
                     GenerateStringKey: 'salt',
-                    SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod-abc","APP_URL":"https://test.example.edu"}'
+                    SecretStringTemplate: '{}'
                 },
                 Name: 'pcc-prod-test-abc-secrets/environment',
                 Tags: [
@@ -118,7 +118,7 @@ function getExpectedSecretsWithSuffix() {
             Properties: {
                 GenerateSecretString: {
                     GenerateStringKey: 'salt',
-                    SecretStringTemplate: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod-def","APP_URL":"https://test.example.edu"}'
+                    SecretStringTemplate: '{}'
                 },
                 Name: 'pcc-prod-test-def-secrets/environment',
                 Tags: [

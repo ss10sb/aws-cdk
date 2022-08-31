@@ -1,9 +1,15 @@
-import {NonConstruct} from "../core";
-import {CodePipelineEcrStepsProps} from "./code-pipeline-definitions";
 import {CodeBuildStep} from "aws-cdk-lib/pipelines";
 import {IRole, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {Construct} from "constructs";
 import {CodePipelineEcrStep} from "./code-pipeline-ecr-step";
+import {CodePipelineCodestarSource} from "./code-pipeline-codestar-source";
+import {EcrRepositories} from "../ecr/ecr-repositories";
+import {NonConstruct} from "../core/non-construct";
+
+export interface CodePipelineEcrStepsProps {
+    repositories: EcrRepositories;
+    source: CodePipelineCodestarSource;
+}
 
 export class CodePipelineEcrSteps extends NonConstruct {
 

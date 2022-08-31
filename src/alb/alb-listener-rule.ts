@@ -1,16 +1,19 @@
-import {NonConstruct} from "../core";
 import {
     ApplicationListenerRule,
     IApplicationListener,
     IApplicationTargetGroup,
     ListenerCondition
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import {AlbListenerRuleProps} from "./alb-definitions";
 import {Construct} from "constructs";
+import {NonConstruct} from "../core/non-construct";
+
+export interface AlbListenerRuleProps {
+    priority: number;
+    conditions: { [key: string]: any }
+}
 
 export class AlbListenerRule extends NonConstruct {
     readonly listener: IApplicationListener;
-    readonly props: AlbListenerRuleProps;
     readonly map: Record<string, any> = {
         hostHeaders: ListenerCondition.hostHeaders,
         httpHeader: ListenerCondition.httpHeader,
@@ -20,25 +23,24 @@ export class AlbListenerRule extends NonConstruct {
         sourceIps: ListenerCondition.sourceIps
     };
 
-    constructor(scope: Construct, id: string, listener: IApplicationListener, props: AlbListenerRuleProps) {
+    constructor(scope: Construct, id: string, listener: IApplicationListener) {
         super(scope, id);
         this.listener = listener;
-        this.props = props;
     }
 
-    createListenerRule(targetGroup: IApplicationTargetGroup): ApplicationListenerRule {
-        const name = `${this.id}-${this.props.priority}`;
+    create(targetGroup: IApplicationTargetGroup, props: AlbListenerRuleProps): ApplicationListenerRule {
+        const name = `${this.id}-${props.priority}`;
         return new ApplicationListenerRule(this.scope, name, {
-            priority: this.props.priority,
-            conditions: this.createConditions(),
+            priority: props.priority,
+            conditions: this.createConditions(props),
             listener: this.listener,
             targetGroups: [targetGroup]
         });
     }
 
-    private createConditions(): ListenerCondition[] {
+    private createConditions(props: AlbListenerRuleProps): ListenerCondition[] {
         const conditions: ListenerCondition[] = [];
-        for (const [k, v] of Object.entries(this.props.conditions)) {
+        for (const [k, v] of Object.entries(props.conditions)) {
             conditions.push(this.getCondition(k, v));
         }
         return conditions;

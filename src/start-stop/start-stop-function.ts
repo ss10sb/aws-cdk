@@ -1,10 +1,19 @@
-import {NonConstruct} from "../core";
-import {StartStopFunctionProps} from "./start-stop-definitions";
 import {aws_lambda, Duration} from "aws-cdk-lib";
 import {Code, Runtime} from "aws-cdk-lib/aws-lambda";
 import {Construct} from "constructs";
 import {RetentionDays} from "aws-cdk-lib/aws-logs";
 import * as path from "path";
+import {ICluster} from "aws-cdk-lib/aws-ecs";
+import {NonConstruct} from "../core/non-construct";
+
+export interface StartStopFunctionProps {
+    readonly memorySize?: number;
+    readonly timeout?: number;
+    readonly runtime?: Runtime;
+    readonly handler?: string;
+    readonly code?: string;
+    cluster?: ICluster;
+}
 
 export class StartStopFunction extends NonConstruct {
 

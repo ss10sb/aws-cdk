@@ -1,8 +1,14 @@
-import {NonConstruct} from "../core";
 import {Construct} from "constructs";
-import {Queue, QueueEncryption} from "aws-cdk-lib/aws-sqs";
-import {SqsProps} from "./sqs-definitions";
+import {DeadLetterQueue, Queue, QueueEncryption} from "aws-cdk-lib/aws-sqs";
+import {Duration} from "aws-cdk-lib";
+import {NonConstruct} from "../core/non-construct";
 
+export interface SqsProps {
+    queueName?: string;
+    encryption?: QueueEncryption;
+    deadLetterQueue?: DeadLetterQueue;
+    retentionPeriod?: Duration;
+}
 export class Sqs extends NonConstruct {
 
     readonly defaults: Record<string, any> = {};

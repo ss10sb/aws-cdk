@@ -1,8 +1,18 @@
-import {NonConstruct} from "../core";
-import {CodeStarSourceProps} from "./code-pipeline-definitions";
 import {CodePipelineSource} from "aws-cdk-lib/pipelines";
-import {NamingHelper} from "../utils";
 import {Construct} from "constructs";
+import {NonConstruct} from "../core/non-construct";
+import {NamingHelper} from "../utils/naming-helper";
+
+export interface SourceProps {
+    owner: string;
+    repo: string;
+    branch?: string;
+    triggerOnPush?: boolean;
+}
+
+export interface CodeStarSourceProps extends SourceProps {
+    connectionArn: string;
+}
 
 export class CodePipelineCodestarSource extends NonConstruct {
     readonly props: CodeStarSourceProps;
@@ -16,7 +26,8 @@ export class CodePipelineCodestarSource extends NonConstruct {
 
     createCodeStarSource(): CodePipelineSource {
         return CodePipelineSource.connection(this.getRepo(), this.getBranch(), {
-            connectionArn: this.props.connectionArn
+            connectionArn: this.props.connectionArn,
+            triggerOnPush: this.props.triggerOnPush ?? true
         });
     }
 

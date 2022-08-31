@@ -1,17 +1,19 @@
-import {ConfigLoader} from "../config";
 import {NamingHelper} from "./naming-helper";
 import {ConfigStackHelper} from "./config-stack-helper";
-import {ConfigSsmParams, EcrTags} from "./static-providers";
 import {StaticFileProvider} from "./static-file-provider";
-import {EcrTag, SsmParam, TagResponse} from "./sdk";
 import {ClientDefaults as SSMClientDefaults} from "@aws-sdk/client-ssm";
-import {EcrRepositories, EcrRepositoriesProps} from "../ecr";
 import {ClientDefaults as ECRClientDefaults} from "@aws-sdk/client-ecr";
+import {EcrRepositories, EcrRepositoriesProps} from "../ecr/ecr-repositories";
+import {EcrTag, TagResponse} from "./sdk/ecr-tag";
+import {ConfigLoader} from "../config/config-loader";
+import {ConfigSsmParams} from "./static-providers/config-ssm-params";
+import {EcrTags} from "./static-providers/ecr-tags";
+import {SsmParam} from "./sdk/ssm-param";
 
 export interface PreSynthHelperResponse {
     config: Record<string, any>;
-    ecrRepositories: EcrRepositories;
-    tagResponses: TagResponse[];
+    ecrRepositories?: EcrRepositories;
+    tagResponses?: TagResponse[];
 }
 
 export interface PreSynthHelperProps {
@@ -19,6 +21,10 @@ export interface PreSynthHelperProps {
     staticProviderBaseDir?: string;
     clientConfig: Record<string, any>;
     env?: string;
+}
+
+export interface PreSynthRunProps {
+    loadEcr?: boolean;
 }
 
 export class PreSynthHelper {
@@ -31,15 +37,19 @@ export class PreSynthHelper {
         this.staticProvider = new StaticFileProvider(this.props.staticProviderBaseDir);
     }
 
-    async run(): Promise<PreSynthHelperResponse> {
+    async run(props: PreSynthRunProps = {}): Promise<PreSynthHelperResponse> {
         const preLoadConfig = this.getPreLoadConfig();
         this.validateConfig(preLoadConfig);
         this.ensureClientConfigHasRegion(preLoadConfig);
         const configParam = NamingHelper.configParamName(ConfigStackHelper.getMainStackName(preLoadConfig));
         const config = await this.provisionConfig(configParam);
         this.validateConfig(config);
-        const ecrRepositories = this.getEcrRepositories(config);
-        const tagResponses = await this.provisionEcrRepositories(ecrRepositories);
+        let ecrRepositories: EcrRepositories | undefined = undefined;
+        let tagResponses: TagResponse[] | undefined = undefined;
+        if (props.loadEcr ?? true) {
+            ecrRepositories = this.getEcrRepositories(config);
+            tagResponses = await this.provisionEcrRepositories(ecrRepositories);
+        }
         return {
             config: config,
             ecrRepositories: ecrRepositories,

@@ -1,7 +1,12 @@
-import {NonConstruct} from "../core";
-import {AttributeType, BillingMode, Table, TableEncryption} from "aws-cdk-lib/aws-dynamodb";
-import {DynamoDbProps} from "./dynamodb-definitions";
+import {Attribute, AttributeType, BillingMode, Table, TableEncryption} from "aws-cdk-lib/aws-dynamodb";
 import {RemovalPolicy} from "aws-cdk-lib";
+import {NonConstruct} from "../core/non-construct";
+
+export interface DynamoDbProps {
+    partitionKey?: Attribute;
+    billingMode?: BillingMode;
+    encryption?: TableEncryption;
+}
 
 export class Dynamodb extends NonConstruct {
 

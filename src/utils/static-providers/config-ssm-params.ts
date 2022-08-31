@@ -1,7 +1,7 @@
 import {UsesStaticProvider} from "./uses-static-provider";
-import {BaseConfig} from "../../config";
 import {StaticFileProvider} from "../static-file-provider";
-import {SsmParam, SsmParamResponse} from "../sdk";
+import {BaseConfig} from "../../config/config-definitions";
+import {SsmParam, SsmParamResponse} from "../sdk/ssm-param";
 
 export class ConfigSsmParams<T extends BaseConfig> implements UsesStaticProvider<T> {
 
