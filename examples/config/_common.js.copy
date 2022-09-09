@@ -1,0 +1,8 @@
+module.exports = {
+    Name: "test",
+    College: "PCC",
+    domain: 'phoenixcollege.edu',
+    subdomain: 'test',
+    priority: 310,
+    canCreateTask: true
+};

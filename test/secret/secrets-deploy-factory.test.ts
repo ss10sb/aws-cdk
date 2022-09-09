@@ -44,19 +44,26 @@ describe('secrets deploy factory', () => {
         });
         mock.on(PutSecretValueCommand, {
             SecretId: 'arn:abc123',
-            SecretString: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:/sdlc","APP_URL":"https://test.sdlc.example.edu"}'
         }).resolvesOnce({
             $metadata: {},
             ARN: 'arn:abc123'
         });
         mock.on(PutSecretValueCommand, {
             SecretId: 'arn:abc456',
-            SecretString: '{"ADMIN_USER_ID":"1234567","APP_NAME":"Test App","APP_KEY":"base64:prod","APP_URL":"https://test.example.edu"}'
         }).resolvesOnce({
             $metadata: {},
             ARN: 'arn:abc456'
         });
         const results = await factory.deploy({idSuffix: 'secrets'});
+        const expectedKeys = [
+            'ADMIN_USER_ID',
+            'APP_NAME',
+            'APP_KEY',
+            'APP_URL',
+            'AUTHORIZER_TOKEN'
+        ];
+        expect(results[0].keys).toEqual(expectedKeys);
+        expect(results[1].keys).toEqual(expectedKeys);
         expect(results[0].result?.ARN).toEqual('arn:abc123');
         expect(results[1].result?.ARN).toEqual('arn:abc456');
     });

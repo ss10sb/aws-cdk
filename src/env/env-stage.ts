@@ -17,7 +17,7 @@ export class EnvStage extends Stage {
             region: this.getRegion(config)
         }
         const name = ConfigStackHelper.getMainStackName(config);
-        this.stack = this.buildStack(name, config, {}, {env: env}, envProps);
+        this.stack = this.buildStack(name, config, {}, {env: env, stackName: name}, envProps);
     }
 
     protected buildStack(name: string, config: EnvConfig, configStackProps: ConfigStackProps, stackProps: StackProps, envProps: Record<string, any>) {

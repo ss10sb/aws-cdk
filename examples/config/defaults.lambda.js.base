@@ -1,0 +1,106 @@
+const common = require('./_common');
+const {DetailType} = require("aws-cdk-lib/aws-codestarnotifications");
+const {PipelineNotificationEvents} = require("aws-cdk-lib/aws-codepipeline");
+const path = require("path");
+const {ConfigEnvironments} = require("@smorken/aws-cdk/config/config-definitions");
+const {EnvBuildType, EnvEndpointType} = require("@smorken/aws-cdk/env/env-definitions");
+const {BrefRuntime, LaravelHandler} = require("@smorken/aws-cdk/lambda/bref-definitions");
+const {RemovalPolicy} = require("aws-cdk-lib");
+const {ApiType} = require("@smorken/aws-cdk/lambda/lambda-definitions");
+
+module.exports = {
+    Name: common.Name,
+    College: common.College,
+    Environment: ConfigEnvironments.SHARED,
+    Version: "0.0.0",
+    Parameters: {
+        sourceProps: {
+            "owner": "phoenixcollege",
+            "repo": "CHANGEME",
+            "connectionArn": "arn..."
+        },
+        pipelineNotification: {
+            detailType: DetailType.BASIC,
+            events: [
+                PipelineNotificationEvents.MANUAL_APPROVAL_NEEDED,
+                PipelineNotificationEvents.PIPELINE_EXECUTION_FAILED,
+                PipelineNotificationEvents.PIPELINE_EXECUTION_SUCCEEDED
+            ],
+            emails: ['CHANGEME@phoenixcollege.edu']
+        },
+    },
+    Environments: [
+        {
+            AWSAccountId: '11111',
+            AWSRegion: 'us-west-2',
+            Name: common.Name,
+            College: common.College,
+            Environment: ConfigEnvironments.SDLC,
+            Version: "0.0.0",
+            Parameters: {
+                buildType: EnvBuildType.LAMBDA,
+                endpointType: EnvEndpointType.CLOUDFRONT,
+                alarmEmails: ['CHANGEME@phoenixcollege.edu'],
+                hostedZoneDomain: `sdlc.${common.domain}`,
+                dynamoDb: {},
+                subdomain: common.subdomain,
+                distribution: {
+                    assetBucket: {
+                        removalPolicy: RemovalPolicy.DESTROY,
+                        autoDeleteObjects: true
+                    },
+                    assetPath: 'assets/*',
+                    assetPathToCopy: path.join('.', 'codebase', 'public'),
+                    functionProps: {
+                        appPath: path.join('.', 'codebase'),
+                        brefRuntime: BrefRuntime.PHP81FPM,
+                        hasEnvironment: true,
+                        hasSecrets: true,
+                        scheduledEvents: [
+                            {
+                                schedule: 'rate(10 minutes)',
+                                eventInput: {warmer: true}
+                            }
+                        ]
+                    },
+                    enableLogging: false,
+                    apiProps: {
+                        apiType: ApiType.HTTP,
+                        logProps: {},
+                        authorizerProps: {
+                            debug: false,
+                            subnets: ['140.198.16.0/21','184.177.15.70/32']
+                        }
+                    }
+                },
+                queue: {
+                    hasDeadLetterQueue: true,
+                    queueFunction: {
+                        appPath: path.join('.', 'codebase'),
+                        brefRuntime: BrefRuntime.PHP81,
+                        hasSecrets: true,
+                        hasEnvironment: true,
+                        environment: {
+                            BREF_LOOP_MAX: '10'
+                        }
+                    }
+                },
+                functions: [
+                    {
+                        appPath: path.join('.', 'codebase'),
+                        hasSecrets: true,
+                        hasEnvironment: true,
+                        lambdaHandler: LaravelHandler.ARTISAN,
+                        brefRuntime: [BrefRuntime.PHP81, BrefRuntime.CONSOLE],
+                        scheduledEvents: [
+                            {
+                                schedule: 'rate(5 minutes)',
+                                eventInput: {cli: 'schedule:run'}
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

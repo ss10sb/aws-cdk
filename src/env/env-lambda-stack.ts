@@ -7,13 +7,13 @@ import {SqsEventSource} from "aws-cdk-lib/aws-lambda-event-sources";
 import {HealthCheck} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {Functions, FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "../lambda/lambda-definitions";
-import { AlbListenerRuleProps } from "../alb/alb-listener-rule";
-import { AlbTargetGroupProps } from "../alb/alb-target-group";
+import {AlbListenerRuleProps} from "../alb/alb-listener-rule";
+import {AlbTargetGroupProps} from "../alb/alb-target-group";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "../lambda/php-bref-function";
-import { DistributionConfigProps } from "../cloudfront/cloudfront-definitions";
+import {DistributionConfigProps} from "../cloudfront/cloudfront-definitions";
 import {ConfigStackProps} from "../config/config-stack";
 import {PermissionsEnvLambdaStack} from "../permissions/permissions-env-lamdba-stack";
-import {BrefFactory, BrefFactoryDistributionProps, BrefFactoryDistributionResult} from "../lambda/bref-factory";
+import {BrefDistribution, BrefDistributionProps, BrefDistributionResult} from "../lambda/bref-distribution";
 
 export interface EnvLambdaStackServicesProps extends EnvStackServicesProps {
     readonly functions: Functions;
@@ -49,6 +49,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
         this.functionFactory = new PhpBrefFunction(this, this.node.id, {
+            vpc: this.lookups.vpc,
             secret: this.lookups.secret,
             environment: this.getEnvironment({
                 table: table,
@@ -67,6 +68,9 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             const result = this.brefDistributionFactory();
             this.lookups.distribution = result.distribution;
             wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
+            if (result.apiResult.authorizer?.lambdaFunction) {
+                wrappers.push({lambdaFunction: result.apiResult.authorizer.lambdaFunction, type: FunctionType.EVENT});
+            }
         } else {
             throw new Error('ALB endpoint has not been implemented.');
         }
@@ -95,31 +99,36 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
     }
 
     private createFunction(config: PhpBrefFunctionProps): FunctionWrapper {
-        const type = config.type ?? FunctionType.EVENT;
-        const func = this.functionFactory.create(type, config);
+        config.type = config.type ?? FunctionType.EVENT;
+        const func = this.functionFactory.create(config);
         return {
             lambdaFunction: func,
-            type: type
+            type: config.type
         }
     }
 
     private createQueueFunction(queue?: Queue): FunctionWrapper | undefined {
         if (queue && this.config.Parameters.queue?.queueFunction) {
+            this.config.Parameters.queue.queueFunction.type = FunctionType.QUEUE;
             const funcWrap = this.createFunction(this.config.Parameters.queue.queueFunction);
             funcWrap.lambdaFunction.addEventSource(new SqsEventSource(queue));
             return funcWrap;
         }
     }
 
-    private brefDistributionFactory(): BrefFactoryDistributionResult {
-        const brefFactory = new BrefFactory(this, this.node.id, this.functionFactory);
-        const distConfigProps = <BrefFactoryDistributionProps>this.config.Parameters.distribution;
-        distConfigProps.functionProps.vpc = this.lookups.vpc;
+    private brefDistributionFactory(): BrefDistributionResult {
+        const brefFactory = new BrefDistribution(this, this.node.id, {
+            functionFactory: this.functionFactory,
+            secret: this.lookups.secret
+        });
+        const distConfigProps = <BrefDistributionProps>this.config.Parameters.distribution;
+        distConfigProps.apiProps = distConfigProps.apiProps ?? {};
+        distConfigProps.apiProps.alarmEmails = this.config.Parameters.alarmEmails ?? [];
         distConfigProps.certificateProps = {
             domainName: `${this.config.Parameters.subdomain}.${this.config.Parameters.hostedZoneDomain}`,
             hostedZone: this.config.Parameters.hostedZoneDomain,
             region: this.config.Parameters.certificateRegion ?? 'us-east-1'
         }
-        return brefFactory.forDistribution(distConfigProps);
+        return brefFactory.create(distConfigProps);
     }
 }

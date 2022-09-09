@@ -7,3 +7,9 @@ export enum BrefRuntime {
     PHP80FPM = 'php-80-fpm',
     CONSOLE = 'console'
 }
+
+export enum LaravelHandler {
+    WEB = 'public/index.php',
+    QUEUE = 'worker.php',
+    ARTISAN = 'artisan'
+}

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+NPM=npm
+COMPOSER=composer
+$NPM update
+cd codebase
+$NPM update
+$COMPOSER update --ignore-platform-reqs
+cd ..

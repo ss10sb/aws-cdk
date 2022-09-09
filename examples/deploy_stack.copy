@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+export AWS_PROFILE=cdkapps_sdlc
+NPMCMD=iacnpm
+APP="npx ts-node --prefer-ts-exts ts/index.deploy-0.ts"
+
+$NPMCMD run cdk -- --app "$APP" synth --profile $AWS_PROFILE
+
+if [ -n "$1" ]; then
+  $NPMCMD run cdk -- --app "$APP" "$1" --profile $AWS_PROFILE
+fi

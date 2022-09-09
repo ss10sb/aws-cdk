@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "experimentalDecorators": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "module": "CommonJS",
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "@smorken/aws-cdk/*": [
+        "./node_modules/@smorken/aws-cdk/dist/*"
+      ]
+    },
+    "rootDir": "./ts",
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "target": "ES2018"
+  },
+  "exclude": [
+    "./ts/test/",
+    "./node_modules/",
+    "./cdk.out/"
+  ]
+}

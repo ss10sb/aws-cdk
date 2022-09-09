@@ -41,7 +41,7 @@ export class StartStopFunction extends NonConstruct {
             runtime: this.props.runtime ?? this.defaults.runtime,
             handler: this.props.handler ?? this.defaults.handler,
             code: this.props.code ?? this.defaults.code,
-            logRetention: RetentionDays.ONE_MONTH,
+            logRetention: RetentionDays.ONE_WEEK,
             functionName: name,
             environment: {
                 CLUSTER: this.props.cluster?.clusterArn ?? ''

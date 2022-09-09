@@ -2,8 +2,6 @@ import {Construct} from "constructs";
 import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";
 import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "./php-bref-function";
-import {HttpApi} from "@aws-cdk/aws-apigatewayv2-alpha";
-import {PhpHttpApi, PhpHttpApiProps} from "./php-http-api";
 import {Bucket, BucketEncryption} from "aws-cdk-lib/aws-s3";
 import {BucketDeployment, Source} from "aws-cdk-lib/aws-s3-deployment";
 import {IDistribution, SecurityPolicyProtocol} from "aws-cdk-lib/aws-cloudfront";
@@ -18,9 +16,12 @@ import {WebDistribution} from "../cloudfront/web-distribution";
 import fs from "fs";
 import path from "path";
 import {PhpVersion} from "../config/config-definitions";
-import {ApiType, FunctionType, PhpApiProps} from "./lambda-definitions";
-import {LambdaRestApi, RestApi} from "aws-cdk-lib/aws-apigateway";
-import {PhpLambdaRestApi, PhpRestApiProps} from "./php-lambda-rest-api";
+import {FunctionType, PhpApiProps, PhpApiResult} from "./lambda-definitions";
+import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
+import {Secrets} from "../secret/secrets";
+import {AUTHORIZER_TOKEN} from "./authorizer-base";
+import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {PhpApiFactory} from "./php-api-factory";
 
 interface BrefFactoryProps {
     functionProps: PhpBrefFunctionProps;
@@ -28,13 +29,13 @@ interface BrefFactoryProps {
     assetPathToCopy?: string;
     assetBucket?: S3Props;
     phpVersion?: PhpVersion;
-    apiType?: ApiType;
 }
 
 export interface BrefFactoryDistributionProps extends BrefFactoryProps {
     certificateProps: DnsValidatedCertificateProps;
     apiProps: PhpApiProps;
     minimumSslProtocol?: SecurityPolicyProtocol;
+    enableLogging?: boolean;
     webAclId?: string;
 }
 
@@ -58,7 +59,7 @@ interface BrefFactoryResult {
 
 export interface BrefFactoryDistributionResult extends BrefFactoryResult {
     certificate: ICertificate;
-    api: HttpApi | RestApi;
+    apiResult: PhpApiResult;
     distribution?: IDistribution;
 }
 
@@ -73,70 +74,74 @@ export interface BrefFactoryLoadBalancerResult extends BrefFactoryResult {
 export class BrefFactory extends NonConstruct {
 
     readonly funcFactory: PhpBrefFunction;
+    readonly secret?: ISecret;
 
-    constructor(scope: Construct, id: string, funcFactory: PhpBrefFunction) {
+    constructor(scope: Construct, id: string, funcFactory: PhpBrefFunction, secret?: ISecret) {
         super(scope, id);
         this.funcFactory = funcFactory;
+        this.secret = secret;
     }
 
     forDistribution(props: BrefFactoryDistributionProps): BrefFactoryDistributionResult {
+        const token = this.getAuthorizerToken();
+        this.addTokenToAuthorizerProps(token, props);
         const certificate = this.createCertificate(props.certificateProps);
         const func = this.createFunction(props.functionProps);
-        const api = this.createApi(func, props);
         const distribution = new WebDistribution(this.scope, this.id);
+        props.apiProps.domainNameOptions = {
+            domainName: props.certificateProps.domainName,
+            certificate: certificate
+        };
+        const apiResult = this.createApi(func, props);
         const bucket = this.createS3Bucket(props.assetBucket);
         if (bucket && props.assetPathToCopy) {
             this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), bucket);
         }
         const dist = distribution.create({
-            api: api,
+            api: apiResult.api,
             certificate: certificate,
             domainName: props.certificateProps.domainName,
             minimumSslProtocol: props.minimumSslProtocol,
             assetPath: props.assetPath,
             s3AssetBucket: bucket,
-            webAclId: props.webAclId
+            webAclId: props.webAclId,
+            enableLogging: props.enableLogging,
+            token: token
         });
         return {
             assetBucket: bucket,
             certificate: certificate,
             distribution: dist,
-            api: api,
+            apiResult: apiResult,
             lambdaFunction: func
         }
     }
 
-    createCertificate(props: DnsValidatedCertificateProps): ICertificate {
+    protected addTokenToAuthorizerProps(token: string, props: BrefFactoryDistributionProps): void {
+        if (props.apiProps.authorizerProps === undefined) {
+            props.apiProps.authorizerProps = {token: token};
+        }
+    }
+
+    protected createCertificate(props: DnsValidatedCertificateProps): ICertificate {
         const cert = new AcmCertificate(this.scope, this.id);
         return cert.create(props);
     }
 
-    createFunction(props: PhpBrefFunctionProps): IFunction {
+    protected createFunction(props: PhpBrefFunctionProps): IFunction {
         props.lambdaTimeout = props.lambdaTimeout ?? this.funcFactory.getDefaultTimeout(FunctionType.WEB);
-        return this.funcFactory.create('web', props);
+        props.type = props.type ?? FunctionType.WEB;
+        return this.funcFactory.create(props);
     }
 
-    createApi(func: IFunction, props: BrefFactoryProps): HttpApi | RestApi {
-        const apiType = this.getApiType(props);
-        if (apiType === ApiType.HTTP) {
-            return this.createHttpApi(func, <PhpHttpApiProps>props);
-        }
-        return this.createLambdaRestApi(func, <PhpRestApiProps>props);
+    protected createApi(func: IFunction, props: BrefFactoryDistributionProps): PhpApiResult {
+        props.apiProps.baseDomainName = props.certificateProps.domainName;
+        props.apiProps.hostedZone = props.certificateProps.hostedZone;
+        const apiCreator = new PhpApiFactory(this.scope, this.id);
+        return apiCreator.create(func, props.apiProps);
     }
 
-    createLambdaRestApi(func: IFunction, props: PhpRestApiProps): LambdaRestApi {
-        const lambdaApi = new PhpLambdaRestApi(this.scope, this.id);
-        props.lambdaFunction = func;
-        return lambdaApi.create(props);
-    }
-
-    createHttpApi(func: IFunction, props: PhpHttpApiProps): HttpApi {
-        const httpApi = new PhpHttpApi(this.scope, this.id);
-        props.lambdaFunction = func;
-        return httpApi.create(props);
-    }
-
-    createS3Bucket(props?: S3Props): Bucket | undefined {
+    protected createS3Bucket(props?: S3Props): Bucket | undefined {
         if (props !== undefined) {
             if (props.encryption === undefined) {
                 props.encryption = BucketEncryption.S3_MANAGED;
@@ -146,27 +151,29 @@ export class BrefFactory extends NonConstruct {
         }
     }
 
-    copyAssetsToS3Bucket(path: string, bucket: Bucket): void {
+    protected copyAssetsToS3Bucket(path: string, bucket: Bucket): void {
         new BucketDeployment(this.scope, 's3-assets-copy', {
             sources: [
                 Source.asset(path, {exclude: ['index.php', '.htaccess']})
             ],
             destinationBucket: bucket,
-            destinationKeyPrefix: 'assets'
+            destinationKeyPrefix: 'assets',
+            logRetention: RetentionDays.ONE_DAY
         });
     }
 
-    getAssetPath(assetPath: string): string {
+    protected getAssetPath(assetPath: string): string {
         if (fs.existsSync(assetPath)) {
             return assetPath;
         }
         return path.join(process.cwd(), assetPath);
     }
 
-    getApiType(props: BrefFactoryProps): ApiType {
-        if (props.apiType) {
-            return props.apiType;
+    protected getAuthorizerToken(): string {
+        if (this.secret) {
+            const secrets = new Secrets(this.scope, 'secrets');
+            return secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, <ISecret>this.secret);
         }
-        return ApiType.LAMBDAREST;
+        return 'INVALID';
     }
 }

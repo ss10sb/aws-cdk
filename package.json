@@ -20,6 +20,7 @@
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.38.1-alpha",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.38.1-alpha",
+    "@aws-cdk/aws-apigatewayv2-authorizers-alpha": "^2.38.1-alpha",
     "@aws-sdk/client-ecr": "^3.154.0",
     "@aws-sdk/client-secrets-manager": "^3.154.0",
     "@aws-sdk/client-ssm": "^3.154.0",

@@ -1,4 +1,5 @@
 *.map
 *.test.*
 setup-package.*
+examples
 version.txt

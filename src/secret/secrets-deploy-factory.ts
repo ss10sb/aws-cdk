@@ -1,4 +1,4 @@
-import {SecretsConfig} from "./secret-definitions";
+import {SecretItem, SecretsConfig} from "./secret-definitions";
 import {SecretsDeployHelper} from "./secrets-deploy-helper";
 import {ClientDefaults, PutSecretValueCommandOutput} from "@aws-sdk/client-secrets-manager";
 import util from "util";
@@ -7,6 +7,8 @@ import {ConfigStackHelper} from "../utils/config-stack-helper";
 import {HelperRunProps} from "../config/config-definitions";
 import {SecretConfigHelper} from "../utils/secret-config-helper";
 import {NamingHelper} from "../utils/naming-helper";
+import {randomString} from "../utils/random-string";
+import {AUTHORIZER_TOKEN} from "../lambda/authorizer-base";
 
 export interface SecretsDeployProps {
     outputFile: string;
@@ -45,6 +47,7 @@ export class SecretsDeployFactory {
         const secretsConfig = SecretConfigHelper.getSecretsConfig(envConfig.Environment, envConfig?.NameSuffix, this.props.configDir);
         this.updateNameSuffix(secretsConfig, props?.idSuffix);
         this.addBaseConfigItems(envConfig, secretsConfig);
+        this.addAuthorizerToken(secretsConfig);
         const stackName = ConfigStackHelper.getMainStackName(secretsConfig);
         this.debug(stackName)
         this.debug(secretsConfig);
@@ -62,6 +65,24 @@ export class SecretsDeployFactory {
         if (this.props.debug ?? false) {
             console.log(util.inspect(msg, {depth: null, colors: true}));
         }
+    }
+
+    private addAuthorizerToken(config: Record<string, any>): void {
+        if (config.Parameters.secrets === undefined) {
+            config.Parameters.secrets = [];
+        }
+        if (!this.secretsHasKey(AUTHORIZER_TOKEN, config.Parameters.secrets)) {
+            config.Parameters.secrets.push({key: AUTHORIZER_TOKEN, value: randomString()});
+        }
+    }
+
+    private secretsHasKey(key: string, secrets: SecretItem[]): boolean {
+        for (const secret of secrets) {
+            if (secret.key === key) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private addBaseConfigItems(envConfig: EnvConfig, config: Record<string, any>) {

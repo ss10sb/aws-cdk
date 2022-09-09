@@ -1,38 +1,78 @@
-import {HttpApi} from '@aws-cdk/aws-apigatewayv2-alpha';
+import {
+    DomainMappingOptions,
+    DomainName,
+    HttpApi,
+    IHttpRouteAuthorizer
+} from '@aws-cdk/aws-apigatewayv2-alpha';
 import {HttpLambdaIntegration} from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import {NonConstruct} from "../core/non-construct";
 import {LogGroup, LogGroupProps, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {RemovalPolicy} from "aws-cdk-lib";
 import {CfnStage} from "aws-cdk-lib/aws-apigatewayv2";
-import {PhpApiProps} from "./lambda-definitions";
+import {AuthorizerResult, PhpApiProps, PhpApiResult} from "./lambda-definitions";
 import {AlarmSubscriptionHelper} from "../utils/alarm-subscription-helper";
 import {Alarm} from "aws-cdk-lib/aws-cloudwatch";
-import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
-import {PermissionsLoggroup} from "../permissions/permissions-loggroup";
+import {AuthorizerV2} from "./authorizer-v2";
 
 export interface PhpHttpApiProps extends PhpApiProps {
 }
 
 export class PhpHttpApi extends NonConstruct {
 
-    create(props: PhpHttpApiProps): HttpApi {
+    baseName?: string;
+
+    create(props: PhpHttpApiProps): PhpApiResult {
         if (props.lambdaFunction === undefined) {
             throw new Error('Lambda function must be defined to create the Http API.');
         }
-        const name = this.mixNameWithId(props.name ?? 'default');
-        const httpIntegration = new HttpLambdaIntegration(`${name}-int`, props.lambdaFunction);
-        const httpApi = new HttpApi(this.scope, name, {
-            apiName: name,
-            createDefaultStage: true,
+        this.baseName = this.mixNameWithId(props.name ?? 'http-api');
+        const httpIntegration = new HttpLambdaIntegration(`${this.baseName}-int`, props.lambdaFunction);
+        const authorizerResult = this.getAuthorizer(props);
+        const apiProps = {
+            apiName: this.baseName,
             defaultIntegration: httpIntegration,
-            disableExecuteApiEndpoint: props.disableExecuteApiEndpoint ?? false
-        });
-        this.addAlarms(httpApi, props.alarmEmails ?? []);
+            disableExecuteApiEndpoint: this.shouldDisableExecuteEndpoint(props),
+            defaultAuthorizer: <IHttpRouteAuthorizer>authorizerResult?.authorizer,
+            defaultDomainMapping: this.getDefaultDomainMapping(props)
+        }
+
+        const httpApi = new HttpApi(this.scope, this.baseName, apiProps);
+        this.addAlarms(httpApi, props.alarmEmails ?? [], props.addOkAlarms ?? true);
         this.addLogging(httpApi, props.logProps);
-        return httpApi;
+        return {
+            api: httpApi,
+            authorizer: authorizerResult
+        };
     }
 
-    protected addAlarms(api: HttpApi, emails: string[]): void {
+    protected getDefaultDomainMapping(props: PhpHttpApiProps): DomainMappingOptions | undefined {
+        if (props.domainNameOptions) {
+            const name = this.mixNameWithId(`domain-name-${props.domainNameOptions.domainName}`);
+            const domain = new DomainName(this.scope, name, {
+                domainName: props.domainNameOptions.domainName,
+                certificate: props.domainNameOptions.certificate
+            });
+            return {
+                domainName: domain
+            }
+        }
+    }
+
+    protected shouldDisableExecuteEndpoint(props: PhpHttpApiProps): boolean {
+        if (props.disableExecuteApiEndpoint !== undefined) {
+            return props.disableExecuteApiEndpoint;
+        }
+        return false;//props.domainNameOptions !== undefined;
+    }
+
+    protected getAuthorizer(props: PhpHttpApiProps): AuthorizerResult | undefined {
+        if (props.authorizerProps) {
+            const authorizer = new AuthorizerV2(this.scope, this.id);
+            return authorizer.create(props.authorizerProps);
+        }
+    }
+
+    protected addAlarms(api: HttpApi, emails: string[], addOkAlarms: boolean): void {
         if (emails.length) {
             const alarmSubHelper = new AlarmSubscriptionHelper(this.scope, this.mixNameWithId('http-api-alarm-topic'));
             alarmSubHelper.addSubscriptions(emails);
@@ -49,13 +89,13 @@ export class PhpHttpApi extends NonConstruct {
                 threshold: 500,
                 evaluationPeriods: 1
             }));
-            alarmSubHelper.addActions(alarms);
+            alarmSubHelper.addActions(alarms, true, addOkAlarms);
         }
     }
 
     protected addLogging(httpApi: HttpApi, logProps?: LogGroupProps): void {
         if (logProps) {
-            const name = this.mixNameWithId('lg')
+            const name = this.mixNameWithId(`${this.baseName}-lg`);
             const log = new LogGroup(this.scope, name, {
                 removalPolicy: logProps.removalPolicy ?? RemovalPolicy.DESTROY,
                 retention: logProps.retention ?? RetentionDays.ONE_WEEK,
@@ -64,16 +104,8 @@ export class PhpHttpApi extends NonConstruct {
             const stage = httpApi.defaultStage?.node.defaultChild as CfnStage;
             stage.accessLogSettings = {
                 destinationArn: log.logGroupArn,
-                format: `$context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.routeKey $context.protocol" $context.status $context.responseLength $context.requestId`,
+                format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency,"integrationRequestId":"$context.integration.requestId","functionResponseStatus":"$context.integration.status","integrationLatency":"$context.integration.latency","integrationServiceStatus":"$context.integration.integrationStatus","integrationErrorMessage":"$context.integrationErrorMessage","authorizerStatus":"$context.authorizer.status","authorizerLatency":"$context.authorizer.latency","authorizerRequestId":"$context.authorizer.requestId","authorizerError":"$context.authorizer.error","ip":"$context.identity.sourceIp","userAgent":"$context.identity.userAgent","principalId":"$context.authorizer.principalId"}',
             }
-            this.addPermissionsToLog(log);
         }
-    }
-
-    protected addPermissionsToLog(logGroup: LogGroup): void {
-        const role = new Role(this.scope, this.mixNameWithId('lg-role'), {
-            assumedBy: new ServicePrincipal('apigateway.amazonaws.com')
-        });
-        PermissionsLoggroup.canLog(role, logGroup);
     }
 }

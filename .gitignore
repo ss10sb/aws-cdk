@@ -4,10 +4,7 @@
 # Local state files & OS specifics
 .DS_Store
 node_modules/
-lib/
 dist/
-pack/
-providers/
 *.iml
 junit.xml
 package
@@ -19,13 +16,6 @@ cdk.context.json
 cdk.out/
 *.tabl.json
 
-# Ignore files with sensitive environment variables
-.env
-.env.test
-# Next.js output
-.next/
-# Parcel cache
-.cache/
 # Ignore IDE configuration files
 .idea/
 .vscode/

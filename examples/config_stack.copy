@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+PROFILE=cdkshared
+NPMCMD=iacnpm
+APP="npx ts-node --prefer-ts-exts ts/index.config.ts"
+
+$NPMCMD run cdk -- --app "$APP" synth --profile $PROFILE
+
+if [ -n "$1" ]; then
+  $NPMCMD run cdk -- --app "$APP" "$1" --profile $PROFILE
+fi

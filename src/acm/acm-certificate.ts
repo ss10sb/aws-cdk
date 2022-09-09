@@ -12,13 +12,14 @@ export interface DnsValidatedCertificateProps {
 export class AcmCertificate extends NonConstruct {
 
     create(props: DnsValidatedCertificateProps) {
-        const name = this.mixNameWithId(props.domainName);
+        const name = this.mixNameWithId(`${props.domainName}-${props.region ?? 'default'}`);
         const hostedZone = this.getHostedZone(props.hostedZone);
         return new DnsValidatedCertificate(this.scope, name, {
             domainName: props.domainName,
             hostedZone: hostedZone,
             region: props.region,
-            validation: CertificateValidation.fromDns(hostedZone)
+            validation: CertificateValidation.fromDns(hostedZone),
+            cleanupRoute53Records: true
         });
     }
 

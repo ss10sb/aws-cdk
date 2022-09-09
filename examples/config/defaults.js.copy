@@ -1,0 +1,14 @@
+const common = require('./_common');
+const {ConfigEnvironments} = require("@smorken/aws-cdk/config/config-definitions");
+
+module.exports = {
+    Name: common.Name,
+    College: common.College,
+    Environment: ConfigEnvironments.SHARED,
+    Version: "0.0.0",
+    Parameters: {
+        repositories: {},
+        sourceActionProps: {}
+    },
+    Environments: []
+}

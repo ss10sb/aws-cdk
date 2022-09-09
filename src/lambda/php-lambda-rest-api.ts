@@ -3,33 +3,89 @@ import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {LogGroup, LogGroupProps, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {
     AccessLogFormat,
+    AuthorizationType,
+    DomainNameOptions,
+    EndpointType,
+    IAuthorizer,
+    LambdaIntegrationOptions,
     LambdaRestApi,
-    LogGroupLogDestination, StageOptions
+    LogGroupLogDestination,
+    MethodLoggingLevel,
+    StageOptions
 } from "aws-cdk-lib/aws-apigateway";
 import {RemovalPolicy} from "aws-cdk-lib";
 import {Alarm} from "aws-cdk-lib/aws-cloudwatch";
 import {AlarmSubscriptionHelper} from "../utils/alarm-subscription-helper";
-import {PhpApiProps} from "./lambda-definitions";
+import {AuthorizerResult, PhpApiProps, PhpApiResult} from "./lambda-definitions";
+import {Authorizer} from "./authorizer";
 
 export interface PhpRestApiProps extends PhpApiProps {
+    endpointTypes?: EndpointType[];
 }
 
 export class PhpLambdaRestApi extends NonConstruct {
 
-    create(props: PhpRestApiProps): LambdaRestApi {
-        const name = this.mixNameWithId('rest-api');
-        const restApi = new LambdaRestApi(this.scope, name, {
+    baseName!: string;
+
+    create(props: PhpRestApiProps): PhpApiResult {
+        this.baseName = this.mixNameWithId(props.name ?? 'rest-api');
+        const authorizer = this.addAuthorizer(props);
+        const restApi = new LambdaRestApi(this.scope, this.baseName, {
             handler: <IFunction>props.lambdaFunction,
-            restApiName: name,
-            disableExecuteApiEndpoint: props.disableExecuteApiEndpoint ?? false,
+            restApiName: this.baseName,
+            disableExecuteApiEndpoint: this.shouldDisableExecuteEndpoint(props),
             deployOptions: this.getDeployOptions(this.getLogGroup(props.logProps)),
-            binaryMediaTypes: props.binaryMediaTypes
+            binaryMediaTypes: props.binaryMediaTypes,
+            domainName: this.getDomainName(props),
+            defaultMethodOptions: this.getDefaultMethodOptions(<IAuthorizer>authorizer?.authorizer),
+            integrationOptions: this.getIntegrationOptions(props),
+            proxy: true,
+            endpointTypes: props.endpointTypes ?? [EndpointType.REGIONAL],
         });
-        this.addAlarms(restApi, props.alarmEmails ?? []);
-        return restApi;
+        this.addAlarms(restApi, props.alarmEmails ?? [], props.addOkAlarms ?? true);
+        return {
+            api: restApi,
+            authorizer: authorizer
+        }
     }
 
-    protected addAlarms(api: LambdaRestApi, emails: string[]): void {
+    protected getDomainName(props: PhpRestApiProps): DomainNameOptions | undefined {
+        if (props.domainNameOptions) {
+            return {
+                domainName: props.domainNameOptions?.domainName,
+                certificate: props.domainNameOptions?.certificate,
+            }
+        }
+    }
+
+    protected getIntegrationOptions(props: PhpRestApiProps): LambdaIntegrationOptions {
+        return {};
+    }
+
+    protected getDefaultMethodOptions(authorizer?: IAuthorizer): Record<string, any> {
+        const options: Record<string, any> = {};
+        if (authorizer) {
+            options['authorizer'] = authorizer;
+            options['authorizationType'] = AuthorizationType.CUSTOM;
+        }
+        return options;
+    }
+
+    protected addAuthorizer(props: PhpRestApiProps): AuthorizerResult | undefined {
+        if (props.authorizerProps) {
+            const authorizer = new Authorizer(this.scope, this.id);
+            return authorizer.create(props.authorizerProps);
+        }
+    }
+
+    protected shouldDisableExecuteEndpoint(props: PhpRestApiProps): boolean {
+        if (props.disableExecuteApiEndpoint !== undefined) {
+            return props.disableExecuteApiEndpoint;
+        }
+        return false;//props.domainNameOptions !== undefined;
+    }
+
+    protected addAlarms(api: LambdaRestApi, emails: string[], addOkAlarms: boolean): void {
         if (emails.length) {
             const alarmSubHelper = new AlarmSubscriptionHelper(this.scope, this.mixNameWithId('rest-api-alarm-topic'));
             alarmSubHelper.addSubscriptions(emails);
@@ -46,7 +102,7 @@ export class PhpLambdaRestApi extends NonConstruct {
                 threshold: 500,
                 evaluationPeriods: 1
             }));
-            alarmSubHelper.addActions(alarms);
+            alarmSubHelper.addActions(alarms, true, addOkAlarms);
         }
     }
 
@@ -54,7 +110,12 @@ export class PhpLambdaRestApi extends NonConstruct {
         if (logGroup) {
             return {
                 accessLogDestination: new LogGroupLogDestination(logGroup),
-                accessLogFormat: AccessLogFormat.jsonWithStandardFields()
+                accessLogFormat: AccessLogFormat.custom(
+                    '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency,"xrayTraceId":"$context.xrayTraceId","integrationRequestId":"$context.integration.requestId","functionResponseStatus":"$context.integration.status","integrationLatency":"$context.integration.latency","integrationServiceStatus":"$context.integration.integrationStatus","authorizeStatus":"$context.authorize.status","authorizerStatus":"$context.authorizer.status","authorizerLatency":"$context.authorizer.latency","authorizerRequestId":"$context.authorizer.requestId","ip":"$context.identity.sourceIp","userAgent":"$context.identity.userAgent","principalId":"$context.authorizer.principalId"}'
+                ),
+                metricsEnabled: true,
+                loggingLevel: MethodLoggingLevel.INFO,
+                dataTraceEnabled: true,
             }
         }
         return {};
@@ -62,7 +123,7 @@ export class PhpLambdaRestApi extends NonConstruct {
 
     protected getLogGroup(logProps?: LogGroupProps): LogGroup | undefined {
         if (logProps) {
-            const name = this.mixNameWithId('rest-api-lg')
+            const name = `${this.baseName}-lg`;
             return new LogGroup(this.scope, name, {
                 removalPolicy: logProps.removalPolicy ?? RemovalPolicy.DESTROY,
                 retention: logProps.retention ?? RetentionDays.ONE_WEEK,

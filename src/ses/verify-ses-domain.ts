@@ -10,6 +10,7 @@ import {EnvironmentPlaceholders} from 'aws-cdk-lib/cx-api';
 import {Effect, PolicyStatement} from 'aws-cdk-lib/aws-iam';
 import {Construct} from "constructs";
 import {Route53Helper} from "../utils/route53-helper";
+import {RetentionDays} from "aws-cdk-lib/aws-logs";
 
 export function generateSesPolicyForCustomResource(...methods: string[]): AwsCustomResourcePolicy {
     // for some reason the default policy is generated as `email:<method>` which does not work -> hence we need to provide our own
@@ -177,6 +178,8 @@ export class VerifySesDomain extends Construct {
                 physicalResourceId: PhysicalResourceId.of(domainName + '-verify-domain-dkim'),
             },
             policy: generateSesPolicyForCustomResource('VerifyDomainDkim'),
+            logRetention: RetentionDays.ONE_WEEK,
+            functionName: `${this.node.id}-dkim`
         });
     }
 

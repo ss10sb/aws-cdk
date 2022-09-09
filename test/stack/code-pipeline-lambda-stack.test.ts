@@ -1,5 +1,5 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {App} from "aws-cdk-lib";
+import {App, Stack} from "aws-cdk-lib";
 import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {CodePipelineLambdaStack} from "../../src/stack/code-pipeline-lambda-stack";
@@ -25,10 +25,10 @@ describe('code pipeline lambda test', () => {
         templateHelper.inspect();
         // const expected = getExpected();
         // templateHelper.template.templateMatches(expected);
-        // for (const stage of stack.envStages?.stages ?? []) {
-        //         const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.envStage.stack));
-        //         templateHelper.inspect();
-        // }
+        for (const stage of stack.envStages?.stages ?? []) {
+            const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.envStage.stack));
+            // templateHelper.inspect();
+        }
     });
 
     function getConfig(): Record<string, any> {

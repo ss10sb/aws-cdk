@@ -5,6 +5,7 @@ const {DetailType} = require("aws-cdk-lib/aws-codestarnotifications");
 const path = require("path");
 const {EnvBuildType, EnvEndpointType} = require("../../src/env/env-definitions");
 const {BrefRuntime} = require("../../src/lambda/bref-definitions");
+const {ApiType} = require("../../src/lambda/lambda-definitions");
 
 module.exports = {
     Name: common.Name,
@@ -39,20 +40,20 @@ module.exports = {
             Parameters: {
                 buildType: EnvBuildType.LAMBDA,
                 endpointType: EnvEndpointType.CLOUDFRONT,
-                secretArn: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                 alarmEmails: ['sdlc@example.edu'],
                 hostedZoneDomain: `sdlc.${common.domain}`,
                 dynamoDb: {},
                 subdomain: common.subdomain,
                 distribution: {
                     assetBucket: {},
-                    assetPath: '/assets/*',
+                    assetPath: 'assets/*',
                     assetPathToCopy: path.resolve(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.resolve(__dirname, '..', '__codebase__'),
                         brefRuntime: BrefRuntime.PHP81FPM
                     },
-                    httpApiProps: {},
+                    apiType: ApiType.HTTP,
+                    apiProps: {},
                     webAclId: 'arn:aws:wafv2:us-east-1:12344:global/webacl/webacl-sdlc'
                 }
             }
@@ -77,13 +78,16 @@ module.exports = {
                 },
                 distribution: {
                     assetBucket: {},
-                    assetPath: '/assets/*',
+                    assetPath: 'assets/*',
                     assetPathToCopy: path.resolve(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.resolve(__dirname, '..', '__codebase__'),
                         brefRuntime: BrefRuntime.PHP81FPM
                     },
-                    httpApiProps: {},
+                    apiType: ApiType.HTTP,
+                    apiProps: {
+                        logProps: {}
+                    },
                     webAclId: 'arn:aws:wafv2:us-east-1:12344:global/webacl/webacl-prod'
                 }
             }

@@ -5,6 +5,7 @@ import {BrefRuntime} from "../../src/lambda/bref-definitions";
 import {PhpLambdaRestApi} from "../../src/lambda/php-lambda-rest-api";
 import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {AcmCertificate} from "../../src/acm/acm-certificate";
 
 describe('php lambda rest api', () => {
 
@@ -18,8 +19,18 @@ describe('php lambda rest api', () => {
             brefRuntime: BrefRuntime.PHP81FPM
         });
         const restApi = new PhpLambdaRestApi(stack,  'lambda-rest-api');
+        const cert = new AcmCertificate(stack, 'cert');
+        const certificate = cert.create({
+            domainName: 'test.foo.edu',
+            hostedZone: 'foo.edu',
+        });
         restApi.create({
-            lambdaFunction: func
+            lambdaFunction: func,
+            authorizerProps: {token: 'abc123'},
+            domainNameOptions: {
+                domainName: 'test.foo.edu',
+                certificate: certificate
+            }
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);

@@ -26,6 +26,13 @@ export interface HttpApiOriginProps {
     readonly keepaliveTimeout?: number;
 }
 
+function getOriginPath(httpApi: HttpApi): string | undefined {
+    const path = httpApi.defaultStage?.stageName;
+    if (path && path !== '$default') {
+        return `/${path}`;
+    }
+}
+
 export class HttpApiOrigin extends OriginBase {
 
     constructor(httpApi: HttpApi, private readonly props: HttpApiOriginProps = {}) {
@@ -33,7 +40,7 @@ export class HttpApiOrigin extends OriginBase {
         // Splitting on '/' gives: ['https', '', '<rest-api-id>.execute-api.<region>.amazonaws.com', '<stage>']
         // The element at index 2 is the domain name, the element at index 3 is the stage name
         super(Fn.select(2, Fn.split('/', httpApi.url ?? '')), {
-            originPath: `/${Fn.select(3, Fn.split('/', httpApi.url ?? ''))}`,
+            originPath: getOriginPath(httpApi),
             ...props,
         });
     }
