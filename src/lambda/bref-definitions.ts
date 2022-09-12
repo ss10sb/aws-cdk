@@ -1,3 +1,9 @@
+// @ts-nocheck
+export enum BrefRuntimeAccount {
+    CORE = '209497400698',
+    EXTRA = '403367587399'
+}
+
 export enum BrefRuntime {
     PHP82 = 'php-82',
     PHP82FPM = 'php-82-fpm',
@@ -5,8 +11,82 @@ export enum BrefRuntime {
     PHP81FPM = 'php-81-fpm',
     PHP80 = 'php-80',
     PHP80FPM = 'php-80-fpm',
-    CONSOLE = 'console'
+    CONSOLE = 'console',
+    GD82 = 'gd-php-82',
+    GD81 = 'gd-php-81',
+    GD80 = 'gd-php-80',
+    LDAP82 = 'ldap-php-82',
+    LDAP81 = 'ldap-php-81',
+    LDAP80 = 'ldap-php-80',
+    MONGODB82 = 'mongodb-php-82',
+    MONGODB81 = 'mongodb-php-81',
+    MONGODB80 = 'mongodb-php-80',
+    ORACLE82 = 'oci8-php-82',
+    ORACLE81 = 'oci8-php-81',
+    ORACLE80 = 'oci8-php-80',
+    PGSQL82 = 'pgsql-php-82',
+    PGSQL81 = 'pgsql-php-81',
+    PGSQL80 = 'pgsql-php-80',
+    REDIS82 = 'redis-php-82',
+    REDIS81 = 'redis-php-81',
+    REDIS80 = 'redis-php-80',
+    SNOWFLAKE82 = 'odbc-snowflake-php-82',
+    SNOWFLAKE81 = 'odbc-snowflake-php-81',
+    SNOWFLAKE80 = 'odbc-snowflake-php-80',
+    SQLSRV82 = 'sqlsrv-php-82',
+    SQLSRV81 = 'sqlsrv-php-81',
+    SQLSRV80 = 'sqlsrv-php-80',
+    UUID82 = 'uuid-php-82',
+    UUID81 = 'uuid-php-81',
+    UUID80 = 'uuid-php-80',
+    XDEBUG82 = 'xdebug-php-82',
+    XDEBUG81 = 'xdebug-php-81',
+    XDEBUG80 = 'xdebug-php-80',
 }
+
+interface ReadonlyMap<TKey, TValue> {
+    get(key: TKey): TValue;
+}
+
+export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Map([
+    [BrefRuntime.PHP82, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP82FPM, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP81, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP81FPM, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP80, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP80FPM, BrefRuntimeAccount.CORE],
+    [BrefRuntime.CONSOLE, BrefRuntimeAccount.CORE],
+    [BrefRuntime.GD82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.GD81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.GD80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.LDAP82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.LDAP81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.LDAP80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.MONGODB82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.MONGODB81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.MONGODB80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.ORACLE82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.ORACLE81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.ORACLE80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.PGSQL82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.PGSQL81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.PGSQL80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.REDIS82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.REDIS81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.REDIS80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.SNOWFLAKE82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.SNOWFLAKE81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.SNOWFLAKE80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.SQLSRV82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.SQLSRV81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.SQLSRV80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.UUID82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.UUID81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.UUID80, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.XDEBUG82, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.XDEBUG81, BrefRuntimeAccount.EXTRA],
+    [BrefRuntime.XDEBUG80, BrefRuntimeAccount.EXTRA],
+]);
 
 export enum LaravelHandler {
     WEB = 'public/index.php',

@@ -1,5 +1,5 @@
 import {Arn, ArnFormat, Stack} from "aws-cdk-lib";
-import {BrefRuntime} from "./bref-definitions";
+import {BrefRuntime, BrefRuntimeAccount, BrefRuntimes} from "./bref-definitions";
 import {Construct} from "constructs";
 import path from "path";
 import * as fs from "fs";
@@ -16,13 +16,18 @@ export class BrefLayerArn extends NonConstruct {
 
     layerArn(id: BrefRuntime, version: string): Arn {
         version = this.getVersion(id, version);
+        const account = this.getAccount(id);
         return Arn.format({
             service: 'lambda',
-            account: '209497400698',
+            account: account,
             resource: 'layer',
             resourceName: `${id}:${version}`,
             arnFormat: ArnFormat.COLON_RESOURCE_NAME,
         }, <Stack>this.scope);
+    }
+
+    protected getAccount(id: BrefRuntime): BrefRuntimeAccount {
+        return BrefRuntimes.get(id);
     }
 
     protected getVersion(id: BrefRuntime, version: string): string {
@@ -33,16 +38,28 @@ export class BrefLayerArn extends NonConstruct {
     }
 
     protected getLatestVersion(id: BrefRuntime): string {
-        const layers = this.getBrefLayersJson();
-        return layers[id][this.getRegion()];
+        const version = this.versionFromBrefCore(id) ?? this.versionFromBrefExtras(id);
+        if (version === undefined) {
+            throw new Error('No layers.json files found in bref/bref or bref/extra-php-extensions.');
+        }
+        return version;
     }
 
-    protected getBrefLayersJson(): { [key: string]: any } {
-        const brefLayerJsonFile = path.resolve(this.appPath, 'vendor', 'bref', 'bref', 'layers.json');
-        if (!fs.existsSync(brefLayerJsonFile)) {
-            throw new Error(`${brefLayerJsonFile} does not exist. Set a version manually.`);
+    protected versionFromBrefCore(id: BrefRuntime): string | undefined {
+        const layers = this.getBrefLayersJson(path.resolve(this.appPath, 'vendor', 'bref', 'bref', 'layers.json'));
+        return layers?.[id]?.[this.getRegion()];
+    }
+
+    protected versionFromBrefExtras(id: BrefRuntime): string | undefined {
+        const layers = this.getBrefLayersJson(path.resolve(this.appPath, 'vendor', 'bref', 'extra-php-extensions', 'layers.json'));
+        return layers?.[id]?.[this.getRegion()];
+    }
+
+    protected getBrefLayersJson(file: string): { [key: string]: any } {
+        if (fs.existsSync(file)) {
+            return JSON.parse(fs.readFileSync(file, 'utf-8'));
         }
-        return JSON.parse(fs.readFileSync(brefLayerJsonFile, 'utf-8'));
+        return {};
     }
 
     protected getRegion(): string {

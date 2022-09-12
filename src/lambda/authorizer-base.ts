@@ -32,7 +32,7 @@ export abstract class AuthorizerBase extends NonConstruct {
     protected abstract getAuthorizer(func: IFunction, props: AuthorizerProps): HttpLambdaAuthorizer | RequestAuthorizer;
 
     protected getFunction(props: AuthorizerProps): IFunction {
-        const name = this.mixNameWithId('fn-authorizer');
+        const name = this.mixNameWithId('authorizer-fn');
         return new Function(this.scope, name, {
             functionName: name,
             runtime: Runtime.NODEJS_16_X,

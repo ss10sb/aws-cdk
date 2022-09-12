@@ -14,7 +14,7 @@ import {
     StageOptions
 } from "aws-cdk-lib/aws-apigateway";
 import {RemovalPolicy} from "aws-cdk-lib";
-import {Alarm} from "aws-cdk-lib/aws-cloudwatch";
+import {Alarm, TreatMissingData} from "aws-cdk-lib/aws-cloudwatch";
 import {AlarmSubscriptionHelper} from "../utils/alarm-subscription-helper";
 import {AuthorizerResult, PhpApiProps, PhpApiResult} from "./lambda-definitions";
 import {Authorizer} from "./authorizer";
@@ -92,15 +92,18 @@ export class PhpLambdaRestApi extends NonConstruct {
             const alarms: Alarm[] = [];
             alarms.push(api.metricServerError().createAlarm(this.scope, this.mixNameWithId('rest-api-server-error-alarm'), {
                 threshold: 5,
-                evaluationPeriods: 1
+                evaluationPeriods: 1,
+                treatMissingData: TreatMissingData.NOT_BREACHING,
             }));
             alarms.push(api.metricClientError().createAlarm(this.scope, this.mixNameWithId('rest-api-client-error-alarm'), {
                 threshold: 5,
-                evaluationPeriods: 1
+                evaluationPeriods: 1,
+                treatMissingData: TreatMissingData.NOT_BREACHING,
             }));
             alarms.push(api.metricCount().createAlarm(this.scope, this.mixNameWithId('rest-api-count-alarm'), {
                 threshold: 500,
-                evaluationPeriods: 1
+                evaluationPeriods: 1,
+                treatMissingData: TreatMissingData.NOT_BREACHING,
             }));
             alarmSubHelper.addActions(alarms, true, addOkAlarms);
         }

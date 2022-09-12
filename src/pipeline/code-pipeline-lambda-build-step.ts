@@ -59,7 +59,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
             'rm -rf node_modules tests',
             'composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress',
             'composer dump-autoload --optimize --classmap-authoritative',
-            'php artisan route:cache && php artisan config:cache',
+            'php artisan route:cache',
             'cp vendor/bref/laravel-bridge/worker.php .',
             'cd ..',
         ]
