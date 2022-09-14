@@ -14,6 +14,8 @@ import fs from "fs";
 import path from "path";
 import {RetentionDays} from "aws-cdk-lib/aws-logs";
 import {ScheduledEvent, ScheduledEventProps} from "./scheduled-event";
+import {ProvisionedConcurrency, ProvisionedConcurrencyProps} from "./provisioned-concurrency";
+
 
 export interface PhpBrefFunctionProps {
     readonly appPath: string;
@@ -26,6 +28,7 @@ export interface PhpBrefFunctionProps {
     readonly scheduledEvents?: ScheduledEventProps[];
     readonly version?: string;
     readonly wantsVpc?: boolean;
+    readonly provisionedConcurrency?: ProvisionedConcurrencyProps;
     environment?: { [key: string]: string };
     lambdaTimeout?: number;
     type?: FunctionType;
@@ -41,7 +44,7 @@ export interface PhpBrefFunctionFactoryProps {
 export class PhpBrefFunction extends NonConstruct {
 
     readonly defaults: Record<string, any> = {
-        memorySize: 1024,
+        memorySize: 512,
         version: 'latest'
     };
     readonly nameIncrementer: NameIncrementer;
@@ -74,6 +77,9 @@ export class PhpBrefFunction extends NonConstruct {
         if (props.scheduledEvents && props.scheduledEvents.length > 0) {
             this.scheduleFunction(func, props.scheduledEvents);
         }
+        if (props.provisionedConcurrency) {
+            this.addProvisionedConcurrency(func, props.provisionedConcurrency);
+        }
         return func;
     }
 
@@ -85,6 +91,11 @@ export class PhpBrefFunction extends NonConstruct {
             return 29; //queue visibility timeout 30 s
         }
         return 120;
+    }
+
+    protected addProvisionedConcurrency(func: IFunction, props: ProvisionedConcurrencyProps): void {
+        const provConc = new ProvisionedConcurrency(this.scope, this.id);
+        provConc.create(func, props);
     }
 
     protected getVpc(props: PhpBrefFunctionProps): IVpc | undefined {

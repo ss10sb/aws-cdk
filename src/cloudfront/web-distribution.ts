@@ -1,15 +1,21 @@
 import {
     AllowedMethods,
-    BehaviorOptions, CacheCookieBehavior, CacheHeaderBehavior,
-    CachePolicy, CacheQueryStringBehavior,
+    BehaviorOptions,
+    CachePolicy,
     Distribution,
+    Function,
+    FunctionAssociation,
+    FunctionCode,
+    FunctionEventType,
     IDistribution,
-    OriginBase, OriginProps,
+    OriginBase,
+    OriginProps,
     OriginRequestCookieBehavior,
     OriginRequestHeaderBehavior,
     OriginRequestPolicy,
     OriginRequestQueryStringBehavior,
-    PriceClass, ResponseHeadersPolicy,
+    PriceClass,
+    ResponseHeadersPolicy,
     SecurityPolicyProtocol,
     SSLMethod,
     ViewerProtocolPolicy
@@ -20,10 +26,9 @@ import {IBucket} from "aws-cdk-lib/aws-s3";
 import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";
 import {NonConstruct} from "../core/non-construct";
 import {RestApi} from "aws-cdk-lib/aws-apigateway";
-import {HttpFromHttpApi} from "./http-from-http-api";
 import {Construct} from "constructs";
-import {Duration} from "aws-cdk-lib";
 import {HttpApiOrigin, HttpApiOriginProps} from "./http-api-origin";
+import path from "path";
 
 export interface WebDistributionProps {
     readonly api: HttpApi | RestApi;
@@ -96,9 +101,25 @@ export class WebDistribution extends NonConstruct {
             allowedMethods: AllowedMethods.ALLOW_ALL,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             cachePolicy: CachePolicy.CACHING_DISABLED,
-            originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
-            responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS
+            originRequestPolicy: this.getOriginRequestPolicy(),//OriginRequestPolicy.ALL_VIEWER,
+            responseHeadersPolicy: ResponseHeadersPolicy.SECURITY_HEADERS,
+            functionAssociations: this.getCloudFrontFunctionAssociations(),
         }
+    }
+
+    protected getCloudFrontFunctionAssociations(): FunctionAssociation[] {
+        return [];
+        // const name = this.mixNameWithId('cf-header-fn');
+        // const headerFunc = new Function(this.scope, name, {
+        //     code: FunctionCode.fromFile({filePath: path.join(__dirname, 'functions', 'headers.js')}),
+        //     functionName: name
+        // });
+        // return [
+        //     {
+        //         function: headerFunc,
+        //         eventType: FunctionEventType.VIEWER_REQUEST
+        //     }
+        // ]
     }
 
     protected getResponseHeadersPolicy(props: WebDistributionProps): ResponseHeadersPolicy | undefined {
@@ -120,7 +141,7 @@ export class WebDistribution extends NonConstruct {
         return new OriginRequestPolicy(this.scope, name, {
             originRequestPolicyName: name,
             cookieBehavior: OriginRequestCookieBehavior.all(),
-            headerBehavior: OriginRequestHeaderBehavior.all(),
+            headerBehavior: OriginRequestHeaderBehavior.all('CloudFront-Viewer-Address'),
             queryStringBehavior: OriginRequestQueryStringBehavior.all(),
         });
     }

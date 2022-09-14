@@ -1,7 +1,6 @@
 import {App, Stack} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import path from "path";
-import {Secret} from "aws-cdk-lib/aws-secretsmanager";
 import {FunctionType} from "../../src/lambda/lambda-definitions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {PhpBrefFunction} from "../../src/lambda/php-bref-function";
@@ -850,5 +849,25 @@ describe('php bref function create', () => {
             }
         };
         templateHelper.template.templateMatches(expected);
+    });
+
+    it('should create the function with auto scaling', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const vpc = VpcHelper.getVpcById(stack, 'vpc123');
+        const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}});
+        phpbrefFun.create({
+            appPath: path.join(__dirname, '..', '__codebase__'),
+            brefRuntime: BrefRuntime.PHP81FPM,
+            type: FunctionType.WEB,
+            provisionedConcurrency: {
+                maxCapacity: 5,
+                utilization: {}
+            }
+        });
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        templateHelper.inspect();
     });
 });

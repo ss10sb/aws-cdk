@@ -1,4 +1,10 @@
-import {DomainMappingOptions, DomainName, HttpApi, IHttpRouteAuthorizer} from '@aws-cdk/aws-apigatewayv2-alpha';
+import {
+    DomainMappingOptions,
+    DomainName,
+    HttpApi,
+    IHttpRouteAuthorizer, MappingValue,
+    ParameterMapping
+} from '@aws-cdk/aws-apigatewayv2-alpha';
 import {HttpLambdaIntegration} from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import {NonConstruct} from "../core/non-construct";
 import {LogGroup, LogGroupProps, RetentionDays} from "aws-cdk-lib/aws-logs";
@@ -21,7 +27,9 @@ export class PhpHttpApi extends NonConstruct {
             throw new Error('Lambda function must be defined to create the Http API.');
         }
         this.baseName = this.mixNameWithId(props.name ?? 'http-api');
-        const httpIntegration = new HttpLambdaIntegration(`${this.baseName}-int`, props.lambdaFunction);
+        const httpIntegration = new HttpLambdaIntegration(`${this.baseName}-int`, props.lambdaFunction, {
+            parameterMapping: new ParameterMapping().appendHeader('x-cf-source-ip', MappingValue.requestHeader('x-cf-source-ip'))
+        });
         const authorizerResult = this.getAuthorizer(props);
         const apiProps = {
             apiName: this.baseName,
