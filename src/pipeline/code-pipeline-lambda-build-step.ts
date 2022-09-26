@@ -61,6 +61,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
             'composer dump-autoload --optimize --classmap-authoritative',
             'php artisan route:cache',
             'cp vendor/bref/laravel-bridge/worker.php .',
+            'rm -rf vendor/bin',
             'cd ..',
         ]
     }
