@@ -11,11 +11,6 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "paths": {
-      "@smorken/aws-cdk/*": [
-        "./node_modules/@smorken/aws-cdk/dist/*"
-      ]
-    },
     "rootDir": "./ts",
     "strict": true,
     "strictNullChecks": true,

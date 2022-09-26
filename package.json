@@ -10,7 +10,7 @@
   "scripts": {
     "compile": "tsc",
     "clean": "rm -rf dist",
-    "prebuildpackage": "npm run clean && npm run compile && node dist/setup-package.js",
+    "prepare": "npm run clean && npm run compile && node dist/setup-package.js",
     "buildpackage": "cd dist && npm pack",
     "lint": "eslint .",
     "madge": "madge --ts-config ./tsconfig.json --circular --extensions ts ./src",
