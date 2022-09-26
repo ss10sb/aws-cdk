@@ -142,4 +142,36 @@ describe('bref distribution', () => {
         const expected = require('../__templates__/lambda-bref-factory-s3');
         templateHelper.template.templateMatches(expected);
     });
+
+    it('should create distribution defaults with http api and geo restrictions', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-west-2', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const factory = new BrefDistribution(stack, 'my-app', {
+            functionFactory: new PhpBrefFunction(stack, 'func', {
+                environment: {},
+                secretKeys: []
+            })
+        });
+        factory.create({
+            assetPath: 'assets/*',
+            minimumSslProtocol: SecurityPolicyProtocol.TLS_V1_2_2019,
+            certificateProps: {
+                domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'
+            },
+            apiProps: {
+                apiType: ApiType.HTTP,
+            },
+            functionProps: {
+                appPath: path.join(__dirname, '..', '__codebase__'),
+                brefRuntime: BrefRuntime.PHP81FPM
+            },
+            geoRestrict: ['RU', 'CN', 'BY']
+        });
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/lambda-bref-factory-httpapi-georestricted');
+        templateHelper.template.templateMatches(expected);
+    });
 });

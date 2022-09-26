@@ -6,7 +6,7 @@ import {
     Function,
     FunctionAssociation,
     FunctionCode,
-    FunctionEventType,
+    FunctionEventType, GeoRestriction,
     IDistribution,
     OriginBase,
     OriginProps,
@@ -28,7 +28,6 @@ import {NonConstruct} from "../core/non-construct";
 import {RestApi} from "aws-cdk-lib/aws-apigateway";
 import {Construct} from "constructs";
 import {HttpApiOrigin, HttpApiOriginProps} from "./http-api-origin";
-import path from "path";
 
 export interface WebDistributionProps {
     readonly api: HttpApi | RestApi;
@@ -41,6 +40,7 @@ export interface WebDistributionProps {
     readonly alarmEmails?: string[];
     readonly enableLogging?: boolean;
     readonly token?: string;
+    readonly geoRestrict?: string[];
 }
 
 export class WebDistribution extends NonConstruct {
@@ -67,11 +67,18 @@ export class WebDistribution extends NonConstruct {
             minimumProtocolVersion: props.minimumSslProtocol ?? this.defaults.minimumSslProtocol,
             webAclId: props.webAclId,
             priceClass: this.defaults.priceClass,
-            enableLogging: props.enableLogging
+            enableLogging: props.enableLogging,
+            geoRestriction: this.getGeoRestriction(props.geoRestrict ?? [])
         });
         this.addAlarms(dist, props.alarmEmails ?? []);
         this.addS3AssetBucket(dist, props);
         return dist;
+    }
+
+    protected getGeoRestriction(countries: string[]): GeoRestriction | undefined {
+        if (countries && countries.length > 0) {
+            return GeoRestriction.denylist(...countries);
+        }
     }
 
     protected addAlarms(distribution: IDistribution, emails: string[]): void {

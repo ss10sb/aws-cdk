@@ -36,6 +36,7 @@ export interface BrefDistributionProps {
     minimumSslProtocol?: SecurityPolicyProtocol;
     enableLogging?: boolean;
     webAclId?: string;
+    geoRestrict?: string[];
 }
 
 export interface BrefDistributionResult {
@@ -75,7 +76,8 @@ export class BrefDistribution extends NonConstruct {
             s3AssetBucket: bucket,
             webAclId: props.webAclId,
             enableLogging: props.enableLogging,
-            token: token
+            token: token,
+            geoRestrict: props.geoRestrict,
         });
         return {
             assetBucket: bucket,

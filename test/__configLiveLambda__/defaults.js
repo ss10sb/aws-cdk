@@ -54,7 +54,8 @@ module.exports = {
                     },
                     apiType: ApiType.HTTP,
                     apiProps: {},
-                    webAclId: 'arn:aws:wafv2:us-east-1:12344:global/webacl/webacl-sdlc'
+                    webAclId: 'arn:aws:wafv2:us-east-1:12344:global/webacl/webacl-sdlc',
+                    geoRestrict: ['RU', 'BY', 'CN'],
                 }
             }
         },

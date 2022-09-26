@@ -11,6 +11,7 @@ export interface DistributionConfigProps {
     readonly apiProps: PhpApiProps;
     readonly minimumSslProtocol?: SecurityPolicyProtocol;
     readonly webAclId?: string;
+    readonly geoRestrict?: string[];
 }
 
 

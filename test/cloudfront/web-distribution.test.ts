@@ -193,4 +193,31 @@ describe('cloud web distribution', () => {
         const expected = require('../__templates__/cloudfront-distribution-withs3');
         templateHelper.template.templateMatches(expected);
     });
+
+    it('should create default distribution with geo restrictions', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-west-2', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const cert = new AcmCertificate(stack, 'cert');
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
+        const func = phpbrefFun.create({
+            appPath: path.join(__dirname, '..', '__codebase__'),
+            brefRuntime: BrefRuntime.PHP81FPM
+        });
+        const phpHttpApi = new PhpHttpApi(stack, 'http-api');
+        const apiResult = phpHttpApi.create({lambdaFunction: func});
+        const webDistribution = new WebDistribution(stack, 'distribution');
+        webDistribution.create({
+            api: apiResult.api,
+            domainName: 'foo.bar.com',
+            certificate: c,
+            geoRestrict: ['RU', 'CN', 'BY']
+        })
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/cloudfront-distribution-with-georestrictions');
+        templateHelper.template.templateMatches(expected);
+    });
 });

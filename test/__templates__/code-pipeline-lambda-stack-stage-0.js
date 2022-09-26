@@ -1485,6 +1485,12 @@ module.exports = {
                         }
                     ],
                     PriceClass: 'PriceClass_100',
+                    Restrictions: {
+                        GeoRestriction: {
+                            Locations: [ 'RU', 'BY', 'CN' ],
+                            RestrictionType: 'blacklist'
+                        }
+                    },
                     ViewerCertificate: {
                         AcmCertificateArn: {
                             'Fn::GetAtt': [
