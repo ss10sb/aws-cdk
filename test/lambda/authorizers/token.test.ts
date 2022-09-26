@@ -1,6 +1,6 @@
-import {handler} from "../../../src/lambda/authorizers/host";
+import {handler} from "../../../src/lambda/authorizers/token";
 
-describe('host authorizer', () => {
+describe('token authorizer', () => {
     const OLD_ENV = process.env;
 
     beforeEach(() => {
@@ -12,16 +12,16 @@ describe('host authorizer', () => {
         process.env = OLD_ENV;
     });
 
-    it('should authorize domain without ips', () => {
-        process.env['AUTHORIZER_DOMAIN'] = 'test2.example.edu'
+    it('should authorize token without ips', () => {
+        process.env['AUTHORIZER_TOKEN'] = 'abc123';
         const callback = function(name: string | null, policy: Record<string, any>) {
             expect(policy.policyDocument.Statement[0].Effect).toEqual('Allow');
         };
         const event = {
             type: 'REQUEST',
-            methodArn: 'arn:aws:execute...',
+            methodArn: 'arn:aws:execute-api:us-east-2:111122223333:function',
             headers: {
-                Host: 'test2.example.edu'
+                'x-auth-token': 'abc123'
             },
             requestContext: {
                 identity: {
@@ -32,17 +32,17 @@ describe('host authorizer', () => {
         handler(event, {} ,callback);
     });
 
-    it('should authorize domain with ips', () => {
-        process.env['AUTHORIZER_DOMAIN'] = 'test2.example.edu'
+    it('should authorize token with ips', () => {
+        process.env['AUTHORIZER_TOKEN'] = 'abc123';
         process.env['AUTHORIZER_SUBNETS'] = '127.0.0.0/24,10.0.0.0/8';
         const callback = function(name: string | null, policy: Record<string, any>) {
             expect(policy.policyDocument.Statement[0].Effect).toEqual('Allow');
         };
         const event = {
             type: 'REQUEST',
-            methodArn: 'arn:aws:execute...',
+            methodArn: 'arn:aws:execute-api:us-east-2:111122223333:function',
             headers: {
-                Host: 'test2.example.edu'
+                'x-auth-token': 'abc123'
             },
             requestContext: {
                 identity: {
@@ -53,16 +53,16 @@ describe('host authorizer', () => {
         handler(event, {} ,callback);
     });
 
-    it('should not authorize domain without ips', () => {
-        process.env['AUTHORIZER_DOMAIN'] = 'test2.example.edu'
+    it('should not authorize token without ips', () => {
+        process.env['AUTHORIZER_TOKEN'] = 'abc123';
         const callback = function(name: string | null, policy: Record<string, any>) {
             expect(policy.policyDocument.Statement[0].Effect).toEqual('Deny');
         };
         const event = {
             type: 'REQUEST',
-            methodArn: 'arn:aws:execute...',
+            methodArn: 'arn:aws:execute-api:us-east-2:111122223333:function',
             headers: {
-                Host: 'test1.example.edu'
+                'x-auth-token': 'bbb222'
             },
             requestContext: {
                 identity: {
@@ -73,17 +73,17 @@ describe('host authorizer', () => {
         handler(event, {} ,callback);
     });
 
-    it('should not authorize domain with ips', () => {
-        process.env['AUTHORIZER_DOMAIN'] = 'test2.example.edu'
+    it('should not authorize token with ips', () => {
+        process.env['AUTHORIZER_TOKEN'] = 'abc123';
         process.env['AUTHORIZER_SUBNETS'] = '127.0.0.0/24,10.0.0.0/8';
         const callback = function(name: string | null, policy: Record<string, any>) {
             expect(policy.policyDocument.Statement[0].Effect).toEqual('Deny');
         };
         const event = {
             type: 'REQUEST',
-            methodArn: 'arn:aws:execute...',
+            methodArn: 'arn:aws:execute-api:us-east-2:111122223333:function',
             headers: {
-                Host: 'test2.example.edu'
+                'x-auth-token': 'abc123'
             },
             requestContext: {
                 identity: {

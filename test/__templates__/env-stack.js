@@ -13,6 +13,23 @@ module.exports = {
                 HostedZoneId: 'DUMMY'
             }
         },
+        pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E: {
+            Type: 'Custom::AWS',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
+                },
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"}}',
+                InstallLatestAwsSdk: true
+            },
+            DependsOn: [
+                'pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186'
+            ],
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
         pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186: {
             Type: 'AWS::IAM::Policy',
             Properties: {
@@ -33,23 +50,6 @@ module.exports = {
                     }
                 ]
             }
-        },
-        pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E: {
-            Type: 'Custom::AWS',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
-                },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"}}',
-                InstallLatestAwsSdk: true
-            },
-            DependsOn: [
-                'pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186'
-            ],
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
         },
         pccsdlcmyappsesverifytestSesVerificationRecord5CAAC1A0: {
             Type: 'AWS::Route53::RecordSet',
@@ -81,6 +81,24 @@ module.exports = {
                 'pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E'
             ]
         },
+        pccsdlcmyappsesverifytestVerifyDomainDkim21798902: {
+            Type: 'Custom::AWS',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
+                },
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
+                InstallLatestAwsSdk: true
+            },
+            DependsOn: [
+                'pccsdlcmyappsesverifytestVerifyDomainDkimCustomResourcePolicyD5E756D9',
+                'pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186',
+                'pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E'
+            ],
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
         pccsdlcmyappsesverifytestVerifyDomainDkimCustomResourcePolicyD5E756D9: {
             Type: 'AWS::IAM::Policy',
             Properties: {
@@ -105,24 +123,6 @@ module.exports = {
                 'pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186',
                 'pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E'
             ]
-        },
-        pccsdlcmyappsesverifytestVerifyDomainDkim21798902: {
-            Type: 'Custom::AWS',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
-                },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
-                InstallLatestAwsSdk: true
-            },
-            DependsOn: [
-                'pccsdlcmyappsesverifytestVerifyDomainDkimCustomResourcePolicyD5E756D9',
-                'pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186',
-                'pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E'
-            ],
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
         },
         pccsdlcmyappsesverifytestSesDkimVerificationRecord043B916AD: {
             Type: 'AWS::Route53::RecordSet',
@@ -832,6 +832,8 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
+                            {Name: 'AWS_SECRET_ARN', Value: ''},
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
                         Essential: true,
@@ -985,27 +987,6 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
-        pccsdlcmyapptaskcreateruntask0createfnCustomResourcePolicy7E64AD5A: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'ecs:RunTask',
-                            Effect: 'Allow',
-                            Resource: {Ref: 'pccsdlcmyapptaskdefcreateruntask07A17E066'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsdlcmyapptaskcreateruntask0createfnCustomResourcePolicy7E64AD5A',
-                Roles: [
-                    {
-                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
-                    }
-                ]
-            }
-        },
         pccsdlcmyapptaskcreateruntask0createfnAB13F8A3: {
             Type: 'Custom::AWS',
             Properties: {
@@ -1040,6 +1021,27 @@ module.exports = {
             ],
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
+        },
+        pccsdlcmyapptaskcreateruntask0createfnCustomResourcePolicy7E64AD5A: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'ecs:RunTask',
+                            Effect: 'Allow',
+                            Resource: {Ref: 'pccsdlcmyapptaskdefcreateruntask07A17E066'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsdlcmyapptaskcreateruntask0createfnCustomResourcePolicy7E64AD5A',
+                Roles: [
+                    {
+                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
+                    }
+                ]
+            }
         },
         pccsdlcmyapptaskdefupdateruntask0execrole7DA97922: {
             Type: 'AWS::IAM::Role',
@@ -1250,6 +1252,8 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
+                            {Name: 'AWS_SECRET_ARN', Value: ''},
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
                         Essential: true,
@@ -1403,27 +1407,6 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
-        pccsdlcmyapptaskupdateruntask0updatefnCustomResourcePolicyB3AA7548: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'ecs:RunTask',
-                            Effect: 'Allow',
-                            Resource: {Ref: 'pccsdlcmyapptaskdefupdateruntask0D1DC2ACD'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsdlcmyapptaskupdateruntask0updatefnCustomResourcePolicyB3AA7548',
-                Roles: [
-                    {
-                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
-                    }
-                ]
-            }
-        },
         pccsdlcmyapptaskupdateruntask0updatefnCF58E13D: {
             Type: 'Custom::AWS',
             Properties: {
@@ -1479,6 +1462,27 @@ module.exports = {
             ],
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
+        },
+        pccsdlcmyapptaskupdateruntask0updatefnCustomResourcePolicyB3AA7548: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'ecs:RunTask',
+                            Effect: 'Allow',
+                            Resource: {Ref: 'pccsdlcmyapptaskdefupdateruntask0D1DC2ACD'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsdlcmyapptaskupdateruntask0updatefnCustomResourcePolicyB3AA7548',
+                Roles: [
+                    {
+                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
+                    }
+                ]
+            }
         },
         pccsdlcmyapptaskdefscheduledtask0execrole253CB36D: {
             Type: 'AWS::IAM::Role',
@@ -1700,6 +1704,8 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
+                            {Name: 'AWS_SECRET_ARN', Value: ''},
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
                         Essential: true,
@@ -2295,6 +2301,8 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
+                            {Name: 'AWS_SECRET_ARN', Value: ''},
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
                         Essential: true,
@@ -3179,7 +3187,7 @@ module.exports = {
                         ]
                     ]
                 },
-                RetentionInDays: 30
+                RetentionInDays: 7
             }
         },
         LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
@@ -3343,6 +3351,14 @@ module.exports = {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopstopruleE9201095', 'Arn']
                 }
             }
+        }
+    },
+    Outputs: {
+        pccsdlcmyappservicequeue0SQSQueue8306BFF0: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']}
+        },
+        pccsdlcmyappservicequeue0SQSQueueArn061B9BC6: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']}
         }
     }
 };

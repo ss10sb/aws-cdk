@@ -6,20 +6,20 @@ import {SecretConfigHelper} from "../utils/secret-config-helper";
 
 export class Secrets extends NonConstruct {
 
-    secret?: ISecret;
+    static secret?: ISecret;
 
     fetch(): ISecret {
-        if (!this.secret) {
-            this.secret = Secret.fromSecretNameV2(this.scope, `${this.id}-secret-lookup`, this.getSecretName());
+        if (!Secrets.secret) {
+            Secrets.secret = Secret.fromSecretNameV2(this.scope, `${this.id}-secret-lookup`, this.getSecretName());
         }
-        return this.secret;
+        return Secrets.secret;
     }
 
     fetchByArn(arn: string): ISecret {
-        if (!this.secret) {
-            this.secret = Secret.fromSecretCompleteArn(this.scope, `${this.id}-secret-lookup-arn`, arn);
+        if (!Secrets.secret) {
+            Secrets.secret = Secret.fromSecretCompleteArn(this.scope, `${this.id}-secret-lookup-arn`, arn);
         }
-        return this.secret;
+        return Secrets.secret;
     }
 
     getEcsSecretsFromSecret(keys: string[], secret: ISecret): Record<string, aws_ecs.Secret> {

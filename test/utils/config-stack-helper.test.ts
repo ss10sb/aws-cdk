@@ -14,7 +14,7 @@ class ExtendedStack extends ConfigStack {
 
 }
 
-describe('utils', () => {
+describe('config stack helper utils', () => {
 
     it('should create base name from config', () => {
         const config = {

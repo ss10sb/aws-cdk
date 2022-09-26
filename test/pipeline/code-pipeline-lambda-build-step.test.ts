@@ -1,23 +1,1220 @@
-// BuildSpec: '{\n' +
-// '  "version": "0.2",\n' +
-// '  "phases": {\n' +
-// '    "build": {\n' +
-// '      "commands": [\n' +
-// '        "cd codebase",\n' +
-// '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
-// '        "npm ci",\n' +
-// '        "npm run prod",\n' +
-// '        "rm -rf node_modules",\n' +
-// '        "cd ..",\n' +
-// '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
-// '        "npm ci",\n' +
-// '        "npm run build",\n' +
-// '        "npx cdk synth"\n' +
-// '      ]\n' +
-// '    }\n' +
-// '  },\n' +
-// '  "artifacts": {\n' +
-// '    "base-directory": "cdk.out",\n' +
-// '    "files": "**/*"\n' +
-// '  }\n' +
-// '}'
+import {App, Stack} from "aws-cdk-lib";
+import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
+import {CodePipelineLambdaBuildStep} from "../../src/pipeline/code-pipeline-lambda-build-step";
+import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {Template} from "aws-cdk-lib/assertions";
+import {CodePipelineSynthStep} from "../../src/pipeline/code-pipeline-synth-step";
+import {EnvBuildType} from "../../src/env/env-definitions";
+import {CodePipelinePipeline, CodePipelinePipelineProps} from "../../src/pipeline/code-pipeline-pipeline";
+
+describe('code pipeline lambda buid step', () => {
+
+    it('should create lambda build step', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-pipeline', account: '123pipeline'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const codeStarSource = new CodePipelineCodestarSource(stack, 'source', {
+            connectionArn: "arn:...",
+            owner: "repoOwner",
+            repo: "repoName",
+            branch: 'foo'
+        });
+        const buildStep = new CodePipelineLambdaBuildStep(stack, 'build', {
+            input: codeStarSource.source
+        });
+        const synthStep = new CodePipelineSynthStep(stack, 'synth', {
+            input: buildStep.step,
+            type: EnvBuildType.LAMBDA
+        });
+        const codePipelineProps: CodePipelinePipelineProps = {
+            source: codeStarSource,
+            synth: synthStep
+        };
+        new CodePipelinePipeline(stack, 'pipeline', codePipelineProps);
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = {
+            Resources: {
+                buildlambdabuildsteproleE9EE6387: {
+                    Type: 'AWS::IAM::Role',
+                    Properties: {
+                        AssumeRolePolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Principal: { Service: 'codebuild.amazonaws.com' }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                buildlambdabuildsteproleDefaultPolicyFC299D82: {
+                    Type: 'AWS::IAM::Policy',
+                    Properties: {
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: [
+                                        'logs:CreateLogGroup',
+                                        'logs:CreateLogStream',
+                                        'logs:PutLogEvents'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                                    {
+                                                        Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                                    {
+                                                        Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
+                                                    },
+                                                    ':*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'codebuild:CreateReportGroup',
+                                        'codebuild:CreateReport',
+                                        'codebuild:UpdateReport',
+                                        'codebuild:BatchPutTestCases',
+                                        'codebuild:BatchPutCodeCoverages'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                'arn:',
+                                                { Ref: 'AWS::Partition' },
+                                                ':codebuild:us-pipeline:123pipeline:report-group/',
+                                                {
+                                                    Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
+                                                },
+                                                '-*'
+                                            ]
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        's3:GetObject*',
+                                        's3:GetBucket*',
+                                        's3:List*',
+                                        's3:DeleteObject*',
+                                        's3:PutObject',
+                                        's3:PutObjectLegalHold',
+                                        's3:PutObjectRetention',
+                                        's3:PutObjectTagging',
+                                        's3:PutObjectVersionTagging',
+                                        's3:Abort*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    {
+                                                        'Fn::GetAtt': [
+                                                            'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                            'Arn'
+                                                        ]
+                                                    },
+                                                    '/*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:DescribeKey',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        },
+                        PolicyName: 'buildlambdabuildsteproleDefaultPolicyFC299D82',
+                        Roles: [ { Ref: 'buildlambdabuildsteproleE9EE6387' } ]
+                    }
+                },
+                synthsynthsteproleBD6F73A4: {
+                    Type: 'AWS::IAM::Role',
+                    Properties: {
+                        AssumeRolePolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Principal: { Service: 'codebuild.amazonaws.com' }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                synthsynthsteproleDefaultPolicyE7FED82F: {
+                    Type: 'AWS::IAM::Policy',
+                    Properties: {
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: [
+                                        'logs:CreateLogGroup',
+                                        'logs:CreateLogStream',
+                                        'logs:PutLogEvents'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                                    {
+                                                        Ref: 'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B'
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                                    {
+                                                        Ref: 'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B'
+                                                    },
+                                                    ':*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'codebuild:CreateReportGroup',
+                                        'codebuild:CreateReport',
+                                        'codebuild:UpdateReport',
+                                        'codebuild:BatchPutTestCases',
+                                        'codebuild:BatchPutCodeCoverages'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                'arn:',
+                                                { Ref: 'AWS::Partition' },
+                                                ':codebuild:us-pipeline:123pipeline:report-group/',
+                                                {
+                                                    Ref: 'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B'
+                                                },
+                                                '-*'
+                                            ]
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        's3:GetObject*',
+                                        's3:GetBucket*',
+                                        's3:List*',
+                                        's3:DeleteObject*',
+                                        's3:PutObject',
+                                        's3:PutObjectLegalHold',
+                                        's3:PutObjectRetention',
+                                        's3:PutObjectTagging',
+                                        's3:PutObjectVersionTagging',
+                                        's3:Abort*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    {
+                                                        'Fn::GetAtt': [
+                                                            'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                            'Arn'
+                                                        ]
+                                                    },
+                                                    '/*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:DescribeKey',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        },
+                        PolicyName: 'synthsynthsteproleDefaultPolicyE7FED82F',
+                        Roles: [ { Ref: 'synthsynthsteproleBD6F73A4' } ]
+                    }
+                },
+                pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5: {
+                    Type: 'AWS::KMS::Key',
+                    Properties: {
+                        KeyPolicy: {
+                            Statement: [
+                                {
+                                    Action: 'kms:*',
+                                    Effect: 'Allow',
+                                    Principal: {
+                                        AWS: {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':iam::123pipeline:root'
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    Resource: '*'
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    },
+                    UpdateReplacePolicy: 'Delete',
+                    DeletionPolicy: 'Delete'
+                },
+                pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyAlias2A99F16D: {
+                    Type: 'AWS::KMS::Alias',
+                    Properties: {
+                        AliasName: 'alias/codepipeline-stackpipelinecodepipelinepipelinee9513b46',
+                        TargetKeyId: {
+                            'Fn::GetAtt': [
+                                'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                'Arn'
+                            ]
+                        }
+                    },
+                    UpdateReplacePolicy: 'Delete',
+                    DeletionPolicy: 'Delete'
+                },
+                pipelinecodepipelinePipelineArtifactsBucket584C21F7: {
+                    Type: 'AWS::S3::Bucket',
+                    Properties: {
+                        BucketEncryption: {
+                            ServerSideEncryptionConfiguration: [
+                                {
+                                    ServerSideEncryptionByDefault: {
+                                        KMSMasterKeyID: {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                                'Arn'
+                                            ]
+                                        },
+                                        SSEAlgorithm: 'aws:kms'
+                                    }
+                                }
+                            ]
+                        },
+                        PublicAccessBlockConfiguration: {
+                            BlockPublicAcls: true,
+                            BlockPublicPolicy: true,
+                            IgnorePublicAcls: true,
+                            RestrictPublicBuckets: true
+                        }
+                    },
+                    UpdateReplacePolicy: 'Retain',
+                    DeletionPolicy: 'Retain'
+                },
+                pipelinecodepipelinePipelineArtifactsBucketPolicy8E568170: {
+                    Type: 'AWS::S3::BucketPolicy',
+                    Properties: {
+                        Bucket: {
+                            Ref: 'pipelinecodepipelinePipelineArtifactsBucket584C21F7'
+                        },
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 's3:*',
+                                    Condition: { Bool: { 'aws:SecureTransport': 'false' } },
+                                    Effect: 'Deny',
+                                    Principal: { AWS: '*' },
+                                    Resource: [
+                                        {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    {
+                                                        'Fn::GetAtt': [
+                                                            'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                            'Arn'
+                                                        ]
+                                                    },
+                                                    '/*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                pipelinecodepipelinePipelineRoleCE72FCDC: {
+                    Type: 'AWS::IAM::Role',
+                    Properties: {
+                        AssumeRolePolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Principal: { Service: 'codepipeline.amazonaws.com' }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                pipelinecodepipelinePipelineRoleDefaultPolicy91377819: {
+                    Type: 'AWS::IAM::Policy',
+                    Properties: {
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: [
+                                        's3:GetObject*',
+                                        's3:GetBucket*',
+                                        's3:List*',
+                                        's3:DeleteObject*',
+                                        's3:PutObject',
+                                        's3:PutObjectLegalHold',
+                                        's3:PutObjectRetention',
+                                        's3:PutObjectTagging',
+                                        's3:PutObjectVersionTagging',
+                                        's3:Abort*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    {
+                                                        'Fn::GetAtt': [
+                                                            'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                            'Arn'
+                                                        ]
+                                                    },
+                                                    '/*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:DescribeKey',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleEC6D53D7',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelineCodeBuildActionRoleD00A2C1F',
+                                            'Arn'
+                                        ]
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        },
+                        PolicyName: 'pipelinecodepipelinePipelineRoleDefaultPolicy91377819',
+                        Roles: [ { Ref: 'pipelinecodepipelinePipelineRoleCE72FCDC' } ]
+                    }
+                },
+                pipelinecodepipelinePipeline682A7EE4: {
+                    Type: 'AWS::CodePipeline::Pipeline',
+                    Properties: {
+                        RoleArn: {
+                            'Fn::GetAtt': [ 'pipelinecodepipelinePipelineRoleCE72FCDC', 'Arn' ]
+                        },
+                        Stages: [
+                            {
+                                Actions: [
+                                    {
+                                        ActionTypeId: {
+                                            Category: 'Source',
+                                            Owner: 'AWS',
+                                            Provider: 'CodeStarSourceConnection',
+                                            Version: '1'
+                                        },
+                                        Configuration: {
+                                            ConnectionArn: 'arn:...',
+                                            FullRepositoryId: 'repoOwner/repoName',
+                                            BranchName: 'foo',
+                                            DetectChanges: true
+                                        },
+                                        Name: 'repoOwner_repoName',
+                                        OutputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                                        RoleArn: {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleEC6D53D7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        RunOrder: 1
+                                    }
+                                ],
+                                Name: 'Source'
+                            },
+                            {
+                                Actions: [
+                                    {
+                                        ActionTypeId: {
+                                            Category: 'Build',
+                                            Owner: 'AWS',
+                                            Provider: 'CodeBuild',
+                                            Version: '1'
+                                        },
+                                        Configuration: {
+                                            ProjectName: {
+                                                Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
+                                            },
+                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"cce96ff96d9f4044a3f0c5bc8cd36ec09f3a4b329a5dbfb2f412089f7fa187ab"}]'
+                                        },
+                                        InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                                        Name: 'build-build-step',
+                                        OutputArtifacts: [ { Name: 'build_build_step_Output' } ],
+                                        RoleArn: {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelineCodeBuildActionRoleD00A2C1F',
+                                                'Arn'
+                                            ]
+                                        },
+                                        RunOrder: 1
+                                    },
+                                    {
+                                        ActionTypeId: {
+                                            Category: 'Build',
+                                            Owner: 'AWS',
+                                            Provider: 'CodeBuild',
+                                            Version: '1'
+                                        },
+                                        Configuration: {
+                                            ProjectName: {
+                                                Ref: 'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B'
+                                            },
+                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                        },
+                                        InputArtifacts: [ { Name: 'build_build_step_Output' } ],
+                                        Name: 'synth-synth-step',
+                                        OutputArtifacts: [ { Name: 'synth_synth_step_Output' } ],
+                                        RoleArn: {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelineCodeBuildActionRoleD00A2C1F',
+                                                'Arn'
+                                            ]
+                                        },
+                                        RunOrder: 2
+                                    }
+                                ],
+                                Name: 'Build'
+                            },
+                            {
+                                Actions: [
+                                    {
+                                        ActionTypeId: {
+                                            Category: 'Build',
+                                            Owner: 'AWS',
+                                            Provider: 'CodeBuild',
+                                            Version: '1'
+                                        },
+                                        Configuration: {
+                                            ProjectName: {
+                                                Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
+                                            },
+                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
+                                        },
+                                        InputArtifacts: [ { Name: 'synth_synth_step_Output' } ],
+                                        Name: 'SelfMutate',
+                                        RoleArn: {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelineCodeBuildActionRoleD00A2C1F',
+                                                'Arn'
+                                            ]
+                                        },
+                                        RunOrder: 1
+                                    }
+                                ],
+                                Name: 'UpdatePipeline'
+                            }
+                        ],
+                        ArtifactStore: {
+                            EncryptionKey: {
+                                Id: {
+                                    'Fn::GetAtt': [
+                                        'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                        'Arn'
+                                    ]
+                                },
+                                Type: 'KMS'
+                            },
+                            Location: {
+                                Ref: 'pipelinecodepipelinePipelineArtifactsBucket584C21F7'
+                            },
+                            Type: 'S3'
+                        },
+                        Name: 'pipeline-code-pipeline',
+                        RestartExecutionOnUpdate: true
+                    },
+                    DependsOn: [
+                        'pipelinecodepipelinePipelineRoleDefaultPolicy91377819',
+                        'pipelinecodepipelinePipelineRoleCE72FCDC'
+                    ]
+                },
+                pipelinecodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleEC6D53D7: {
+                    Type: 'AWS::IAM::Role',
+                    Properties: {
+                        AssumeRolePolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Principal: {
+                                        AWS: {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':iam::123pipeline:root'
+                                                ]
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                pipelinecodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicy017E1A6C: {
+                    Type: 'AWS::IAM::Policy',
+                    Properties: {
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'codestar-connections:UseConnection',
+                                    Effect: 'Allow',
+                                    Resource: 'arn:...'
+                                },
+                                {
+                                    Action: [
+                                        's3:GetObject*',
+                                        's3:GetBucket*',
+                                        's3:List*',
+                                        's3:DeleteObject*',
+                                        's3:PutObject',
+                                        's3:PutObjectLegalHold',
+                                        's3:PutObjectRetention',
+                                        's3:PutObjectTagging',
+                                        's3:PutObjectVersionTagging',
+                                        's3:Abort*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    {
+                                                        'Fn::GetAtt': [
+                                                            'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                            'Arn'
+                                                        ]
+                                                    },
+                                                    '/*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:DescribeKey',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [ 's3:PutObjectAcl', 's3:PutObjectVersionAcl' ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                {
+                                                    'Fn::GetAtt': [
+                                                        'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                        'Arn'
+                                                    ]
+                                                },
+                                                '/*'
+                                            ]
+                                        ]
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        },
+                        PolicyName: 'pipelinecodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicy017E1A6C',
+                        Roles: [
+                            {
+                                Ref: 'pipelinecodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleEC6D53D7'
+                            }
+                        ]
+                    }
+                },
+                pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB: {
+                    Type: 'AWS::CodeBuild::Project',
+                    Properties: {
+                        Artifacts: { Type: 'CODEPIPELINE' },
+                        Environment: {
+                            ComputeType: 'BUILD_GENERAL1_SMALL',
+                            Image: 'aws/codebuild/standard:6.0',
+                            ImagePullCredentialsType: 'CODEBUILD',
+                            PrivilegedMode: true,
+                            Type: 'LINUX_CONTAINER'
+                        },
+                        ServiceRole: {
+                            'Fn::GetAtt': [ 'buildlambdabuildsteproleE9EE6387', 'Arn' ]
+                        },
+                        Source: {
+                            BuildSpec: '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "install": {\n' +
+                                '      "commands": [\n' +
+                                '        "php -v",\n' +
+                                `        "php -r \\"copy('https://getcomposer.org/installer', 'composer-setup.php');\\"",\n` +
+                                '        "php composer-setup.php",\n' +
+                                `        "php -r \\"unlink('composer-setup.php');\\"",\n` +
+                                '        "mv composer.phar /usr/local/bin/composer"\n' +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cd codebase",\n' +
+                                '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
+                                '        "npm ci",\n' +
+                                '        "npm run prod",\n' +
+                                '        "rm -rf node_modules tests",\n' +
+                                '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress",\n' +
+                                '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
+                                '        "php artisan route:cache",\n' +
+                                '        "cp vendor/bref/laravel-bridge/worker.php .",\n' +
+                                '        "rm -rf vendor/bin",\n' +
+                                '        "cd .."\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  },\n' +
+                                '  "artifacts": {\n' +
+                                '    "base-directory": "./",\n' +
+                                '    "files": "**/*"\n' +
+                                '  }\n' +
+                                '}',
+                            Type: 'CODEPIPELINE'
+                        },
+                        Cache: { Type: 'NO_CACHE' },
+                        Description: 'Pipeline step stack/Pipeline/Build/build-build-step',
+                        EncryptionKey: {
+                            'Fn::GetAtt': [
+                                'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                'Arn'
+                            ]
+                        }
+                    }
+                },
+                pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B: {
+                    Type: 'AWS::CodeBuild::Project',
+                    Properties: {
+                        Artifacts: { Type: 'CODEPIPELINE' },
+                        Environment: {
+                            ComputeType: 'BUILD_GENERAL1_SMALL',
+                            Image: 'aws/codebuild/standard:6.0',
+                            ImagePullCredentialsType: 'CODEBUILD',
+                            PrivilegedMode: false,
+                            Type: 'LINUX_CONTAINER'
+                        },
+                        ServiceRole: { 'Fn::GetAtt': [ 'synthsynthsteproleBD6F73A4', 'Arn' ] },
+                        Source: {
+                            BuildSpec: '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
+                                '        "npm ci",\n' +
+                                '        "npm run build",\n' +
+                                '        "npx cdk synth"\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  },\n' +
+                                '  "artifacts": {\n' +
+                                '    "base-directory": "cdk.out",\n' +
+                                '    "files": "**/*"\n' +
+                                '  }\n' +
+                                '}',
+                            Type: 'CODEPIPELINE'
+                        },
+                        Cache: { Type: 'NO_CACHE' },
+                        Description: 'Pipeline step stack/Pipeline/Build/synth-synth-step',
+                        EncryptionKey: {
+                            'Fn::GetAtt': [
+                                'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                'Arn'
+                            ]
+                        }
+                    }
+                },
+                pipelinecodepipelineCodeBuildActionRoleD00A2C1F: {
+                    Type: 'AWS::IAM::Role',
+                    Properties: {
+                        AssumeRolePolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Condition: {
+                                        Bool: { 'aws:ViaAWSService': 'codepipeline.amazonaws.com' }
+                                    },
+                                    Effect: 'Allow',
+                                    Principal: {
+                                        AWS: {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':iam::123pipeline:root'
+                                                ]
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                pipelinecodepipelineCodeBuildActionRoleDefaultPolicyE54BC770: {
+                    Type: 'AWS::IAM::Policy',
+                    Properties: {
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: [
+                                        'codebuild:BatchGetBuilds',
+                                        'codebuild:StartBuild',
+                                        'codebuild:StopBuild'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        'codebuild:BatchGetBuilds',
+                                        'codebuild:StartBuild',
+                                        'codebuild:StopBuild'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        'codebuild:BatchGetBuilds',
+                                        'codebuild:StartBuild',
+                                        'codebuild:StopBuild'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelineUpdatePipelineSelfMutation85999C79',
+                                            'Arn'
+                                        ]
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        },
+                        PolicyName: 'pipelinecodepipelineCodeBuildActionRoleDefaultPolicyE54BC770',
+                        Roles: [
+                            { Ref: 'pipelinecodepipelineCodeBuildActionRoleD00A2C1F' }
+                        ]
+                    }
+                },
+                pipelinecodepipelineUpdatePipelineSelfMutationRoleFF406EEC: {
+                    Type: 'AWS::IAM::Role',
+                    Properties: {
+                        AssumeRolePolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Effect: 'Allow',
+                                    Principal: { Service: 'codebuild.amazonaws.com' }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        }
+                    }
+                },
+                pipelinecodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyBDBBD082: {
+                    Type: 'AWS::IAM::Policy',
+                    Properties: {
+                        PolicyDocument: {
+                            Statement: [
+                                {
+                                    Action: [
+                                        'logs:CreateLogGroup',
+                                        'logs:CreateLogStream',
+                                        'logs:PutLogEvents'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                                    {
+                                                        Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    'arn:',
+                                                    { Ref: 'AWS::Partition' },
+                                                    ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
+                                                    {
+                                                        Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
+                                                    },
+                                                    ':*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [
+                                        'codebuild:CreateReportGroup',
+                                        'codebuild:CreateReport',
+                                        'codebuild:UpdateReport',
+                                        'codebuild:BatchPutTestCases',
+                                        'codebuild:BatchPutCodeCoverages'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                'arn:',
+                                                { Ref: 'AWS::Partition' },
+                                                ':codebuild:us-pipeline:123pipeline:report-group/',
+                                                {
+                                                    Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
+                                                },
+                                                '-*'
+                                            ]
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: 'sts:AssumeRole',
+                                    Condition: {
+                                        'ForAnyValue:StringEquals': {
+                                            'iam:ResourceTag/aws-cdk:bootstrap-role': [ 'image-publishing', 'file-publishing', 'deploy' ]
+                                        }
+                                    },
+                                    Effect: 'Allow',
+                                    Resource: 'arn:*:iam::123pipeline:role/*'
+                                },
+                                {
+                                    Action: 'cloudformation:DescribeStacks',
+                                    Effect: 'Allow',
+                                    Resource: '*'
+                                },
+                                {
+                                    Action: 's3:ListBucket',
+                                    Effect: 'Allow',
+                                    Resource: '*'
+                                },
+                                {
+                                    Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
+                                    Effect: 'Allow',
+                                    Resource: [
+                                        {
+                                            'Fn::GetAtt': [
+                                                'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                'Arn'
+                                            ]
+                                        },
+                                        {
+                                            'Fn::Join': [
+                                                '',
+                                                [
+                                                    {
+                                                        'Fn::GetAtt': [
+                                                            'pipelinecodepipelinePipelineArtifactsBucket584C21F7',
+                                                            'Arn'
+                                                        ]
+                                                    },
+                                                    '/*'
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    Action: [ 'kms:Decrypt', 'kms:DescribeKey' ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                },
+                                {
+                                    Action: [
+                                        'kms:Decrypt',
+                                        'kms:Encrypt',
+                                        'kms:ReEncrypt*',
+                                        'kms:GenerateDataKey*'
+                                    ],
+                                    Effect: 'Allow',
+                                    Resource: {
+                                        'Fn::GetAtt': [
+                                            'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                            'Arn'
+                                        ]
+                                    }
+                                }
+                            ],
+                            Version: '2012-10-17'
+                        },
+                        PolicyName: 'pipelinecodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyBDBBD082',
+                        Roles: [
+                            {
+                                Ref: 'pipelinecodepipelineUpdatePipelineSelfMutationRoleFF406EEC'
+                            }
+                        ]
+                    }
+                },
+                pipelinecodepipelineUpdatePipelineSelfMutation85999C79: {
+                    Type: 'AWS::CodeBuild::Project',
+                    Properties: {
+                        Artifacts: { Type: 'CODEPIPELINE' },
+                        Environment: {
+                            ComputeType: 'BUILD_GENERAL1_SMALL',
+                            Image: 'aws/codebuild/standard:5.0',
+                            ImagePullCredentialsType: 'CODEBUILD',
+                            PrivilegedMode: false,
+                            Type: 'LINUX_CONTAINER'
+                        },
+                        ServiceRole: {
+                            'Fn::GetAtt': [
+                                'pipelinecodepipelineUpdatePipelineSelfMutationRoleFF406EEC',
+                                'Arn'
+                            ]
+                        },
+                        Source: {
+                            BuildSpec: '{\n' +
+                                '  "version": "0.2",\n' +
+                                '  "phases": {\n' +
+                                '    "install": {\n' +
+                                '      "commands": [\n' +
+                                '        "npm install -g aws-cdk@2"\n' +
+                                '      ]\n' +
+                                '    },\n' +
+                                '    "build": {\n' +
+                                '      "commands": [\n' +
+                                '        "cdk -a . deploy stack --require-approval=never --verbose"\n' +
+                                '      ]\n' +
+                                '    }\n' +
+                                '  }\n' +
+                                '}',
+                            Type: 'CODEPIPELINE'
+                        },
+                        Cache: { Type: 'NO_CACHE' },
+                        Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
+                        EncryptionKey: {
+                            'Fn::GetAtt': [
+                                'pipelinecodepipelinePipelineArtifactsBucketEncryptionKeyE0C1D3A5',
+                                'Arn'
+                            ]
+                        },
+                        Name: 'pipeline-code-pipeline-selfupdate'
+                    }
+                }
+            }
+        };
+        templateHelper.template.templateMatches(expected);
+    });
+});

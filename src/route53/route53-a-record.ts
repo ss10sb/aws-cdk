@@ -44,13 +44,21 @@ export class Route53ARecord extends NonConstruct {
     }
 
     getTarget(): IAliasRecordTarget {
-        if (this.target instanceof Distribution) {
+        if (this.isDistribution(this.target)) {
             return new CloudFrontTarget(this.target);
         }
-        if (this.target instanceof ApplicationLoadBalancer) {
+        if (this.isApplicationLoadBalancer(this.target)) {
             return new LoadBalancerTarget(<IApplicationLoadBalancer>this.target);
         }
         return <IAliasRecordTarget>this.target;
+    }
+
+    isApplicationLoadBalancer(target: object): target is IApplicationLoadBalancer {
+        return target instanceof ApplicationLoadBalancer || (target as IApplicationLoadBalancer).addListener !== undefined;
+    }
+
+    isDistribution(target: object): target is IDistribution {
+        return target instanceof Distribution || (target as IDistribution).distributionId !== undefined;
     }
 
     getHostedZone(): IHostedZone | undefined {

@@ -2,7 +2,6 @@ import {NonConstruct} from "../core/non-construct";
 import {CodeBuildStep, CodePipelineSource} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
 import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
-import {IBuildImage, LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
 import {PhpVersion} from "../config/config-definitions";
 import {PhpVersionHelper} from "../utils/php-version-helper";
 

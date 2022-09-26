@@ -33,7 +33,7 @@ describe('code pipeline run', () => {
             repo: "repoName"
         });
         const synthStep = new CodePipelineSynthStep(stack, stack.node.id, {
-            source: codeStarSource.source
+            input: codeStarSource.source
         });
         const repositories = new EcrRepositories(stack.node.id, baseBuildConfig.Parameters.repositories);
         const pipeline = new CodePipelinePipeline(stack, stack.node.id, {
@@ -46,6 +46,7 @@ describe('code pipeline run', () => {
             schedule: baseBuildConfig.Parameters.runPipelineSchedule
         });
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
         const expected = require('../__templates__/code-pipeline-run');
         templateHelper.template.templateMatches(expected);
     });

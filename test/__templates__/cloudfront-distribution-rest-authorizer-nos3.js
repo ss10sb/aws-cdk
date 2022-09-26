@@ -258,27 +258,167 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
-        httpapihttpapi5E89BCFA: {
-            Type: 'AWS::ApiGatewayV2::Api',
+        httpapiauthorizerfnServiceRoleE977EE3D: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'lambda.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        httpapiauthorizerfn8B4D1E1C: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
+                    S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                },
+                Role: {
+                    'Fn::GetAtt': ['httpapiauthorizerfnServiceRoleE977EE3D', 'Arn']
+                },
+                Environment: {
+                    Variables: {
+                        AUTHORIZER_TOKEN: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    '{{resolve:secretsmanager:arn:',
+                                    {Ref: 'AWS::Partition'},
+                                    ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
+                                ]
+                            ]
+                        }
+                    }
+                },
+                FunctionName: 'http-api-authorizer-fn',
+                Handler: 'token.handler',
+                Runtime: 'nodejs16.x',
+                Timeout: 5
+            },
+            DependsOn: ['httpapiauthorizerfnServiceRoleE977EE3D']
+        },
+        httpapiauthorizerfnLogRetention5E1645C2: {
+            Type: 'Custom::LogRetention',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': [
+                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
+                        'Arn'
+                    ]
+                },
+                LogGroupName: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            '/aws/lambda/',
+                            {Ref: 'httpapiauthorizerfn8B4D1E1C'}
+                        ]
+                    ]
+                },
+                RetentionInDays: 7
+            }
+        },
+        httpapirestapi0816E9CD: {
+            Type: 'AWS::ApiGateway::RestApi',
             Properties: {
                 DisableExecuteApiEndpoint: false,
-                Name: 'http-api-http-api',
-                ProtocolType: 'HTTP'
+                EndpointConfiguration: {Types: ['REGIONAL']},
+                Name: 'http-api-rest-api'
             }
         },
-        httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07: {
-            Type: 'AWS::ApiGatewayV2::Integration',
+        httpapirestapiCloudWatchRole5288DACF: {
+            Type: 'AWS::IAM::Role',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
-                IntegrationType: 'AWS_PROXY',
-                IntegrationUri: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
-                PayloadFormatVersion: '2.0',
-                RequestParameters: {
-                    'append:header.x-cf-source-ip': '$request.header.x-cf-source-ip'
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'apigateway.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs'
+                            ]
+                        ]
+                    }
+                ]
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
+        httpapirestapiAccount656712A3: {
+            Type: 'AWS::ApiGateway::Account',
+            Properties: {
+                CloudWatchRoleArn: {
+                    'Fn::GetAtt': ['httpapirestapiCloudWatchRole5288DACF', 'Arn']
                 }
+            },
+            DependsOn: ['httpapirestapi0816E9CD'],
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
+        httpapirestapiDeployment21137E35d43a23f862da801afce015678d98e954: {
+            Type: 'AWS::ApiGateway::Deployment',
+            Properties: {
+                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
+                Description: 'Automatically created by the RestApi construct'
+            },
+            DependsOn: [
+                'httpapirestapiproxyANY628EF2C4',
+                'httpapirestapiproxyE1EF9649',
+                'httpapirestapiANY8D6F2651'
+            ]
+        },
+        httpapirestapiDeploymentStageprodF4611BAD: {
+            Type: 'AWS::ApiGateway::Stage',
+            Properties: {
+                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
+                DeploymentId: {
+                    Ref: 'httpapirestapiDeployment21137E35d43a23f862da801afce015678d98e954'
+                },
+                StageName: 'prod'
+            },
+            DependsOn: ['httpapirestapiAccount656712A3']
+        },
+        httpapirestapiproxyE1EF9649: {
+            Type: 'AWS::ApiGateway::Resource',
+            Properties: {
+                ParentId: {
+                    'Fn::GetAtt': ['httpapirestapi0816E9CD', 'RootResourceId']
+                },
+                PathPart: '{proxy+}',
+                RestApiId: {Ref: 'httpapirestapi0816E9CD'}
             }
         },
-        httpapihttpapiDefaultRoutehttpapihttpapiintPermission5B4ABB59: {
+        httpapirestapiproxyANYApiPermissionstackhttpapirestapi4AFCA52EANYproxyCC3DF99D: {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
@@ -291,38 +431,131 @@ module.exports = {
                             'arn:',
                             {Ref: 'AWS::Partition'},
                             ':execute-api:us-west-2:12344:',
-                            {Ref: 'httpapihttpapi5E89BCFA'},
+                            {Ref: 'httpapirestapi0816E9CD'},
+                            '/',
+                            {Ref: 'httpapirestapiDeploymentStageprodF4611BAD'},
                             '/*/*'
                         ]
                     ]
                 }
             }
         },
-        httpapihttpapiDefaultRouteBFDE9743: {
-            Type: 'AWS::ApiGatewayV2::Route',
+        httpapirestapiproxyANYApiPermissionTeststackhttpapirestapi4AFCA52EANYproxy6FE3050D: {
+            Type: 'AWS::Lambda::Permission',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
-                RouteKey: '$default',
-                AuthorizationType: 'NONE',
-                Target: {
+                Action: 'lambda:InvokeFunction',
+                FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                Principal: 'apigateway.amazonaws.com',
+                SourceArn: {
                     'Fn::Join': [
                         '',
                         [
-                            'integrations/',
-                            {
-                                Ref: 'httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07'
-                            }
+                            'arn:',
+                            {Ref: 'AWS::Partition'},
+                            ':execute-api:us-west-2:12344:',
+                            {Ref: 'httpapirestapi0816E9CD'},
+                            '/test-invoke-stage/*/*'
                         ]
                     ]
                 }
             }
         },
-        httpapihttpapiDefaultStage2FC5FDEF: {
-            Type: 'AWS::ApiGatewayV2::Stage',
+        httpapirestapiproxyANY628EF2C4: {
+            Type: 'AWS::ApiGateway::Method',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
-                StageName: '$default',
-                AutoDeploy: true
+                HttpMethod: 'ANY',
+                ResourceId: {Ref: 'httpapirestapiproxyE1EF9649'},
+                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
+                AuthorizationType: 'CUSTOM',
+                Integration: {
+                    IntegrationHttpMethod: 'POST',
+                    Type: 'AWS_PROXY',
+                    Uri: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':apigateway:us-west-2:lambda:path/2015-03-31/functions/',
+                                {
+                                    'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']
+                                },
+                                '/invocations'
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+        httpapirestapiANYApiPermissionstackhttpapirestapi4AFCA52EANY11A75849: {
+            Type: 'AWS::Lambda::Permission',
+            Properties: {
+                Action: 'lambda:InvokeFunction',
+                FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                Principal: 'apigateway.amazonaws.com',
+                SourceArn: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            {Ref: 'AWS::Partition'},
+                            ':execute-api:us-west-2:12344:',
+                            {Ref: 'httpapirestapi0816E9CD'},
+                            '/',
+                            {Ref: 'httpapirestapiDeploymentStageprodF4611BAD'},
+                            '/*/'
+                        ]
+                    ]
+                }
+            }
+        },
+        httpapirestapiANYApiPermissionTeststackhttpapirestapi4AFCA52EANY685F59CA: {
+            Type: 'AWS::Lambda::Permission',
+            Properties: {
+                Action: 'lambda:InvokeFunction',
+                FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                Principal: 'apigateway.amazonaws.com',
+                SourceArn: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            {Ref: 'AWS::Partition'},
+                            ':execute-api:us-west-2:12344:',
+                            {Ref: 'httpapirestapi0816E9CD'},
+                            '/test-invoke-stage/*/'
+                        ]
+                    ]
+                }
+            }
+        },
+        httpapirestapiANY8D6F2651: {
+            Type: 'AWS::ApiGateway::Method',
+            Properties: {
+                HttpMethod: 'ANY',
+                ResourceId: {
+                    'Fn::GetAtt': ['httpapirestapi0816E9CD', 'RootResourceId']
+                },
+                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
+                AuthorizationType: 'CUSTOM',
+                Integration: {
+                    IntegrationHttpMethod: 'POST',
+                    Type: 'AWS_PROXY',
+                    Uri: {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':apigateway:us-west-2:lambda:path/2015-03-31/functions/',
+                                {
+                                    'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']
+                                },
+                                '/invocations'
+                            ]
+                        ]
+                    }
+                }
             }
         },
         distributionoriginrequestpolicyF5975AB2: {
@@ -367,9 +600,7 @@ module.exports = {
                         {
                             ConnectionAttempts: 1,
                             CustomOriginConfig: {
-                                OriginKeepaliveTimeout: 5,
                                 OriginProtocolPolicy: 'https-only',
-                                OriginReadTimeout: 30,
                                 OriginSSLProtocols: ['TLSv1.2']
                             },
                             DomainName: {
@@ -383,9 +614,13 @@ module.exports = {
                                                     '',
                                                     [
                                                         'https://',
-                                                        {Ref: 'httpapihttpapi5E89BCFA'},
+                                                        {Ref: 'httpapirestapi0816E9CD'},
                                                         '.execute-api.us-west-2.',
                                                         {Ref: 'AWS::URLSuffix'},
+                                                        '/',
+                                                        {
+                                                            Ref: 'httpapirestapiDeploymentStageprodF4611BAD'
+                                                        },
                                                         '/'
                                                     ]
                                                 ]
@@ -394,7 +629,56 @@ module.exports = {
                                     }
                                 ]
                             },
-                            Id: 'stackdistributioncfdistOrigin19DF8816C'
+                            Id: 'stackdistributioncfdistOrigin19DF8816C',
+                            OriginCustomHeaders: [
+                                {
+                                    HeaderName: 'x-auth-token',
+                                    HeaderValue: {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                '{{resolve:secretsmanager:arn:',
+                                                {Ref: 'AWS::Partition'},
+                                                ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
+                                            ]
+                                        ]
+                                    }
+                                }
+                            ],
+                            OriginPath: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        '/',
+                                        {
+                                            'Fn::Select': [
+                                                3,
+                                                {
+                                                    'Fn::Split': [
+                                                        '/',
+                                                        {
+                                                            'Fn::Join': [
+                                                                '',
+                                                                [
+                                                                    'https://',
+                                                                    {Ref: 'httpapirestapi0816E9CD'},
+                                                                    '.execute-api.us-west-2.',
+                                                                    {Ref: 'AWS::URLSuffix'},
+                                                                    '/',
+                                                                    {
+                                                                        Ref: 'httpapirestapiDeploymentStageprodF4611BAD'
+                                                                    },
+                                                                    '/'
+                                                                ]
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
                         }
                     ],
                     PriceClass: 'PriceClass_100',
@@ -407,9 +691,26 @@ module.exports = {
                         },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
-                    },
-                    WebACLId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters'
+                    }
                 }
+            }
+        }
+    },
+    Outputs: {
+        httpapirestapiEndpoint1255D238: {
+            Value: {
+                'Fn::Join': [
+                    '',
+                    [
+                        'https://',
+                        {Ref: 'httpapirestapi0816E9CD'},
+                        '.execute-api.us-west-2.',
+                        {Ref: 'AWS::URLSuffix'},
+                        '/',
+                        {Ref: 'httpapirestapiDeploymentStageprodF4611BAD'},
+                        '/'
+                    ]
+                ]
             }
         }
     }

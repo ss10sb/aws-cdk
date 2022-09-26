@@ -1,6 +1,6 @@
 module.exports = {
     Resources: {
-        certfoobarcomCertificateRequestorFunctionServiceRole5597334B: {
+        certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -27,7 +27,7 @@ module.exports = {
                 ]
             }
         },
-        certfoobarcomCertificateRequestorFunctionServiceRoleDefaultPolicy8B8D1886: {
+        certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -64,15 +64,15 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'certfoobarcomCertificateRequestorFunctionServiceRoleDefaultPolicy8B8D1886',
+                PolicyName: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
                 Roles: [
                     {
-                        Ref: 'certfoobarcomCertificateRequestorFunctionServiceRole5597334B'
+                        Ref: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
                     }
                 ]
             }
         },
-        certfoobarcomCertificateRequestorFunction62C7DA69: {
+        certfoobarcomuseast1CertificateRequestorFunction2C565E6C: {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Code: {
@@ -81,7 +81,7 @@ module.exports = {
                 },
                 Role: {
                     'Fn::GetAtt': [
-                        'certfoobarcomCertificateRequestorFunctionServiceRole5597334B',
+                        'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82',
                         'Arn'
                     ]
                 },
@@ -90,27 +90,135 @@ module.exports = {
                 Timeout: 900
             },
             DependsOn: [
-                'certfoobarcomCertificateRequestorFunctionServiceRoleDefaultPolicy8B8D1886',
-                'certfoobarcomCertificateRequestorFunctionServiceRole5597334B'
+                'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
+                'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
             ]
         },
-        certfoobarcomCertificateRequestorResource5B4BBAB0: {
+        certfoobarcomuseast1CertificateRequestorResourceC3ACAF62: {
             Type: 'AWS::CloudFormation::CustomResource',
             Properties: {
                 ServiceToken: {
                     'Fn::GetAtt': [
-                        'certfoobarcomCertificateRequestorFunction62C7DA69',
+                        'certfoobarcomuseast1CertificateRequestorFunction2C565E6C',
                         'Arn'
                     ]
                 },
                 DomainName: 'foo.bar.com',
                 HostedZoneId: 'DUMMY',
-                Region: 'us-east-1'
+                Region: 'us-east-1',
+                CleanupRecords: 'true'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
-        functionf1fn0ServiceRole4BCEC8F9: {
+        functioneventfn0ServiceRole30E080B7: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'lambda.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    },
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        functioneventfn0SecurityGroup03393729: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+                GroupDescription: 'Automatic security group for Lambda Function stackfunctioneventfn0A614FAB1',
+                SecurityGroupEgress: [
+                    {
+                        CidrIp: '0.0.0.0/0',
+                        Description: 'Allow all outbound traffic by default',
+                        IpProtocol: '-1'
+                    }
+                ],
+                VpcId: 'vpc-12345'
+            }
+        },
+        functioneventfn01CDA78AF: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
+                    S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                },
+                Role: {
+                    'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
+                },
+                FunctionName: 'function-event-fn-0',
+                Handler: 'artisan',
+                Layers: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':lambda:us-west-2:209497400698:layer:php-81-fpm:28'
+                            ]
+                        ]
+                    }
+                ],
+                MemorySize: 512,
+                Runtime: 'provided.al2',
+                Timeout: 120,
+                VpcConfig: {
+                    SecurityGroupIds: [
+                        {
+                            'Fn::GetAtt': ['functioneventfn0SecurityGroup03393729', 'GroupId']
+                        }
+                    ],
+                    SubnetIds: ['p-12345', 'p-67890']
+                }
+            },
+            DependsOn: ['functioneventfn0ServiceRole30E080B7']
+        },
+        functioneventfn0LogRetention13B86148: {
+            Type: 'Custom::LogRetention',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': [
+                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
+                        'Arn'
+                    ]
+                },
+                LogGroupName: {
+                    'Fn::Join': [
+                        '',
+                        ['/aws/lambda/', {Ref: 'functioneventfn01CDA78AF'}]
+                    ]
+                },
+                RetentionInDays: 30
+            }
+        },
+        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -137,57 +245,76 @@ module.exports = {
                 ]
             }
         },
-        functionf1fn040096078: {
+        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'logs:PutRetentionPolicy',
+                                'logs:DeleteRetentionPolicy'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
+                Roles: [
+                    {
+                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
+                    }
+                ]
+            }
+        },
+        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
             Type: 'AWS::Lambda::Function',
             Properties: {
+                Handler: 'index.handler',
+                Runtime: 'nodejs14.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: 'ce9adb4fda6fdc569b2bd894a02aa2f273695def9558c5ad237cedf56562f55e.zip'
+                    S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
                 },
                 Role: {
-                    'Fn::GetAtt': ['functionf1fn0ServiceRole4BCEC8F9', 'Arn']
-                },
-                FunctionName: 'function-f1-fn-0',
-                Handler: 'public/index.php',
-                Layers: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':lambda:us-west-2:209497400698:layer:php-81-fpm:28'
-                            ]
-                        ]
-                    }
-                ],
-                Runtime: 'provided.al2',
-                Timeout: 120
+                    'Fn::GetAtt': [
+                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
+                        'Arn'
+                    ]
+                }
             },
-            DependsOn: ['functionf1fn0ServiceRole4BCEC8F9']
+            DependsOn: [
+                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
+                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
+            ]
         },
-        httpapidefault82B88600: {
+        httpapihttpapi5E89BCFA: {
             Type: 'AWS::ApiGatewayV2::Api',
             Properties: {
-                DisableExecuteApiEndpoint: true,
-                Name: 'http-api-default',
+                DisableExecuteApiEndpoint: false,
+                Name: 'http-api-http-api',
                 ProtocolType: 'HTTP'
             }
         },
-        httpapidefaultDefaultRoutehttpapidefaultint45B9E6A0: {
+        httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07: {
             Type: 'AWS::ApiGatewayV2::Integration',
             Properties: {
-                ApiId: {Ref: 'httpapidefault82B88600'},
+                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
                 IntegrationType: 'AWS_PROXY',
-                IntegrationUri: {'Fn::GetAtt': ['functionf1fn040096078', 'Arn']},
-                PayloadFormatVersion: '2.0'
+                IntegrationUri: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                PayloadFormatVersion: '2.0',
+                RequestParameters: {
+                    'append:header.x-cf-source-ip': '$request.header.x-cf-source-ip'
+                }
             }
         },
-        httpapidefaultDefaultRoutehttpapidefaultintPermissionDA9959D5: {
+        httpapihttpapiDefaultRoutehttpapihttpapiintPermission5B4ABB59: {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: {'Fn::GetAtt': ['functionf1fn040096078', 'Arn']},
+                FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
                 Principal: 'apigateway.amazonaws.com',
                 SourceArn: {
                     'Fn::Join': [
@@ -196,17 +323,17 @@ module.exports = {
                             'arn:',
                             {Ref: 'AWS::Partition'},
                             ':execute-api:us-west-2:12344:',
-                            {Ref: 'httpapidefault82B88600'},
+                            {Ref: 'httpapihttpapi5E89BCFA'},
                             '/*/*'
                         ]
                     ]
                 }
             }
         },
-        httpapidefaultDefaultRouteF470BAE3: {
+        httpapihttpapiDefaultRouteBFDE9743: {
             Type: 'AWS::ApiGatewayV2::Route',
             Properties: {
-                ApiId: {Ref: 'httpapidefault82B88600'},
+                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
                 RouteKey: '$default',
                 AuthorizationType: 'NONE',
                 Target: {
@@ -215,26 +342,41 @@ module.exports = {
                         [
                             'integrations/',
                             {
-                                Ref: 'httpapidefaultDefaultRoutehttpapidefaultint45B9E6A0'
+                                Ref: 'httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07'
                             }
                         ]
                     ]
                 }
             }
         },
-        httpapidefaultDefaultStage5BE3BAB2: {
+        httpapihttpapiDefaultStage2FC5FDEF: {
             Type: 'AWS::ApiGatewayV2::Stage',
             Properties: {
-                ApiId: {Ref: 'httpapidefault82B88600'},
+                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
                 StageName: '$default',
                 AutoDeploy: true
             }
         },
-        distributioncfwdED870F34: {
+        distributionoriginrequestpolicyF5975AB2: {
+            Type: 'AWS::CloudFront::OriginRequestPolicy',
+            Properties: {
+                OriginRequestPolicyConfig: {
+                    CookiesConfig: {CookieBehavior: 'all'},
+                    HeadersConfig: {
+                        HeaderBehavior: 'allViewerAndWhitelistCloudFront',
+                        Headers: ['CloudFront-Viewer-Address']
+                    },
+                    Name: 'distribution-origin-request-policy',
+                    QueryStringsConfig: {QueryStringBehavior: 'all'}
+                }
+            }
+        },
+        distributioncfdistD32B15FD: {
             Type: 'AWS::CloudFront::Distribution',
             Properties: {
                 DistributionConfig: {
                     Aliases: ['foo.bar.com'],
+                    Comment: 'distribution-cf-dist',
                     DefaultCacheBehavior: {
                         AllowedMethods: [
                             'GET', 'HEAD',
@@ -244,7 +386,10 @@ module.exports = {
                         ],
                         CachePolicyId: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad',
                         Compress: true,
-                        TargetOriginId: 'stackdistributioncfwdOrigin141929864',
+                        FunctionAssociations: [],
+                        OriginRequestPolicyId: {Ref: 'distributionoriginrequestpolicyF5975AB2'},
+                        ResponseHeadersPolicyId: '67f7725c-6f97-4210-82d7-5512b31e9d03',
+                        TargetOriginId: 'stackdistributioncfdistOrigin19DF8816C',
                         ViewerProtocolPolicy: 'redirect-to-https'
                     },
                     Enabled: true,
@@ -252,6 +397,7 @@ module.exports = {
                     IPV6Enabled: true,
                     Origins: [
                         {
+                            ConnectionAttempts: 1,
                             CustomOriginConfig: {
                                 OriginKeepaliveTimeout: 5,
                                 OriginProtocolPolicy: 'https-only',
@@ -269,7 +415,7 @@ module.exports = {
                                                     '',
                                                     [
                                                         'https://',
-                                                        {Ref: 'httpapidefault82B88600'},
+                                                        {Ref: 'httpapihttpapi5E89BCFA'},
                                                         '.execute-api.us-west-2.',
                                                         {Ref: 'AWS::URLSuffix'},
                                                         '/'
@@ -280,44 +426,14 @@ module.exports = {
                                     }
                                 ]
                             },
-                            Id: 'stackdistributioncfwdOrigin141929864',
-                            OriginPath: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        '/',
-                                        {
-                                            'Fn::Select': [
-                                                3,
-                                                {
-                                                    'Fn::Split': [
-                                                        '/',
-                                                        {
-                                                            'Fn::Join': [
-                                                                '',
-                                                                [
-                                                                    'https://',
-                                                                    {Ref: 'httpapidefault82B88600'},
-                                                                    '.execute-api.us-west-2.',
-                                                                    {Ref: 'AWS::URLSuffix'},
-                                                                    '/'
-                                                                ]
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
+                            Id: 'stackdistributioncfdistOrigin19DF8816C'
                         }
                     ],
                     PriceClass: 'PriceClass_100',
                     ViewerCertificate: {
                         AcmCertificateArn: {
                             'Fn::GetAtt': [
-                                'certfoobarcomCertificateRequestorResource5B4BBAB0',
+                                'certfoobarcomuseast1CertificateRequestorResourceC3ACAF62',
                                 'Arn'
                             ]
                         },

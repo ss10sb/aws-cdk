@@ -138,7 +138,7 @@ describe('start stop function', () => {
                                 ['/aws/lambda/', {Ref: templateHelper.startsWithMatch('stackstartstopfn')}]
                             ]
                         },
-                        RetentionInDays: 30
+                        RetentionInDays: 7
                     }
                 })
             }

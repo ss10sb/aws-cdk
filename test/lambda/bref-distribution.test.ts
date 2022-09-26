@@ -42,9 +42,9 @@ describe('bref distribution', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/lambda-bref-factory');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/lambda-bref-factory');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create distribution defaults and authorizer', () => {
@@ -76,9 +76,9 @@ describe('bref distribution', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/lambda-bref-factory');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/lambda-bref-factory-authorizer');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create distribution defaults with http api', () => {
@@ -107,9 +107,9 @@ describe('bref distribution', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/lambda-bref-factory');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/lambda-bref-factory-httpapi');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create distribution defaults with s3', () => {

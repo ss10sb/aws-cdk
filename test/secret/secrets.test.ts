@@ -1,8 +1,13 @@
 import {App, Stack} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {Secrets} from "../../src/secret/secrets";
+import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('secrets', () => {
+
+    beforeEach(() => {
+        resetStaticProps();
+    });
 
     it('should create a new secret', () => {
         const app = new App();
@@ -51,9 +56,9 @@ describe('secrets', () => {
         const stack = new Stack(app, 'stack', stackProps);
         const secrets = new Secrets(stack, 'secrets');
         const ecsSecrets = secrets.getEcsSecrets(['FOO', 'BAR']);
-        expect(secrets?.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
-        expect(secrets?.secret?.secretName).toEqual('secrets-secrets/environment');
-        expect(stack.resolve(secrets?.secret?.secretValue)).toEqual({
+        expect(Secrets.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
+        expect(Secrets.secret?.secretName).toEqual('secrets-secrets/environment');
+        expect(stack.resolve(Secrets.secret?.secretValue)).toEqual({
             "Fn::Join": [
                 "",
                 [

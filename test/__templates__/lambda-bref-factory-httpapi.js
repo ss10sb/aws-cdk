@@ -1,6 +1,6 @@
 module.exports = {
     Resources: {
-        certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82: {
+        myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -27,7 +27,7 @@ module.exports = {
                 ]
             }
         },
-        certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55: {
+        myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy0FB0BFF9: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -64,15 +64,15 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
+                PolicyName: 'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy0FB0BFF9',
                 Roles: [
                     {
-                        Ref: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
+                        Ref: 'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848'
                     }
                 ]
             }
         },
-        certfoobarcomuseast1CertificateRequestorFunction2C565E6C: {
+        myappfoobarcomuseast1CertificateRequestorFunctionEC985F99: {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Code: {
@@ -81,7 +81,7 @@ module.exports = {
                 },
                 Role: {
                     'Fn::GetAtt': [
-                        'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82',
+                        'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848',
                         'Arn'
                     ]
                 },
@@ -90,16 +90,16 @@ module.exports = {
                 Timeout: 900
             },
             DependsOn: [
-                'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
-                'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
+                'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy0FB0BFF9',
+                'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848'
             ]
         },
-        certfoobarcomuseast1CertificateRequestorResourceC3ACAF62: {
+        myappfoobarcomuseast1CertificateRequestorResource3662DFC0: {
             Type: 'AWS::CloudFormation::CustomResource',
             Properties: {
                 ServiceToken: {
                     'Fn::GetAtt': [
-                        'certfoobarcomuseast1CertificateRequestorFunction2C565E6C',
+                        'myappfoobarcomuseast1CertificateRequestorFunctionEC985F99',
                         'Arn'
                     ]
                 },
@@ -111,7 +111,7 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
-        functioneventfn0ServiceRole30E080B7: {
+        funcwebfn0ServiceRoleA9004225: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -138,18 +138,16 @@ module.exports = {
                 ]
             }
         },
-        functioneventfn01CDA78AF: {
+        funcwebfn067A6530A: {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
                 },
-                Role: {
-                    'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
-                },
-                FunctionName: 'function-event-fn-0',
-                Handler: 'artisan',
+                Role: {'Fn::GetAtt': ['funcwebfn0ServiceRoleA9004225', 'Arn']},
+                FunctionName: 'func-web-fn-0',
+                Handler: 'public/index.php',
                 Layers: [
                     {
                         'Fn::Join': [
@@ -164,11 +162,11 @@ module.exports = {
                 ],
                 MemorySize: 512,
                 Runtime: 'provided.al2',
-                Timeout: 120
+                Timeout: 28
             },
-            DependsOn: ['functioneventfn0ServiceRole30E080B7']
+            DependsOn: ['funcwebfn0ServiceRoleA9004225']
         },
-        functioneventfn0LogRetention13B86148: {
+        funcwebfn0LogRetentionF9CFF3D3: {
             Type: 'Custom::LogRetention',
             Properties: {
                 ServiceToken: {
@@ -178,10 +176,7 @@ module.exports = {
                     ]
                 },
                 LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        ['/aws/lambda/', {Ref: 'functioneventfn01CDA78AF'}]
-                    ]
+                    'Fn::Join': ['', ['/aws/lambda/', {Ref: 'funcwebfn067A6530A'}]]
                 },
                 RetentionInDays: 30
             }
@@ -258,31 +253,221 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
-        httpapihttpapi5E89BCFA: {
+        myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'lambda.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleDefaultPolicy34FF517E: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'acm:RequestCertificate',
+                                'acm:DescribeCertificate',
+                                'acm:DeleteCertificate',
+                                'acm:AddTagsToCertificate'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: 'route53:GetChange',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: 'route53:changeResourceRecordSets',
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':route53:::hostedzone/DUMMY'
+                                    ]
+                                ]
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleDefaultPolicy34FF517E',
+                Roles: [
+                    {
+                        Ref: 'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489'
+                    }
+                ]
+            }
+        },
+        myappfoobarcomdefaultCertificateRequestorFunctionFAF97FED: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
+                    S3Key: 'e85f10a8bf0e7f4f7931fce24b29d4faf6874948090a2b568b2da33a7116cf84.zip'
+                },
+                Role: {
+                    'Fn::GetAtt': [
+                        'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489',
+                        'Arn'
+                    ]
+                },
+                Handler: 'index.certificateRequestHandler',
+                Runtime: 'nodejs14.x',
+                Timeout: 900
+            },
+            DependsOn: [
+                'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleDefaultPolicy34FF517E',
+                'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489'
+            ]
+        },
+        myappfoobarcomdefaultCertificateRequestorResource1A22308B: {
+            Type: 'AWS::CloudFormation::CustomResource',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': [
+                        'myappfoobarcomdefaultCertificateRequestorFunctionFAF97FED',
+                        'Arn'
+                    ]
+                },
+                DomainName: 'foo.bar.com',
+                HostedZoneId: 'DUMMY',
+                CleanupRecords: 'true'
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        myappauthorizerfnServiceRole2952ABDD: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'lambda.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        myappauthorizerfn61B51A4F: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
+                    S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                },
+                Role: {
+                    'Fn::GetAtt': ['myappauthorizerfnServiceRole2952ABDD', 'Arn']
+                },
+                Environment: {Variables: {AUTHORIZER_TOKEN: 'INVALID'}},
+                FunctionName: 'my-app-authorizer-fn',
+                Handler: 'token.handler',
+                Runtime: 'nodejs16.x',
+                Timeout: 5
+            },
+            DependsOn: ['myappauthorizerfnServiceRole2952ABDD']
+        },
+        myappauthorizerfnLogRetention55CB4DDF: {
+            Type: 'Custom::LogRetention',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': [
+                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
+                        'Arn'
+                    ]
+                },
+                LogGroupName: {
+                    'Fn::Join': [
+                        '',
+                        ['/aws/lambda/', {Ref: 'myappauthorizerfn61B51A4F'}]
+                    ]
+                },
+                RetentionInDays: 7
+            }
+        },
+        myappdomainnamefoobarcomB8FC36EF: {
+            Type: 'AWS::ApiGatewayV2::DomainName',
+            Properties: {
+                DomainName: 'foo.bar.com',
+                DomainNameConfigurations: [
+                    {
+                        CertificateArn: {
+                            'Fn::GetAtt': [
+                                'myappfoobarcomdefaultCertificateRequestorResource1A22308B',
+                                'Arn'
+                            ]
+                        },
+                        EndpointType: 'REGIONAL'
+                    }
+                ]
+            }
+        },
+        myapphttpapiF20864F5: {
             Type: 'AWS::ApiGatewayV2::Api',
             Properties: {
                 DisableExecuteApiEndpoint: false,
-                Name: 'http-api-http-api',
+                Name: 'my-app-http-api',
                 ProtocolType: 'HTTP'
             }
         },
-        httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07: {
+        myapphttpapiDefaultRoutemyapphttpapiintF1C61421: {
             Type: 'AWS::ApiGatewayV2::Integration',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
+                ApiId: {Ref: 'myapphttpapiF20864F5'},
                 IntegrationType: 'AWS_PROXY',
-                IntegrationUri: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                IntegrationUri: {'Fn::GetAtt': ['funcwebfn067A6530A', 'Arn']},
                 PayloadFormatVersion: '2.0',
                 RequestParameters: {
                     'append:header.x-cf-source-ip': '$request.header.x-cf-source-ip'
                 }
             }
         },
-        httpapihttpapiDefaultRoutehttpapihttpapiintPermission5B4ABB59: {
+        myapphttpapiDefaultRoutemyapphttpapiintPermissionDC684FDE: {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                FunctionName: {'Fn::GetAtt': ['funcwebfn067A6530A', 'Arn']},
                 Principal: 'apigateway.amazonaws.com',
                 SourceArn: {
                     'Fn::Join': [
@@ -291,41 +476,104 @@ module.exports = {
                             'arn:',
                             {Ref: 'AWS::Partition'},
                             ':execute-api:us-west-2:12344:',
-                            {Ref: 'httpapihttpapi5E89BCFA'},
+                            {Ref: 'myapphttpapiF20864F5'},
                             '/*/*'
                         ]
                     ]
                 }
             }
         },
-        httpapihttpapiDefaultRouteBFDE9743: {
+        myapphttpapiDefaultRoute5A39A2C4: {
             Type: 'AWS::ApiGatewayV2::Route',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
+                ApiId: {Ref: 'myapphttpapiF20864F5'},
                 RouteKey: '$default',
-                AuthorizationType: 'NONE',
+                AuthorizationType: 'CUSTOM',
+                AuthorizerId: {Ref: 'myapphttpapiauthorizerFB2D4417'},
                 Target: {
                     'Fn::Join': [
                         '',
                         [
                             'integrations/',
                             {
-                                Ref: 'httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07'
+                                Ref: 'myapphttpapiDefaultRoutemyapphttpapiintF1C61421'
                             }
                         ]
                     ]
                 }
             }
         },
-        httpapihttpapiDefaultStage2FC5FDEF: {
-            Type: 'AWS::ApiGatewayV2::Stage',
+        myapphttpapiauthorizerFB2D4417: {
+            Type: 'AWS::ApiGatewayV2::Authorizer',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
-                StageName: '$default',
-                AutoDeploy: true
+                ApiId: {Ref: 'myapphttpapiF20864F5'},
+                AuthorizerType: 'REQUEST',
+                Name: 'my-app-http-lambda-authorizer',
+                AuthorizerPayloadFormatVersion: '1.0',
+                AuthorizerResultTtlInSeconds: 300,
+                AuthorizerUri: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            {Ref: 'AWS::Partition'},
+                            ':apigateway:us-west-2:lambda:path/2015-03-31/functions/',
+                            {
+                                'Fn::GetAtt': ['myappauthorizerfn61B51A4F', 'Arn']
+                            },
+                            '/invocations'
+                        ]
+                    ]
+                },
+                IdentitySource: [
+                    '$request.header.x-auth-token',
+                    '$context.identity.sourceIp'
+                ]
             }
         },
-        distributionoriginrequestpolicyF5975AB2: {
+        myapphttpapistackmyapphttpapiauthorizerA42E3832PermissionA17444B7: {
+            Type: 'AWS::Lambda::Permission',
+            Properties: {
+                Action: 'lambda:InvokeFunction',
+                FunctionName: {'Fn::GetAtt': ['myappauthorizerfn61B51A4F', 'Arn']},
+                Principal: 'apigateway.amazonaws.com',
+                SourceArn: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            {Ref: 'AWS::Partition'},
+                            ':execute-api:us-west-2:12344:',
+                            {Ref: 'myapphttpapiF20864F5'},
+                            '/authorizers/',
+                            {Ref: 'myapphttpapiauthorizerFB2D4417'}
+                        ]
+                    ]
+                }
+            }
+        },
+        myapphttpapiDefaultStage7791846B: {
+            Type: 'AWS::ApiGatewayV2::Stage',
+            Properties: {
+                ApiId: {Ref: 'myapphttpapiF20864F5'},
+                StageName: '$default',
+                AutoDeploy: true
+            },
+            DependsOn: ['myappdomainnamefoobarcomB8FC36EF']
+        },
+        myapphttpapiDefaultStagestackmyappdomainnamefoobarcomundefinedC02D59CA: {
+            Type: 'AWS::ApiGatewayV2::ApiMapping',
+            Properties: {
+                ApiId: {Ref: 'myapphttpapiF20864F5'},
+                DomainName: {Ref: 'myappdomainnamefoobarcomB8FC36EF'},
+                Stage: '$default'
+            },
+            DependsOn: [
+                'myappdomainnamefoobarcomB8FC36EF',
+                'myapphttpapiDefaultStage7791846B'
+            ]
+        },
+        myapporiginrequestpolicy353E9D0B: {
             Type: 'AWS::CloudFront::OriginRequestPolicy',
             Properties: {
                 OriginRequestPolicyConfig: {
@@ -334,17 +582,17 @@ module.exports = {
                         HeaderBehavior: 'allViewerAndWhitelistCloudFront',
                         Headers: ['CloudFront-Viewer-Address']
                     },
-                    Name: 'distribution-origin-request-policy',
+                    Name: 'my-app-origin-request-policy',
                     QueryStringsConfig: {QueryStringBehavior: 'all'}
                 }
             }
         },
-        distributioncfdistD32B15FD: {
+        myappcfdist8AC41345: {
             Type: 'AWS::CloudFront::Distribution',
             Properties: {
                 DistributionConfig: {
                     Aliases: ['foo.bar.com'],
-                    Comment: 'distribution-cf-dist',
+                    Comment: 'my-app-cf-dist',
                     DefaultCacheBehavior: {
                         AllowedMethods: [
                             'GET', 'HEAD',
@@ -355,9 +603,9 @@ module.exports = {
                         CachePolicyId: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad',
                         Compress: true,
                         FunctionAssociations: [],
-                        OriginRequestPolicyId: {Ref: 'distributionoriginrequestpolicyF5975AB2'},
+                        OriginRequestPolicyId: {Ref: 'myapporiginrequestpolicy353E9D0B'},
                         ResponseHeadersPolicyId: '67f7725c-6f97-4210-82d7-5512b31e9d03',
-                        TargetOriginId: 'stackdistributioncfdistOrigin19DF8816C',
+                        TargetOriginId: 'stackmyappcfdistOrigin1A51E9D25',
                         ViewerProtocolPolicy: 'redirect-to-https'
                     },
                     Enabled: true,
@@ -383,7 +631,7 @@ module.exports = {
                                                     '',
                                                     [
                                                         'https://',
-                                                        {Ref: 'httpapihttpapi5E89BCFA'},
+                                                        {Ref: 'myapphttpapiF20864F5'},
                                                         '.execute-api.us-west-2.',
                                                         {Ref: 'AWS::URLSuffix'},
                                                         '/'
@@ -394,21 +642,26 @@ module.exports = {
                                     }
                                 ]
                             },
-                            Id: 'stackdistributioncfdistOrigin19DF8816C'
+                            Id: 'stackmyappcfdistOrigin1A51E9D25',
+                            OriginCustomHeaders: [
+                                {
+                                    HeaderName: 'x-auth-token',
+                                    HeaderValue: 'INVALID'
+                                }
+                            ]
                         }
                     ],
                     PriceClass: 'PriceClass_100',
                     ViewerCertificate: {
                         AcmCertificateArn: {
                             'Fn::GetAtt': [
-                                'certfoobarcomuseast1CertificateRequestorResourceC3ACAF62',
+                                'myappfoobarcomuseast1CertificateRequestorResource3662DFC0',
                                 'Arn'
                             ]
                         },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
-                    },
-                    WebACLId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters'
+                    }
                 }
             }
         }

@@ -26,9 +26,9 @@ describe('env lamdba stack', () => {
         const envStack = new EnvLambdaStack(stack, name, envConfig, {}, envStackProps, {});
         envStack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(envStack));
-        templateHelper.inspect();
-        // const expected = require('../__templates__/env-lambda-stack');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/env-lambda-stack');
+        templateHelper.template.templateMatches(expected);
     });
 
     function getEnvConfig() {
@@ -55,7 +55,7 @@ describe('env lamdba stack', () => {
                         appPath: path.join(__dirname, '..', '__codebase__'),
                         brefRuntime: BrefRuntime.PHP81FPM,
                     },
-                    httpApiProps: {},
+                    apiProps: {},
                     webAclId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters',
                 },
                 queue: {

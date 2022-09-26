@@ -163,7 +163,7 @@ describe('start stop factory', () => {
                                 [ '/aws/lambda/', { Ref: templateHelper.startsWithMatch('stackstartstopfn') } ]
                             ]
                         },
-                        RetentionInDays: 30
+                        RetentionInDays: 7
                     }
                 })
             }
@@ -433,7 +433,7 @@ describe('start stop factory', () => {
                                 [ '/aws/lambda/', { Ref: templateHelper.startsWithMatch('stackstartstopfn') } ]
                             ]
                         },
-                        RetentionInDays: 30
+                        RetentionInDays: 7
                     }
                 })
             }

@@ -31,7 +31,7 @@ describe('code pipeline env ecs stages', () => {
             repo: "repoName"
         });
         const synthStep = new CodePipelineSynthStep(stack, stack.node.id, {
-            source: codeStarSource.source
+            input: codeStarSource.source
         });
         const ecrRepositories = new EcrRepositories(stack.node.id, baseBuildConfig.Parameters.repositories);
         const factory = new EcrRepositoryFactory(stack, stack.node.id, ecrRepositories);
@@ -89,6 +89,7 @@ describe('code pipeline env ecs stages', () => {
             repositoryFactory: factory
         });
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
         const expected = require('../__templates__/code-pipeline-env-stages');
         templateHelper.template.templateMatches(expected);
     });

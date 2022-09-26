@@ -42,7 +42,8 @@ describe('code pipeline codestar source', () => {
                                         Configuration: {
                                             ConnectionArn: 'arn:...',
                                             FullRepositoryId: 'repoOwner/repoName',
-                                            BranchName: 'main'
+                                            BranchName: 'main',
+                                            DetectChanges: true
                                         },
                                         Name: 'repoOwner_repoName',
                                         OutputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
@@ -167,7 +168,8 @@ describe('code pipeline codestar source', () => {
                                         Configuration: {
                                             ConnectionArn: 'arn:...',
                                             FullRepositoryId: 'repoOwner/repoName',
-                                            BranchName: 'foo'
+                                            BranchName: 'foo',
+                                            DetectChanges: true
                                         },
                                         Name: 'repoOwner_repoName',
                                         OutputArtifacts: [{Name: 'repoOwner_repoName_Source'}],

@@ -8,7 +8,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
+                            Principal: { Service: 'lambda.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -19,7 +19,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                {Ref: 'AWS::Partition'},
+                                { Ref: 'AWS::Partition' },
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -55,7 +55,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':route53:::hostedzone/DUMMY'
                                     ]
                                 ]
@@ -119,7 +119,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
+                            Principal: { Service: 'lambda.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -130,7 +130,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                {Ref: 'AWS::Partition'},
+                                { Ref: 'AWS::Partition' },
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -146,7 +146,7 @@ module.exports = {
                     S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
                 },
                 Role: {
-                    'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
+                    'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
                 },
                 FunctionName: 'function-event-fn-0',
                 Handler: 'artisan',
@@ -156,7 +156,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                {Ref: 'AWS::Partition'},
+                                { Ref: 'AWS::Partition' },
                                 ':lambda:us-west-2:209497400698:layer:php-81-fpm:28'
                             ]
                         ]
@@ -166,7 +166,7 @@ module.exports = {
                 Runtime: 'provided.al2',
                 Timeout: 120
             },
-            DependsOn: ['functioneventfn0ServiceRole30E080B7']
+            DependsOn: [ 'functioneventfn0ServiceRole30E080B7' ]
         },
         functioneventfn0LogRetention13B86148: {
             Type: 'Custom::LogRetention',
@@ -180,7 +180,7 @@ module.exports = {
                 LogGroupName: {
                     'Fn::Join': [
                         '',
-                        ['/aws/lambda/', {Ref: 'functioneventfn01CDA78AF'}]
+                        [ '/aws/lambda/', { Ref: 'functioneventfn01CDA78AF' } ]
                     ]
                 },
                 RetentionInDays: 30
@@ -194,7 +194,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
+                            Principal: { Service: 'lambda.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -205,7 +205,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                {Ref: 'AWS::Partition'},
+                                { Ref: 'AWS::Partition' },
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -258,6 +258,85 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
+        httpapiauthorizerfnServiceRoleE977EE3D: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: { Service: 'lambda.amazonaws.com' }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                { Ref: 'AWS::Partition' },
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    }
+                ]
+            }
+        },
+        httpapiauthorizerfn8B4D1E1C: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
+                    S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                },
+                Role: {
+                    'Fn::GetAtt': [ 'httpapiauthorizerfnServiceRoleE977EE3D', 'Arn' ]
+                },
+                Environment: {
+                    Variables: {
+                        AUTHORIZER_TOKEN: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    '{{resolve:secretsmanager:arn:',
+                                    { Ref: 'AWS::Partition' },
+                                    ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
+                                ]
+                            ]
+                        }
+                    }
+                },
+                FunctionName: 'http-api-authorizer-fn',
+                Handler: 'token.handler',
+                Runtime: 'nodejs16.x',
+                Timeout: 5
+            },
+            DependsOn: [ 'httpapiauthorizerfnServiceRoleE977EE3D' ]
+        },
+        httpapiauthorizerfnLogRetention5E1645C2: {
+            Type: 'Custom::LogRetention',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': [
+                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
+                        'Arn'
+                    ]
+                },
+                LogGroupName: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            '/aws/lambda/',
+                            { Ref: 'httpapiauthorizerfn8B4D1E1C' }
+                        ]
+                    ]
+                },
+                RetentionInDays: 7
+            }
+        },
         httpapihttpapi5E89BCFA: {
             Type: 'AWS::ApiGatewayV2::Api',
             Properties: {
@@ -269,9 +348,9 @@ module.exports = {
         httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07: {
             Type: 'AWS::ApiGatewayV2::Integration',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
+                ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
                 IntegrationType: 'AWS_PROXY',
-                IntegrationUri: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                IntegrationUri: { 'Fn::GetAtt': [ 'functioneventfn01CDA78AF', 'Arn' ] },
                 PayloadFormatVersion: '2.0',
                 RequestParameters: {
                     'append:header.x-cf-source-ip': '$request.header.x-cf-source-ip'
@@ -282,16 +361,16 @@ module.exports = {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
+                FunctionName: { 'Fn::GetAtt': [ 'functioneventfn01CDA78AF', 'Arn' ] },
                 Principal: 'apigateway.amazonaws.com',
                 SourceArn: {
                     'Fn::Join': [
                         '',
                         [
                             'arn:',
-                            {Ref: 'AWS::Partition'},
+                            { Ref: 'AWS::Partition' },
                             ':execute-api:us-west-2:12344:',
-                            {Ref: 'httpapihttpapi5E89BCFA'},
+                            { Ref: 'httpapihttpapi5E89BCFA' },
                             '/*/*'
                         ]
                     ]
@@ -301,9 +380,10 @@ module.exports = {
         httpapihttpapiDefaultRouteBFDE9743: {
             Type: 'AWS::ApiGatewayV2::Route',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
+                ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
                 RouteKey: '$default',
-                AuthorizationType: 'NONE',
+                AuthorizationType: 'CUSTOM',
+                AuthorizerId: { Ref: 'httpapihttpapiauthorizer9218F2F9' },
                 Target: {
                     'Fn::Join': [
                         '',
@@ -317,10 +397,59 @@ module.exports = {
                 }
             }
         },
+        httpapihttpapiauthorizer9218F2F9: {
+            Type: 'AWS::ApiGatewayV2::Authorizer',
+            Properties: {
+                ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
+                AuthorizerType: 'REQUEST',
+                Name: 'http-api-http-lambda-authorizer',
+                AuthorizerPayloadFormatVersion: '1.0',
+                AuthorizerResultTtlInSeconds: 300,
+                AuthorizerUri: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':apigateway:us-west-2:lambda:path/2015-03-31/functions/',
+                            {
+                                'Fn::GetAtt': [ 'httpapiauthorizerfn8B4D1E1C', 'Arn' ]
+                            },
+                            '/invocations'
+                        ]
+                    ]
+                },
+                IdentitySource: [
+                    '$request.header.x-auth-token',
+                    '$context.identity.sourceIp'
+                ]
+            }
+        },
+        httpapihttpapistackhttpapihttpapiauthorizer75CF2ED6PermissionB6ED44F2: {
+            Type: 'AWS::Lambda::Permission',
+            Properties: {
+                Action: 'lambda:InvokeFunction',
+                FunctionName: { 'Fn::GetAtt': [ 'httpapiauthorizerfn8B4D1E1C', 'Arn' ] },
+                Principal: 'apigateway.amazonaws.com',
+                SourceArn: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':execute-api:us-west-2:12344:',
+                            { Ref: 'httpapihttpapi5E89BCFA' },
+                            '/authorizers/',
+                            { Ref: 'httpapihttpapiauthorizer9218F2F9' }
+                        ]
+                    ]
+                }
+            }
+        },
         httpapihttpapiDefaultStage2FC5FDEF: {
             Type: 'AWS::ApiGatewayV2::Stage',
             Properties: {
-                ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
+                ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
                 StageName: '$default',
                 AutoDeploy: true
             }
@@ -329,13 +458,13 @@ module.exports = {
             Type: 'AWS::CloudFront::OriginRequestPolicy',
             Properties: {
                 OriginRequestPolicyConfig: {
-                    CookiesConfig: {CookieBehavior: 'all'},
+                    CookiesConfig: { CookieBehavior: 'all' },
                     HeadersConfig: {
                         HeaderBehavior: 'allViewerAndWhitelistCloudFront',
-                        Headers: ['CloudFront-Viewer-Address']
+                        Headers: [ 'CloudFront-Viewer-Address' ]
                     },
                     Name: 'distribution-origin-request-policy',
-                    QueryStringsConfig: {QueryStringBehavior: 'all'}
+                    QueryStringsConfig: { QueryStringBehavior: 'all' }
                 }
             }
         },
@@ -343,19 +472,19 @@ module.exports = {
             Type: 'AWS::CloudFront::Distribution',
             Properties: {
                 DistributionConfig: {
-                    Aliases: ['foo.bar.com'],
+                    Aliases: [ 'foo.bar.com' ],
                     Comment: 'distribution-cf-dist',
                     DefaultCacheBehavior: {
                         AllowedMethods: [
-                            'GET', 'HEAD',
+                            'GET',     'HEAD',
                             'OPTIONS', 'PUT',
-                            'PATCH', 'POST',
+                            'PATCH',   'POST',
                             'DELETE'
                         ],
                         CachePolicyId: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad',
                         Compress: true,
                         FunctionAssociations: [],
-                        OriginRequestPolicyId: {Ref: 'distributionoriginrequestpolicyF5975AB2'},
+                        OriginRequestPolicyId: { Ref: 'distributionoriginrequestpolicyF5975AB2' },
                         ResponseHeadersPolicyId: '67f7725c-6f97-4210-82d7-5512b31e9d03',
                         TargetOriginId: 'stackdistributioncfdistOrigin19DF8816C',
                         ViewerProtocolPolicy: 'redirect-to-https'
@@ -370,7 +499,7 @@ module.exports = {
                                 OriginKeepaliveTimeout: 5,
                                 OriginProtocolPolicy: 'https-only',
                                 OriginReadTimeout: 30,
-                                OriginSSLProtocols: ['TLSv1.2']
+                                OriginSSLProtocols: [ 'TLSv1.2' ]
                             },
                             DomainName: {
                                 'Fn::Select': [
@@ -383,9 +512,9 @@ module.exports = {
                                                     '',
                                                     [
                                                         'https://',
-                                                        {Ref: 'httpapihttpapi5E89BCFA'},
+                                                        { Ref: 'httpapihttpapi5E89BCFA' },
                                                         '.execute-api.us-west-2.',
-                                                        {Ref: 'AWS::URLSuffix'},
+                                                        { Ref: 'AWS::URLSuffix' },
                                                         '/'
                                                     ]
                                                 ]
@@ -394,7 +523,22 @@ module.exports = {
                                     }
                                 ]
                             },
-                            Id: 'stackdistributioncfdistOrigin19DF8816C'
+                            Id: 'stackdistributioncfdistOrigin19DF8816C',
+                            OriginCustomHeaders: [
+                                {
+                                    HeaderName: 'x-auth-token',
+                                    HeaderValue: {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                '{{resolve:secretsmanager:arn:',
+                                                { Ref: 'AWS::Partition' },
+                                                ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
+                                            ]
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ],
                     PriceClass: 'PriceClass_100',
@@ -407,8 +551,7 @@ module.exports = {
                         },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
-                    },
-                    WebACLId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters'
+                    }
                 }
             }
         }

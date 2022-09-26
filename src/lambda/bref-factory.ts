@@ -71,6 +71,9 @@ export interface BrefFactoryLoadBalancerResult extends BrefFactoryResult {
     listenerRule: ApplicationListenerRule;
 }
 
+/**
+ * Historical purposes only. Don't use.
+ */
 export class BrefFactory extends NonConstruct {
 
     readonly funcFactory: PhpBrefFunction;

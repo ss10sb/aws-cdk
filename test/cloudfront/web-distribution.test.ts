@@ -13,7 +13,7 @@ import {AcmCertificate} from "../../src/acm/acm-certificate";
 import {Secrets} from "../../src/secret/secrets";
 import {PhpLambdaRestApi} from "../../src/lambda/php-lambda-rest-api";
 import {VpcHelper} from "../../src/utils/vpc-helper";
-import {AUTHORIZER_TOKEN} from "../../dist/lambda/authorizer";
+import {AUTHORIZER_TOKEN} from "../../src/lambda/authorizer-base";
 
 describe('cloud web distribution', () => {
 
@@ -44,9 +44,9 @@ describe('cloud web distribution', () => {
         })
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/cloudfront-distribution-nos3');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/cloudfront-distribution-nos3');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create default distribution with authorizer no s3 bucket', () => {
@@ -74,9 +74,9 @@ describe('cloud web distribution', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/cloudfront-distribution-nos3');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/cloudfront-distribution-authorizer-nos3');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create default distribution with rest api with authorizer no s3 bucket', () => {
@@ -104,9 +104,9 @@ describe('cloud web distribution', () => {
         });
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/cloudfront-distribution-nos3');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/cloudfront-distribution-rest-authorizer-nos3');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create default distribution with logging no s3 bucket', () => {
@@ -131,9 +131,9 @@ describe('cloud web distribution', () => {
         })
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/cloudfront-distribution-nos3');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/cloudfront-distribution-logging-nos3');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create default distribution with web acl no s3 bucket', () => {
@@ -189,8 +189,8 @@ describe('cloud web distribution', () => {
         })
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
-        // const expected = require('../__templates__/cloudfront-distribution-withs3');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/cloudfront-distribution-withs3');
+        templateHelper.template.templateMatches(expected);
     });
 });

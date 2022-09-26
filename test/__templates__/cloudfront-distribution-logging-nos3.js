@@ -339,6 +339,20 @@ module.exports = {
                 }
             }
         },
+        distributioncfdistLoggingBucketFAF3A8F3: {
+            Type: 'AWS::S3::Bucket',
+            Properties: {
+                BucketEncryption: {
+                    ServerSideEncryptionConfiguration: [
+                        {
+                            ServerSideEncryptionByDefault: {SSEAlgorithm: 'AES256'}
+                        }
+                    ]
+                }
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
         distributioncfdistD32B15FD: {
             Type: 'AWS::CloudFront::Distribution',
             Properties: {
@@ -363,6 +377,14 @@ module.exports = {
                     Enabled: true,
                     HttpVersion: 'http2',
                     IPV6Enabled: true,
+                    Logging: {
+                        Bucket: {
+                            'Fn::GetAtt': [
+                                'distributioncfdistLoggingBucketFAF3A8F3',
+                                'RegionalDomainName'
+                            ]
+                        }
+                    },
                     Origins: [
                         {
                             ConnectionAttempts: 1,
@@ -407,8 +429,7 @@ module.exports = {
                         },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
-                    },
-                    WebACLId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters'
+                    }
                 }
             }
         }

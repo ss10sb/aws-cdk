@@ -89,7 +89,7 @@ describe('route53 a record', () => {
         const cert = new AcmCertificate(stack, 'cert');
         const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
-        const func = phpbrefFun.create('f1', {
+        const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
             brefRuntime: BrefRuntime.PHP81FPM
         });
@@ -97,7 +97,7 @@ describe('route53 a record', () => {
         const api = phpHttpApi.create({lambdaFunction: func});
         const webDistribution = new WebDistribution(stack, 'distribution');
         const dist = webDistribution.create({
-            httpApi: api,
+            api: api.api,
             domainName: 'foo.bar.com',
             certificate: c,
             webAclId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters'
@@ -111,7 +111,7 @@ describe('route53 a record', () => {
             "AliasTarget": {
                 "DNSName": {
                     "Fn::GetAtt": [
-                        "distributioncfwdED870F34",
+                        "distributioncfdistD32B15FD",
                         "DomainName"
                     ]
                 },

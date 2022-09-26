@@ -3,7 +3,7 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {ParameterTier, ParameterType} from "aws-cdk-lib/aws-ssm";
 import {SsmHelper} from "../../src/utils/ssm-helper";
 
-describe('ssm utils', () => {
+describe('ssm helper utils', () => {
 
     test('create param', () => {
         const app = new App();

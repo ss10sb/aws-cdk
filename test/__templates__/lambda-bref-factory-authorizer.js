@@ -411,7 +411,8 @@ module.exports = {
                                     ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
                                 ]
                             ]
-                        }
+                        },
+                        AUTHORIZER_LOG_LEVEL: 'DEBUG'
                     }
                 },
                 FunctionName: 'my-app-authorizer-fn',
