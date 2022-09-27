@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-npm run buildpackage
+npm run prebuild
 cd dist
 npm publish --access public
+#npm publish --dry-run true --access public
 cd ..
