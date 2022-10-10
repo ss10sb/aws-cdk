@@ -45,6 +45,8 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
 
     exec() {
         const wrappers: FunctionWrapper[] = [];
+        const certificates = this.createCertificates();
+        this.createListenerCertificates(certificates);
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();

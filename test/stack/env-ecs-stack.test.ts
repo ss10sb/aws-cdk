@@ -223,6 +223,28 @@ describe('env ecs stack', () => {
         templateHelper.template.templateMatches(expected);
     });
 
+    it('should create env stack with certificates', () => {
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
+        const envConfig = getEnvConfigWithCertificates();
+        const app = new App();
+        const stack = new Stack(app, 'pcc-shared-stack', stackProps);
+        const ecrRepositories = new EcrRepositories(ConfigStackHelper.getAppName(envConfig), {
+            repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
+        });
+        const factory = new EcrRepositoryFactory(stack, ConfigStackHelper.getAppName(envConfig), ecrRepositories);
+        factory.create();
+        const name = ConfigStackHelper.getMainStackName(envConfig);
+        const envStack = new EnvEcsStack(stack, name, envConfig, {}, envStackProps, {
+            repositoryFactory: factory
+        });
+        envStack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(envStack));
+        templateHelper.inspect();
+        // const expected = require('../__templates__/env-ecs-stack-with-certificates');
+        // templateHelper.template.templateMatches(expected);
+    });
+
     it('should create env stack using premade queue', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
@@ -272,6 +294,39 @@ function getEnvConfigForQueue() {
         }
     };
 }
+
+function getEnvConfigWithCertificates() {
+    return {
+        AWSAccountId: '2222',
+        AWSRegion: 'us-west-2',
+        Name: 'myapp',
+        College: 'PCC',
+        Environment: ConfigEnvironments.SDLC,
+        Version: "0.0.0",
+        Parameters: {
+            listenerRule: {
+                priority: 100,
+                conditions: {
+                    hostHeaders: ['test.dev.example.edu']
+                }
+            },
+            targetGroup: {},
+            certificates: [
+                {
+                    domainName: 'test.dev.example.edu',
+                    hostedZone: 'dev.example.edu',
+                },
+                {
+                    domainName: 't1.test.dev.example.edu',
+                    hostedZone: 'dev.example.edu',
+                }
+            ],
+            services: [],
+            tasks: []
+        }
+    };
+}
+
 
 function getEnvConfig() {
     return {

@@ -1,8 +1,9 @@
 import {Construct} from "constructs";
 import {Duration, StackProps, Stage, Tags} from "aws-cdk-lib";
 import {
+    ApplicationListenerCertificate,
     ApplicationListenerRule,
-    ApplicationTargetGroup,
+    ApplicationTargetGroup, IApplicationListener,
     IApplicationLoadBalancer,
     IApplicationTargetGroup
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
@@ -29,6 +30,8 @@ import {AlbTargetGroup} from "../alb/alb-target-group";
 import {NamingHelper} from "../utils/naming-helper";
 import {SesVerifyDomain} from "../ses/ses-verify-domain";
 import {Route53Helper} from "../utils/route53-helper";
+import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certificate";
+import {DnsValidatedCertificate} from "aws-cdk-lib/aws-certificatemanager";
 
 export interface EnvConfig extends StackConfig {
     readonly Parameters: EnvEcsParameters | EnvLambdaParameters;
@@ -45,6 +48,7 @@ export interface EnvParameters extends BaseParameters {
     readonly steps?: Record<string, object>;
     readonly buildType?: EnvBuildType;
     readonly endpointType?: EnvEndpointType;
+    readonly certificates?: DnsValidatedCertificateProps[];
 }
 
 export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
@@ -81,6 +85,28 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
     protected createARecord(): ARecord | undefined {
         const aRecord = new Route53ARecord(this, this.getName('arecord'), this.getAliasTarget(), this.config.Parameters?.hostedZoneDomain);
         return aRecord.createARecord(this.config.Parameters?.subdomain);
+    }
+
+    protected createListenerCertificates(certificates: DnsValidatedCertificate[]): ApplicationListenerCertificate | undefined {
+        if (this.lookups.albListener && certificates.length > 0) {
+            return new ApplicationListenerCertificate(this, this.mixNameWithId('listener-certificates'), {
+                listener: this.lookups.albListener,
+                certificates: certificates
+            });
+        }
+    }
+
+    protected createCertificates(): DnsValidatedCertificate[] {
+        const certificates: DnsValidatedCertificate[] = [];
+        for (const certProps of this.config.Parameters.certificates ?? []) {
+            certificates.push(this.createCertificate(certProps));
+        }
+        return certificates;
+    }
+
+    protected createCertificate(props: DnsValidatedCertificateProps): DnsValidatedCertificate {
+        const certFactory = new AcmCertificate(this, this.node.id);
+        return certFactory.create(props);
     }
 
     protected createDynamoDbTable(name = 'cache'): Table | undefined {

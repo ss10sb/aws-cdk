@@ -63,6 +63,8 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
     exec() {
         const aRecord = this.createARecord();
         const sesVerify = this.createSesVerifyDomain();
+        const certificates = this.createCertificates();
+        this.createListenerCertificates(certificates);
         const targetGroup = this.createTargetGroup();
         const listenerRule = this.createListenerRule(targetGroup);
         this.configureTargetGroupHealthCheck(targetGroup);
