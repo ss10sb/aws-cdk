@@ -5,13 +5,13 @@ import {Cluster, ICluster} from "aws-cdk-lib/aws-ecs";
 import {EnvBaseStack, EnvConfig, EnvParameters} from "./env-base-stack";
 import {ApplicationListenerRule, HealthCheck, IApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {Queue} from "aws-cdk-lib/aws-sqs";
-import { EcrRepositoryFactory } from "../ecr/ecr-repository-factory";
-import { AlbListenerRuleProps } from "../alb/alb-listener-rule";
-import { AlbTargetGroupProps } from "../alb/alb-target-group";
-import { EcsStandardServiceConfigProps } from "../ecs/ecs-standard-service-factory";
-import { EcsTaskConfigProps } from "../ecs/ecs-task-factory";
+import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
+import {AlbListenerRuleProps} from "../alb/alb-listener-rule";
+import {AlbTargetGroupProps} from "../alb/alb-target-group";
+import {EcsStandardServiceConfigProps} from "../ecs/ecs-standard-service-factory";
+import {EcsTaskConfigProps} from "../ecs/ecs-task-factory";
 import {StartStopFactory, StartStopFactoryProps} from "../start-stop/start-stop-factory";
-import { EcsQueueConfigProps } from "../ecs/ecs-queue-factory";
+import {EcsQueueConfigProps} from "../ecs/ecs-queue-factory";
 import {FargateFactory, FargateTasksAndServices} from "../ecs/fargate-factory";
 import {PermissionsEnvEcsStack} from "../permissions/permissions-env-ecs-stack";
 import {ConfigStackProps} from "../config/config-stack";
@@ -63,6 +63,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
     exec() {
         const aRecord = this.createARecord();
         const sesVerify = this.createSesVerifyDomain();
+        this.createARecordsForCertificates();
         const certificates = this.createCertificates();
         this.createListenerCertificates(certificates);
         const targetGroup = this.createTargetGroup();

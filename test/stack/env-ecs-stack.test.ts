@@ -240,9 +240,9 @@ describe('env ecs stack', () => {
         });
         envStack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(envStack));
-        templateHelper.inspect();
-        // const expected = require('../__templates__/env-ecs-stack-with-certificates');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/env-ecs-stack-with-certificates');
+        templateHelper.template.templateMatches(expected);
     });
 
     it('should create env stack using premade queue', () => {
@@ -311,6 +311,8 @@ function getEnvConfigWithCertificates() {
                 }
             },
             targetGroup: {},
+            hostedZoneDomain: 'dev.example.edu',
+            subdomain: 'test',
             certificates: [
                 {
                     domainName: 'test.dev.example.edu',

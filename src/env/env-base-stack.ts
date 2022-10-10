@@ -83,8 +83,28 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
     }
 
     protected createARecord(): ARecord | undefined {
-        const aRecord = new Route53ARecord(this, this.getName('arecord'), this.getAliasTarget(), this.config.Parameters?.hostedZoneDomain);
+        const aRecord = new Route53ARecord(this, this.node.id, this.getAliasTarget(), this.config.Parameters?.hostedZoneDomain);
         return aRecord.createARecord(this.config.Parameters?.subdomain);
+    }
+
+    protected createARecordsForCertificates(): ARecord[] {
+        const aRecords: ARecord[] = [];
+        const aRecordFactory = new Route53ARecord(this, this.node.id, this.getAliasTarget(), this.config.Parameters?.hostedZoneDomain);
+        for (const certProps of this.config.Parameters.certificates ?? []) {
+            if (certProps.domainName !== this.getDefaultDomainName()) {
+                const r = aRecordFactory.createARecordForDomain(certProps.domainName);
+                if (r) {
+                    aRecords.push(r);
+                }
+            }
+        }
+        return aRecords;
+    }
+
+    protected getDefaultDomainName(): string | undefined {
+        if (this.config.Parameters.subdomain && this.config.Parameters.hostedZoneDomain) {
+            return `${this.config.Parameters.subdomain}.${this.config.Parameters.hostedZoneDomain}`;
+        }
     }
 
     protected createListenerCertificates(certificates: DnsValidatedCertificate[]): ApplicationListenerCertificate | undefined {
