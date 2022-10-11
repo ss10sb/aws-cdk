@@ -52,4 +52,18 @@ describe('container command factory', () => {
         const c = new ContainerCommandFactory(stage, 'id', {});
         expect(c.create(ContainerEntryPoint.BASH, ContainerCommand.ROLE_SET, ['123456'])).toEqual(expected);
     });
+
+    it('can add additional arguments to undefined container command', () => {
+        const app = new App();
+        const stage = new Stage(app, 'test');
+
+        const expected = {
+            command: [
+                "/run.sh"
+            ],
+            entryPoint: ['/bin/bash', '-c']
+        };
+        const c = new ContainerCommandFactory(stage, 'id', {});
+        expect(c.create(ContainerEntryPoint.BASH, ContainerCommand.UNDEFINED, ['/run.sh'])).toEqual(expected);
+    });
 });

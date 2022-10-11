@@ -791,6 +791,16 @@ module.exports = {
                                 },
                                 {Ref: 'AWS::NoValue'}
                             ]
+                        },
+                        {
+                            Action: [
+                                'ssmmessages:CreateControlChannel',
+                                'ssmmessages:CreateDataChannel',
+                                'ssmmessages:OpenControlChannel',
+                                'ssmmessages:OpenDataChannel'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
                         }
                     ],
                     Version: '2012-10-17'
@@ -1211,6 +1221,16 @@ module.exports = {
                                 },
                                 {Ref: 'AWS::NoValue'}
                             ]
+                        },
+                        {
+                            Action: [
+                                'ssmmessages:CreateControlChannel',
+                                'ssmmessages:CreateDataChannel',
+                                'ssmmessages:OpenControlChannel',
+                                'ssmmessages:OpenDataChannel'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
                         }
                     ],
                     Version: '2012-10-17'
@@ -1663,6 +1683,16 @@ module.exports = {
                                 },
                                 {Ref: 'AWS::NoValue'}
                             ]
+                        },
+                        {
+                            Action: [
+                                'ssmmessages:CreateControlChannel',
+                                'ssmmessages:CreateDataChannel',
+                                'ssmmessages:OpenControlChannel',
+                                'ssmmessages:OpenDataChannel'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
                         }
                     ],
                     Version: '2012-10-17'
@@ -2700,6 +2730,16 @@ module.exports = {
                                 },
                                 {Ref: 'AWS::NoValue'}
                             ]
+                        },
+                        {
+                            Action: [
+                                'ssmmessages:CreateControlChannel',
+                                'ssmmessages:CreateDataChannel',
+                                'ssmmessages:OpenControlChannel',
+                                'ssmmessages:OpenDataChannel'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
                         }
                     ],
                     Version: '2012-10-17'

@@ -147,6 +147,16 @@ module.exports = {
                             Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'ssmmessages:CreateControlChannel',
+                                'ssmmessages:CreateDataChannel',
+                                'ssmmessages:OpenControlChannel',
+                                'ssmmessages:OpenDataChannel'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
                         }
                     ],
                     Version: '2012-10-17'

@@ -6,6 +6,7 @@ import {PermissionsEcs} from "./permissions-ecs";
 import {PermissionsDynamodb} from "./permissions-dynamodb";
 import {NonConstruct} from "../core/non-construct";
 import {EnvEcsStackServicesProps} from "../env/env-ecs-stack";
+import {PermissionsExecuteCommand} from "./permissions-execute-command";
 
 export class PermissionsEnvEcsStack extends NonConstruct {
 
@@ -23,6 +24,7 @@ export class PermissionsEnvEcsStack extends NonConstruct {
         this.sesPermissions();
         this.startStopPermissions();
         this.tablePermissions();
+        this.executeCommandPermissions();
     }
 
     private queuePermissions() {
@@ -51,5 +53,9 @@ export class PermissionsEnvEcsStack extends NonConstruct {
 
     private sesPermissions() {
         PermissionsSes.tasksServicesCanSendEmail(this.props.tasksAndServices);
+    }
+
+    private executeCommandPermissions() {
+        PermissionsExecuteCommand.tasksServicesCanExecuteCommands(this.props.tasksAndServices);
     }
 }
