@@ -394,7 +394,7 @@ module.exports = {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
             Properties: {
                 MaxCapacity: 2,
-                MinCapacity: 1,
+                MinCapacity: 0,
                 ResourceId: {
                     'Fn::Join': [
                         '',
@@ -494,10 +494,10 @@ module.exports = {
                     StepAdjustments: [
                         {
                             MetricIntervalLowerBound: 0,
-                            MetricIntervalUpperBound: 400,
+                            MetricIntervalUpperBound: 9,
                             ScalingAdjustment: 1
                         },
-                        {MetricIntervalLowerBound: 400, ScalingAdjustment: 5}
+                        {MetricIntervalLowerBound: 9, ScalingAdjustment: 2}
                     ]
                 }
             }
@@ -525,8 +525,16 @@ module.exports = {
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
-                Threshold: 100
+                Threshold: 1
             }
+        }
+    },
+    Outputs: {
+        pccsdlcmyappservicequeue0SQSQueue8306BFF0: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']}
+        },
+        pccsdlcmyappservicequeue0SQSQueueArn061B9BC6: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']}
         }
     }
 };

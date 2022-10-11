@@ -1,6 +1,6 @@
 module.exports = {
     Resources: {
-        pccsdlcmyapparecordtestdevexampleeduarecordA329E9B2: {
+        pccsdlcmyapptestdevexampleeduarecord1EBFD14B: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
                 Name: 'test.dev.example.edu.',
@@ -9,7 +9,7 @@ module.exports = {
                     DNSName: 'dualstack.my-load-balancer-1234567890.us-west-2.elb.amazonaws.com',
                     HostedZoneId: 'Z3DZXE0EXAMPLE'
                 },
-                Comment: 'pcc-sdlc-myapp-arecord: test.dev.example.edu',
+                Comment: 'pcc-sdlc-myapp: test.dev.example.edu',
                 HostedZoneId: 'DUMMY'
             }
         },
@@ -2947,7 +2947,7 @@ module.exports = {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
             Properties: {
                 MaxCapacity: 2,
-                MinCapacity: 1,
+                MinCapacity: 0,
                 ResourceId: {
                     'Fn::Join': [
                         '',
@@ -3047,10 +3047,10 @@ module.exports = {
                     StepAdjustments: [
                         {
                             MetricIntervalLowerBound: 0,
-                            MetricIntervalUpperBound: 400,
+                            MetricIntervalUpperBound: 9,
                             ScalingAdjustment: 1
                         },
-                        {MetricIntervalLowerBound: 400, ScalingAdjustment: 5}
+                        {MetricIntervalLowerBound: 9, ScalingAdjustment: 2}
                     ]
                 }
             }
@@ -3078,7 +3078,7 @@ module.exports = {
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
-                Threshold: 100
+                Threshold: 1
             }
         },
         pccsdlcmyappstartstopfnServiceRole4E724A81: {

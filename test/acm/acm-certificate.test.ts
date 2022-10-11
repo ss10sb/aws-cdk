@@ -17,6 +17,7 @@ describe('dns validated certificate', () => {
         cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
+        // templateHelper.inspect();
         const expected = require('../__templates__/acm-certificate');
         templateHelper.template.templateMatches(expected);
     });

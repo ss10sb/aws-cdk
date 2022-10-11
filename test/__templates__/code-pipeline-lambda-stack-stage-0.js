@@ -1487,7 +1487,7 @@ module.exports = {
                     PriceClass: 'PriceClass_100',
                     Restrictions: {
                         GeoRestriction: {
-                            Locations: [ 'RU', 'BY', 'CN' ],
+                            Locations: ['RU', 'BY', 'CN'],
                             RestrictionType: 'blacklist'
                         }
                     },
@@ -1526,7 +1526,7 @@ module.exports = {
                 }
             }
         },
-        pccsdlctestarecordtestsdlcexampleeduarecordDC640DAE: {
+        pccsdlctesttestsdlcexampleeduarecord40417570: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
                 Name: 'test.sdlc.example.edu.',
@@ -1543,7 +1543,7 @@ module.exports = {
                         ]
                     }
                 },
-                Comment: 'pcc-sdlc-test-arecord: test.sdlc.example.edu',
+                Comment: 'pcc-sdlc-test: test.sdlc.example.edu',
                 HostedZoneId: 'DUMMY'
             }
         },

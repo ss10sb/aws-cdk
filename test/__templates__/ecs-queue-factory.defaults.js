@@ -1,12 +1,6 @@
 module.exports = {
     Resources: {
         cluster611F8AFF: { Type: 'AWS::ECS::Cluster' },
-        sqsqueueE70CFDBB: {
-            Type: 'AWS::SQS::Queue',
-            Properties: { KmsMasterKeyId: 'alias/aws/sqs', QueueName: 'sqs-queue' },
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
         nginxecrC430EE7B: {
             Type: 'AWS::ECR::Repository',
             Properties: {
@@ -40,6 +34,28 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
+        queueservicequeue0EcsProcessingDeadLetterQueue385656B4: {
+            Type: 'AWS::SQS::Queue',
+            Properties: { MessageRetentionPeriod: 1209600 },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        queueservicequeue0EcsProcessingQueue10C25DB4: {
+            Type: 'AWS::SQS::Queue',
+            Properties: {
+                RedrivePolicy: {
+                    deadLetterTargetArn: {
+                        'Fn::GetAtt': [
+                            'queueservicequeue0EcsProcessingDeadLetterQueue385656B4',
+                            'Arn'
+                        ]
+                    },
+                    maxReceiveCount: 3
+                }
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
         queueservicequeue0QueueProcessingTaskDefTaskRole0FEAB074: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -69,7 +85,12 @@ module.exports = {
                                 'sqs:GetQueueAttributes'
                             ],
                             Effect: 'Allow',
-                            Resource: { 'Fn::GetAtt': [ 'sqsqueueE70CFDBB', 'Arn' ] }
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'queueservicequeue0EcsProcessingQueue10C25DB4',
+                                    'Arn'
+                                ]
+                            }
                         }
                     ],
                     Version: '2012-10-17'
@@ -98,7 +119,12 @@ module.exports = {
                         Environment: [
                             {
                                 Name: 'QUEUE_NAME',
-                                Value: { 'Fn::GetAtt': [ 'sqsqueueE70CFDBB', 'QueueName' ] }
+                                Value: {
+                                    'Fn::GetAtt': [
+                                        'queueservicequeue0EcsProcessingQueue10C25DB4',
+                                        'QueueName'
+                                    ]
+                                }
                             }
                         ],
                         Essential: true,
@@ -342,7 +368,12 @@ module.exports = {
                 Dimensions: [
                     {
                         Name: 'QueueName',
-                        Value: { 'Fn::GetAtt': [ 'sqsqueueE70CFDBB', 'QueueName' ] }
+                        Value: {
+                            'Fn::GetAtt': [
+                                'queueservicequeue0EcsProcessingQueue10C25DB4',
+                                'QueueName'
+                            ]
+                        }
                     }
                 ],
                 MetricName: 'ApproximateNumberOfMessagesVisible',
@@ -388,7 +419,12 @@ module.exports = {
                 Dimensions: [
                     {
                         Name: 'QueueName',
-                        Value: { 'Fn::GetAtt': [ 'sqsqueueE70CFDBB', 'QueueName' ] }
+                        Value: {
+                            'Fn::GetAtt': [
+                                'queueservicequeue0EcsProcessingQueue10C25DB4',
+                                'QueueName'
+                            ]
+                        }
                     }
                 ],
                 MetricName: 'ApproximateNumberOfMessagesVisible',
@@ -400,7 +436,34 @@ module.exports = {
         }
     },
     Outputs: {
-        queueservicequeue0SQSQueue1C838927: { Value: { 'Fn::GetAtt': [ 'sqsqueueE70CFDBB', 'QueueName' ] } },
-        queueservicequeue0SQSQueueArnEAE2B1A8: { Value: { 'Fn::GetAtt': [ 'sqsqueueE70CFDBB', 'Arn' ] } }
+        queueservicequeue0SQSDeadLetterQueue4856410F: {
+            Value: {
+                'Fn::GetAtt': [
+                    'queueservicequeue0EcsProcessingDeadLetterQueue385656B4',
+                    'QueueName'
+                ]
+            }
+        },
+        queueservicequeue0SQSDeadLetterQueueArnBCE33219: {
+            Value: {
+                'Fn::GetAtt': [
+                    'queueservicequeue0EcsProcessingDeadLetterQueue385656B4',
+                    'Arn'
+                ]
+            }
+        },
+        queueservicequeue0SQSQueue1C838927: {
+            Value: {
+                'Fn::GetAtt': [
+                    'queueservicequeue0EcsProcessingQueue10C25DB4',
+                    'QueueName'
+                ]
+            }
+        },
+        queueservicequeue0SQSQueueArnEAE2B1A8: {
+            Value: {
+                'Fn::GetAtt': [ 'queueservicequeue0EcsProcessingQueue10C25DB4', 'Arn' ]
+            }
+        }
     }
 };

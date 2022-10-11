@@ -1511,7 +1511,7 @@ module.exports = {
                 }
             }
         },
-        pccprodtestarecordtestexampleeduarecordA491C0D1: {
+        pccprodtesttestexampleeduarecord3CF5C63C: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
                 Name: 'test.example.edu.',
@@ -1528,7 +1528,7 @@ module.exports = {
                         ]
                     }
                 },
-                Comment: 'pcc-prod-test-arecord: test.example.edu',
+                Comment: 'pcc-prod-test: test.example.edu',
                 HostedZoneId: 'DUMMY'
             }
         },

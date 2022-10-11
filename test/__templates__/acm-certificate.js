@@ -1,7 +1,6 @@
-const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
-        certfoobarcomCertificateRequestorFunctionServiceRole5597334B: {
+        certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -28,7 +27,7 @@ module.exports = {
                 ]
             }
         },
-        certfoobarcomCertificateRequestorFunctionServiceRoleDefaultPolicy8B8D1886: {
+        certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -65,24 +64,24 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'certfoobarcomCertificateRequestorFunctionServiceRoleDefaultPolicy8B8D1886',
+                PolicyName: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
                 Roles: [
                     {
-                        Ref: 'certfoobarcomCertificateRequestorFunctionServiceRole5597334B'
+                        Ref: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
                     }
                 ]
             }
         },
-        certfoobarcomCertificateRequestorFunction62C7DA69: {
+        certfoobarcomuseast1CertificateRequestorFunction2C565E6C: {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: Match.stringLikeRegexp('.*\.zip')
+                    S3Key: 'e85f10a8bf0e7f4f7931fce24b29d4faf6874948090a2b568b2da33a7116cf84.zip'
                 },
                 Role: {
                     'Fn::GetAtt': [
-                        'certfoobarcomCertificateRequestorFunctionServiceRole5597334B',
+                        'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82',
                         'Arn'
                     ]
                 },
@@ -91,22 +90,23 @@ module.exports = {
                 Timeout: 900
             },
             DependsOn: [
-                'certfoobarcomCertificateRequestorFunctionServiceRoleDefaultPolicy8B8D1886',
-                'certfoobarcomCertificateRequestorFunctionServiceRole5597334B'
+                'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
+                'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
             ]
         },
-        certfoobarcomCertificateRequestorResource5B4BBAB0: {
+        certfoobarcomuseast1CertificateRequestorResourceC3ACAF62: {
             Type: 'AWS::CloudFormation::CustomResource',
             Properties: {
                 ServiceToken: {
                     'Fn::GetAtt': [
-                        'certfoobarcomCertificateRequestorFunction62C7DA69',
+                        'certfoobarcomuseast1CertificateRequestorFunction2C565E6C',
                         'Arn'
                     ]
                 },
                 DomainName: 'foo.bar.com',
                 HostedZoneId: 'DUMMY',
-                Region: 'us-east-1'
+                Region: 'us-east-1',
+                CleanupRecords: 'true'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'

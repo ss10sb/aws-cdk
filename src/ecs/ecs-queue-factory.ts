@@ -45,7 +45,7 @@ export class EcsQueueFactory extends AbstractFactory {
         assignPublicIp: false,
         platformVersion: FargatePlatformVersion.LATEST,
         command: ContainerCommand.QUEUE_WORK,
-        minScalingCapacity: 1,
+        minScalingCapacity: 0,
         maxScalingCapacity: 2
     }
 
@@ -74,13 +74,21 @@ export class EcsQueueFactory extends AbstractFactory {
             logDriver: this.getLogging(name, props),
             retentionPeriod: props.retentionPeriodInDays ? Duration.days(props.retentionPeriodInDays) : undefined,
             maxReceiveCount: props.maxReceiveCount ?? undefined,
-            scalingSteps: props.scalingSteps ?? undefined,
+            scalingSteps: props.scalingSteps ?? this.getScalingSteps(),
         });
         return {
             type: props.type,
             taskDefinition: service.taskDefinition,
             wrapper: service,
         };
+    }
+
+    private getScalingSteps(): ScalingInterval[] {
+        return [
+            {upper: 0, change: -1},
+            {lower: 1, change: +1},
+            {lower: 10, change: +2}
+        ];
     }
 
     private getCommand(props: EcsQueueConfigProps): string[] {

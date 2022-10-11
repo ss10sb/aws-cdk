@@ -262,6 +262,7 @@ describe('env ecs stack', () => {
         });
         envStack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(envStack));
+        // templateHelper.inspect();
         const expected = require('../__templates__/env-stack.queue');
         templateHelper.template.templateMatches(expected);
     });
