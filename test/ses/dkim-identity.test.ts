@@ -81,7 +81,7 @@ describe('dkim email domain verify', () => {
                 stacktestexampleedudkim599ECBB6: {
                     Type: 'AWS::SES::EmailIdentity',
                     Properties: {
-                        EmailIdentity: 'example.edu',
+                        EmailIdentity: 'test.example.edu',
                         MailFromAttributes: {MailFromDomain: 'test.example.edu'}
                     }
                 },

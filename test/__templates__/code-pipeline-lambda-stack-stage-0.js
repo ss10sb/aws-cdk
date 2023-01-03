@@ -1616,7 +1616,7 @@ module.exports = {
         pccsdlctesttestsdlcexampleedudkimBBCDACBD: {
             Type: 'AWS::SES::EmailIdentity',
             Properties: {
-                EmailIdentity: 'sdlc.example.edu',
+                EmailIdentity: 'test.sdlc.example.edu',
                 MailFromAttributes: {MailFromDomain: 'test.sdlc.example.edu'}
             }
         },
