@@ -7,11 +7,11 @@ module.exports = {
                 Port: 80,
                 Protocol: 'HTTP',
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ],
-                TargetGroupAttributes: [{Key: 'stickiness.enabled', Value: 'false'}],
+                TargetGroupAttributes: [ { Key: 'stickiness.enabled', Value: 'false' } ],
                 TargetType: 'ip',
                 VpcId: 'vpc-12345'
             }
@@ -21,14 +21,14 @@ module.exports = {
             Properties: {
                 Actions: [
                     {
-                        TargetGroupArn: {Ref: 'pccsdlcmyapptg1E18EDE5'},
+                        TargetGroupArn: { Ref: 'pccsdlcmyapptg1E18EDE5' },
                         Type: 'forward'
                     }
                 ],
                 Conditions: [
                     {
                         Field: 'host-header',
-                        HostHeaderConfig: {Values: ['test.dev.example.edu']}
+                        HostHeaderConfig: { Values: [ 'test.dev.example.edu' ] }
                     }
                 ],
                 ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2',
@@ -42,9 +42,9 @@ module.exports = {
                 MessageRetentionPeriod: 259200,
                 QueueName: 'pcc-sdlc-myapp-dlq',
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -56,13 +56,13 @@ module.exports = {
                 KmsMasterKeyId: 'alias/aws/sqs',
                 QueueName: 'pcc-sdlc-myapp-queue',
                 RedrivePolicy: {
-                    deadLetterTargetArn: {'Fn::GetAtt': ['pccsdlcmyappdlqAB5BBAC4', 'Arn']},
+                    deadLetterTargetArn: { 'Fn::GetAtt': [ 'pccsdlcmyappdlqAB5BBAC4', 'Arn' ] },
                     maxReceiveCount: 3
                 },
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -72,11 +72,11 @@ module.exports = {
             Type: 'AWS::ECS::Cluster',
             Properties: {
                 ClusterName: 'pcc-sdlc-myapp-cluster',
-                ClusterSettings: [{Name: 'containerInsights', Value: 'disabled'}],
+                ClusterSettings: [ { Name: 'containerInsights', Value: 'disabled' } ],
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ]
             }
         },
@@ -86,9 +86,9 @@ module.exports = {
                 LogGroupName: 'pcc-sdlc-myapp-service-queue-0-log-group',
                 RetentionInDays: 30,
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -102,15 +102,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ]
             }
         },
@@ -129,7 +129,7 @@ module.exports = {
                             ],
                             Effect: 'Allow',
                             Resource: {
-                                'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']
+                                'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'Arn' ]
                             }
                         },
                         {
@@ -140,11 +140,11 @@ module.exports = {
                             ],
                             Effect: 'Allow',
                             Resource: {
-                                'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']
+                                'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'Arn' ]
                             }
                         },
                         {
-                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
+                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
                             Effect: 'Allow',
                             Resource: '*'
                         }
@@ -176,7 +176,7 @@ module.exports = {
                             {
                                 Name: 'QUEUE_NAME',
                                 Value: {
-                                    'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']
+                                    'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'QueueName' ]
                                 }
                             }
                         ],
@@ -196,7 +196,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                {Ref: 'AWS::Partition'},
+                                                                { Ref: 'AWS::Partition' },
                                                                 ':ecr:us-east-1:12344:repository/pcc-myapp/phpfpm'
                                                             ]
                                                         ]
@@ -217,7 +217,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                {Ref: 'AWS::Partition'},
+                                                                { Ref: 'AWS::Partition' },
                                                                 ':ecr:us-east-1:12344:repository/pcc-myapp/phpfpm'
                                                             ]
                                                         ]
@@ -227,7 +227,7 @@ module.exports = {
                                         ]
                                     },
                                     '.',
-                                    {Ref: 'AWS::URLSuffix'},
+                                    { Ref: 'AWS::URLSuffix' },
                                     '/pcc-myapp/phpfpm:1'
                                 ]
                             ]
@@ -235,7 +235,7 @@ module.exports = {
                         LogConfiguration: {
                             LogDriver: 'awslogs',
                             Options: {
-                                'awslogs-group': {Ref: 'pccsdlcmyappservicequeue0loggroup9DDCB13E'},
+                                'awslogs-group': { Ref: 'pccsdlcmyappservicequeue0loggroup9DDCB13E' },
                                 'awslogs-stream-prefix': 'phpfpm',
                                 'awslogs-region': 'us-west-2'
                             }
@@ -254,11 +254,11 @@ module.exports = {
                 Family: 'pcc-sdlc-myapp-service-queue-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: ['FARGATE'],
+                RequiresCompatibilities: [ 'FARGATE' ],
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ],
                 TaskRoleArn: {
                     'Fn::GetAtt': [
@@ -276,16 +276,16 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 RoleName: 'pccsharedstackpccsdlcmyapdefexecutionrolef9c314234098b2c4e8ec',
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ]
             }
         },
@@ -306,7 +306,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':ecr:us-east-1:12344:repository/pcc-myapp/phpfpm'
                                     ]
                                 ]
@@ -318,7 +318,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -341,8 +341,8 @@ module.exports = {
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceF0BE3522: {
             Type: 'AWS::ECS::Service',
             Properties: {
-                Cluster: {Ref: 'pccsdlcmyappcluster4E9F2DE3'},
-                DeploymentConfiguration: {MaximumPercent: 200, MinimumHealthyPercent: 50},
+                Cluster: { Ref: 'pccsdlcmyappcluster4E9F2DE3' },
+                DeploymentConfiguration: { MaximumPercent: 200, MinimumHealthyPercent: 50 },
                 EnableECSManagedTags: false,
                 LaunchType: 'FARGATE',
                 NetworkConfiguration: {
@@ -356,15 +356,15 @@ module.exports = {
                                 ]
                             }
                         ],
-                        Subnets: ['p-12345', 'p-67890']
+                        Subnets: [ 'p-12345', 'p-67890' ]
                     }
                 },
                 PlatformVersion: 'LATEST',
                 ServiceName: 'pcc-sdlc-myapp-service-queue-0',
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ],
                 TaskDefinition: {
                     Ref: 'pccsdlcmyappservicequeue0QueueProcessingTaskDef277B33FF'
@@ -383,9 +383,9 @@ module.exports = {
                     }
                 ],
                 Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
+                    { Key: 'App', Value: 'myapp' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' }
                 ],
                 VpcId: 'vpc-12345'
             }
@@ -400,7 +400,7 @@ module.exports = {
                         '',
                         [
                             'service/',
-                            {Ref: 'pccsdlcmyappcluster4E9F2DE3'},
+                            { Ref: 'pccsdlcmyappcluster4E9F2DE3' },
                             '/',
                             {
                                 'Fn::GetAtt': [
@@ -416,7 +416,7 @@ module.exports = {
                         '',
                         [
                             'arn:',
-                            {Ref: 'AWS::Partition'},
+                            { Ref: 'AWS::Partition' },
                             ':iam::2222:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
                         ]
                     ]
@@ -434,7 +434,7 @@ module.exports = {
                     Ref: 'pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetCE82EEC2'
                 },
                 TargetTrackingScalingPolicyConfiguration: {
-                    PredefinedMetricSpecification: {PredefinedMetricType: 'ECSServiceAverageCPUUtilization'},
+                    PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
                     TargetValue: 50
                 }
             }
@@ -450,7 +450,7 @@ module.exports = {
                 StepScalingPolicyConfiguration: {
                     AdjustmentType: 'ChangeInCapacity',
                     MetricAggregationType: 'Maximum',
-                    StepAdjustments: [{MetricIntervalUpperBound: 0, ScalingAdjustment: -1}]
+                    StepAdjustments: [ { MetricIntervalUpperBound: 0, ScalingAdjustment: -1 } ]
                 }
             }
         },
@@ -469,7 +469,7 @@ module.exports = {
                     {
                         Name: 'QueueName',
                         Value: {
-                            'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']
+                            'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'QueueName' ]
                         }
                     }
                 ],
@@ -497,7 +497,7 @@ module.exports = {
                             MetricIntervalUpperBound: 9,
                             ScalingAdjustment: 1
                         },
-                        {MetricIntervalLowerBound: 9, ScalingAdjustment: 2}
+                        { MetricIntervalLowerBound: 9, ScalingAdjustment: 2 }
                     ]
                 }
             }
@@ -517,7 +517,7 @@ module.exports = {
                     {
                         Name: 'QueueName',
                         Value: {
-                            'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']
+                            'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'QueueName' ]
                         }
                     }
                 ],
@@ -531,10 +531,10 @@ module.exports = {
     },
     Outputs: {
         pccsdlcmyappservicequeue0SQSQueue8306BFF0: {
-            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']}
+            Value: { 'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'QueueName' ] }
         },
         pccsdlcmyappservicequeue0SQSQueueArn061B9BC6: {
-            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']}
+            Value: { 'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'Arn' ] }
         }
     }
 };
