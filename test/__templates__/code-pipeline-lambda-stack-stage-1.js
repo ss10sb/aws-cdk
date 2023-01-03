@@ -99,7 +99,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                    S3Key: 'e85f10a8bf0e7f4f7931fce24b29d4faf6874948090a2b568b2da33a7116cf84.zip'
+                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -476,7 +476,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                    S3Key: 'e85f10a8bf0e7f4f7931fce24b29d4faf6874948090a2b568b2da33a7116cf84.zip'
+                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -1116,7 +1116,7 @@ module.exports = {
             Properties: {
                 Content: {
                     S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                    S3Key: '731f24951dbe4e08bfc519dd7c23a4f7158528bd5557e38437b08292ab2a873c.zip'
+                    S3Key: '1d3b5490cd99feddeb525a62c046988997469f2a765d0f12b43cff9d87a284fa.zip'
                 },
                 Description: '/opt/awscli/aws'
             }
@@ -1532,298 +1532,98 @@ module.exports = {
                 HostedZoneId: 'DUMMY'
             }
         },
-        pccprodtestsesverifytestVerifyDomainIdentityB3C4D659: {
-            Type: 'Custom::AWS',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
-                },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"}}',
-                InstallLatestAwsSdk: true
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D'
-            ],
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: ['ses:VerifyDomainIdentity', 'ses:DeleteIdentity'],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
-                Roles: [
-                    {
-                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
-                    }
-                ]
-            }
-        },
-        pccprodtestsesverifytestSesVerificationRecordEE0838F9: {
+        pccprodtesttestexampleedudkimDkimDnsToken1521AE80E: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
-                Name: '_amazonses.test.example.edu.',
+                Name: {
+                    'Fn::GetAtt': [
+                        'pccprodtesttestexampleedudkim48EBD51D',
+                        'DkimDNSTokenName1'
+                    ]
+                },
+                Type: 'CNAME',
+                HostedZoneId: 'DUMMY',
+                ResourceRecords: [
+                    {
+                        'Fn::GetAtt': [
+                            'pccprodtesttestexampleedudkim48EBD51D',
+                            'DkimDNSTokenValue1'
+                        ]
+                    }
+                ],
+                TTL: '1800'
+            }
+        },
+        pccprodtesttestexampleedudkimDkimDnsToken200673716: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                Name: {
+                    'Fn::GetAtt': [
+                        'pccprodtesttestexampleedudkim48EBD51D',
+                        'DkimDNSTokenName2'
+                    ]
+                },
+                Type: 'CNAME',
+                HostedZoneId: 'DUMMY',
+                ResourceRecords: [
+                    {
+                        'Fn::GetAtt': [
+                            'pccprodtesttestexampleedudkim48EBD51D',
+                            'DkimDNSTokenValue2'
+                        ]
+                    }
+                ],
+                TTL: '1800'
+            }
+        },
+        pccprodtesttestexampleedudkimDkimDnsToken395B153C9: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                Name: {
+                    'Fn::GetAtt': [
+                        'pccprodtesttestexampleedudkim48EBD51D',
+                        'DkimDNSTokenName3'
+                    ]
+                },
+                Type: 'CNAME',
+                HostedZoneId: 'DUMMY',
+                ResourceRecords: [
+                    {
+                        'Fn::GetAtt': [
+                            'pccprodtesttestexampleedudkim48EBD51D',
+                            'DkimDNSTokenValue3'
+                        ]
+                    }
+                ],
+                TTL: '1800'
+            }
+        },
+        pccprodtesttestexampleedudkim48EBD51D: {
+            Type: 'AWS::SES::EmailIdentity',
+            Properties: {
+                EmailIdentity: 'example.edu',
+                MailFromAttributes: {MailFromDomain: 'test.example.edu'}
+            }
+        },
+        pccprodtesttestexampleedudkimMailFromMxRecord72B8147E: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                Name: 'test.example.edu.',
+                Type: 'MX',
+                HostedZoneId: 'DUMMY',
+                ResourceRecords: ['10 feedback-smtp.us-west-2.amazonses.com'],
+                TTL: '1800'
+            }
+        },
+        pccprodtesttestexampleedudkimMailFromTxtRecord42868A14: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                Name: 'test.example.edu.',
                 Type: 'TXT',
                 HostedZoneId: 'DUMMY',
-                ResourceRecords: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                '"',
-                                {
-                                    'Fn::GetAtt': [
-                                        'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659',
-                                        'VerificationToken'
-                                    ]
-                                },
-                                '"'
-                            ]
-                        ]
-                    }
-                ],
+                ResourceRecords: ['"v=spf1 include:amazonses.com ~all"'],
                 TTL: '1800'
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
-                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
-            ]
-        },
-        pccprodtestsesverifytestVerifyDomainDkim5FC89C53: {
-            Type: 'Custom::AWS',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
-                },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
-                InstallLatestAwsSdk: true
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainDkimCustomResourcePolicyAA33B787',
-                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
-                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
-            ],
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        pccprodtestsesverifytestVerifyDomainDkimCustomResourcePolicyAA33B787: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'ses:VerifyDomainDkim',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccprodtestsesverifytestVerifyDomainDkimCustomResourcePolicyAA33B787',
-                Roles: [
-                    {
-                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
-                    }
-                ]
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
-                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
-            ]
-        },
-        pccprodtestsesverifytestSesDkimVerificationRecord0F1EA9D60: {
-            Type: 'AWS::Route53::RecordSet',
-            Properties: {
-                Name: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            {
-                                'Fn::GetAtt': [
-                                    'pccprodtestsesverifytestVerifyDomainDkim5FC89C53',
-                                    'DkimTokens.0'
-                                ]
-                            },
-                            '._domainkey.test.example.edu.'
-                        ]
-                    ]
-                },
-                Type: 'CNAME',
-                HostedZoneId: 'DUMMY',
-                ResourceRecords: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                {
-                                    'Fn::GetAtt': [
-                                        'pccprodtestsesverifytestVerifyDomainDkim5FC89C53',
-                                        'DkimTokens.0'
-                                    ]
-                                },
-                                '.dkim.amazonses.com'
-                            ]
-                        ]
-                    }
-                ],
-                TTL: '1800'
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainDkimCustomResourcePolicyAA33B787',
-                'pccprodtestsesverifytestVerifyDomainDkim5FC89C53'
-            ]
-        },
-        pccprodtestsesverifytestSesDkimVerificationRecord1F83632A1: {
-            Type: 'AWS::Route53::RecordSet',
-            Properties: {
-                Name: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            {
-                                'Fn::GetAtt': [
-                                    'pccprodtestsesverifytestVerifyDomainDkim5FC89C53',
-                                    'DkimTokens.1'
-                                ]
-                            },
-                            '._domainkey.test.example.edu.'
-                        ]
-                    ]
-                },
-                Type: 'CNAME',
-                HostedZoneId: 'DUMMY',
-                ResourceRecords: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                {
-                                    'Fn::GetAtt': [
-                                        'pccprodtestsesverifytestVerifyDomainDkim5FC89C53',
-                                        'DkimTokens.1'
-                                    ]
-                                },
-                                '.dkim.amazonses.com'
-                            ]
-                        ]
-                    }
-                ],
-                TTL: '1800'
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainDkimCustomResourcePolicyAA33B787',
-                'pccprodtestsesverifytestVerifyDomainDkim5FC89C53'
-            ]
-        },
-        pccprodtestsesverifytestSesDkimVerificationRecord27126929F: {
-            Type: 'AWS::Route53::RecordSet',
-            Properties: {
-                Name: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            {
-                                'Fn::GetAtt': [
-                                    'pccprodtestsesverifytestVerifyDomainDkim5FC89C53',
-                                    'DkimTokens.2'
-                                ]
-                            },
-                            '._domainkey.test.example.edu.'
-                        ]
-                    ]
-                },
-                Type: 'CNAME',
-                HostedZoneId: 'DUMMY',
-                ResourceRecords: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                {
-                                    'Fn::GetAtt': [
-                                        'pccprodtestsesverifytestVerifyDomainDkim5FC89C53',
-                                        'DkimTokens.2'
-                                    ]
-                                },
-                                '.dkim.amazonses.com'
-                            ]
-                        ]
-                    }
-                ],
-                TTL: '1800'
-            },
-            DependsOn: [
-                'pccprodtestsesverifytestVerifyDomainDkimCustomResourcePolicyAA33B787',
-                'pccprodtestsesverifytestVerifyDomainDkim5FC89C53'
-            ]
-        },
-        AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'prod'}
-                ]
             }
-        },
-        AWS679f53fac002430cb0da5b7982bd22872D164C4C: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                    S3Key: '6dbd112fe448437b3438da4382c72fccbb7d2ee1543db222620d7447fffebc50.zip'
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2',
-                        'Arn'
-                    ]
-                },
-                Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'prod'}
-                ],
-                Timeout: 120
-            },
-            DependsOn: ['AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2']
         }
     },
     Outputs: {

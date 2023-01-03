@@ -7,10 +7,6 @@ export class PermissionsExecuteCommand {
 
     static tasksServicesCanExecuteCommands(ts: FargateTasksAndServices): void {
         this.wrappedCanExecuteCommands(ts.services);
-        this.wrappedCanExecuteCommands(ts.tasks);
-        if (ts.queue) {
-            this.wrappedCanExecuteCommands([ts.queue]);
-        }
     }
 
     static wrappedCanExecuteCommands(wrapped: Wrapper[]): void {

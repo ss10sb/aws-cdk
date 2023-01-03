@@ -3,6 +3,7 @@ import {Table} from "aws-cdk-lib/aws-dynamodb";
 import {Bucket} from "aws-cdk-lib/aws-s3";
 import {ARecord} from "aws-cdk-lib/aws-route53";
 import {VerifySesDomain} from "../ses/verify-ses-domain";
+import {EmailIdentity} from "aws-cdk-lib/aws-ses";
 
 export enum EnvBuildType {
     ECS,
@@ -23,6 +24,7 @@ export interface EnvStackServicesProps {
     readonly queue?: Queue;
     readonly s3?: Bucket;
     readonly sesVerify?: VerifySesDomain;
+    readonly dkimIdentity?: EmailIdentity;
     readonly table?: Table;
 }
 

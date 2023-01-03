@@ -261,7 +261,7 @@ describe('php lambda rest api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'e85f10a8bf0e7f4f7931fce24b29d4faf6874948090a2b568b2da33a7116cf84.zip'
+                            S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
                         },
                         Role: {
                             'Fn::GetAtt': [

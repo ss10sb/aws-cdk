@@ -1,15 +1,15 @@
 import {Construct} from "constructs";
-import {IStringParameter, ParameterTier, ParameterType, StringParameter} from "aws-cdk-lib/aws-ssm";
+import {IStringParameter, ParameterTier, StringParameter} from "aws-cdk-lib/aws-ssm";
+import {SecretValue} from "aws-cdk-lib";
 
 export class SsmHelper {
 
     public static advancedSize: number = (1024 * 4);
 
-    public static createParam(scope: Construct, key: string, value: string, type: ParameterType = ParameterType.STRING): StringParameter {
+    public static createParam(scope: Construct, key: string, value: string): StringParameter {
         return new StringParameter(scope, `${scope.node.id}-${key}-param`, {
             parameterName: key,
             stringValue: value,
-            type: type,
             tier: SsmHelper.getParamTier(value)
         });
     }
@@ -41,7 +41,7 @@ export class SsmHelper {
     }
 
     public static getSecretValuePlaceholder(scope: Construct, key: string, version = 1): string {
-        return StringParameter.valueForSecureStringParameter(scope, key, version);
+        return SecretValue.ssmSecure(key).toString();
     }
 
     public static getParamTier(value: string): ParameterTier {

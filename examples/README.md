@@ -76,3 +76,9 @@ List listener rules (get next priority)
 ```shell
 $ aws elbv2 describe-rules --listener-arn arn:aws:elasticloadbalancing:us-west-2:... --profile PROFILE --region us-west-2
 ```
+
+Exec command (on Fargate container)
+
+```shell
+$ aws ecs execute-command --cluster pcc-ENV-NAME-cluster --task TASKHASH --container pcc-ENV-NAME-container-phpfpm-web-u-0 --command "/bin/sh" --interactive --profile PROFILE --region us-west-2
+```

@@ -32,6 +32,8 @@ import {SesVerifyDomain} from "../ses/ses-verify-domain";
 import {Route53Helper} from "../utils/route53-helper";
 import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certificate";
 import {DnsValidatedCertificate} from "aws-cdk-lib/aws-certificatemanager";
+import {EmailIdentity} from "aws-cdk-lib/aws-ses";
+import {DkimIdentity} from "../ses/dkim-identity";
 
 export interface EnvConfig extends StackConfig {
     readonly Parameters: EnvEcsParameters | EnvLambdaParameters;
@@ -104,6 +106,14 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
     protected getDefaultDomainName(): string | undefined {
         if (this.config.Parameters.subdomain && this.config.Parameters.hostedZoneDomain) {
             return `${this.config.Parameters.subdomain}.${this.config.Parameters.hostedZoneDomain}`;
+        }
+    }
+
+    protected createDkimDomainIdentity(): EmailIdentity | undefined {
+        const domain = this.getDefaultDomainName();
+        if (domain) {
+            const ses = new DkimIdentity(this, this.node.id, this.config.Parameters.hostedZoneDomain);
+            return ses.createForDomain(domain);
         }
     }
 

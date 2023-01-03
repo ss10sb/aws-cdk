@@ -77,7 +77,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             throw new Error('ALB endpoint has not been implemented.');
         }
         const aRecord = this.createARecord();
-        const sesVerify = this.createSesVerifyDomain();
+        const identity = this.createDkimDomainIdentity();
         new PermissionsEnvLambdaStack(this, this.node.id, {
             functions: {
                 functions: wrappers,
@@ -86,7 +86,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: s3,
-            sesVerify: sesVerify,
+            dkimIdentity: identity,
             table: table,
             secret: this.lookups.secret
         });
