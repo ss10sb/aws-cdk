@@ -23,7 +23,8 @@ export class Dynamodb extends NonConstruct {
             partitionKey: props.partitionKey ?? this.defaults.partitionKey,
             billingMode: props.billingMode ?? this.defaults.billingMode,
             encryption: props.encryption ?? this.defaults.encryption,
-            removalPolicy: RemovalPolicy.DESTROY
+            removalPolicy: RemovalPolicy.DESTROY,
+            timeToLiveAttribute: 'expires_at'
         });
     }
 }
