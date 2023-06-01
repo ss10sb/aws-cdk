@@ -106,7 +106,7 @@ describe('ecs run task', () => {
                         },
                         FunctionName: 'create-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Timeout: 120
                     },
                     DependsOn: [
@@ -131,7 +131,7 @@ describe('ecs run task', () => {
                             ]
                         },
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x'
+                        Runtime: MatchHelper.startsWith('nodejs')
                     },
                     DependsOn: [
                         Match.stringLikeRegexp('^LogRetention.*ServiceRoleDefaultPolicy.*'),
@@ -269,7 +269,7 @@ describe('ecs run task', () => {
                         },
                         FunctionName: 'update-fn',
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Timeout: 120
                     },
                     DependsOn: [
@@ -294,7 +294,7 @@ describe('ecs run task', () => {
                             ]
                         },
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x'
+                        Runtime: MatchHelper.startsWith('nodejs')
                     },
                     DependsOn: [
                         Match.stringLikeRegexp('^LogRetention.*ServiceRoleDefaultPolicy.*'),

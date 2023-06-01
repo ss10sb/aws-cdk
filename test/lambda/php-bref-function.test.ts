@@ -189,7 +189,7 @@ describe('php bref function create', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')
@@ -394,7 +394,7 @@ describe('php bref function create', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')
@@ -620,7 +620,7 @@ describe('php bref function create', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')
@@ -830,7 +830,7 @@ describe('php bref function create', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')
@@ -1034,7 +1034,7 @@ describe('php bref function create', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')

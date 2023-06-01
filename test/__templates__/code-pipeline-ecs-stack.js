@@ -1540,19 +1540,12 @@ module.exports = {
                     Statement: [
                         {
                             Action: 'sts:AssumeRole',
-                            Condition: {
-                                Bool: {'aws:ViaAWSService': 'codepipeline.amazonaws.com'}
-                            },
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::12344:root'
-                                        ]
+                                    'Fn::GetAtt': [
+                                        'pccsharedtestcodepipelinePipelineRole7DA95E27',
+                                        'Arn'
                                     ]
                                 }
                             }
@@ -2220,8 +2213,8 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"a9d3d4d1afa000946b9863b3e7578a5a5ad86d88274b3639938aa2baebf822ce:11111-us-west-2\\"",\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"a9d3d4d1afa000946b9863b3e7578a5a5ad86d88274b3639938aa2baebf822ce:22222-us-west-2\\""\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"bb459fac5f6b4b052aac9803443226d161a5cfe96f4648b21f9e4912c698bf30:11111-us-west-2\\"",\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"bb459fac5f6b4b052aac9803443226d161a5cfe96f4648b21f9e4912c698bf30:22222-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
@@ -2435,7 +2428,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"f5b6a6d08a8206e67d0b54e2a29abd7e0472d835abc71037de3a93545b5edacc:11111-us-west-2\\""\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8:11111-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +

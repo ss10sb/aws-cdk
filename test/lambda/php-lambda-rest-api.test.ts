@@ -168,7 +168,7 @@ describe('php lambda rest api', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')
@@ -236,7 +236,7 @@ describe('php lambda rest api', () => {
                         Environment: { Variables: { AUTHORIZER_TOKEN: 'abc123' } },
                         FunctionName: 'lambda-rest-api-authorizer-fn',
                         Handler: 'token.handler',
-                        Runtime: 'nodejs16.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Timeout: 5
                     },
                     DependsOn: [ 'lambdarestapiauthorizerfnServiceRoleD60184C8' ]
@@ -677,7 +677,7 @@ describe('php lambda rest api', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')

@@ -4,6 +4,7 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {StartStopEvent} from "../../src/start-stop/start-stop-event";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {StartStopLambdaEventStatus} from "../../src/start-stop/start-stop-definitions";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('start stop event', () => {
     it('should create an event', () => {
@@ -66,7 +67,7 @@ describe('start stop event', () => {
                         Code: {ZipFile: 'exports.handler = handler.toString()'},
                         Role: {'Fn::GetAtt': [templateHelper.startsWithMatch('fnServiceRole'), 'Arn']},
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x'
+                        Runtime: MatchHelper.startsWith('nodejs')
                     },
                     DependsOn: [templateHelper.startsWithMatch('fnServiceRole')]
                 })

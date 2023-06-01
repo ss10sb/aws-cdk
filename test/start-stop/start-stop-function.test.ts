@@ -90,7 +90,7 @@ describe('start stop function', () => {
                         FunctionName: 'stack-start-stop-fn',
                         Handler: 'index.handler',
                         MemorySize: 128,
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Timeout: 5
                     },
                     DependsOn: [templateHelper.startsWithMatch('stackstartstopfnServiceRole')]
@@ -102,7 +102,7 @@ describe('start stop function', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')

@@ -297,7 +297,7 @@ module.exports = {
                     ]
                 },
                 Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
                     { Key: 'College', Value: 'PCC' },

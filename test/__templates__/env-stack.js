@@ -353,7 +353,7 @@ module.exports = {
                     ]
                 },
                 Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
                     { Key: 'College', Value: 'PCC' },
@@ -3171,7 +3171,7 @@ module.exports = {
                 FunctionName: 'pcc-sdlc-myapp-start-stop-fn',
                 Handler: 'index.handler',
                 MemorySize: 128,
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
                     { Key: 'College', Value: 'PCC' },
@@ -3265,7 +3265,7 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')

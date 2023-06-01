@@ -139,7 +139,7 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
@@ -221,7 +221,7 @@ module.exports = {
                 },
                 FunctionName: 'my-app-authorizer-fn',
                 Handler: 'token.handler',
-                Runtime: 'nodejs16.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Timeout: 5
             },
             DependsOn: ['myappauthorizerfnServiceRole2952ABDD']

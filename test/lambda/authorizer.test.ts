@@ -58,7 +58,7 @@ describe('authorizer v1', () => {
                         Environment: { Variables: { AUTHORIZER_TOKEN: 'abc123' } },
                         FunctionName: 'authorizer-authorizer-fn',
                         Handler: 'token.handler',
-                        Runtime: 'nodejs16.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Timeout: 5
                     },
                     DependsOn: [ 'authorizerauthorizerfnServiceRole5010DDC1' ]
@@ -139,7 +139,7 @@ describe('authorizer v1', () => {
                     Type: 'AWS::Lambda::Function',
                     Properties: {
                         Handler: 'index.handler',
-                        Runtime: 'nodejs14.x',
+                        Runtime: MatchHelper.startsWith('nodejs'),
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')

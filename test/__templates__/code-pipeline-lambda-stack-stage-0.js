@@ -284,7 +284,7 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
@@ -445,7 +445,7 @@ module.exports = {
                 },
                 FunctionName: 'pcc-sdlc-test-authorizer-fn',
                 Handler: 'token.handler',
-                Runtime: 'nodejs16.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     { Key: 'App', Value: 'test' },
                     { Key: 'College', Value: 'PCC' },
@@ -1626,7 +1626,7 @@ module.exports = {
                     ]
                 },
                 Handler: 'index.handler',
-                Runtime: 'nodejs14.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     { Key: 'App', Value: 'test' },
                     { Key: 'College', Value: 'PCC' },

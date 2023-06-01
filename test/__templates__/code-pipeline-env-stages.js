@@ -1056,19 +1056,12 @@ module.exports = {
                     Statement: [
                         {
                             Action: 'sts:AssumeRole',
-                            Condition: {
-                                Bool: {'aws:ViaAWSService': 'codepipeline.amazonaws.com'}
-                            },
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::123pipeline:root'
-                                        ]
+                                    'Fn::GetAtt': [
+                                        'stackcodepipelinePipelineRoleABF819A4',
+                                        'Arn'
                                     ]
                                 }
                             }
