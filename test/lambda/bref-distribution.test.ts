@@ -32,7 +32,7 @@ describe('bref distribution', () => {
             assetPath: 'assets/*',
             minimumSslProtocol: SecurityPolicyProtocol.TLS_V1_2_2019,
             certificateProps: {
-                domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'
+                domainName: 'foo.bar.com', hostedZone: 'bar.com'
             },
             apiProps: {},
             functionProps: {
@@ -64,7 +64,7 @@ describe('bref distribution', () => {
             assetPath: 'assets/*',
             minimumSslProtocol: SecurityPolicyProtocol.TLS_V1_2_2019,
             certificateProps: {
-                domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'
+                domainName: 'foo.bar.com', hostedZone: 'bar.com'
             },
             apiProps: {
                 authorizerProps: {debug: true}
@@ -95,7 +95,7 @@ describe('bref distribution', () => {
             assetPath: 'assets/*',
             minimumSslProtocol: SecurityPolicyProtocol.TLS_V1_2_2019,
             certificateProps: {
-                domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'
+                domainName: 'foo.bar.com', hostedZone: 'bar.com'
             },
             apiProps: {
                 apiType: ApiType.HTTP,
@@ -127,7 +127,7 @@ describe('bref distribution', () => {
             assetPathToCopy: path.join(__dirname, '..', '__codebase__', 'public'),
             minimumSslProtocol: SecurityPolicyProtocol.TLS_V1_2_2019,
             certificateProps: {
-                domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'
+                domainName: 'foo.bar.com', hostedZone: 'bar.com'
             },
             apiProps: {},
             functionProps: {
@@ -157,7 +157,7 @@ describe('bref distribution', () => {
             assetPath: 'assets/*',
             minimumSslProtocol: SecurityPolicyProtocol.TLS_V1_2_2019,
             certificateProps: {
-                domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'
+                domainName: 'foo.bar.com', hostedZone: 'bar.com'
             },
             apiProps: {
                 apiType: ApiType.HTTP,

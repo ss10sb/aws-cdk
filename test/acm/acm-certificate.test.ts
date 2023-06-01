@@ -14,7 +14,7 @@ describe('dns validated certificate', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
         // templateHelper.inspect();

@@ -18,124 +18,26 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
-        pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRole6433EA0B: {
-            Type: 'AWS::IAM::Role',
+        pccsdlctestdefaulttestsdlcexampleeduC912A0B0: {
+            Type: 'AWS::CertificateManager::Certificate',
             Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                { Ref: 'AWS::Partition' },
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'sdlc' }
-                ]
-            }
-        },
-        pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRoleDefaultPolicyD40D1EA4: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'acm:RequestCertificate',
-                                'acm:DescribeCertificate',
-                                'acm:DeleteCertificate',
-                                'acm:AddTagsToCertificate'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:GetChange',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:changeResourceRecordSets',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':route53:::hostedzone/DUMMY'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRoleDefaultPolicyD40D1EA4',
-                Roles: [
-                    {
-                        Ref: 'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRole6433EA0B'
-                    }
-                ]
-            }
-        },
-        pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunction52773115: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRole6433EA0B',
-                        'Arn'
-                    ]
-                },
-                Handler: 'index.certificateRequestHandler',
-                Runtime: 'nodejs14.x',
-                Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'sdlc' }
-                ],
-                Timeout: 900
-            },
-            DependsOn: [
-                'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRoleDefaultPolicyD40D1EA4',
-                'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunctionServiceRole6433EA0B'
-            ]
-        },
-        pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorResource19802A88: {
-            Type: 'AWS::CloudFormation::CustomResource',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorFunction52773115',
-                        'Arn'
-                    ]
-                },
                 DomainName: 'test.sdlc.example.edu',
-                HostedZoneId: 'DUMMY',
-                Region: 'us-east-1',
-                CleanupRecords: 'true',
-                Tags: { App: 'test', College: 'PCC', Environment: 'sdlc' }
+                DomainValidationOptions: [
+                    {
+                        DomainName: 'test.sdlc.example.edu',
+                        HostedZoneId: 'DUMMY'
+                    }
+                ],
+                Tags: [
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' },
+                    {
+                        Key: 'Name',
+                        Value: 'pcc-shared-test/pcc-sdlc-test-stage/pcc-sdlc-test/pcc-sdlc-test-default-test.sdlc.example.edu'
+                    }
+                ],
+                ValidationMethod: 'DNS'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -404,123 +306,26 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
-        pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRole663011D6: {
-            Type: 'AWS::IAM::Role',
+        pccsdlctestlocaltestsdlcexampleeduCD22174F: {
+            Type: 'AWS::CertificateManager::Certificate',
             Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                { Ref: 'AWS::Partition' },
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'sdlc' }
-                ]
-            }
-        },
-        pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRoleDefaultPolicy2264B181: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'acm:RequestCertificate',
-                                'acm:DescribeCertificate',
-                                'acm:DeleteCertificate',
-                                'acm:AddTagsToCertificate'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:GetChange',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:changeResourceRecordSets',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':route53:::hostedzone/DUMMY'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRoleDefaultPolicy2264B181',
-                Roles: [
-                    {
-                        Ref: 'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRole663011D6'
-                    }
-                ]
-            }
-        },
-        pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionB1E51451: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRole663011D6',
-                        'Arn'
-                    ]
-                },
-                Handler: 'index.certificateRequestHandler',
-                Runtime: 'nodejs14.x',
-                Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'sdlc' }
-                ],
-                Timeout: 900
-            },
-            DependsOn: [
-                'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRoleDefaultPolicy2264B181',
-                'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionServiceRole663011D6'
-            ]
-        },
-        pccsdlctesttestsdlcexampleedudefaultCertificateRequestorResource9147F058: {
-            Type: 'AWS::CloudFormation::CustomResource',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorFunctionB1E51451',
-                        'Arn'
-                    ]
-                },
                 DomainName: 'test.sdlc.example.edu',
-                HostedZoneId: 'DUMMY',
-                CleanupRecords: 'true',
-                Tags: { App: 'test', College: 'PCC', Environment: 'sdlc' }
+                DomainValidationOptions: [
+                    {
+                        DomainName: 'test.sdlc.example.edu',
+                        HostedZoneId: 'DUMMY'
+                    }
+                ],
+                Tags: [
+                    { Key: 'App', Value: 'test' },
+                    { Key: 'College', Value: 'PCC' },
+                    { Key: 'Environment', Value: 'sdlc' },
+                    {
+                        Key: 'Name',
+                        Value: 'pcc-shared-test/pcc-sdlc-test-stage/pcc-sdlc-test/pcc-sdlc-test-local-test.sdlc.example.edu'
+                    }
+                ],
+                ValidationMethod: 'DNS'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -765,12 +570,7 @@ module.exports = {
             Properties: {
                 DomainName: 'test.sdlc.example.edu',
                 EndpointConfiguration: { Types: [ 'REGIONAL' ] },
-                RegionalCertificateArn: {
-                    'Fn::GetAtt': [
-                        'pccsdlctesttestsdlcexampleedudefaultCertificateRequestorResource9147F058',
-                        'Arn'
-                    ]
-                },
+                RegionalCertificateArn: { Ref: 'pccsdlctestlocaltestsdlcexampleeduCD22174F' },
                 Tags: [
                     { Key: 'App', Value: 'test' },
                     { Key: 'College', Value: 'PCC' },
@@ -1493,12 +1293,7 @@ module.exports = {
                         }
                     },
                     ViewerCertificate: {
-                        AcmCertificateArn: {
-                            'Fn::GetAtt': [
-                                'pccsdlctesttestsdlcexampleeduuseast1CertificateRequestorResource19802A88',
-                                'Arn'
-                            ]
-                        },
+                        AcmCertificateArn: { Ref: 'pccsdlctestdefaulttestsdlcexampleeduC912A0B0' },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
                     },

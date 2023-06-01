@@ -1,113 +1,13 @@
 const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
-        certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82: {
-            Type: 'AWS::IAM::Role',
+        certfoobarcom430629AB: {
+            Type: 'AWS::CertificateManager::Certificate',
             Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'acm:RequestCertificate',
-                                'acm:DescribeCertificate',
-                                'acm:DeleteCertificate',
-                                'acm:AddTagsToCertificate'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:GetChange',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:changeResourceRecordSets',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        {Ref: 'AWS::Partition'},
-                                        ':route53:::hostedzone/DUMMY'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
-                Roles: [
-                    {
-                        Ref: 'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
-                    }
-                ]
-            }
-        },
-        certfoobarcomuseast1CertificateRequestorFunction2C565E6C: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82',
-                        'Arn'
-                    ]
-                },
-                Handler: 'index.certificateRequestHandler',
-                Runtime: 'nodejs14.x',
-                Timeout: 900
-            },
-            DependsOn: [
-                'certfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy99C07B55',
-                'certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82'
-            ]
-        },
-        certfoobarcomuseast1CertificateRequestorResourceC3ACAF62: {
-            Type: 'AWS::CloudFormation::CustomResource',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'certfoobarcomuseast1CertificateRequestorFunction2C565E6C',
-                        'Arn'
-                    ]
-                },
                 DomainName: 'foo.bar.com',
-                HostedZoneId: 'DUMMY',
-                Region: 'us-east-1',
-                CleanupRecords: 'true'
+                DomainValidationOptions: [ { DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY' } ],
+                Tags: [ { Key: 'Name', Value: 'stack/cert-foo.bar.com' } ],
+                ValidationMethod: 'DNS'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -406,12 +306,7 @@ module.exports = {
                         }
                     },
                     ViewerCertificate: {
-                        AcmCertificateArn: {
-                            'Fn::GetAtt': [
-                                'certfoobarcomuseast1CertificateRequestorResourceC3ACAF62',
-                                'Arn'
-                            ]
-                        },
+                        AcmCertificateArn: { Ref: 'certfoobarcom430629AB' },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
                     }

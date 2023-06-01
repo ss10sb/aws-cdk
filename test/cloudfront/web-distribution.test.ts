@@ -27,7 +27,7 @@ describe('cloud web distribution', () => {
         const stack = new Stack(app, 'stack', stackProps);
         const vpc = VpcHelper.getVpcById(stack, 'vpc123');
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
@@ -54,7 +54,7 @@ describe('cloud web distribution', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
@@ -84,7 +84,7 @@ describe('cloud web distribution', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
@@ -114,7 +114,7 @@ describe('cloud web distribution', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
@@ -141,7 +141,7 @@ describe('cloud web distribution', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
@@ -168,7 +168,7 @@ describe('cloud web distribution', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
@@ -199,7 +199,7 @@ describe('cloud web distribution', () => {
         const stackProps = {env: {region: 'us-west-2', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),

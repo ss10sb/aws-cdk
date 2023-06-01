@@ -185,112 +185,13 @@ describe('php lambda rest api', () => {
                         'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
                     ]
                 },
-                certtestfooedudefaultCertificateRequestorFunctionServiceRoleCEA69D50: {
-                    Type: 'AWS::IAM::Role',
+                certtestfooeduD0B35127: {
+                    Type: 'AWS::CertificateManager::Certificate',
                     Properties: {
-                        AssumeRolePolicyDocument: {
-                            Statement: [
-                                {
-                                    Action: 'sts:AssumeRole',
-                                    Effect: 'Allow',
-                                    Principal: { Service: 'lambda.amazonaws.com' }
-                                }
-                            ],
-                            Version: '2012-10-17'
-                        },
-                        ManagedPolicyArns: [
-                            {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                                    ]
-                                ]
-                            }
-                        ]
-                    }
-                },
-                certtestfooedudefaultCertificateRequestorFunctionServiceRoleDefaultPolicy4C0435FB: {
-                    Type: 'AWS::IAM::Policy',
-                    Properties: {
-                        PolicyDocument: {
-                            Statement: [
-                                {
-                                    Action: [
-                                        'acm:RequestCertificate',
-                                        'acm:DescribeCertificate',
-                                        'acm:DeleteCertificate',
-                                        'acm:AddTagsToCertificate'
-                                    ],
-                                    Effect: 'Allow',
-                                    Resource: '*'
-                                },
-                                {
-                                    Action: 'route53:GetChange',
-                                    Effect: 'Allow',
-                                    Resource: '*'
-                                },
-                                {
-                                    Action: 'route53:changeResourceRecordSets',
-                                    Effect: 'Allow',
-                                    Resource: {
-                                        'Fn::Join': [
-                                            '',
-                                            [
-                                                'arn:',
-                                                { Ref: 'AWS::Partition' },
-                                                ':route53:::hostedzone/DUMMY'
-                                            ]
-                                        ]
-                                    }
-                                }
-                            ],
-                            Version: '2012-10-17'
-                        },
-                        PolicyName: 'certtestfooedudefaultCertificateRequestorFunctionServiceRoleDefaultPolicy4C0435FB',
-                        Roles: [
-                            {
-                                Ref: 'certtestfooedudefaultCertificateRequestorFunctionServiceRoleCEA69D50'
-                            }
-                        ]
-                    }
-                },
-                certtestfooedudefaultCertificateRequestorFunction5D0DB2DF: {
-                    Type: 'AWS::Lambda::Function',
-                    Properties: {
-                        Code: {
-                            S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: MatchHelper.endsWith('zip')
-                        },
-                        Role: {
-                            'Fn::GetAtt': [
-                                'certtestfooedudefaultCertificateRequestorFunctionServiceRoleCEA69D50',
-                                'Arn'
-                            ]
-                        },
-                        Handler: 'index.certificateRequestHandler',
-                        Runtime: 'nodejs14.x',
-                        Timeout: 900
-                    },
-                    DependsOn: [
-                        'certtestfooedudefaultCertificateRequestorFunctionServiceRoleDefaultPolicy4C0435FB',
-                        'certtestfooedudefaultCertificateRequestorFunctionServiceRoleCEA69D50'
-                    ]
-                },
-                certtestfooedudefaultCertificateRequestorResource7A684C11: {
-                    Type: 'AWS::CloudFormation::CustomResource',
-                    Properties: {
-                        ServiceToken: {
-                            'Fn::GetAtt': [
-                                'certtestfooedudefaultCertificateRequestorFunction5D0DB2DF',
-                                'Arn'
-                            ]
-                        },
                         DomainName: 'test.foo.edu',
-                        HostedZoneId: 'DUMMY',
-                        CleanupRecords: 'true'
+                        DomainValidationOptions: [ { DomainName: 'test.foo.edu', HostedZoneId: 'DUMMY' } ],
+                        Tags: [ { Key: 'Name', Value: 'stack/cert-test.foo.edu' } ],
+                        ValidationMethod: 'DNS'
                     },
                     UpdateReplacePolicy: 'Delete',
                     DeletionPolicy: 'Delete'
@@ -437,12 +338,7 @@ describe('php lambda rest api', () => {
                     Properties: {
                         DomainName: 'test.foo.edu',
                         EndpointConfiguration: { Types: [ 'REGIONAL' ] },
-                        RegionalCertificateArn: {
-                            'Fn::GetAtt': [
-                                'certtestfooedudefaultCertificateRequestorResource7A684C11',
-                                'Arn'
-                            ]
-                        }
+                        RegionalCertificateArn: { Ref: 'certtestfooeduD0B35127' }
                     }
                 },
                 lambdarestapirestapiCustomDomainMapstacklambdarestapirestapi0757661F11D53B0D: {

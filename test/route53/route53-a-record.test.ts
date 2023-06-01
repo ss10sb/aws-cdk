@@ -87,7 +87,7 @@ describe('route53 a record', () => {
         const app = new App();
         const stack = new Stack(app, 'stack', stackProps);
         const cert = new AcmCertificate(stack, 'cert');
-        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com', region: 'us-east-1'});
+        const c = cert.create({domainName: 'foo.bar.com', hostedZone: 'bar.com'});
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),

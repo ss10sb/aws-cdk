@@ -31,7 +31,7 @@ import {NamingHelper} from "../utils/naming-helper";
 import {SesVerifyDomain} from "../ses/ses-verify-domain";
 import {Route53Helper} from "../utils/route53-helper";
 import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certificate";
-import {DnsValidatedCertificate} from "aws-cdk-lib/aws-certificatemanager";
+import {Certificate} from "aws-cdk-lib/aws-certificatemanager";
 import {EmailIdentity} from "aws-cdk-lib/aws-ses";
 import {DkimIdentity} from "../ses/dkim-identity";
 
@@ -117,7 +117,7 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
         }
     }
 
-    protected createListenerCertificates(certificates: DnsValidatedCertificate[]): ApplicationListenerCertificate | undefined {
+    protected createListenerCertificates(certificates: Certificate[]): ApplicationListenerCertificate | undefined {
         if (this.lookups.albListener && certificates.length > 0) {
             return new ApplicationListenerCertificate(this, this.mixNameWithId('listener-certificates'), {
                 listener: this.lookups.albListener,
@@ -126,15 +126,15 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
         }
     }
 
-    protected createCertificates(): DnsValidatedCertificate[] {
-        const certificates: DnsValidatedCertificate[] = [];
+    protected createCertificates(): Certificate[] {
+        const certificates: Certificate[] = [];
         for (const certProps of this.config.Parameters.certificates ?? []) {
             certificates.push(this.createCertificate(certProps));
         }
         return certificates;
     }
 
-    protected createCertificate(props: DnsValidatedCertificateProps): DnsValidatedCertificate {
+    protected createCertificate(props: DnsValidatedCertificateProps): Certificate {
         const certFactory = new AcmCertificate(this, this.node.id);
         return certFactory.create(props);
     }

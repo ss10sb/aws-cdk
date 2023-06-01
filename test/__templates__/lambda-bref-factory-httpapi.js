@@ -1,113 +1,15 @@
 const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
-        myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848: {
-            Type: 'AWS::IAM::Role',
+        myappdefaultfoobarcom221C8B61: {
+            Type: 'AWS::CertificateManager::Certificate',
             Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy0FB0BFF9: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'acm:RequestCertificate',
-                                'acm:DescribeCertificate',
-                                'acm:DeleteCertificate',
-                                'acm:AddTagsToCertificate'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:GetChange',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:changeResourceRecordSets',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        {Ref: 'AWS::Partition'},
-                                        ':route53:::hostedzone/DUMMY'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy0FB0BFF9',
-                Roles: [
-                    {
-                        Ref: 'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848'
-                    }
-                ]
-            }
-        },
-        myappfoobarcomuseast1CertificateRequestorFunctionEC985F99: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848',
-                        'Arn'
-                    ]
-                },
-                Handler: 'index.certificateRequestHandler',
-                Runtime: 'nodejs14.x',
-                Timeout: 900
-            },
-            DependsOn: [
-                'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleDefaultPolicy0FB0BFF9',
-                'myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848'
-            ]
-        },
-        myappfoobarcomuseast1CertificateRequestorResource3662DFC0: {
-            Type: 'AWS::CloudFormation::CustomResource',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'myappfoobarcomuseast1CertificateRequestorFunctionEC985F99',
-                        'Arn'
-                    ]
-                },
                 DomainName: 'foo.bar.com',
-                HostedZoneId: 'DUMMY',
-                Region: 'us-east-1',
-                CleanupRecords: 'true'
+                DomainValidationOptions: [ { DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY' } ],
+                Tags: [
+                    { Key: 'Name', Value: 'stack/my-app-default-foo.bar.com' }
+                ],
+                ValidationMethod: 'DNS'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -254,112 +156,13 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
-        myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489: {
-            Type: 'AWS::IAM::Role',
+        myapplocalfoobarcom8042E6FE: {
+            Type: 'AWS::CertificateManager::Certificate',
             Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleDefaultPolicy34FF517E: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'acm:RequestCertificate',
-                                'acm:DescribeCertificate',
-                                'acm:DeleteCertificate',
-                                'acm:AddTagsToCertificate'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:GetChange',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: 'route53:changeResourceRecordSets',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        {Ref: 'AWS::Partition'},
-                                        ':route53:::hostedzone/DUMMY'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleDefaultPolicy34FF517E',
-                Roles: [
-                    {
-                        Ref: 'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489'
-                    }
-                ]
-            }
-        },
-        myappfoobarcomdefaultCertificateRequestorFunctionFAF97FED: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489',
-                        'Arn'
-                    ]
-                },
-                Handler: 'index.certificateRequestHandler',
-                Runtime: 'nodejs14.x',
-                Timeout: 900
-            },
-            DependsOn: [
-                'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleDefaultPolicy34FF517E',
-                'myappfoobarcomdefaultCertificateRequestorFunctionServiceRoleE779F489'
-            ]
-        },
-        myappfoobarcomdefaultCertificateRequestorResource1A22308B: {
-            Type: 'AWS::CloudFormation::CustomResource',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'myappfoobarcomdefaultCertificateRequestorFunctionFAF97FED',
-                        'Arn'
-                    ]
-                },
                 DomainName: 'foo.bar.com',
-                HostedZoneId: 'DUMMY',
-                CleanupRecords: 'true'
+                DomainValidationOptions: [ { DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY' } ],
+                Tags: [ { Key: 'Name', Value: 'stack/my-app-local-foo.bar.com' } ],
+                ValidationMethod: 'DNS'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -433,12 +236,7 @@ module.exports = {
                 DomainName: 'foo.bar.com',
                 DomainNameConfigurations: [
                     {
-                        CertificateArn: {
-                            'Fn::GetAtt': [
-                                'myappfoobarcomdefaultCertificateRequestorResource1A22308B',
-                                'Arn'
-                            ]
-                        },
+                        CertificateArn: { Ref: 'myapplocalfoobarcom8042E6FE' },
                         EndpointType: 'REGIONAL'
                     }
                 ]
@@ -654,12 +452,7 @@ module.exports = {
                     ],
                     PriceClass: 'PriceClass_100',
                     ViewerCertificate: {
-                        AcmCertificateArn: {
-                            'Fn::GetAtt': [
-                                'myappfoobarcomuseast1CertificateRequestorResource3662DFC0',
-                                'Arn'
-                            ]
-                        },
+                        AcmCertificateArn: { Ref: 'myappdefaultfoobarcom221C8B61' },
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
                     }

@@ -1,26 +1,25 @@
-import {CertificateValidation, DnsValidatedCertificate} from "aws-cdk-lib/aws-certificatemanager";
+import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager";
 import {HostedZone, IHostedZone} from "aws-cdk-lib/aws-route53";
 import {NonConstruct} from "../core/non-construct";
 import {Route53Helper} from "../utils/route53-helper";
+import {RemovalPolicy} from "aws-cdk-lib";
 
 export interface DnsValidatedCertificateProps {
     domainName: string;
     hostedZone: string | IHostedZone;
-    region?: string;
 }
 
 export class AcmCertificate extends NonConstruct {
 
-    create(props: DnsValidatedCertificateProps): DnsValidatedCertificate {
-        const name = this.mixNameWithId(`${props.domainName}-${props.region ?? 'default'}`);
+    create(props: DnsValidatedCertificateProps): Certificate {
+        const name = this.mixNameWithId(`${props.domainName}`);
         const hostedZone = this.getHostedZone(props.hostedZone);
-        return new DnsValidatedCertificate(this.scope, name, {
+        const cert = new Certificate(this.scope, name, {
             domainName: props.domainName,
-            hostedZone: hostedZone,
-            region: props.region,
             validation: CertificateValidation.fromDns(hostedZone),
-            cleanupRoute53Records: true
         });
+        cert.applyRemovalPolicy(RemovalPolicy.DESTROY);
+        return cert;
     }
 
     protected getHostedZone(hostedZone: string | IHostedZone): IHostedZone {

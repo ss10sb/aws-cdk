@@ -98,8 +98,8 @@ export class BrefDistribution extends NonConstruct {
         }
     }
 
-    protected createCertificate(props: DnsValidatedCertificateProps): ICertificate {
-        const cert = new AcmCertificate(this.scope, this.id);
+    protected createCertificate(props: DnsValidatedCertificateProps, suffix: string = 'default'): ICertificate {
+        const cert = new AcmCertificate(this.scope, `${this.id}-${suffix}`);
         return cert.create(props);
     }
 
@@ -113,12 +113,11 @@ export class BrefDistribution extends NonConstruct {
         const localCertificate = this.createCertificate({
             domainName: props.certificateProps.domainName,
             hostedZone: props.certificateProps.hostedZone
-        })
+        }, 'local');
         props.apiProps.domainNameOptions = {
             domainName: props.certificateProps.domainName,
             certificate: localCertificate
         };
-        ;
         props.apiProps.baseDomainName = props.certificateProps.domainName;
         props.apiProps.hostedZone = props.certificateProps.hostedZone;
         const apiCreator = new PhpApiFactory(this.scope, this.id);

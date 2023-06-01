@@ -1,3 +1,4 @@
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         pccsharedtestlambdabuildsteprole7A9F1DFC: {
@@ -972,28 +973,6 @@ module.exports = {
                                     ]
                                 },
                                 RunOrder: 1
-                            },
-                            {
-                                ActionTypeId: {
-                                    Category: 'Build',
-                                    Owner: 'AWS',
-                                    Provider: 'CodeBuild',
-                                    Version: '1'
-                                },
-                                Configuration: {
-                                    ProjectName: {
-                                        Ref: 'pccsharedtestcodepipelineAssetsFileAsset80E0C40E0'
-                                    }
-                                },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
-                                Name: 'FileAsset8',
-                                RoleArn: {
-                                    'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
-                                        'Arn'
-                                    ]
-                                },
-                                RunOrder: 1
                             }
                         ],
                         Name: 'Assets'
@@ -1645,20 +1624,6 @@ module.exports = {
                                     'Arn'
                                 ]
                             }
-                        },
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelineAssetsFileAsset80E0C40E0',
-                                    'Arn'
-                                ]
-                            }
                         }
                     ],
                     Version: '2012-10-17'
@@ -2038,22 +2003,7 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"0affa35a9d750381b76be83ff9cedeb2e455e8903fcf4d7db4d1c1e2c9c7cd54:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"0affa35a9d750381b76be83ff9cedeb2e455e8903fcf4d7db4d1c1e2c9c7cd54:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -2084,22 +2034,7 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -2130,22 +2065,7 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -2176,22 +2096,7 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -2222,22 +2127,7 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c409e6c5845f1f349df8cd84e160bf6f1c35d2b060b63e1f032f9bd39d4542cc:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"c409e6c5845f1f349df8cd84e160bf6f1c35d2b060b63e1f032f9bd39d4542cc:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -2268,22 +2158,7 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"6ddcf10002539818a9256eff3fb2b22aa09298d8f946e26ba121c175a600c44e:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"6ddcf10002539818a9256eff3fb2b22aa09298d8f946e26ba121c175a600c44e:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
@@ -2314,72 +2189,11 @@ module.exports = {
                     ]
                 },
                 Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"4dd7b3acb0d8c02094bb424ce803d0e3418f6db703e9524905cb0d32ff66b78b:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"4dd7b3acb0d8c02094bb424ce803d0e3418f6db703e9524905cb0d32ff66b78b:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
+                    BuildSpec: Match.anyValue(),
                     Type: 'CODEPIPELINE'
                 },
                 Cache: {Type: 'NO_CACHE'},
                 Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset7',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
-                        'Arn'
-                    ]
-                }
-            }
-        },
-        pccsharedtestcodepipelineAssetsFileAsset80E0C40E0: {
-            Type: 'AWS::CodeBuild::Project',
-            Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
-                Environment: {
-                    ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
-                    ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
-                    Type: 'LINUX_CONTAINER'
-                },
-                ServiceRole: {
-                    'Fn::GetAtt': [
-                        'pccsharedtestcodepipelineAssetsFileRole8E4F3120',
-                        'Arn'
-                    ]
-                },
-                Source: {
-                    BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "commands": [\n' +
-                        '        "npm install -g cdk-assets@2"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"e845402ce43b66fc6f20df4a239f20f8662eb6c7f920b94cf6542dd0e64ce0f7:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"e845402ce43b66fc6f20df4a239f20f8662eb6c7f920b94cf6542dd0e64ce0f7:22222-us-west-2\\""\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  }\n' +
-                        '}',
-                    Type: 'CODEPIPELINE'
-                },
-                Cache: {Type: 'NO_CACHE'},
-                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset8',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',

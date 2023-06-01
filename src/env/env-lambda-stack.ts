@@ -128,8 +128,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         distConfigProps.apiProps.alarmEmails = this.config.Parameters.alarmEmails ?? [];
         distConfigProps.certificateProps = {
             domainName: `${this.config.Parameters.subdomain}.${this.config.Parameters.hostedZoneDomain}`,
-            hostedZone: this.config.Parameters.hostedZoneDomain,
-            region: this.config.Parameters.certificateRegion ?? 'us-east-1'
+            hostedZone: this.config.Parameters.hostedZoneDomain
         }
         return brefFactory.create(distConfigProps);
     }
