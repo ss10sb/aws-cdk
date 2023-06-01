@@ -280,9 +280,12 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                RoleName: 'pccsharedstackpccsdlcmyapdefexecutionrolef9c314234098b2c4e8ec',
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pccsharedstackpccsdlcmyapp6F659917_c8d405c8da7563e75c62ee4e93b91a3deb6ceb6bc1'
+                },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
                 ]

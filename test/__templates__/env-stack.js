@@ -459,7 +459,8 @@ module.exports = {
                     { Key: 'App', Value: 'myapp' },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
-                ]
+              ],
+              TimeToLiveSpecification: { AttributeName: 'expires_at', Enabled: true }
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -637,9 +638,12 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                RoleName: 'pccsharedstackpccsdlcmyapruntask0execrole6e82a3c5be0c01402fdc',
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pccsharedstackpccsdlcmyapp6F659917_c856c2ef5b0172b86642b91b080020701469b14837'
+                },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
                 ]
@@ -1057,9 +1061,12 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                RoleName: 'pccsharedstackpccsdlcmyapruntask0execrole73af5f4b9dfb869222db',
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pccsharedstackpccsdlcmyapp6F659917_c8959b656f5a3541926f4380f71919d9232e9e2ece'
+                },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
                 ]
@@ -1498,9 +1505,12 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                RoleName: 'pccsharedstackpccsdlcmyapledtask0execrole4daf8ab8b44fa0163f53',
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pccsharedstackpccsdlcmyapp6F659917_c8123df86de9aa7f08137c98c6c5d84f0ce6535dd2'
+                },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
                 ]
@@ -1984,9 +1994,12 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                RoleName: 'pccsharedstackpccsdlcmyapkdefweb0execrole0b98dea745592a0c944b',
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pccsharedstackpccsdlcmyapp6F659917_c8c2883eedf18aff6d7bb3e69c33e4acc1c5472efa'
+                },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
                 ]
@@ -2519,7 +2532,7 @@ module.exports = {
                         'GroupId'
                     ]
                 },
-                SourceSecurityGroupId: 'sg-12345',
+              SourceSecurityGroupId: 'sg-12345678',
                 ToPort: 80
             }
         },
@@ -2833,9 +2846,12 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                RoleName: 'pccsharedstackpccsdlcmyapdefexecutionrolef9c314234098b2c4e8ec',
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pccsharedstackpccsdlcmyapp6F659917_c8d405c8da7563e75c62ee4e93b91a3deb6ceb6bc1'
+                },
                     { Key: 'College', Value: 'PCC' },
                     { Key: 'Environment', Value: 'sdlc' }
                 ]
