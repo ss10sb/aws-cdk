@@ -315,8 +315,7 @@ describe('ecs standard service factory', () => {
                                 },
                                 Memory: 64,
                                 Name: 'container-container-nginx-web-u-0',
-                                PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
-                                Secrets: []
+                                PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}]
                             },
                             {
                                 Cpu: 128,
@@ -366,8 +365,7 @@ describe('ecs standard service factory', () => {
                                 },
                                 Memory: 128,
                                 Name: 'container-container-phpfpm-web-u-0',
-                                PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
-                                Secrets: []
+                                PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}]
                             }
                         ],
                         Cpu: '256',

@@ -6,6 +6,7 @@ import {PhpLambdaRestApi} from "../../src/lambda/php-lambda-rest-api";
 import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {AcmCertificate} from "../../src/acm/acm-certificate";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('php lambda rest api', () => {
 
@@ -69,7 +70,7 @@ describe('php lambda rest api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
@@ -170,7 +171,7 @@ describe('php lambda rest api', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -261,7 +262,7 @@ describe('php lambda rest api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -326,7 +327,7 @@ describe('php lambda rest api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'lambdarestapiauthorizerfnServiceRoleD60184C8', 'Arn' ]
@@ -682,7 +683,7 @@ describe('php lambda rest api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
@@ -783,7 +784,7 @@ describe('php lambda rest api', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [

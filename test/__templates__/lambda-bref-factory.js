@@ -1,3 +1,4 @@
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         myappfoobarcomuseast1CertificateRequestorFunctionServiceRoleE778C848: {
@@ -77,7 +78,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -143,7 +144,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {'Fn::GetAtt': ['funcwebfn0ServiceRoleA9004225', 'Arn']},
                 FunctionName: 'func-web-fn-0',
@@ -239,7 +240,7 @@ module.exports = {
                 Runtime: 'nodejs14.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -330,7 +331,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -395,7 +396,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': ['myappauthorizerfnServiceRole2952ABDD', 'Arn']

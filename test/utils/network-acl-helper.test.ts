@@ -136,7 +136,7 @@ describe('network acl helper', () => {
             {
                 groupName: 'private',
                 subnetSelection: {
-                    subnetType: SubnetType.PRIVATE_WITH_NAT
+                    subnetType: SubnetType.PRIVATE_WITH_EGRESS
                 },
                 rules: [
                     {

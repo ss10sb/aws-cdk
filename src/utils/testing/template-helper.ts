@@ -1,5 +1,6 @@
 import {Match, Template} from "aws-cdk-lib/assertions";
 import * as util from "util";
+import {MatchHelper} from "./match-helper";
 
 export interface TemplateHelperExpected {
     key?: string;
@@ -57,8 +58,12 @@ export class TemplateHelper {
         console.log(key, util.inspect(obj, {depth: null, colors: true}));
     }
 
+    endsWithMatch(key: string) {
+        return MatchHelper.endsWith(key);
+    }
+
     startsWithMatch(key: string) {
-        return Match.stringLikeRegexp(`^${key}.*`);
+        return MatchHelper.startsWith(key);
     }
 
     startsWithRegex(key: string) {

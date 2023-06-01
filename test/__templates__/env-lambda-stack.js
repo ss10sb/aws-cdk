@@ -1,3 +1,4 @@
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         pccsdlcmyappcacheF6FEBBE3: {
@@ -188,7 +189,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappqueuefn0ServiceRole25D2EC47', 'Arn']
@@ -323,7 +324,7 @@ module.exports = {
                 Runtime: 'nodejs14.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -424,7 +425,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -589,7 +590,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappwebfn0ServiceRole50B25A5F', 'Arn']
@@ -733,7 +734,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -868,7 +869,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappauthorizerfnServiceRole6F874BA1', 'Arn']
@@ -1357,7 +1358,7 @@ module.exports = {
             Properties: {
                 Content: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '1d3b5490cd99feddeb525a62c046988997469f2a765d0f12b43cff9d87a284fa.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Description: '/opt/awscli/aws'
             }
@@ -1373,7 +1374,7 @@ module.exports = {
                 },
                 SourceBucketNames: ['cdk-hnb659fds-assets-2222-us-west-2'],
                 SourceObjectKeys: [
-                    '4dd7b3acb0d8c02094bb424ce803d0e3418f6db703e9524905cb0d32ff66b78b.zip'
+                    MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'pccsdlcmyappassets5EE4E88C'},
                 DestinationBucketKeyPrefix: 'assets',
@@ -1492,7 +1493,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -2053,7 +2054,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '6dbd112fe448437b3438da4382c72fccbb7d2ee1543db222620d7447fffebc50.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [

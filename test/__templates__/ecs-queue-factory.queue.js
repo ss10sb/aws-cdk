@@ -149,8 +149,7 @@ module.exports = {
                                 'awslogs-region': 'us-east-1'
                             }
                         },
-                        Name: 'QueueProcessingContainer',
-                        Secrets: []
+                        Name: 'QueueProcessingContainer'
                     }
                 ],
                 Cpu: '256',

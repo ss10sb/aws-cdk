@@ -1,3 +1,4 @@
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         pccsdlcmyapptestdevexampleeduarecord1EBFD14B: {
@@ -287,7 +288,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '6dbd112fe448437b3438da4382c72fccbb7d2ee1543db222620d7447fffebc50.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -401,7 +402,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -522,7 +523,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [

@@ -13,7 +13,7 @@ describe('dynamodb table create', () => {
         dynamodb.create('foo', {});
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::DynamoDB::Table',  [
+        templateHelper.expected('AWS::DynamoDB::Table', [
             {
                 key: 'dynamodbfoo',
                 properties: Match.objectEquals({
@@ -23,7 +23,11 @@ describe('dynamodb table create', () => {
                         AttributeDefinitions: [{AttributeName: 'key', AttributeType: 'S'}],
                         BillingMode: 'PAY_PER_REQUEST',
                         SSESpecification: {SSEEnabled: true},
-                        TableName: 'dynamodb-foo'
+                        TableName: 'dynamodb-foo',
+                        TimeToLiveSpecification: {
+                            AttributeName: 'expires_at',
+                            Enabled: true
+                        }
                     },
                     UpdateReplacePolicy: 'Delete',
                     DeletionPolicy: 'Delete'

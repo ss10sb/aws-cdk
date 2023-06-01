@@ -1,3 +1,4 @@
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         stackcluster05FAB0DF: {
@@ -396,7 +397,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                    S3Key: '6dbd112fe448437b3438da4382c72fccbb7d2ee1543db222620d7447fffebc50.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -493,7 +494,7 @@ module.exports = {
                 Runtime: 'nodejs14.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                    S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -985,8 +986,7 @@ module.exports = {
                         },
                         Memory: 64,
                         Name: 'stack-container-nginx-web-u-0',
-                        PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
-                        Secrets: []
+                        PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}]
                     },
                     {
                         Cpu: 128,

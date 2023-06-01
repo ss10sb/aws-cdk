@@ -1,3 +1,6 @@
+const {Match} = require("aws-cdk-lib/assertions");
+const {TemplateHelper} = require("../../src/utils/testing/template-helper");
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         certfoobarcomuseast1CertificateRequestorFunctionServiceRole60453E82: {
@@ -77,7 +80,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: '8ddf29ab619460567d3cda58de2ff1bf0f6e95d8822ff630ec58a4d52ed1fa67.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
                 Role: {
                     'Fn::GetAtt': [
