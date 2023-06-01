@@ -2,6 +2,7 @@ import {App, Stack} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {SesVerifyDomain} from "../../src/ses/ses-verify-domain";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('ses verify domain', () => {
 
@@ -192,7 +193,7 @@ describe('ses verify domain', () => {
         template.hasResourceProperties('AWS::Lambda::Function', Match.objectEquals({
             "Code": {
                 "S3Bucket": "cdk-hnb659fds-assets-12344-us-east-1",
-                "S3Key": Match.stringLikeRegexp("^.*\.zip")
+                "S3Key": MatchHelper.endsWith('zip')
             },
             "Role": {
                 "Fn::GetAtt": [

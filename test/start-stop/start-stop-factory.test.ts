@@ -5,6 +5,7 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {VpcHelper} from "../../src/utils/vpc-helper";
 import {StartStopFactory} from "../../src/start-stop/start-stop-factory";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('start stop factory', () => {
 
@@ -103,7 +104,7 @@ describe('start stop factory', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('^.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ templateHelper.startsWithMatch('stackstartstopfnServiceRole'), 'Arn' ]
@@ -129,7 +130,7 @@ describe('start stop factory', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('^.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -373,7 +374,7 @@ describe('start stop factory', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('^.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ templateHelper.startsWithMatch('stackstartstopfnServiceRole'), 'Arn' ]
@@ -399,7 +400,7 @@ describe('start stop factory', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('^.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [

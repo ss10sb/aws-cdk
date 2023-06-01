@@ -1,3 +1,4 @@
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         stacksynthsteproleE441D089: {
@@ -414,7 +415,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'stackcodepipelinePipelineBuildstacksynthstepCdkBuildProject4A3E0A4E'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'stack-synth-step',
@@ -443,7 +444,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'stackcodepipelineUpdatePipelineSelfMutation739BDEE5'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [{Name: 'stack_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -878,7 +879,7 @@ module.exports = {
                 Artifacts: {Type: 'CODEPIPELINE'},
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'

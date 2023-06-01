@@ -40,7 +40,7 @@ export class AlbTargetGroupHealthCheck extends NonConstruct {
     }
 
     private getAlarm(): Alarm {
-        const metric = this.props.targetGroup.metricUnhealthyHostCount({
+        const metric = this.props.targetGroup.metrics.unhealthyHostCount({
             period: Duration.minutes(1),
             statistic: 'Maximum',
         });

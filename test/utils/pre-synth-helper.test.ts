@@ -13,14 +13,14 @@ const clientConfig = {region: 'us-east-1'};
 const mockSsm = mockClient(SSMClient);
 const mockEcr = mockClient(ECRClient);
 
-beforeEach(() => {
-    const staticProvider = new StaticFileProvider();
-    staticProvider.cleanup();
-    mockSsm.reset();
-    mockEcr.reset();
-});
-
 describe('pre synth helper', () => {
+
+    beforeEach(() => {
+        const staticProvider = new StaticFileProvider();
+        staticProvider.cleanup();
+        mockSsm.reset();
+        mockEcr.reset();
+    });
 
     it('should reject when no config can be loaded from ssm', async () => {
         const preSynthHelper = new PreSynthHelper({

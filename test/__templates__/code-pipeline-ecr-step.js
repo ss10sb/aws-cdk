@@ -1,3 +1,4 @@
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         repoBEC318EA: {
@@ -304,7 +305,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"7cd296bac0003a4c4776b050354569b6c09669d39870b1e481ca303d03dd48a4"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'synth',
@@ -330,7 +331,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [ { Name: 'synth_Output' } ],
                                 Name: 'SelfMutate',
@@ -615,7 +616,7 @@ module.exports = {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
@@ -964,7 +965,7 @@ module.exports = {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'

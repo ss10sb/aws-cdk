@@ -750,7 +750,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"cce96ff96d9f4044a3f0c5bc8cd36ec09f3a4b329a5dbfb2f412089f7fa187ab"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-build-step',
@@ -774,7 +774,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_build_step_Output'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -803,7 +803,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"e1765eb88567e2a43e3b39a74a030917b784e3a19c1ec4bd66be7bc3884f9f34"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -1805,7 +1805,7 @@ module.exports = {
                 Artifacts: {Type: 'CODEPIPELINE'},
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
@@ -1993,7 +1993,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2024,7 +2024,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2055,7 +2055,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2086,7 +2086,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2117,7 +2117,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2148,7 +2148,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2179,7 +2179,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {

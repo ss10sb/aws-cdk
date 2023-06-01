@@ -1,3 +1,4 @@
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         nginxecrC430EE7B: {
@@ -720,7 +721,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"520ba5c4fb85f7bf6340862ca7acf42069a21cb84c419f97f0cd6b0c9d09cb2f"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'pcc-shared-test-synth-step',
@@ -749,7 +750,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"77bb2f857c68cb4607273c1f80f54d8fa18a9ff2731535b15ae7b0cae6e29876"}]'
+                                    EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 Name: 'SelfMutate',
@@ -1364,7 +1365,7 @@ module.exports = {
                             Value: 'us-west-2'
                         }
                     ],
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -1469,7 +1470,7 @@ module.exports = {
                             Value: 'us-west-2'
                         }
                     ],
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -1942,7 +1943,7 @@ module.exports = {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:6.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'

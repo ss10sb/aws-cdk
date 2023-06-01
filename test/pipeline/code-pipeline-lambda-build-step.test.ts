@@ -2,7 +2,7 @@ import {App, Stack} from "aws-cdk-lib";
 import {CodePipelineCodestarSource} from "../../src/pipeline/code-pipeline-codestar-source";
 import {CodePipelineLambdaBuildStep} from "../../src/pipeline/code-pipeline-lambda-build-step";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
-import {Template} from "aws-cdk-lib/assertions";
+import {Match, Template} from "aws-cdk-lib/assertions";
 import {CodePipelineSynthStep} from "../../src/pipeline/code-pipeline-synth-step";
 import {EnvBuildType} from "../../src/env/env-definitions";
 import {CodePipelinePipeline, CodePipelinePipelineProps} from "../../src/pipeline/code-pipeline-pipeline";
@@ -607,7 +607,7 @@ describe('code pipeline lambda buid step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"cce96ff96d9f4044a3f0c5bc8cd36ec09f3a4b329a5dbfb2f412089f7fa187ab"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                         Name: 'build-build-step',
@@ -631,7 +631,7 @@ describe('code pipeline lambda buid step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'build_build_step_Output' } ],
                                         Name: 'synth-synth-step',
@@ -660,7 +660,7 @@ describe('code pipeline lambda buid step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'synth_synth_step_Output' } ],
                                         Name: 'SelfMutate',
@@ -1173,7 +1173,7 @@ describe('code pipeline lambda buid step', () => {
                         Artifacts: { Type: 'CODEPIPELINE' },
                         Environment: {
                             ComputeType: 'BUILD_GENERAL1_SMALL',
-                            Image: 'aws/codebuild/standard:5.0',
+                            Image: 'aws/codebuild/standard:6.0',
                             ImagePullCredentialsType: 'CODEBUILD',
                             PrivilegedMode: false,
                             Type: 'LINUX_CONTAINER'

@@ -7,6 +7,7 @@ import {PhpHttpApi} from "../../src/lambda/php-http-api";
 import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {HttpApi} from "@aws-cdk/aws-apigatewayv2-alpha";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('http from http api', () => {
     it('should create http origin from defaults', () => {
@@ -59,7 +60,7 @@ describe('http from http api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                            S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
@@ -160,7 +161,7 @@ describe('http from http api', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                            S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [

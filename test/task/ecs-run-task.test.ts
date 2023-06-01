@@ -5,6 +5,7 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {VpcHelper} from "../../src/utils/vpc-helper";
 import {EcsRunTask} from "../../src/task/ecs-run-task";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 beforeEach(() => {
     resetStaticProps();
@@ -95,7 +96,7 @@ describe('ecs run task', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -121,7 +122,7 @@ describe('ecs run task', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -258,7 +259,7 @@ describe('ecs run task', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -284,7 +285,7 @@ describe('ecs run task', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: Match.stringLikeRegexp('.*\.zip')
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [

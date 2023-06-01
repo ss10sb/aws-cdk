@@ -5,6 +5,7 @@ import {PhpHttpApi} from "../../src/lambda/php-http-api";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {PhpBrefFunction} from "../../src/lambda/php-bref-function";
 import {BrefRuntime} from "../../src/lambda/bref-definitions";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('php http api create', () => {
 
@@ -56,7 +57,7 @@ describe('php http api create', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
@@ -157,7 +158,7 @@ describe('php http api create', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
@@ -291,7 +292,7 @@ describe('php http api create', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'a701d9c4e1414bfb5bdc604564a232c79e82fa1c4186ebc7245836fb15ee2c49.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
@@ -392,7 +393,7 @@ describe('php http api create', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [

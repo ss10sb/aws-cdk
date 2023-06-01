@@ -338,7 +338,7 @@ describe('code pipeline synth step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelinePipelineBuildstacksynthstepCdkBuildProjectE14A3F09'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                         Name: 'stack-synth-step',
@@ -364,7 +364,7 @@ describe('code pipeline synth step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'stack_synth_step_Output' } ],
                                         Name: 'SelfMutate',
@@ -736,7 +736,7 @@ describe('code pipeline synth step', () => {
                         Artifacts: { Type: 'CODEPIPELINE' },
                         Environment: {
                             ComputeType: 'BUILD_GENERAL1_SMALL',
-                            Image: 'aws/codebuild/standard:5.0',
+                            Image: 'aws/codebuild/standard:6.0',
                             ImagePullCredentialsType: 'CODEBUILD',
                             PrivilegedMode: false,
                             Type: 'LINUX_CONTAINER'
@@ -1103,7 +1103,7 @@ describe('code pipeline synth step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelinePipelineBuildstacksynthstepCdkBuildProjectE14A3F09'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                         Name: 'stack-synth-step',
@@ -1129,7 +1129,7 @@ describe('code pipeline synth step', () => {
                                             ProjectName: {
                                                 Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
                                             },
-                                            EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f4a59e7ed10b0fa975a4f986540ee3ad349eb76b014a4739e797e1b321b76160"}]'
+                                            EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                         },
                                         InputArtifacts: [ { Name: 'stack_synth_step_Output' } ],
                                         Name: 'SelfMutate',
@@ -1501,7 +1501,7 @@ describe('code pipeline synth step', () => {
                         Artifacts: { Type: 'CODEPIPELINE' },
                         Environment: {
                             ComputeType: 'BUILD_GENERAL1_SMALL',
-                            Image: 'aws/codebuild/standard:5.0',
+                            Image: 'aws/codebuild/standard:6.0',
                             ImagePullCredentialsType: 'CODEBUILD',
                             PrivilegedMode: false,
                             Type: 'LINUX_CONTAINER'

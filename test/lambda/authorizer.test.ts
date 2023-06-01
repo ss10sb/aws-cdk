@@ -2,6 +2,7 @@ import {App, Stack} from "aws-cdk-lib";
 import {Authorizer} from "../../src/lambda/authorizer";
 import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('authorizer v1', () => {
     it('should create authorizer', () => {
@@ -49,7 +50,7 @@ describe('authorizer v1', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [ 'authorizerauthorizerfnServiceRole5010DDC1', 'Arn' ]
@@ -141,7 +142,7 @@ describe('authorizer v1', () => {
                         Runtime: 'nodejs14.x',
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: 'eb5b005c858404ea0c8f68098ed5dcdf5340e02461f149751d10f59c210d5ef8.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         Role: {
                             'Fn::GetAtt': [
