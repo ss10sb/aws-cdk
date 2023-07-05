@@ -1,5 +1,6 @@
 export enum EcrRepositoryType {
     NGINX = 'nginx',
     PHPFPM = 'phpfpm',
-    CLI = 'cli'
+    CLI = 'cli',
+    GOLANG = 'golang'
 }

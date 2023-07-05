@@ -15,6 +15,15 @@ const baseBuildConfig = {
 
 describe('ecr repositories', () => {
 
+    it('can init new golang repository', () => {
+        const repositories = new EcrRepositories('my-repos', {
+            repositories: [EcrRepositoryType.GOLANG]
+        });
+        expect(repositories.ecrRepositories.length).toEqual(1);
+        expect(repositories.getTagByName(EcrRepositoryType.GOLANG)).toEqual('1');
+        expect(repositories.getByName(EcrRepositoryType.GOLANG).exists).toEqual(false);
+    });
+
     it('can init new repositories', () => {
         const repositories = new EcrRepositories('my-repos', baseBuildConfig.Parameters.repositories);
         expect(repositories.ecrRepositories.length).toEqual(2);
