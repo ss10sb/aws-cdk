@@ -42,7 +42,7 @@ describe('container factory', () => {
         containerFactory.create(TaskServiceType.WEB_SERVICE, td, containerProps);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::IAM::Role',  [
+        templateHelper.expected('AWS::IAM::Role', [
             {
                 key: 'tdTaskRole',
                 properties: Match.objectEquals({
@@ -81,7 +81,7 @@ describe('container factory', () => {
             }
         ]);
         const containerRefMatch = templateHelper.startsWithMatch("phpfpmecr");
-        templateHelper.expected('AWS::ECS::TaskDefinition',  [
+        templateHelper.expected('AWS::ECS::TaskDefinition', [
             {
                 key: 'td',
                 properties: Match.objectEquals({
@@ -149,7 +149,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::IAM::Policy',  [
+        templateHelper.expected('AWS::IAM::Policy', [
             {
                 key: 'tdExecutionRoleDefaultPolicy',
                 properties: Match.objectEquals({
@@ -187,7 +187,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -219,7 +219,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::Logs::LogGroup',  [
+        templateHelper.expected('AWS::Logs::LogGroup', [
             {
                 key: 'containercontainerphpfpmwebu0loggroup',
                 properties: Match.objectEquals({
@@ -230,6 +230,111 @@ describe('container factory', () => {
                     },
                     UpdateReplacePolicy: 'Delete',
                     DeletionPolicy: 'Delete'
+                })
+            }
+        ]);
+    });
+
+    it('should create web service container with extra hosts', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const td = new TaskDefinition(stack, 'td', {
+            compatibility: Compatibility.FARGATE,
+            cpu: '256',
+            memoryMiB: '512'
+        });
+        const ecrRepositories = new EcrRepositories('my-repos', ecrRepoProps);
+        const containerFactory = new ContainerFactory(stack, 'container', {
+            commandFactory: new ContainerCommandFactory(stack, 'command', {}),
+            repositoryFactory: new EcrRepositoryFactory(stack, 'repos', ecrRepositories),
+            secrets: new Secrets(stack, 'secrets')
+        });
+        const containerProps = [
+            {
+                image: EcrRepositoryType.PHPFPM,
+                cpu: 256,
+                memoryLimitMiB: 512,
+                extraHosts: {
+                    'foo.dev': '10.10.10.1'
+                }
+            }
+        ];
+        containerFactory.create(TaskServiceType.WEB_SERVICE, td, containerProps);
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        const containerRefMatch = templateHelper.startsWithMatch("phpfpmecr");
+        templateHelper.expected('AWS::ECS::TaskDefinition', [
+            {
+                key: 'td',
+                properties: Match.objectEquals({
+                    Type: 'AWS::ECS::TaskDefinition',
+                    Properties: {
+                        ContainerDefinitions: [
+                            {
+                                Cpu: 256,
+                                Essential: true,
+                                ExtraHosts: [
+                                    {
+                                        Hostname: "foo.dev",
+                                        IpAddress: "10.10.10.1"
+                                    }
+                                ],
+                                Image: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            {
+                                                'Fn::Select': [
+                                                    4,
+                                                    {
+                                                        'Fn::Split': [
+                                                            ':',
+                                                            {'Fn::GetAtt': [containerRefMatch, 'Arn']}
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            '.dkr.ecr.',
+                                            {
+                                                'Fn::Select': [
+                                                    3,
+                                                    {
+                                                        'Fn::Split': [
+                                                            ':',
+                                                            {'Fn::GetAtt': [containerRefMatch, 'Arn']}
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            '.',
+                                            {Ref: 'AWS::URLSuffix'},
+                                            '/',
+                                            {Ref: containerRefMatch},
+                                            ':1'
+                                        ]
+                                    ]
+                                },
+                                LogConfiguration: {
+                                    LogDriver: 'awslogs',
+                                    Options: {
+                                        'awslogs-group': {Ref: templateHelper.startsWithMatch('containercontainerphpfpmwebu0loggroup')},
+                                        'awslogs-stream-prefix': 'phpfpm',
+                                        'awslogs-region': 'us-east-1'
+                                    }
+                                },
+                                Memory: 512,
+                                Name: 'container-container-phpfpm-web-u-0'
+                            }
+                        ],
+                        Cpu: '256',
+                        ExecutionRoleArn: {'Fn::GetAtt': [templateHelper.startsWithMatch('tdExecutionRole'), 'Arn']},
+                        Family: templateHelper.startsWithMatch('stacktd'),
+                        Memory: '512',
+                        NetworkMode: 'awsvpc',
+                        RequiresCompatibilities: ['FARGATE'],
+                        TaskRoleArn: {'Fn::GetAtt': [templateHelper.startsWithMatch('tdTaskRole'), 'Arn']}
+                    }
                 })
             }
         ]);
@@ -260,7 +365,7 @@ describe('container factory', () => {
         containerFactory.create(TaskServiceType.CREATE_RUN_ONCE_TASK, td, containerProps);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::IAM::Role',  [
+        templateHelper.expected('AWS::IAM::Role', [
             {
                 key: 'tdTaskRole',
                 properties: Match.objectEquals({
@@ -299,7 +404,7 @@ describe('container factory', () => {
             }
         ]);
         const containerRefMatch = templateHelper.startsWithMatch("phpfpmecr");
-        templateHelper.expected('AWS::ECS::TaskDefinition',  [
+        templateHelper.expected('AWS::ECS::TaskDefinition', [
             {
                 key: 'td',
                 properties: Match.objectEquals({
@@ -369,7 +474,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::IAM::Policy',  [
+        templateHelper.expected('AWS::IAM::Policy', [
             {
                 key: 'tdExecutionRoleDefaultPolicy',
                 properties: Match.objectEquals({
@@ -410,7 +515,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -442,7 +547,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::Logs::LogGroup',  [
+        templateHelper.expected('AWS::Logs::LogGroup', [
             {
                 key: 'containercontainerphpfpmcreateruntasku0loggroup',
                 properties: Match.objectEquals({
@@ -483,7 +588,7 @@ describe('container factory', () => {
         containerFactory.create(TaskServiceType.SCHEDULED_TASK, td, containerProps);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::IAM::Role',  [
+        templateHelper.expected('AWS::IAM::Role', [
             {
                 key: 'tdTaskRole',
                 properties: Match.objectEquals({
@@ -522,7 +627,7 @@ describe('container factory', () => {
             }
         ]);
         const containerRefMatch = templateHelper.startsWithMatch("phpfpmecr");
-        templateHelper.expected('AWS::ECS::TaskDefinition',  [
+        templateHelper.expected('AWS::ECS::TaskDefinition', [
             {
                 key: 'td',
                 properties: Match.objectEquals({
@@ -590,7 +695,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::IAM::Policy',  [
+        templateHelper.expected('AWS::IAM::Policy', [
             {
                 key: 'tdExecutionRoleDefaultPolicy',
                 properties: Match.objectEquals({
@@ -628,7 +733,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -660,7 +765,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::Logs::LogGroup',  [
+        templateHelper.expected('AWS::Logs::LogGroup', [
             {
                 key: 'containercontainerphpfpmscheduledtasku0loggroup',
                 properties: Match.objectEquals({
@@ -703,7 +808,7 @@ describe('container factory', () => {
         containerFactory.create(TaskServiceType.SCHEDULED_TASK, td, containerProps);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::IAM::Role',  [
+        templateHelper.expected('AWS::IAM::Role', [
             {
                 key: 'tdTaskRole',
                 properties: Match.objectEquals({
@@ -723,7 +828,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::ECS::TaskDefinition',  [
+        templateHelper.expected('AWS::ECS::TaskDefinition', [
             {
                 key: 'td',
                 properties: Match.objectEquals({
@@ -739,7 +844,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -806,7 +911,7 @@ describe('container factory', () => {
         containerFactory.create(TaskServiceType.WEB_SERVICE, td, containerProps);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.expected('AWS::IAM::Role',  [
+        templateHelper.expected('AWS::IAM::Role', [
             {
                 key: 'tdTaskRole',
                 properties: Match.objectEquals({
@@ -845,7 +950,7 @@ describe('container factory', () => {
             }
         ]);
         const containerRefMatch = templateHelper.startsWithMatch("phpfpmecr");
-        templateHelper.expected('AWS::ECS::TaskDefinition',  [
+        templateHelper.expected('AWS::ECS::TaskDefinition', [
             {
                 key: 'td',
                 properties: Match.objectEquals({
@@ -942,7 +1047,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::IAM::Policy',  [
+        templateHelper.expected('AWS::IAM::Policy', [
             {
                 key: 'tdExecutionRoleDefaultPolicy',
                 properties: Match.objectEquals({
@@ -997,7 +1102,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::ECR::Repository',  [
+        templateHelper.expected('AWS::ECR::Repository', [
             {
                 key: 'nginxecr',
                 properties: Match.objectEquals({
@@ -1029,7 +1134,7 @@ describe('container factory', () => {
                 })
             }
         ]);
-        templateHelper.expected('AWS::Logs::LogGroup',  [
+        templateHelper.expected('AWS::Logs::LogGroup', [
             {
                 key: 'containercontainerphpfpmwebu0loggroup',
                 properties: Match.objectEquals({
