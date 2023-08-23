@@ -315,6 +315,7 @@ describe('ecs standard service factory', () => {
                                 },
                                 Memory: 64,
                                 Name: 'container-container-nginx-web-u-0',
+                                ReadonlyRootFilesystem: false,
                                 PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}]
                             },
                             {
@@ -365,6 +366,7 @@ describe('ecs standard service factory', () => {
                                 },
                                 Memory: 128,
                                 Name: 'container-container-phpfpm-web-u-0',
+                                ReadonlyRootFilesystem: false,
                                 PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}]
                             }
                         ],
@@ -442,9 +444,18 @@ describe('ecs standard service factory', () => {
                 key: 'serviceserviceweb0Service',
                 properties: Match.objectEquals({
                     Type: 'AWS::ECS::Service',
+                    DependsOn: Match.arrayWith([templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRoleDefaultPolicy'), templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRole')]),
                     Properties: {
                         Cluster: {Ref: templateHelper.startsWithMatch('cluster')},
-                        DeploymentConfiguration: {MaximumPercent: 200, MinimumHealthyPercent: 50},
+                        DeploymentConfiguration: {
+                            Alarms: {
+                                AlarmNames: [],
+                                Enable: false,
+                                Rollback: false
+                            },
+                            MaximumPercent: 200,
+                            MinimumHealthyPercent: 50
+                        },
                         DesiredCount: 1,
                         EnableECSManagedTags: false,
                         EnableExecuteCommand: true,
@@ -480,6 +491,7 @@ describe('ecs standard service factory', () => {
                 key: 'serviceserviceweb0SecurityGroup',
                 properties: Match.objectEquals({
                     Type: 'AWS::EC2::SecurityGroup',
+                    DependsOn: Match.arrayWith([templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRoleDefaultPolicy'), templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRole')]),
                     Properties: {
                         GroupDescription: 'stack/service-service-web-0/SecurityGroup',
                         SecurityGroupEgress: [
@@ -499,6 +511,7 @@ describe('ecs standard service factory', () => {
                 key: 'serviceserviceweb0TaskCountTarget',
                 properties: Match.objectEquals({
                     Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
+                    DependsOn: Match.arrayWith([templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRoleDefaultPolicy'), templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRole')]),
                     Properties: {
                         MaxCapacity: 2,
                         MinCapacity: 1,
@@ -536,6 +549,7 @@ describe('ecs standard service factory', () => {
                 key: 'serviceserviceweb0TaskCountTargetserviceservicescalecpu',
                 properties: Match.objectEquals({
                     Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
+                    DependsOn: Match.arrayWith([templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRoleDefaultPolicy'), templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRole')]),
                     Properties: {
                         PolicyName: templateHelper.startsWithMatch('stackserviceserviceweb0TaskCountTargetserviceservicescalecpu'),
                         PolicyType: 'TargetTrackingScaling',
@@ -551,6 +565,7 @@ describe('ecs standard service factory', () => {
                 key: 'serviceserviceweb0TaskCountTargetserviceservicescalemem',
                 properties: Match.objectEquals({
                     Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
+                    DependsOn: Match.arrayWith([templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRoleDefaultPolicy'), templateHelper.startsWithMatch('taskdeftaskdefweb0TaskRole')]),
                     Properties: {
                         PolicyName: templateHelper.startsWithMatch('stackserviceserviceweb0TaskCountTargetserviceservicescalemem'),
                         PolicyType: 'TargetTrackingScaling',

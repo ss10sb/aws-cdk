@@ -4,14 +4,14 @@ module.exports = {
         pccsdlcmyapptestdevexampleeduarecord1EBFD14B: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
-                Name: 'test.dev.example.edu.',
-                Type: 'A',
                 AliasTarget: {
                     DNSName: 'dualstack.my-load-balancer-1234567890.us-west-2.elb.amazonaws.com',
                     HostedZoneId: 'Z3DZXE0EXAMPLE'
                 },
                 Comment: 'pcc-sdlc-myapp: test.dev.example.edu',
-                HostedZoneId: 'DUMMY'
+                HostedZoneId: 'DUMMY',
+                Name: 'test.dev.example.edu.',
+                Type: 'A'
             }
         },
         pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E: {
@@ -905,6 +905,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-createruntask-crot-0',
+                  ReadonlyRootFilesystem: false,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -1328,6 +1329,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-updateruntask-urot-0',
+                  ReadonlyRootFilesystem: false,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -1783,6 +1785,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-scheduledtask-st-0',
+                  ReadonlyRootFilesystem: false,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -2289,7 +2292,8 @@ module.exports = {
                         },
                         Memory: 64,
                         Name: 'pcc-sdlc-myapp-container-nginx-web-u-0',
-                        PortMappings: [ { ContainerPort: 80, Protocol: 'tcp' } ]
+                  PortMappings: [ { ContainerPort: 80, Protocol: 'tcp' } ],
+                  ReadonlyRootFilesystem: false
                     },
                     {
                         Cpu: 128,
@@ -2383,6 +2387,7 @@ module.exports = {
                         Memory: 128,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-web-u-0',
                         PortMappings: [ { ContainerPort: 9000, Protocol: 'tcp' } ],
+                  ReadonlyRootFilesystem: false,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -2463,7 +2468,11 @@ module.exports = {
             Type: 'AWS::ECS::Service',
             Properties: {
                 Cluster: { Ref: 'pccsdlcmyappcluster4E9F2DE3' },
-                DeploymentConfiguration: { MaximumPercent: 200, MinimumHealthyPercent: 50 },
+              DeploymentConfiguration: {
+                Alarms: { AlarmNames: [], Enable: false, Rollback: false },
+                MaximumPercent: 200,
+                MinimumHealthyPercent: 50
+              },
                 DesiredCount: 1,
                 EnableECSManagedTags: false,
                 EnableExecuteCommand: true,
@@ -2499,7 +2508,11 @@ module.exports = {
                 ],
                 TaskDefinition: { Ref: 'pccsdlcmyapptaskdefweb0C12FF3F1' }
             },
-            DependsOn: [ 'pccsdlcmyapplistenerrule10003C2FE33' ]
+            DependsOn: [
+              'pccsdlcmyapplistenerrule10003C2FE33',
+              'pccsdlcmyapptaskdefweb0TaskRoleDefaultPolicy4427BD76',
+              'pccsdlcmyapptaskdefweb0TaskRole44A5F54B'
+            ]
         },
         pccsdlcmyappserviceweb0SecurityGroupEA0D4069: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -2518,7 +2531,11 @@ module.exports = {
                     { Key: 'Environment', Value: 'sdlc' }
                 ],
                 VpcId: 'vpc-12345'
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyapptaskdefweb0TaskRoleDefaultPolicy4427BD76',
+              'pccsdlcmyapptaskdefweb0TaskRole44A5F54B'
+            ]
         },
         pccsdlcmyappserviceweb0SecurityGroupfrompccsharedstackpccsdlcmyapplookuphttpslistenerSecurityGroupsg123456789012543CF5BD804E7E318F: {
             Type: 'AWS::EC2::SecurityGroupIngress',
@@ -2534,7 +2551,11 @@ module.exports = {
                 },
               SourceSecurityGroupId: 'sg-12345678',
                 ToPort: 80
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyapptaskdefweb0TaskRoleDefaultPolicy4427BD76',
+              'pccsdlcmyapptaskdefweb0TaskRole44A5F54B'
+            ]
         },
         pccsdlcmyappserviceweb0TaskCountTargetC0BDCD4E: {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
@@ -2566,7 +2587,11 @@ module.exports = {
                 },
                 ScalableDimension: 'ecs:service:DesiredCount',
                 ServiceNamespace: 'ecs'
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyapptaskdefweb0TaskRoleDefaultPolicy4427BD76',
+              'pccsdlcmyapptaskdefweb0TaskRole44A5F54B'
+            ]
         },
         pccsdlcmyappserviceweb0TaskCountTargetpccsdlcmyappservicescalecpu580E5A4F: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -2578,7 +2603,11 @@ module.exports = {
                     PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
                     TargetValue: 75
                 }
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyapptaskdefweb0TaskRoleDefaultPolicy4427BD76',
+              'pccsdlcmyapptaskdefweb0TaskRole44A5F54B'
+            ]
         },
         pccsdlcmyappserviceweb0TaskCountTargetpccsdlcmyappservicescalememB0AA1F75: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -2592,7 +2621,11 @@ module.exports = {
                     },
                     TargetValue: 75
                 }
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyapptaskdefweb0TaskRoleDefaultPolicy4427BD76',
+              'pccsdlcmyapptaskdefweb0TaskRole44A5F54B'
+            ]
         },
         pccsdlcmyappservicequeue0loggroup9DDCB13E: {
             Type: 'AWS::Logs::LogGroup',
@@ -2910,7 +2943,11 @@ module.exports = {
             Type: 'AWS::ECS::Service',
             Properties: {
                 Cluster: { Ref: 'pccsdlcmyappcluster4E9F2DE3' },
-                DeploymentConfiguration: { MaximumPercent: 200, MinimumHealthyPercent: 50 },
+              DeploymentConfiguration: {
+                Alarms: { AlarmNames: [], Enable: false, Rollback: false },
+                MaximumPercent: 200,
+                MinimumHealthyPercent: 50
+              },
                 EnableECSManagedTags: false,
                 LaunchType: 'FARGATE',
                 NetworkConfiguration: {
@@ -2937,7 +2974,11 @@ module.exports = {
                 TaskDefinition: {
                     Ref: 'pccsdlcmyappservicequeue0QueueProcessingTaskDef277B33FF'
                 }
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceSecurityGroup5B7C2C6C: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -2956,7 +2997,11 @@ module.exports = {
                     { Key: 'Environment', Value: 'sdlc' }
                 ],
                 VpcId: 'vpc-12345'
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetCE82EEC2: {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
@@ -2991,7 +3036,11 @@ module.exports = {
                 },
                 ScalableDimension: 'ecs:service:DesiredCount',
                 ServiceNamespace: 'ecs'
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetCpuScaling1EF49E37: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -3005,7 +3054,11 @@ module.exports = {
                     PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
                     TargetValue: 50
                 }
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingLowerPolicy0EA8CD56: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -3020,7 +3073,11 @@ module.exports = {
                     MetricAggregationType: 'Maximum',
                     StepAdjustments: [ { MetricIntervalUpperBound: 0, ScalingAdjustment: -1 } ]
                 }
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingLowerAlarmBF362659: {
             Type: 'AWS::CloudWatch::Alarm',
@@ -3046,7 +3103,11 @@ module.exports = {
                 Period: 300,
                 Statistic: 'Maximum',
                 Threshold: 0
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingUpperPolicy49011084: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -3068,7 +3129,11 @@ module.exports = {
                         { MetricIntervalLowerBound: 9, ScalingAdjustment: 2 }
                     ]
                 }
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingUpperAlarm617AF3F0: {
             Type: 'AWS::CloudWatch::Alarm',
@@ -3094,7 +3159,11 @@ module.exports = {
                 Period: 300,
                 Statistic: 'Maximum',
                 Threshold: 1
-            }
+            },
+            DependsOn: [
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
+              'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
+            ]
         },
         pccsdlcmyappstartstopfnServiceRole4E724A81: {
             Type: 'AWS::IAM::Role',

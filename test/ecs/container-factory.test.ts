@@ -135,7 +135,8 @@ describe('container factory', () => {
                                     }
                                 },
                                 Memory: 512,
-                                Name: 'container-container-phpfpm-web-u-0'
+                                Name: 'container-container-phpfpm-web-u-0',
+                                ReadonlyRootFilesystem: false
                             }
                         ],
                         Cpu: '256',
@@ -324,7 +325,8 @@ describe('container factory', () => {
                                     }
                                 },
                                 Memory: 512,
-                                Name: 'container-container-phpfpm-web-u-0'
+                                Name: 'container-container-phpfpm-web-u-0',
+                                ReadonlyRootFilesystem: false
                             }
                         ],
                         Cpu: '256',
@@ -460,7 +462,8 @@ describe('container factory', () => {
                                     }
                                 },
                                 Memory: 512,
-                                Name: 'container-container-phpfpm-createruntask-u-0'
+                                Name: 'container-container-phpfpm-createruntask-u-0',
+                                ReadonlyRootFilesystem: false
                             }
                         ],
                         Cpu: '256',
@@ -681,7 +684,8 @@ describe('container factory', () => {
                                     }
                                 },
                                 Memory: 512,
-                                Name: 'container-container-phpfpm-scheduledtask-u-0'
+                                Name: 'container-container-phpfpm-scheduledtask-u-0',
+                                ReadonlyRootFilesystem: false
                             }
                         ],
                         Cpu: '256',
@@ -1006,6 +1010,7 @@ describe('container factory', () => {
                                 },
                                 Memory: 512,
                                 Name: 'container-container-phpfpm-web-u-0',
+                                ReadonlyRootFilesystem: false,
                                 Secrets: [
                                     {
                                         Name: 'FOO',

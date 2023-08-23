@@ -88,6 +88,7 @@ export interface ContainerProps {
     readonly dependency?: boolean;
     readonly dependsOn?: boolean;
     readonly extraHosts?: Record<string, string>;
+    readonly readonlyRootFilesystem?: boolean;
 }
 
 export class ContainerFactory extends AbstractFactory {
@@ -178,7 +179,8 @@ export class ContainerFactory extends AbstractFactory {
             logging: this.getLogging(name, containerProps),
             secrets: this.getEcsSecrets(containerProps.hasSecrets ?? false),
             environment: this.getEnvironment(containerProps.hasEnv ?? false),
-            extraHosts: containerProps.extraHosts
+            extraHosts: containerProps.extraHosts,
+            readonlyRootFilesystem: containerProps.readonlyRootFilesystem ?? false
         };
         this.setEntryPointAndCommandProperties(containerProps, options);
         if (containerProps.portMappings) {
