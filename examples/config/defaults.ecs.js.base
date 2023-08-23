@@ -69,6 +69,7 @@ module.exports = {
                     hasEnv: true,
                     cpu: 256,
                     memoryLimitMiB: 512,
+                    readonlyRootFilesystem: true,
                     hasDeadLetterQueue: true,
                 },
                 tasks: [
@@ -85,6 +86,7 @@ module.exports = {
                                     hasEnv: true,
                                     cpu: 256,
                                     memoryLimitMiB: 512,
+                                    readonlyRootFilesystem: true,
                                     essential: true,
                                     dependency: true,
                                     entryPoint: ContainerEntryPoint.SH,
@@ -106,6 +108,7 @@ module.exports = {
                                     hasEnv: true,
                                     cpu: 256,
                                     memoryLimitMiB: 512,
+                                    readonlyRootFilesystem: true,
                                     essential: true,
                                     dependsOn: true,
                                     entryPoint: ContainerEntryPoint.PHP,
@@ -131,6 +134,7 @@ module.exports = {
                                     hasEnv: true,
                                     cpu: 256,
                                     memoryLimitMiB: 512,
+                                    readonlyRootFilesystem: true,
                                     essential: true,
                                     dependsOn: true,
                                     entryPoint: ContainerEntryPoint.PHP,
@@ -157,6 +161,7 @@ module.exports = {
                                     hasEnv: true,
                                     cpu: 256,
                                     memoryLimitMiB: 512,
+                                    readonlyRootFilesystem: true,
                                     essential: true,
                                     dependsOn: true,
                                     entryPoint: ContainerEntryPoint.PHP,
@@ -186,6 +191,7 @@ module.exports = {
                                     image: 'nginx',
                                     cpu: 128,
                                     memoryLimitMiB: 128,
+                                    readonlyRootFilesystem: true,
                                     portMappings: [{
                                         containerPort: 80
                                     }]
@@ -196,9 +202,13 @@ module.exports = {
                                     hasEnv: true,
                                     cpu: 256,
                                     memoryLimitMiB: 256,
+                                    readonlyRootFilesystem: true,
                                     portMappings: [{
                                         containerPort: 9000
-                                    }]
+                                    }],
+                                    entryPoint: ContainerEntryPoint.SH,
+                                    command: ContainerCommand.UNDEFINED,
+                                    additionalCommand: ['/entrypoint.sh']
                                 }
                             ]
                         }
