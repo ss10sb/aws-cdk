@@ -25,7 +25,7 @@ describe('secrets deploy factory', () => {
         expect(results[1].result).toEqual(null);
     });
 
-    it('should add suffix to stack name', async () => {
+    it('should add id suffix to stack name', async () => {
         const factory = new SecretsDeployFactory({
             outputFile: path.resolve(__dirname, 'secrets-output.json'),
             configDir: configDir
@@ -35,6 +35,33 @@ describe('secrets deploy factory', () => {
         expect(results[1].stackName).toEqual('pcc-prod-test-secrets');
         expect(results[0].result).toEqual(null);
         expect(results[1].result).toEqual(null);
+    });
+
+    it('should add name suffix to stack name', async () => {
+        const suffixConfigDir = path.join(__dirname, '/../__configSuffixLive__');
+        const factory = new SecretsDeployFactory({
+            outputFile: path.resolve(__dirname, 'secrets-output-suffix.json'),
+            configDir: suffixConfigDir
+        });
+        mock.on(PutSecretValueCommand, {
+            SecretId: 'arn:abc123',
+        }).resolvesOnce({
+            $metadata: {},
+            ARN: 'arn:abc123'
+        });
+        const results = await factory.deploy({idSuffix: 'secrets'});
+        const expectedKeys = [
+            'ADMIN_USER_ID',
+            'APP_NAME',
+            'APP_KEY',
+            'APP_URL',
+            'AUTHORIZER_TOKEN'
+        ];
+        expect(results[0].stackName).toEqual('pcc-prod-test-abc-secrets');
+        expect(results[1].stackName).toEqual('pcc-prod-test-def-secrets');
+        expect(results[0].keys).toEqual(expectedKeys);
+        expect(results[1].result).toEqual(null);
+        expect(results[0].result?.ARN).toEqual('arn:abc123');
     });
 
     it('should deploy secrets', async () => {

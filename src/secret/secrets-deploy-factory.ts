@@ -45,7 +45,7 @@ export class SecretsDeployFactory {
 
     async deployEnvironment(envConfig: EnvConfig, props?: HelperRunProps): Promise<SecretsDeployResult> {
         const secretsConfig = SecretConfigHelper.getSecretsConfig(envConfig.Environment, envConfig?.NameSuffix, this.props.configDir);
-        this.updateNameSuffix(secretsConfig, props?.idSuffix);
+        this.updateNameSuffix(envConfig, secretsConfig, props?.idSuffix);
         this.addBaseConfigItems(envConfig, secretsConfig);
         this.addAuthorizerToken(secretsConfig);
         const stackName = ConfigStackHelper.getMainStackName(secretsConfig);
@@ -124,9 +124,9 @@ export class SecretsDeployFactory {
         }
     }
 
-    private updateNameSuffix(config: SecretsConfig, suffix?: string): void {
+    private updateNameSuffix(envConfig: EnvConfig, config: SecretsConfig, suffix?: string): void {
         if (suffix) {
-            config.NameSuffix = NamingHelper.fromParts([config.NameSuffix, suffix]);
+            config.NameSuffix = NamingHelper.fromParts([envConfig?.NameSuffix ?? '', suffix]);
         }
     }
 }

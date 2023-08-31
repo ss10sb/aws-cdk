@@ -47,7 +47,8 @@ export class ConfigLoader {
             const envBase = this.getEnvBase(env);
             overrideEnv = this.getFromBase(envBase);
             if (suffix) {
-                overrideEnvSuffix = this.getFromBase(this.getEnvSuffixBase(envBase, suffix));
+                const envSuffixed = this.getEnvSuffixBase(envBase, suffix);
+                overrideEnvSuffix = this.getFromBase(envSuffixed);
             }
         }
         return merge({}, defaultEnv, overrideEnv, overrideEnvSuffix);
