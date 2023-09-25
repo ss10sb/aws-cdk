@@ -154,8 +154,7 @@ export class BrefDistribution extends NonConstruct {
 
     protected getAuthorizerToken(): string {
         if (this.props.secret) {
-            const secrets = new Secrets(this.scope, 'secrets');
-            return secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, <ISecret>this.props.secret);
+            return Secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, <ISecret>this.props.secret);
         }
         return 'INVALID';
     }

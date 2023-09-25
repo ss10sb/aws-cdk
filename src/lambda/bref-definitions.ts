@@ -1,6 +1,6 @@
 // @ts-nocheck
 export enum BrefRuntimeAccount {
-    CORE = '209497400698',
+    CORE = '534081306603',
     EXTRA = '403367587399'
 }
 
@@ -90,6 +90,6 @@ export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Ma
 
 export enum LaravelHandler {
     WEB = 'public/index.php',
-    QUEUE = 'worker.php',
+    QUEUE = 'Bref\\LaravelBridge\\Queue\\QueueHandler',
     ARTISAN = 'artisan'
 }

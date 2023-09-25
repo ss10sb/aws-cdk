@@ -12,7 +12,7 @@ describe('start stop event', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const fn = new aws_lambda.Function(stack, 'fn', {
-            runtime: aws_lambda.Runtime.NODEJS_14_X,
+            runtime: aws_lambda.Runtime.NODEJS_18_X,
             handler: 'index.handler',
             code: aws_lambda.Code.fromInline(`exports.handler = handler.toString()`)
         });

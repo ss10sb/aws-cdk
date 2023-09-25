@@ -22,13 +22,12 @@ export interface PhpBrefFunctionProps {
     readonly brefRuntime: BrefRuntime | BrefRuntime[];
     readonly lambdaHandler?: string;
     readonly lambdaMemorySize?: number;
-    readonly hasSecrets?: boolean;
-    readonly hasEnvironment?: boolean;
     readonly reservedConcurrentExecutions?: number;
     readonly scheduledEvents?: ScheduledEventProps[];
     readonly version?: string;
-    readonly wantsVpc?: boolean;
     readonly provisionedConcurrency?: ProvisionedConcurrencyProps;
+    prependSecretId?: string;
+    wantsVpc?: boolean;
     environment?: { [key: string]: string };
     lambdaTimeout?: number;
     type?: FunctionType;
@@ -65,7 +64,16 @@ export class PhpBrefFunction extends NonConstruct {
             handler: this.getHandler(props),
             layers: this.getLayers(funcName, props),
             code: Code.fromAsset(this.getAppPath(props.appPath), {
-                exclude: ['node_modules', 'tests']
+                exclude: [
+                    'node_modules',
+                    'tests',
+                    'public/js',
+                    'public/css',
+                    'resources/sass',
+                    'resources/js',
+                    'composer.lock',
+                    'package-lock.json'
+                ]
             }),
             timeout: Duration.seconds(this.getTimeout(props)),
             vpc: this.getVpc(props),
@@ -83,12 +91,15 @@ export class PhpBrefFunction extends NonConstruct {
         return func;
     }
 
-    getDefaultTimeout(type: FunctionType): number {
-        if (type === FunctionType.WEB) {
+    getDefaultTimeout(type: FunctionType, apiGateway = true): number {
+        if (type === FunctionType.WEB && apiGateway) {
             return 28; //gateway timeout 29 s
         }
         if (type === FunctionType.QUEUE) {
-            return 29; //queue visibility timeout 30 s
+            return 30; //queue visibility timeout 30 s
+        }
+        if (type === FunctionType.ARTISAN) {
+            return 720;
         }
         return 120;
     }
@@ -141,19 +152,24 @@ export class PhpBrefFunction extends NonConstruct {
     }
 
     protected initEnvironment(props: PhpBrefFunctionProps): Record<string, string> {
-        if (props.hasEnvironment) {
-            return {...this.factoryProps.environment ?? {}, ...props.environment ?? {}};
-        }
-        return {};
+        return {...this.factoryProps.environment ?? {}, ...props.environment ?? {}};
     }
 
     protected addSecrets(env: Record<string, string>, props: PhpBrefFunctionProps): Record<string, string> {
-        const secrets = new Secrets(this.scope, this.id);
-        if (props.hasSecrets && this.factoryProps.secret) {
-            for (const [key, val] of Object.entries(secrets.getReferencesFromSecret(this.factoryProps.secretKeys ?? [], this.factoryProps.secret))) {
-                env[key] = val.toString();
-            }
+        if (this.factoryProps.secret) {
+            return this.addSecretsAsLookup(
+                this.factoryProps.secretKeys ?? [],
+                this.factoryProps.secret,
+                env,
+                props
+            );
         }
+        return env;
+    }
+
+    protected addSecretsAsLookup(keys: string[], secret: ISecret, env: Record<string, string>, props: PhpBrefFunctionProps): Record<string, string> {
+        const prepend = props.prependSecretId ?? 'bref-secretsmanager:';
+        env['SECRETS_LOOKUP'] = `${prepend}${secret.secretArn}`;
         return env;
     }
 

@@ -38,21 +38,25 @@ export class BrefLayerArn extends NonConstruct {
     }
 
     protected getLatestVersion(id: BrefRuntime): string {
-        const version = this.versionFromBrefCore(id) ?? this.versionFromBrefExtras(id);
+        const region = this.getRegion();
+        const version = this.versionFromBrefCore(id, region) ?? this.versionFromBrefExtras(id, region);
         if (version === undefined) {
-            throw new Error('No layers.json files found in bref/bref or bref/extra-php-extensions.');
+            const basePath = path.resolve(this.appPath);
+            throw new Error(`[${id}] no layers.json files found in vendor bref/bref or bref/extra-php-extensions in ${basePath} for region ${region}.`);
         }
         return version;
     }
 
-    protected versionFromBrefCore(id: BrefRuntime): string | undefined {
-        const layers = this.getBrefLayersJson(path.resolve(this.appPath, 'vendor', 'bref', 'bref', 'layers.json'));
-        return layers?.[id]?.[this.getRegion()];
+    protected versionFromBrefCore(id: BrefRuntime, region: string): string | undefined {
+        const p = path.resolve(this.appPath, 'vendor', 'bref', 'bref', 'layers.json');
+        const layers = this.getBrefLayersJson(p);
+        return layers?.[id]?.[region];
     }
 
-    protected versionFromBrefExtras(id: BrefRuntime): string | undefined {
-        const layers = this.getBrefLayersJson(path.resolve(this.appPath, 'vendor', 'bref', 'extra-php-extensions', 'layers.json'));
-        return layers?.[id]?.[this.getRegion()];
+    protected versionFromBrefExtras(id: BrefRuntime, region: string): string | undefined {
+        const p = path.resolve(this.appPath, 'vendor', 'bref', 'extra-php-extensions', 'layers.json');
+        const layers = this.getBrefLayersJson(p);
+        return layers?.[id]?.[region];
     }
 
     protected getBrefLayersJson(file: string): { [key: string]: any } {

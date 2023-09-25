@@ -30,7 +30,7 @@ export interface Functions {
 }
 
 export interface LambdaQueueConfigProps extends QueueConfigProps {
-    readonly queueFunction: PhpBrefFunctionProps;
+    readonly functionProps: PhpBrefFunctionProps;
 }
 
 export interface PhpApiProps {

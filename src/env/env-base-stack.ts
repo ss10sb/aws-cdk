@@ -26,7 +26,7 @@ import {Route53ARecord} from "../route53/route53-a-record";
 import {AlbListenerRule} from "../alb/alb-listener-rule";
 import {Sqs} from "../sqs/sqs";
 import {VerifySesDomain} from "../ses/verify-ses-domain";
-import {AlbTargetGroup} from "../alb/alb-target-group";
+import {AlbTargetGroup, AlbTargetGroupProps} from "../alb/alb-target-group";
 import {NamingHelper} from "../utils/naming-helper";
 import {SesVerifyDomain} from "../ses/ses-verify-domain";
 import {Route53Helper} from "../utils/route53-helper";
@@ -201,7 +201,12 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
 
     protected createTargetGroup(): ApplicationTargetGroup {
         const albTargetGroup = new AlbTargetGroup(this, this.getName('tg'), this.lookups.vpc);
-        return albTargetGroup.create(this.config.Parameters?.targetGroup ?? {});
+        return albTargetGroup.create(this.getTargetGroupParams());
+    }
+
+    protected getTargetGroupParams(): AlbTargetGroupProps
+    {
+        return this.config.Parameters?.targetGroup ?? {}
     }
 
     protected getEnvironment(envProps: EnvEnvironmentProps): Record<string, string> {

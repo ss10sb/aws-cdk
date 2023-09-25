@@ -75,4 +75,29 @@ describe('secrets', () => {
         expect(ecsSecrets.BAR.arn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment:BAR::');
         expect(ecsSecrets.BAR.hasField).toEqual(true);
     });
+
+    it('should fetch secrets by reference', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const secrets = new Secrets(stack, 'secrets');
+        const secret = secrets.fetch();
+        const refSecrets = Secrets.getReferencesFromSecret(['FOO', 'BAR'], secret);
+        expect(Secrets.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
+        expect(Secrets.secret?.secretName).toEqual('secrets-secrets/environment');
+        expect(stack.resolve(Secrets.secret?.secretValue)).toEqual({
+            "Fn::Join": [
+                "",
+                [
+                    "{{resolve:secretsmanager:arn:",
+                    {
+                        "Ref": "AWS::Partition"
+                    },
+                    ":secretsmanager:us-east-1:12344:secret:secrets-secrets/environment:SecretString:::}}"
+                ]
+            ]
+        });
+        expect(refSecrets.BAR).toContain('${Token[TOKEN.');
+        expect(refSecrets.FOO).toContain('${Token[TOKEN.');
+    });
 });

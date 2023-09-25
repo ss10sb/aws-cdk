@@ -1,4 +1,4 @@
-import {BlockPublicAccess, Bucket, BucketEncryption} from "aws-cdk-lib/aws-s3";
+import {BlockPublicAccess, Bucket, BucketEncryption, BucketProps, CorsRule} from "aws-cdk-lib/aws-s3";
 import {RemovalPolicy} from "aws-cdk-lib";
 import {Key} from "aws-cdk-lib/aws-kms";
 import {NonConstruct} from "../core/non-construct";
@@ -10,6 +10,8 @@ export interface S3Props {
     encryption?: BucketEncryption;
     encryptionKey?: Key;
     bucketKeyEnabled?: boolean;
+    bucketName?: string;
+    cors?: CorsRule[];
 }
 
 export class S3Bucket extends NonConstruct {
@@ -23,8 +25,12 @@ export class S3Bucket extends NonConstruct {
     }
 
     public create(name: string, props: S3Props = {}): Bucket {
-        const bucketName = this.mixNameWithId(name);
-        return new Bucket(this.scope, bucketName, {
+        const bucketName = props.bucketName ?? this.mixNameWithId(name);
+        return new Bucket(this.scope, bucketName, this.getBucketProps(bucketName, props));
+    }
+
+    protected getBucketProps(bucketName: string, props: S3Props): BucketProps {
+        return {
             bucketName: bucketName,
             blockPublicAccess: props.blockPublicAccess ?? this.defaults.blockPublicAccess,
             removalPolicy: props.removalPolicy ?? this.defaults.removalPolicy,
@@ -32,7 +38,8 @@ export class S3Bucket extends NonConstruct {
             encryption: props.encryption ?? this.defaults.encryption,
             encryptionKey: props.encryptionKey ?? undefined,
             enforceSSL: this.defaults.enforceSSL,
-            bucketKeyEnabled: props.bucketKeyEnabled ?? undefined
-        });
+            bucketKeyEnabled: props.bucketKeyEnabled ?? undefined,
+            cors: props.cors ?? undefined
+        }
     }
 }

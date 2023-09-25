@@ -84,7 +84,7 @@ describe('php lambda rest api', () => {
                                     [
                                         'arn:',
                                         { Ref: 'AWS::Partition' },
-                                        ':lambda:us-east-1:209497400698:layer:php-81-fpm:28'
+                                        ':lambda:us-east-1:534081306603:layer:php-81-fpm:59'
                                     ]
                                 ]
                             }
@@ -593,7 +593,7 @@ describe('php lambda rest api', () => {
                                     [
                                         'arn:',
                                         { Ref: 'AWS::Partition' },
-                                        ':lambda:us-east-1:209497400698:layer:php-81-fpm:28'
+                                        ':lambda:us-east-1:534081306603:layer:php-81-fpm:59'
                                     ]
                                 ]
                             }

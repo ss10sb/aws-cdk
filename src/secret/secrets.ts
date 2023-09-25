@@ -35,15 +35,15 @@ export class Secrets extends NonConstruct {
         return this.getEcsSecretsFromSecret(keys, secret);
     }
 
-    getReferencesFromSecret(keys: string[], secret: ISecret): Record<string, string> {
+    static getReferencesFromSecret(keys: string[], secret: ISecret): Record<string, string> {
         const secrets: Record<string, string> = {};
         for (const key of keys) {
-            secrets[key] = this.getReferenceFromSecret(key, secret);
+            secrets[key] = Secrets.getReferenceFromSecret(key, secret);
         }
         return secrets;
     }
 
-    getReferenceFromSecret(key: string, secret: ISecret): string {
+    static getReferenceFromSecret(key: string, secret: ISecret): string {
         const s = SecretValue.secretsManager(secret.secretArn, {
             jsonField: key
         });

@@ -7,18 +7,15 @@ import {
 } from "aws-cdk-lib/aws-route53-targets";
 import {Duration} from "aws-cdk-lib";
 import {Distribution, IDistribution} from "aws-cdk-lib/aws-cloudfront";
-import {NonConstruct} from "../core/non-construct";
-import {Route53Helper} from "../utils/route53-helper";
+import {HasHostedZone} from "./has-hosted-zone";
 
-export class Route53ARecord extends NonConstruct {
+export class Route53ARecord extends HasHostedZone {
 
     readonly target: IAliasRecordTarget | IDistribution | IApplicationLoadBalancer;
-    readonly hostedZone?: string | IHostedZone;
 
     constructor(scope: Construct, id: string, target: IAliasRecordTarget | IDistribution | IApplicationLoadBalancer, hostedZone?: string | IHostedZone) {
-        super(scope, id);
+        super(scope, id, hostedZone);
         this.target = target;
-        this.hostedZone = hostedZone;
     }
 
     createARecord(subdomain?: string): ARecord | undefined {
@@ -59,14 +56,5 @@ export class Route53ARecord extends NonConstruct {
 
     isDistribution(target: object): target is IDistribution {
         return target instanceof Distribution || (target as IDistribution).distributionId !== undefined;
-    }
-
-    getHostedZone(): IHostedZone | undefined {
-        if (this.hostedZone) {
-            if (this.hostedZone instanceof HostedZone) {
-                return this.hostedZone;
-            }
-            return Route53Helper.getHostedZoneFromDomain(this.scope, <string>this.hostedZone);
-        }
     }
 }

@@ -72,6 +72,7 @@ export interface BrefFactoryLoadBalancerResult extends BrefFactoryResult {
 }
 
 /**
+ * @deprecated
  * Historical purposes only. Don't use.
  */
 export class BrefFactory extends NonConstruct {
@@ -174,8 +175,7 @@ export class BrefFactory extends NonConstruct {
 
     protected getAuthorizerToken(): string {
         if (this.secret) {
-            const secrets = new Secrets(this.scope, 'secrets');
-            return secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, <ISecret>this.secret);
+            return Secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, <ISecret>this.secret);
         }
         return 'INVALID';
     }

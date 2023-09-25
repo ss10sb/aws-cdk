@@ -11,8 +11,8 @@ describe('code pipeline lambda test', () => {
         resetStaticProps();
     });
 
-    it('should create pipeline from config', () => {
-        const config = getConfig();
+    it('should create pipeline from defaults config', () => {
+        const config = getConfig('defaults');
         const app = new App();
         const name = ConfigStackHelper.getMainStackName(config);
         const stack = new CodePipelineLambdaStack(app, name, config, {}, {
@@ -38,8 +38,35 @@ describe('code pipeline lambda test', () => {
         }
     });
 
-    function getConfig(): Record<string, any> {
-        return require('../__configLiveLambda__/defaults');
+    it('should create pipeline from alb target config', () => {
+        const config = getConfig('albtarget');
+        const app = new App();
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new CodePipelineLambdaStack(app, name, config, {}, {
+            env: {
+                account: '12344',
+                region: 'us-west-2'
+            }
+        });
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = getExpected('code-pipeline-lambda-stack-albtarget');
+        templateHelper.template.templateMatches(expected);
+        let count = 0;
+        for (const stage of stack.envStages?.stages ?? []) {
+            const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.envStage.stack));
+            // console.log(count);
+            // templateHelper.inspect();
+            const file = `code-pipeline-lambda-stack-albtarget-stage-${count}`;
+            const expected = getExpected(file);
+            templateHelper.template.templateMatches(expected);
+            count ++;
+        }
+    });
+
+    function getConfig(name: string): Record<string, any> {
+        return require('../__configLiveLambda__/'+name);
     }
 
     function getExpected(file: string) {

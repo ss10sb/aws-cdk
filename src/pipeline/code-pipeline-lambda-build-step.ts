@@ -52,14 +52,13 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
     protected getCommands(): string[] {
         return [
             'cd codebase',
-            'mv resources.copy resources && mv config.copy config && mv public.copy public',
+            'mv resources.copy resources && mv config.copy config && mv public.copy public && rm .env',
             'npm ci',
             'npm run prod',
             'rm -rf node_modules tests',
             'composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress',
             'composer dump-autoload --optimize --classmap-authoritative',
             'php artisan route:cache',
-            'cp vendor/bref/laravel-bridge/worker.php .',
             'rm -rf vendor/bin',
             'cd ..',
         ]

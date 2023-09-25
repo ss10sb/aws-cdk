@@ -4,7 +4,7 @@ import {StackProps} from "aws-cdk-lib";
 import {EnvBaseStack, EnvConfig, EnvParameters} from "./env-base-stack";
 import {Queue} from "aws-cdk-lib/aws-sqs";
 import {SqsEventSource} from "aws-cdk-lib/aws-lambda-event-sources";
-import {HealthCheck} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {ApplicationTargetGroup, HealthCheck, TargetType} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {Functions, FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "../lambda/lambda-definitions";
 import {AlbListenerRuleProps} from "../alb/alb-listener-rule";
@@ -14,6 +14,7 @@ import {DistributionConfigProps} from "../cloudfront/cloudfront-definitions";
 import {ConfigStackProps} from "../config/config-stack";
 import {PermissionsEnvLambdaStack} from "../permissions/permissions-env-lamdba-stack";
 import {BrefDistribution, BrefDistributionProps, BrefDistributionResult} from "../lambda/bref-distribution";
+import {BrefAsAlbTarget, BrefAsAlbTargetProps, BrefAsAlbTargetResult} from "../lambda/bref-as-alb-target";
 
 export interface EnvLambdaStackServicesProps extends EnvStackServicesProps {
     readonly functions: Functions;
@@ -28,6 +29,7 @@ export interface EnvLambdaParameters extends EnvParameters {
     readonly queue?: LambdaQueueConfigProps;
     readonly secretArn?: string;
     readonly distribution?: DistributionConfigProps;
+    readonly asAlbTarget?: BrefAsAlbTargetProps;
 }
 
 export interface EnvLambdaProps extends EnvProps {
@@ -44,6 +46,8 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
     }
 
     exec() {
+        let targetGroup = null;
+        let listenerRule = null;
         const wrappers: FunctionWrapper[] = [];
         const certificates = this.createCertificates();
         this.createListenerCertificates(certificates);
@@ -67,14 +71,21 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             wrappers.push(queueFunctionWrapper);
         }
         if (this.endpointType === EnvEndpointType.CLOUDFRONT) {
+
             const result = this.brefDistributionFactory();
             this.lookups.distribution = result.distribution;
             wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
             if (result.apiResult.authorizer?.lambdaFunction) {
                 wrappers.push({lambdaFunction: result.apiResult.authorizer.lambdaFunction, type: FunctionType.EVENT});
             }
-        } else {
-            throw new Error('ALB endpoint has not been implemented.');
+        }
+
+        if (this.endpointType === EnvEndpointType.LOADBALANCER) {
+            targetGroup = this.createTargetGroup();
+            listenerRule = this.createListenerRule(targetGroup);
+            this.configureTargetGroupHealthCheck(targetGroup);
+            const result = this.brefAsAlbTarget(targetGroup);
+            wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
         }
         const aRecord = this.createARecord();
         const sesVerify = this.createSesVerifyDomain();
@@ -90,6 +101,12 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             table: table,
             secret: this.lookups.secret
         });
+    }
+
+    protected getTargetGroupParams(): AlbTargetGroupProps {
+        return {
+            targetType: TargetType.LAMBDA,
+        }
     }
 
     private createFunctions(): FunctionWrapper[] {
@@ -110,12 +127,28 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
     }
 
     private createQueueFunction(queue?: Queue): FunctionWrapper | undefined {
-        if (queue && this.config.Parameters.queue?.queueFunction) {
-            this.config.Parameters.queue.queueFunction.type = FunctionType.QUEUE;
-            const funcWrap = this.createFunction(this.config.Parameters.queue.queueFunction);
+        if (queue && this.config.Parameters.queue?.functionProps) {
+            this.config.Parameters.queue.functionProps.type = FunctionType.QUEUE;
+            const funcWrap = this.createFunction(this.config.Parameters.queue.functionProps);
             funcWrap.lambdaFunction.addEventSource(new SqsEventSource(queue));
             return funcWrap;
         }
+    }
+
+    private brefAsAlbTarget(targetGroup: ApplicationTargetGroup): BrefAsAlbTargetResult {
+        const brefAsAlbTarget = new BrefAsAlbTarget(this, this.node.id, {
+            functionFactory: this.functionFactory,
+            targetGroup: targetGroup
+        });
+        const props = this.config.Parameters.asAlbTarget ?? {};
+        const domainName = this.getDefaultDomainName();
+        if (domainName) {
+            props.certificateProps = {
+                domainName: domainName,
+                hostedZone: this.config.Parameters.hostedZoneDomain
+            }
+        }
+        return brefAsAlbTarget.create(props);
     }
 
     private brefDistributionFactory(): BrefDistributionResult {
@@ -126,9 +159,12 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const distConfigProps = <BrefDistributionProps>this.config.Parameters.distribution;
         distConfigProps.apiProps = distConfigProps.apiProps ?? {};
         distConfigProps.apiProps.alarmEmails = this.config.Parameters.alarmEmails ?? [];
-        distConfigProps.certificateProps = {
-            domainName: `${this.config.Parameters.subdomain}.${this.config.Parameters.hostedZoneDomain}`,
-            hostedZone: this.config.Parameters.hostedZoneDomain
+        const domainName = this.getDefaultDomainName();
+        if (domainName) {
+            distConfigProps.certificateProps = {
+                domainName: domainName,
+                hostedZone: this.config.Parameters.hostedZoneDomain
+            }
         }
         return brefFactory.create(distConfigProps);
     }

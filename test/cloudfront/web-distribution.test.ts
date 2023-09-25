@@ -62,7 +62,7 @@ describe('cloud web distribution', () => {
         });
         const secrets = new Secrets(stack, 'secrets');
         const secret = secrets.fetch();
-        const ref = secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, secret);
+        const ref = Secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, secret);
         const phpHttpApi = new PhpHttpApi(stack, 'http-api');
         const apiResult = phpHttpApi.create({lambdaFunction: func, authorizerProps: {token: ref}});
         const webDistribution = new WebDistribution(stack, 'distribution');
@@ -92,7 +92,7 @@ describe('cloud web distribution', () => {
         });
         const secrets = new Secrets(stack, 'secrets');
         const secret = secrets.fetch();
-        const ref = secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, secret);
+        const ref = Secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, secret);
         const phpApi = new PhpLambdaRestApi(stack, 'http-api');
         const apiResult = phpApi.create({lambdaFunction: func, authorizerProps: {token: ref}});
         const webDistribution = new WebDistribution(stack, 'distribution');

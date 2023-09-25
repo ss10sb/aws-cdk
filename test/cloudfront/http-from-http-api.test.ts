@@ -74,7 +74,7 @@ describe('http from http api', () => {
                                     [
                                         'arn:',
                                         { Ref: 'AWS::Partition' },
-                                        ':lambda:us-west-2:209497400698:layer:php-81-fpm:28'
+                                        ':lambda:us-west-2:534081306603:layer:php-81-fpm:59'
                                     ]
                                 ]
                             }

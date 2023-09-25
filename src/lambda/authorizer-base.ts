@@ -35,7 +35,7 @@ export abstract class AuthorizerBase extends NonConstruct {
         const name = this.mixNameWithId('authorizer-fn');
         return new Function(this.scope, name, {
             functionName: name,
-            runtime: Runtime.NODEJS_16_X,
+            runtime: Runtime.NODEJS_18_X,
             handler: "token.handler",
             timeout: Duration.seconds(5),
             code: Code.fromAsset(path.join(__dirname, 'authorizers/')),

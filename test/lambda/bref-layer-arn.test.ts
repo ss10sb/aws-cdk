@@ -11,7 +11,7 @@ describe('bref layer arn', () => {
         const stack = new Stack(app, 'stack', stackProps);
         const brefLayerArn = new BrefLayerArn(stack, 'layer-arn', path.join(__dirname, '..', '__codebase__'));
         const arn = brefLayerArn.layerArn(BrefRuntime.PHP81, '2');
-        expect(arn.toString()).toMatch(/arn:\$\{Token\[AWS.Partition\.[0-9]*\]\}:lambda:us-east-1:209497400698:layer:php-81:2/);
+        expect(arn.toString()).toMatch(/arn:\$\{Token\[AWS.Partition\.[0-9]*\]\}:lambda:us-east-1:534081306603:layer:php-81:2/);
     });
 
     it('should create arn with latest version', () => {
@@ -20,7 +20,7 @@ describe('bref layer arn', () => {
         const stack = new Stack(app, 'stack', stackProps);
         const brefLayerArn = new BrefLayerArn(stack, 'layer-arn', path.join(__dirname, '..', '__codebase__'));
         const arn = brefLayerArn.layerArn(BrefRuntime.PHP81, 'latest');
-        expect(arn.toString()).toMatch(/arn:\$\{Token\[AWS.Partition\.[0-9]*\]\}:lambda:us-east-1:209497400698:layer:php-81:28/);
+        expect(arn.toString()).toMatch(/arn:\$\{Token\[AWS.Partition\.[0-9]*\]\}:lambda:us-east-1:534081306603:layer:php-81:59/);
     });
 
     it('should create arn for extra', () => {
@@ -37,6 +37,6 @@ describe('bref layer arn', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const brefLayerArn = new BrefLayerArn(stack, 'layer-arn', path.join(__dirname));
-        expect(() => brefLayerArn.layerArn(BrefRuntime.LDAP80, 'latest')).toThrowError('No layers.json files found in bref/bref or bref/extra-php-extensions.');
+        expect(() => brefLayerArn.layerArn(BrefRuntime.LDAP80, 'latest')).toThrowError('[ldap-php-80] no layers.json files found in vendor bref/bref or bref/extra-php-extensions in /tmp');
     });
 });
