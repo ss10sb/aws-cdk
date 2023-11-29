@@ -30,14 +30,14 @@ describe('alb target group health check', () => {
                 hostHeaders: ['test.example.edu']
             }
         });
-        new AlbTargetGroupHealthCheck(stack, 'tg', {
-            targetGroup: targetGroup,
+        const healthCheck = new AlbTargetGroupHealthCheck(stack, 'tg', {
             healthCheck: {
                 path: '/healthy',
                 protocol: Protocol.HTTP
             },
             alarmEmails: ['test@example.com']
         });
+        healthCheck.addHealthCheck(targetGroup);
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
         const expected = {
             Resources: {

@@ -8,7 +8,6 @@ import {ApplicationTargetGroup, HealthCheck} from "aws-cdk-lib/aws-elasticloadba
 import {NonConstruct} from "../core/non-construct";
 
 export interface AlbTargetGroupHealthCheckProps {
-    readonly targetGroup: ApplicationTargetGroup;
     readonly healthCheck?: HealthCheck;
     readonly alarmEmails?: string[];
 }
@@ -20,15 +19,14 @@ export class AlbTargetGroupHealthCheck extends NonConstruct {
     constructor(scope: Construct, id: string, props: AlbTargetGroupHealthCheckProps) {
         super(scope, id);
         this.props = props;
-        this.configureHealthCheck();
     }
 
-    private configureHealthCheck() {
+    addHealthCheck(targetGroup: ApplicationTargetGroup) {
         if (this.props.healthCheck) {
-            this.props.targetGroup.configureHealthCheck(this.props.healthCheck);
+            targetGroup.configureHealthCheck(this.props.healthCheck);
             const topic = this.getTopic();
             this.addSubscriptionsToTopic(topic);
-            const alarm = this.getAlarm();
+            const alarm = this.getAlarm(targetGroup);
             this.addAlarmActions(alarm, topic);
         }
     }
@@ -39,8 +37,8 @@ export class AlbTargetGroupHealthCheck extends NonConstruct {
         alarm.addOkAction(snsAction);
     }
 
-    private getAlarm(): Alarm {
-        const metric = this.props.targetGroup.metrics.unhealthyHostCount({
+    private getAlarm(targetGroup: ApplicationTargetGroup): Alarm {
+        const metric = targetGroup.metrics.unhealthyHostCount({
             period: Duration.minutes(1),
             statistic: 'Maximum',
         });

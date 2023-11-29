@@ -76,12 +76,13 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
         return this.lookups.getAliasTarget();
     }
 
-    protected configureTargetGroupHealthCheck(targetGroup: ApplicationTargetGroup) {
-        new AlbTargetGroupHealthCheck(this, this.getName('tg'), {
-            targetGroup: targetGroup,
+    protected configureTargetGroupHealthCheck(targetGroup: ApplicationTargetGroup): AlbTargetGroupHealthCheck {
+        const healthCheck = new AlbTargetGroupHealthCheck(this, this.getName('tg'), {
             healthCheck: this.config.Parameters.healthCheck,
             alarmEmails: this.config.Parameters.alarmEmails ?? []
         });
+        healthCheck.addHealthCheck(targetGroup);
+        return healthCheck;
     }
 
     protected createARecord(): ARecord | undefined {

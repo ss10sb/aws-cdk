@@ -68,7 +68,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         this.createListenerCertificates(certificates);
         const targetGroup = this.createTargetGroup();
         const listenerRule = this.createListenerRule(targetGroup);
-        this.configureTargetGroupHealthCheck(targetGroup);
+        const healthCheck = this.configureTargetGroupHealthCheck(targetGroup);
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
