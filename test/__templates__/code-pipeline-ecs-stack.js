@@ -737,7 +737,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"815f1eecc82fb2c7f348d94065214bce2c16f2bf156fd4ad872f317f7e5c4559"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"f38f9b096508bc85b44176027e022945d3afd948c9228333b832203d8060de70"}]'
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -1328,7 +1328,7 @@ module.exports = {
                             Value: 'us-west-2'
                         }
                     ],
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -1428,7 +1428,7 @@ module.exports = {
                             Value: 'us-west-2'
                         }
                     ],
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -1869,7 +1869,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
@@ -2221,8 +2221,8 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"94cf2475103298caec361d72edf71b2809ce0253337967d447117817c89b71cc:11111-us-west-2\\"",\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"94cf2475103298caec361d72edf71b2809ce0253337967d447117817c89b71cc:22222-us-west-2\\""\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544:11111-us-west-2\\"",\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544:22222-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
@@ -2436,7 +2436,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"5cc92ed0cea39e2b8de2dbc527dfb5980a3af9564bd1084d840b9787c7d0467e:11111-us-west-2\\""\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"5bc602ecde93c947efe5899ae355f999986a1acbe610b1c0b9c468d738857555:11111-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +

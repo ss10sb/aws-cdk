@@ -740,7 +740,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"12d9f179e563c0c12ad3c221e484317604c90b41fa7eb452bf5030ebda8bc597"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"74350448915f9115e7126d215b70aa81a06bc29d438cef542bbf7d55cac52ccb"}]'
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -1578,7 +1578,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
@@ -1781,7 +1781,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642:11111-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"3fb6287214999ddeafa7cd0e3e58bc5144c8678bb720f3b5e45e8fd32f333eb3:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1826,7 +1826,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"9eb41a5505d37607ac419321497a4f8c21cf0ee1f9b4a6b29aa04301aea5c7fd:11111-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"0b1f5aa55d045066ed91316b823a808060c12737e0575ab7cefe2335324108b0:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1871,7 +1871,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"5cc92ed0cea39e2b8de2dbc527dfb5980a3af9564bd1084d840b9787c7d0467e:11111-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"5bc602ecde93c947efe5899ae355f999986a1acbe610b1c0b9c468d738857555:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -2006,7 +2006,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"94cf2475103298caec361d72edf71b2809ce0253337967d447117817c89b71cc:11111-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +

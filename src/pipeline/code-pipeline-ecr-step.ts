@@ -36,7 +36,7 @@ export class CodePipelineEcrStep extends NonConstruct {
                 ECR_REGION: Stack.of(this.scope).region
             },
             buildEnvironment: {
-                buildImage: LinuxBuildImage.STANDARD_5_0,
+                buildImage: LinuxBuildImage.STANDARD_7_0,
                 privileged: true
             },
             commands: this.getCommands()

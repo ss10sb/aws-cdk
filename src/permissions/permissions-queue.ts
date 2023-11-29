@@ -21,7 +21,8 @@ export class PermissionsQueue {
     }
 
     static functionCanUseQueue(func: IFunction, queue: Queue, type: FunctionType): void {
-        const senders: FunctionType[] = [FunctionType.EVENT, FunctionType.SCHEDULED, FunctionType.WEB];
+        // the queue function needs "sendmessages"
+        const senders: FunctionType[] = [FunctionType.EVENT, FunctionType.QUEUE, FunctionType.SCHEDULED, FunctionType.WEB];
         const consumers: FunctionType[] = [FunctionType.QUEUE];
         if (senders.includes(type)) {
             queue.grantSendMessages(func.grantPrincipal);
@@ -47,7 +48,14 @@ export class PermissionsQueue {
     }
 
     static taskRoleCanUseQueue(taskDefinition: TaskDefinition, queue: Queue, type: TaskServiceType = TaskServiceType.TASK): void {
-        const senders: TaskServiceType[] = [TaskServiceType.TASK, TaskServiceType.SCHEDULED_TASK, TaskServiceType.WEB_SERVICE];
+        const senders: TaskServiceType[] = [
+            TaskServiceType.TASK,
+            TaskServiceType.SCHEDULED_TASK,
+            TaskServiceType.WEB_SERVICE,
+            TaskServiceType.RUN_ONCE_TASK,
+            TaskServiceType.CREATE_RUN_ONCE_TASK,
+            TaskServiceType.UPDATE_RUN_ONCE_TASK
+        ];
         const consumers: TaskServiceType[] = [TaskServiceType.QUEUE_SERVICE];
         if (senders.includes(type)) {
             queue.grantSendMessages(taskDefinition.taskRole);

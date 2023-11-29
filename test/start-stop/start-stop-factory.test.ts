@@ -28,6 +28,7 @@ describe('start stop factory', () => {
         });
         startStopFactory.createRules(cluster);
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
         templateHelper.expected('AWS::ECS::Cluster',  [
             {
                 key: 'cluster',
@@ -128,6 +129,7 @@ describe('start stop factory', () => {
                     Properties: {
                         Handler: 'index.handler',
                         Runtime: MatchHelper.startsWith('nodejs'),
+                        Timeout: 900,
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')
@@ -398,6 +400,7 @@ describe('start stop factory', () => {
                     Properties: {
                         Handler: 'index.handler',
                         Runtime: MatchHelper.startsWith('nodejs'),
+                        Timeout: 900,
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')

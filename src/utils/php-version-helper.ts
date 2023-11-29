@@ -26,8 +26,8 @@ export class PhpVersionHelper {
     static forAwsImage(version: PhpVersion): IBuildImage {
         const map = {
             [PhpVersion.PHP80]: LinuxBuildImage.STANDARD_5_0,
-            [PhpVersion.PHP81]: LinuxBuildImage.STANDARD_5_0,
-            [PhpVersion.PHP82]: LinuxBuildImage.STANDARD_6_0
+            [PhpVersion.PHP81]: LinuxBuildImage.STANDARD_6_0,
+            [PhpVersion.PHP82]: LinuxBuildImage.STANDARD_7_0
         };
         return map[version];
     }

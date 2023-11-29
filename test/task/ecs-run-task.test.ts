@@ -131,7 +131,8 @@ describe('ecs run task', () => {
                             ]
                         },
                         Handler: 'index.handler',
-                        Runtime: MatchHelper.startsWith('nodejs')
+                        Runtime: MatchHelper.startsWith('nodejs'),
+                        Timeout: 900,
                     },
                     DependsOn: [
                         Match.stringLikeRegexp('^LogRetention.*ServiceRoleDefaultPolicy.*'),
@@ -294,7 +295,8 @@ describe('ecs run task', () => {
                             ]
                         },
                         Handler: 'index.handler',
-                        Runtime: MatchHelper.startsWith('nodejs')
+                        Runtime: MatchHelper.startsWith('nodejs'),
+                        Timeout: 900
                     },
                     DependsOn: [
                         Match.stringLikeRegexp('^LogRetention.*ServiceRoleDefaultPolicy.*'),

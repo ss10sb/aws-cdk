@@ -512,7 +512,7 @@ module.exports = {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
@@ -606,7 +606,7 @@ module.exports = {
                             Value: 'us-pipeline'
                         }
                     ],
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -699,7 +699,7 @@ module.exports = {
                             Value: 'us-pipeline'
                         }
                     ],
-                    Image: 'aws/codebuild/standard:5.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -955,7 +955,7 @@ module.exports = {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'

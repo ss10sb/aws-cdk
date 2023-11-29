@@ -1,4 +1,4 @@
-import {BlockPublicAccess, Bucket, BucketEncryption, BucketProps, CorsRule} from "aws-cdk-lib/aws-s3";
+import {BlockPublicAccess, Bucket, BucketEncryption, BucketProps, CorsRule, ObjectOwnership} from "aws-cdk-lib/aws-s3";
 import {RemovalPolicy} from "aws-cdk-lib";
 import {Key} from "aws-cdk-lib/aws-kms";
 import {NonConstruct} from "../core/non-construct";
@@ -12,12 +12,14 @@ export interface S3Props {
     bucketKeyEnabled?: boolean;
     bucketName?: string;
     cors?: CorsRule[];
+    objectOwnership?: ObjectOwnership;
 }
 
 export class S3Bucket extends NonConstruct {
 
     readonly defaults: Record<string, any> = {
         autoDeleteObjects: false,
+        objectOwnership: ObjectOwnership.BUCKET_OWNER_ENFORCED,
         blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         removalPolicy: RemovalPolicy.RETAIN,
         enforceSSL: true,
@@ -39,7 +41,8 @@ export class S3Bucket extends NonConstruct {
             encryptionKey: props.encryptionKey ?? undefined,
             enforceSSL: this.defaults.enforceSSL,
             bucketKeyEnabled: props.bucketKeyEnabled ?? undefined,
-            cors: props.cors ?? undefined
+            cors: props.cors ?? undefined,
+            objectOwnership: props.objectOwnership ?? this.defaults.objectOwnership,
         }
     }
 }

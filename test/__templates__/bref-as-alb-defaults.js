@@ -280,7 +280,7 @@ module.exports = {
                 Runtime: 'nodejs18.x',
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: '5cc92ed0cea39e2b8de2dbc527dfb5980a3af9564bd1084d840b9787c7d0467e.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [

@@ -22,6 +22,7 @@ describe('s3', () => {
                 ]
             },
             "BucketName": "stack-bucket-foo",
+            "OwnershipControls": {"Rules": [{"ObjectOwnership": "BucketOwnerEnforced"}]},
             "PublicAccessBlockConfiguration": {
                 "BlockPublicAcls": true,
                 "BlockPublicPolicy": true,

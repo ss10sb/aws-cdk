@@ -114,6 +114,17 @@ module.exports = {
                         },
                         {
                             Action: [
+                                'sqs:SendMessage',
+                                'sqs:GetQueueAttributes',
+                                'sqs:GetQueueUrl'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']
+                            }
+                        },
+                        {
+                            Action: [
                                 'sqs:PurgeQueue',
                                 'sqs:GetQueueAttributes',
                                 'sqs:GetQueueUrl'

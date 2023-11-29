@@ -15,6 +15,7 @@ import path from "path";
 import {RetentionDays} from "aws-cdk-lib/aws-logs";
 import {ScheduledEvent, ScheduledEventProps} from "./scheduled-event";
 import {ProvisionedConcurrency, ProvisionedConcurrencyProps} from "./provisioned-concurrency";
+import {BrefRuntimeCompatibility} from "./bref-runtime-compatibility";
 
 
 export interface PhpBrefFunctionProps {
@@ -48,11 +49,13 @@ export class PhpBrefFunction extends NonConstruct {
     };
     readonly nameIncrementer: NameIncrementer;
     readonly factoryProps: PhpBrefFunctionFactoryProps;
+    readonly brefRuntimeCompatibility: BrefRuntimeCompatibility;
 
     constructor(scope: Construct, id: string, factoryProps: PhpBrefFunctionFactoryProps) {
         super(scope, id);
         this.factoryProps = factoryProps;
         this.nameIncrementer = new NameIncrementer();
+        this.brefRuntimeCompatibility = new BrefRuntimeCompatibility();
     }
 
 
@@ -177,6 +180,8 @@ export class PhpBrefFunction extends NonConstruct {
         const runtimes = this.getRuntimes(props);
         const layers: ILayerVersion[] = [];
         const baseName = NamingHelper.fromParts([funcName, 'layer']);
+        const type = this.getType(props);
+        this.checkRuntimesForCompatibility(runtimes, type);
         for (const runtime of runtimes) {
             const name = this.nameIncrementer.next(baseName);
             layers.push(LayerVersion.fromLayerVersionArn(
@@ -186,6 +191,13 @@ export class PhpBrefFunction extends NonConstruct {
             ));
         }
         return layers;
+    }
+
+    protected checkRuntimesForCompatibility(runtimes: BrefRuntime[], type: FunctionType): void {
+        const result = this.brefRuntimeCompatibility.checkRuntimes(runtimes, type);
+        if (!result.pass) {
+            console.error('Runtime compatibility issues', result.messages);
+        }
     }
 
     protected getRuntimes(props: PhpBrefFunctionProps): BrefRuntime[] {

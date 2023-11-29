@@ -643,7 +643,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"6cac021e249c10a5dc5ec7557af15b570f298c4fc5cec2bff59ebc007c9c386e"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"01abdb4a3407e777da9ae866dbcfe6992c807fd57a0209066fcbb6efe65dd9cd"}]'
                                 },
                                 InputArtifacts: [{Name: 'synth_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -1139,7 +1139,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
