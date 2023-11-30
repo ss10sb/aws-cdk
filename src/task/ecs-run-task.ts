@@ -45,7 +45,7 @@ export class EcsRunTask extends Construct implements IConnectable {
                     awsvpcConfiguration: {
                         assignPublicIp: 'DISABLED',
                         subnets: this.vpc.selectSubnets({
-                            subnetType: SubnetType.PRIVATE_WITH_NAT
+                            subnetType: SubnetType.PRIVATE_WITH_EGRESS
                         }).subnetIds,
                         securityGroups: [this.securityGroup.securityGroupId]
                     }

@@ -2,7 +2,8 @@ import {
     EcsServiceAndTaskConfigProps,
     Schedulable,
     SchedulableTypes,
-    TaskServiceType, Wrapper
+    TaskServiceType,
+    Wrapper
 } from "./task-definitions";
 import {Cluster, FargatePlatformVersion, TaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
@@ -11,6 +12,7 @@ import {ScheduledFargateTask} from "aws-cdk-lib/aws-ecs-patterns";
 import {TaskDefinitionFactory} from "./task-definition-factory";
 import {EcsRunTask, EcsRunTaskProps} from "../task/ecs-run-task";
 import {AbstractFactory} from "../core/abstract-factory";
+import {SecurityGroup} from "aws-cdk-lib/aws-ec2";
 
 export interface EcsTaskFactoryProps {
     readonly cluster: Cluster;
@@ -24,7 +26,7 @@ export interface EcsTaskConfigProps extends EcsServiceAndTaskConfigProps {
 }
 
 export interface EcsTaskWrapper extends Wrapper {
-    readonly wrapper: ScheduledFargateTask | EcsRunTask;
+    readonly wrapper: ScheduledFargateTask | EcsRunTask | Wrapper;
 }
 
 export class EcsTaskFactory extends AbstractFactory {
@@ -56,7 +58,7 @@ export class EcsTaskFactory extends AbstractFactory {
 
     private createFromTask(task: EcsTaskConfigProps): EcsTaskWrapper | null {
         const taskDefinition = this.getTaskDefinitionFactory().create(task.type, task.taskDefinition);
-        let resource: ScheduledFargateTask | EcsRunTask | undefined;
+        let resource: ScheduledFargateTask | EcsRunTask | Wrapper | undefined;
         if (task.type === TaskServiceType.SCHEDULED_TASK) {
             resource = this.createScheduledTask(task, taskDefinition);
         } else if (task.type === TaskServiceType.CREATE_RUN_ONCE_TASK) {
@@ -64,12 +66,21 @@ export class EcsTaskFactory extends AbstractFactory {
 
         } else if (task.type === TaskServiceType.UPDATE_RUN_ONCE_TASK) {
             resource = this.createRunOnceOnUpdate(task, taskDefinition);
+        } else if (task.type === TaskServiceType.RUN_ONCE_TASK) {
+            resource = this.createRunOnceNoEvent(task, taskDefinition);
         }
         return resource ? {
             type: task.type,
             taskDefinition: taskDefinition,
             wrapper: resource
         } : null;
+    }
+
+    private createRunOnceNoEvent(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): Wrapper {
+        return {
+            taskDefinition: taskDefinition,
+            type: task.type
+        }
     }
 
     private createRunOnceOnCreate(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): EcsRunTask {
