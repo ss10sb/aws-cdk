@@ -12,7 +12,6 @@ import {ScheduledFargateTask} from "aws-cdk-lib/aws-ecs-patterns";
 import {TaskDefinitionFactory} from "./task-definition-factory";
 import {EcsRunTask, EcsRunTaskProps} from "../task/ecs-run-task";
 import {AbstractFactory} from "../core/abstract-factory";
-import {SecurityGroup} from "aws-cdk-lib/aws-ec2";
 
 export interface EcsTaskFactoryProps {
     readonly cluster: Cluster;
@@ -23,10 +22,6 @@ export interface EcsTaskConfigProps extends EcsServiceAndTaskConfigProps {
     readonly skipCreateTask?: boolean;
     readonly schedule?: Schedulable;
     readonly enabled?: boolean;
-}
-
-export interface EcsTaskWrapper extends Wrapper {
-    readonly wrapper: ScheduledFargateTask | EcsRunTask | Wrapper;
 }
 
 export class EcsTaskFactory extends AbstractFactory {
@@ -41,8 +36,8 @@ export class EcsTaskFactory extends AbstractFactory {
         this.props = props;
     }
 
-    create(tasks: EcsTaskConfigProps[]): EcsTaskWrapper[] {
-        const taskWrappers: EcsTaskWrapper[] = [];
+    create(tasks: EcsTaskConfigProps[]): Wrapper[] {
+        const taskWrappers: Wrapper[] = [];
         for (const task of tasks) {
             const created = this.createFromTask(task);
             if (created) {
@@ -56,30 +51,40 @@ export class EcsTaskFactory extends AbstractFactory {
         return this.props.taskDefinitionFactory;
     }
 
-    private createFromTask(task: EcsTaskConfigProps): EcsTaskWrapper | null {
+    private createFromTask(task: EcsTaskConfigProps): Wrapper | null {
         const taskDefinition = this.getTaskDefinitionFactory().create(task.type, task.taskDefinition);
-        let resource: ScheduledFargateTask | EcsRunTask | Wrapper | undefined;
         if (task.type === TaskServiceType.SCHEDULED_TASK) {
-            resource = this.createScheduledTask(task, taskDefinition);
-        } else if (task.type === TaskServiceType.CREATE_RUN_ONCE_TASK) {
-            resource = this.createRunOnceOnCreate(task, taskDefinition);
-
-        } else if (task.type === TaskServiceType.UPDATE_RUN_ONCE_TASK) {
-            resource = this.createRunOnceOnUpdate(task, taskDefinition);
-        } else if (task.type === TaskServiceType.RUN_ONCE_TASK) {
-            resource = this.createRunOnceNoEvent(task, taskDefinition);
+            return {
+                type: task.type,
+                taskDefinition: taskDefinition,
+                resource: this.createScheduledTask(task, taskDefinition)
+            };
         }
-        return resource ? {
-            type: task.type,
-            taskDefinition: taskDefinition,
-            wrapper: resource
-        } : null;
+        if (task.type === TaskServiceType.CREATE_RUN_ONCE_TASK) {
+            return {
+                type: task.type,
+                taskDefinition: taskDefinition,
+                resource: this.createRunOnceOnCreate(task, taskDefinition)
+            };
+        }
+        if (task.type === TaskServiceType.UPDATE_RUN_ONCE_TASK) {
+            return {
+                type: task.type,
+                taskDefinition: taskDefinition,
+                resource: this.createRunOnceOnUpdate(task, taskDefinition)
+            };
+        }
+        if (task.type === TaskServiceType.RUN_ONCE_TASK) {
+            return this.createRunOnceNoEvent(task, taskDefinition);
+        }
+        return null;
     }
 
     private createRunOnceNoEvent(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): Wrapper {
         return {
             taskDefinition: taskDefinition,
-            type: task.type
+            type: task.type,
+            grantSecrets: true
         }
     }
 

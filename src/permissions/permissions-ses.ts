@@ -26,11 +26,7 @@ export class PermissionsSes {
     }
 
     static tasksServicesCanSendEmail(ts: FargateTasksAndServices): void {
-        this.wrappedCanSendEmail(ts.services);
-        this.wrappedCanSendEmail(ts.tasks);
-        if (ts.queue) {
-            this.wrappedCanSendEmail([ts.queue]);
-        }
+        this.wrappedCanSendEmail(ts.wrappers);
     }
 
     static wrappedCanSendEmail(wrapped: Wrapper[]): void {

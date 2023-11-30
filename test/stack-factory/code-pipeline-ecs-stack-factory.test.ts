@@ -199,8 +199,8 @@ describe('code pipeline ecs stack factory', () => {
             }
         });
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.inspect();
-        // templateHelper.template.templateMatches(getExpectedWithSuffixes());
+        // templateHelper.inspect();
+        templateHelper.template.templateMatches(getExpectedWithSuffixes());
     });
 
 });

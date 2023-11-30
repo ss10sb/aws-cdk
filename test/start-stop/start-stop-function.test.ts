@@ -103,6 +103,7 @@ describe('start stop function', () => {
                     Properties: {
                         Handler: 'index.handler',
                         Runtime: MatchHelper.startsWith('nodejs'),
+                        Timeout: 900,
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                             S3Key: MatchHelper.endsWith('zip')

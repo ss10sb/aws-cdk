@@ -39,10 +39,6 @@ export interface EcsStandardServiceConfigProps extends EcsServiceAndTaskConfigPr
     readonly attachToTargetGroup: boolean;
 }
 
-export interface EcsStandardServiceWrapper extends Wrapper {
-    readonly wrapper: BaseService;
-}
-
 export class EcsStandardServiceFactory extends AbstractFactory {
 
     readonly props: EcsStandardServiceFactoryProps;
@@ -57,8 +53,8 @@ export class EcsStandardServiceFactory extends AbstractFactory {
         this.props = props;
     }
 
-    create(services: EcsStandardServiceConfigProps[]): EcsStandardServiceWrapper[] {
-        const created: EcsStandardServiceWrapper[] = [];
+    create(services: EcsStandardServiceConfigProps[]): Wrapper[] {
+        const created: Wrapper[] = [];
         for (const serviceProps of services) {
             created.push(this.createService(this.props.cluster, this.props.targetGroup, serviceProps));
         }
@@ -69,7 +65,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
         return this.props.taskDefinitionFactory;
     }
 
-    private createService(cluster: Cluster, targetGroup: IApplicationTargetGroup, serviceProps: EcsStandardServiceConfigProps): EcsStandardServiceWrapper {
+    private createService(cluster: Cluster, targetGroup: IApplicationTargetGroup, serviceProps: EcsStandardServiceConfigProps): Wrapper {
         const name = this.getIncrementedName(`${this.id}-service-${serviceProps.type}`);
         const taskDefinition = this.getTaskDefinitionFactory().create(serviceProps.type, serviceProps.taskDefinition);
         const service = this.createStandardService({
@@ -82,7 +78,8 @@ export class EcsStandardServiceFactory extends AbstractFactory {
         return {
             type: serviceProps.type,
             taskDefinition: taskDefinition,
-            wrapper: service
+            resource: service,
+            enableExecuteCommand: (serviceProps.enableExecuteCommand ?? false)
         };
     }
 

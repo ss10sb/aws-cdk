@@ -6,13 +6,19 @@ import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
 export class PermissionsExecuteCommand {
 
     static tasksServicesCanExecuteCommands(ts: FargateTasksAndServices): void {
-        this.wrappedCanExecuteCommands(ts.services);
+        this.wrappedCanExecuteCommands(ts.wrappers);
     }
 
     static wrappedCanExecuteCommands(wrapped: Wrapper[]): void {
         for (const wrap of wrapped) {
-            this.taskRoleCanExecuteCommands(wrap.taskDefinition, wrap.type);
+            if (this.canExecuteCommand(wrap)) {
+                this.taskRoleCanExecuteCommands(wrap.taskDefinition, wrap.type);
+            }
         }
+    }
+
+    static canExecuteCommand(wrapper: Wrapper): boolean {
+        return (wrapper.enableExecuteCommand ?? false);
     }
 
     static taskRoleCanExecuteCommands(taskDefinition: TaskDefinition, type: TaskServiceType = TaskServiceType.TASK): void {

@@ -25,11 +25,7 @@ export class PermissionsDynamodb {
     }
 
     static tasksServicesCanReadWriteDynamoDb(ts: FargateTasksAndServices, dynamodb: Table): void {
-        this.wrappedCanReadWriteDynamoDb(ts.services, dynamodb);
-        this.wrappedCanReadWriteDynamoDb(ts.tasks, dynamodb);
-        if (ts.queue) {
-            this.wrappedCanReadWriteDynamoDb([ts.queue], dynamodb);
-        }
+        this.wrappedCanReadWriteDynamoDb(ts.wrappers, dynamodb);
     }
 
     static wrappedCanReadWriteDynamoDb(wrapped: Wrapper[], dynamodb: Table): void {

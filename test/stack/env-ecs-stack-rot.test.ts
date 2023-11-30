@@ -36,11 +36,10 @@ describe('env ecs stack run once task', () => {
         });
         envStack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(envStack));
-        templateHelper.inspect();
-        // const expected = require('../__templates__/env-stack');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/env-stack-rot');
+        templateHelper.template.templateMatches(expected);
     });
-
 });
 
 function getEnvConfig() {

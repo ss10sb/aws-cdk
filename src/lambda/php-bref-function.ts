@@ -8,7 +8,6 @@ import {IVpc} from "aws-cdk-lib/aws-ec2";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {NonConstruct} from "../core/non-construct";
 import {NameIncrementer} from "../utils/name-incrementer";
-import {Secrets} from "../secret/secrets";
 import {NamingHelper} from "../utils/naming-helper";
 import fs from "fs";
 import path from "path";

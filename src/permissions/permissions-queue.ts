@@ -34,11 +34,7 @@ export class PermissionsQueue {
     }
 
     static tasksServicesCanUseQueue(ts: FargateTasksAndServices, queue: Queue): void {
-        this.wrappedCanUseQueue(ts.services, queue);
-        this.wrappedCanUseQueue(ts.tasks, queue);
-        if (ts.queue) {
-            this.wrappedCanUseQueue([ts.queue], queue);
-        }
+        this.wrappedCanUseQueue(ts.wrappers, queue);
     }
 
     static wrappedCanUseQueue(wrapped: Wrapper[], queue: Queue): void {

@@ -1,15 +1,16 @@
 import {Construct} from "constructs";
 import {ContainerCommandFactory, ContainerCommandFactoryProps} from "./container-command-factory";
 import {ContainerFactory, ContainerFactoryProps} from "./container-factory";
-import {EcsQueueConfigProps, EcsQueueFactory, EcsQueueFactoryProps, EcsQueueWrapper} from "./ecs-queue-factory";
+import {EcsQueueConfigProps, EcsQueueFactory, EcsQueueFactoryProps} from "./ecs-queue-factory";
 import {TaskDefinitionFactory, TaskDefinitionFactoryProps} from "./task-definition-factory";
 import {
     EcsStandardServiceConfigProps,
     EcsStandardServiceFactory,
-    EcsStandardServiceFactoryProps, EcsStandardServiceWrapper
+    EcsStandardServiceFactoryProps
 } from "./ecs-standard-service-factory";
-import {EcsTaskConfigProps, EcsTaskFactory, EcsTaskFactoryProps, EcsTaskWrapper} from "./ecs-task-factory";
+import {EcsTaskConfigProps, EcsTaskFactory, EcsTaskFactoryProps} from "./ecs-task-factory";
 import {AbstractFactory} from "../core/abstract-factory";
+import {Wrapper} from "./task-definitions";
 
 export enum FargateFactories {
     COMMANDS = 'commands',
@@ -31,9 +32,7 @@ export interface FargateFactoryProps {
 }
 
 export interface FargateTasksAndServices {
-    tasks: EcsTaskWrapper[];
-    services: EcsStandardServiceWrapper[];
-    queue?: EcsQueueWrapper;
+    wrappers: Wrapper[];
 }
 
 export class FargateFactory extends AbstractFactory {
@@ -48,15 +47,15 @@ export class FargateFactory extends AbstractFactory {
     }
 
     create(tasks: EcsTaskConfigProps[], services: EcsStandardServiceConfigProps[], queueProps?: EcsQueueConfigProps): FargateTasksAndServices {
-        const allServices: FargateTasksAndServices = {
-            tasks: this.getEcsTaskFactory().create(tasks),
-            services: this.getEcsStandardServiceFactory().create(services),
-            queue: undefined
-        };
+        const wrappers: Wrapper[] = [];
+        wrappers.push(...this.getEcsTaskFactory().create(tasks));
+        wrappers.push(...this.getEcsStandardServiceFactory().create(services));
         if (queueProps) {
-            allServices.queue = this.getEcsQueueFactory().create(queueProps);
+            wrappers.push(this.getEcsQueueFactory().create(queueProps));
         }
-        return allServices;
+        return {
+            wrappers: wrappers
+        }
     }
 
     getFactory(factory: FargateFactories): AbstractFactory {

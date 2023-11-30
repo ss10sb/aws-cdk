@@ -101,11 +101,7 @@ export class PermissionsEcr {
     }
 
     static tasksServicesCanPullFromEcr(ts: FargateTasksAndServices, repositories: EcrRepositories): void {
-        this.wrappedCanPullFromEcr(ts.services, repositories);
-        this.wrappedCanPullFromEcr(ts.tasks, repositories);
-        if (ts.queue) {
-            this.wrappedCanPullFromEcr([ts.queue], repositories);
-        }
+        this.wrappedCanPullFromEcr(ts.wrappers, repositories);
     }
 
     static wrappedCanPullFromEcr(wrapped: Wrapper[], repositories: EcrRepositories): void {

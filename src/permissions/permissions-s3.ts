@@ -25,11 +25,7 @@ export class PermissionsS3 {
     }
 
     static tasksServicesCanReadWriteS3(ts: FargateTasksAndServices, s3: Bucket): void {
-        this.wrappedCanReadWriteS3(ts.services, s3);
-        this.wrappedCanReadWriteS3(ts.tasks, s3);
-        if (ts.queue) {
-            this.wrappedCanReadWriteS3([ts.queue], s3);
-        }
+        this.wrappedCanReadWriteS3(ts.wrappers, s3);
     }
 
     static wrappedCanReadWriteS3(wrapped: Wrapper[], s3: Bucket): void {

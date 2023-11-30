@@ -7,6 +7,7 @@ import {PermissionsDynamodb} from "./permissions-dynamodb";
 import {NonConstruct} from "../core/non-construct";
 import {EnvEcsStackServicesProps} from "../env/env-ecs-stack";
 import {PermissionsExecuteCommand} from "./permissions-execute-command";
+import {PermissionsSecret} from "./permissions-secret";
 
 export class PermissionsEnvEcsStack extends NonConstruct {
 
@@ -19,12 +20,19 @@ export class PermissionsEnvEcsStack extends NonConstruct {
     }
 
     private handlePermissions() {
+        this.secretPermissions();
         this.queuePermissions();
         this.s3Permissions();
         this.sesPermissions();
         this.startStopPermissions();
         this.tablePermissions();
         this.executeCommandPermissions();
+    }
+
+    private secretPermissions() {
+        if (this.props.secrets) {
+            PermissionsSecret.tasksServicesCanReadSecret(this.props.tasksAndServices, this.props.secrets);
+        }
     }
 
     private queuePermissions() {

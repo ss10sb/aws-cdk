@@ -34,10 +34,6 @@ export interface EcsQueueFactoryProps {
     readonly queue?: Queue;
 }
 
-export interface EcsQueueWrapper extends Wrapper {
-    readonly wrapper: QueueProcessingFargateService;
-}
-
 export class EcsQueueFactory extends AbstractFactory {
 
     readonly props: EcsQueueFactoryProps;
@@ -54,7 +50,7 @@ export class EcsQueueFactory extends AbstractFactory {
         this.props = props;
     }
 
-    create(props: EcsQueueConfigProps): EcsQueueWrapper {
+    create(props: EcsQueueConfigProps): Wrapper {
         const name = this.getIncrementedName(`${this.id}-service-${props.type}`);
         const service = new QueueProcessingFargateService(this.scope, name, {
             image: this.getContainerImage(props.image),
@@ -79,7 +75,7 @@ export class EcsQueueFactory extends AbstractFactory {
         return {
             type: props.type,
             taskDefinition: service.taskDefinition,
-            wrapper: service,
+            resource: service,
         };
     }
 

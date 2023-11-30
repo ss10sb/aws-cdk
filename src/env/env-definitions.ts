@@ -4,6 +4,8 @@ import {Bucket} from "aws-cdk-lib/aws-s3";
 import {ARecord} from "aws-cdk-lib/aws-route53";
 import {VerifySesDomain} from "../ses/verify-ses-domain";
 import {EmailIdentity} from "aws-cdk-lib/aws-ses";
+import {Secrets} from "../secret/secrets";
+import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 
 export enum EnvBuildType {
     ECS,
@@ -26,6 +28,7 @@ export interface EnvStackServicesProps {
     readonly sesVerify?: VerifySesDomain;
     readonly dkimIdentity?: EmailIdentity;
     readonly table?: Table;
+    readonly secrets?: ISecret;
 }
 
 export interface EnvEnvironmentProps {

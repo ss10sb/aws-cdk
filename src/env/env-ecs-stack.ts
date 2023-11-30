@@ -73,6 +73,8 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
         const cluster = this.createCluster();
+        Secrets.secret = this.lookups.secret;
+        const secrets = new Secrets(this, this.node.id);
         const tasksAndServices = this.createTasksAndServices({
             cluster: cluster,
             targetGroup: targetGroup,
@@ -83,7 +85,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
                 queue: queue,
                 s3: s3
             })
-        });
+        }, secrets);
         const startStopFactory = this.createStartStopFactory(cluster);
         new PermissionsEnvEcsStack(this, this.node.id, {
             cluster: cluster,
@@ -96,7 +98,8 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             s3: s3,
             sesVerify: sesVerify,
             startStop: startStopFactory,
-            table: table
+            table: table,
+            secrets: this.lookups.secret
         });
     }
 
@@ -121,8 +124,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         }
     }
 
-    private createTasksAndServices(props: EnvTasksAndServicesProps): FargateTasksAndServices {
-        const secrets = new Secrets(this, this.node.id);
+    private createTasksAndServices(props: EnvTasksAndServicesProps, secrets: Secrets): FargateTasksAndServices {
         const factory = new FargateFactory(this, this.node.id, {
             commandFactoryProps: {},
             containerFactoryProps: {

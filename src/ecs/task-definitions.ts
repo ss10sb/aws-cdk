@@ -1,9 +1,12 @@
 import {
+    BaseService,
     FargatePlatformVersion,
     TaskDefinition
 } from "aws-cdk-lib/aws-ecs";
 import {CronOptions} from "aws-cdk-lib/aws-events";
 import {TaskDefinitionProps} from "./task-definition-factory";
+import {QueueProcessingFargateService, ScheduledFargateTask} from "aws-cdk-lib/aws-ecs-patterns";
+import {EcsRunTask} from "../task/ecs-run-task";
 
 export enum TaskServiceType {
     WEB_SERVICE = 'web',
@@ -51,4 +54,7 @@ export interface EcsServiceAndTaskConfigProps extends BaseServiceAndTaskProps {
 export interface Wrapper {
     readonly taskDefinition: TaskDefinition;
     readonly type: TaskServiceType;
+    readonly grantSecrets?: boolean;
+    readonly enableExecuteCommand?: boolean;
+    readonly resource?: ScheduledFargateTask | EcsRunTask | BaseService | QueueProcessingFargateService | undefined;
 }
