@@ -57,7 +57,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
             'npm run prod',
             'rm -rf node_modules tests',
             'composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress',
-            'composer dump-autoload --optimize --classmap-authoritative',
+            'AWS_BUCKET="none" composer dump-autoload --optimize --classmap-authoritative',
             'php artisan route:cache',
             'rm -rf vendor/bin',
             'cd ..',
