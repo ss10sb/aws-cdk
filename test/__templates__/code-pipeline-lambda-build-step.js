@@ -590,7 +590,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"c82656e04647ce93b09fe97c060743c806a3df7339f5ca1ed990ecb84a87012c"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"18b662cf4d54214628bd209b1762fbb4875260ae8a1b4ec83031bd5496709117"}]'
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'build-build-step',
@@ -821,7 +821,7 @@ module.exports = {
                         '    "build": {\n' +
                         '      "commands": [\n' +
                         '        "cd codebase",\n' +
-                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public && rm .env",\n' +
+                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public && rm -f .env",\n' +
                         '        "npm ci",\n' +
                         '        "npm run prod",\n' +
                         '        "rm -rf node_modules tests",\n' +

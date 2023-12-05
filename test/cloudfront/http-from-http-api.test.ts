@@ -6,7 +6,7 @@ import {BrefRuntime} from "../../src/lambda/bref-definitions";
 import {PhpHttpApi} from "../../src/lambda/php-http-api";
 import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
-import {HttpApi} from "@aws-cdk/aws-apigatewayv2-alpha";
+import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
 import {MatchHelper} from "../../src/utils/testing/match-helper";
 
 describe('http from http api', () => {
