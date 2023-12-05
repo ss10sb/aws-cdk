@@ -1,6 +1,6 @@
 import {NonConstruct} from "../core/non-construct";
 import {AuthorizerProps, AuthorizerResult} from "./lambda-definitions";
-import {HttpLambdaAuthorizer} from "@aws-cdk/aws-apigatewayv2-authorizers-alpha";
+import {HttpLambdaAuthorizer} from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import {Duration} from "aws-cdk-lib";
 import {Code, Function, IFunction, Runtime} from "aws-cdk-lib/aws-lambda";
 import path from "path";

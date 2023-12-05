@@ -4,8 +4,8 @@ import {
     HttpApi,
     IHttpRouteAuthorizer, MappingValue,
     ParameterMapping
-} from '@aws-cdk/aws-apigatewayv2-alpha';
-import {HttpLambdaIntegration} from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+} from 'aws-cdk-lib/aws-apigatewayv2';
+import {HttpLambdaIntegration} from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import {NonConstruct} from "../core/non-construct";
 import {LogGroup, LogGroupProps, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {RemovalPolicy} from "aws-cdk-lib";

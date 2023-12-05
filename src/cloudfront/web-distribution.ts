@@ -20,7 +20,7 @@ import {
     SSLMethod,
     ViewerProtocolPolicy
 } from "aws-cdk-lib/aws-cloudfront";
-import {HttpApi} from "@aws-cdk/aws-apigatewayv2-alpha";
+import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
 import {RestApiOrigin, S3Origin} from "aws-cdk-lib/aws-cloudfront-origins";
 import {IBucket} from "aws-cdk-lib/aws-s3";
 import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";

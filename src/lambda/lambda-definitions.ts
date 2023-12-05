@@ -3,7 +3,7 @@ import {PhpBrefFunctionProps} from "./php-bref-function";
 import {QueueConfigProps} from "../sqs/sqs-definitions";
 import {LogGroupProps} from "aws-cdk-lib/aws-logs";
 import {DomainNameOptions, IAuthorizer as IAuthV1, LambdaRestApi} from "aws-cdk-lib/aws-apigateway";
-import {HttpApi, IAuthorizer as IAuthV2, IHttpRouteAuthorizer} from "@aws-cdk/aws-apigatewayv2-alpha";
+import {HttpApi, IAuthorizer as IAuthV2, IHttpRouteAuthorizer} from "aws-cdk-lib/aws-apigatewayv2";
 import {IHostedZone} from "aws-cdk-lib/aws-route53";
 
 export enum ApiType {

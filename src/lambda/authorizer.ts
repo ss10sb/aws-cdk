@@ -2,7 +2,7 @@ import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {IdentitySource, RequestAuthorizer} from "aws-cdk-lib/aws-apigateway";
 import {AuthorizerProps} from "./lambda-definitions";
 import {AuthorizerBase} from "./authorizer-base";
-import {HttpLambdaAuthorizer} from "@aws-cdk/aws-apigatewayv2-authorizers-alpha";
+import {HttpLambdaAuthorizer} from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 
 
 export class Authorizer extends AuthorizerBase {

@@ -1,6 +1,6 @@
 import {OriginBase, OriginSslPolicy, OriginProtocolPolicy, CfnDistribution} from "aws-cdk-lib/aws-cloudfront";
-import {HttpApi} from "@aws-cdk/aws-apigatewayv2-alpha";
 import {Fn} from "aws-cdk-lib";
+import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
 
 export interface HttpApiOriginProps {
     /**

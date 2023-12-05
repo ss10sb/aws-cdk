@@ -1,6 +1,6 @@
 import {NonConstruct} from "../core/non-construct";
 import {OriginProtocolPolicy, OriginSslPolicy} from "aws-cdk-lib/aws-cloudfront";
-import {HttpApi} from "@aws-cdk/aws-apigatewayv2-alpha";
+import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
 import {HttpOrigin, HttpOriginProps} from "aws-cdk-lib/aws-cloudfront-origins";
 import {Fn} from "aws-cdk-lib";
 

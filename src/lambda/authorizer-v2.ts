@@ -1,6 +1,6 @@
 import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {Duration} from "aws-cdk-lib";
-import {HttpLambdaAuthorizer} from "@aws-cdk/aws-apigatewayv2-authorizers-alpha";
+import {HttpLambdaAuthorizer} from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import {AuthorizerProps, AuthorizerResult} from "./lambda-definitions";
 import {AuthorizerBase} from "./authorizer-base";
 import {RequestAuthorizer} from "aws-cdk-lib/aws-apigateway";

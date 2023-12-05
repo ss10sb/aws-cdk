@@ -52,7 +52,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
     protected getCommands(): string[] {
         return [
             'cd codebase',
-            'mv resources.copy resources && mv config.copy config && mv public.copy public && rm .env',
+            'mv resources.copy resources && mv config.copy config && mv public.copy public && rm -f .env',
             'npm ci',
             'npm run prod',
             'rm -rf node_modules tests',
