@@ -171,6 +171,7 @@ export class PhpBrefFunction extends NonConstruct {
 
     protected addSecretsAsLookup(keys: string[], secret: ISecret, env: Record<string, string>, props: PhpBrefFunctionProps): Record<string, string> {
         const prepend = props.prependSecretId ?? 'bref-secretsmanager:';
+        env['BREF_LOAD_SECRETS'] = 'bref-ssm:loadOnly';
         env['SECRETS_LOOKUP'] = `${prepend}${secret.secretArn}`;
         return env;
     }

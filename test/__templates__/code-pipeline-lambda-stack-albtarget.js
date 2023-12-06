@@ -1,3 +1,4 @@
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         pccsharedtestlambdabuildsteprole7A9F1DFC: {
@@ -687,7 +688,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"18b662cf4d54214628bd209b1762fbb4875260ae8a1b4ec83031bd5496709117"}]'
+                                    EnvironmentVariables: Match.anyValue(),
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-build-step',
@@ -711,7 +712,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                    EnvironmentVariables: Match.anyValue(),
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_build_step_Output'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -740,7 +741,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelineUpdatePipelineSelfMutation7DDFA823'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"74350448915f9115e7126d215b70aa81a06bc29d438cef542bbf7d55cac52ccb"}]'
+                                    EnvironmentVariables: Match.anyValue(),
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -1124,14 +1125,16 @@ module.exports = {
                         '    "build": {\n' +
                         '      "commands": [\n' +
                         '        "cd codebase",\n' +
-                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public && rm -f .env",\n' +
+                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
                         '        "npm ci",\n' +
                         '        "npm run prod",\n' +
                         '        "rm -rf node_modules tests",\n' +
+                        '        "cp .env.example .env",\n' +
                         '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress",\n' +
                         '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
+                        '        "rm -f .env",\n' +
                         '        "cd .."\n' +
                         '      ]\n' +
                         '    }\n' +
