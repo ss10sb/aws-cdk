@@ -590,7 +590,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinecodepipelinePipelineBuildbuildbuildstepB76B66EB'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"18b662cf4d54214628bd209b1762fbb4875260ae8a1b4ec83031bd5496709117"}]'
+                                    EnvironmentVariables: Match.anyValue(),
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'build-build-step',
@@ -614,7 +614,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinecodepipelinePipelineBuildsynthsynthstepCdkBuildProjectA8521E6B'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                                    EnvironmentVariables: Match.anyValue(),
                                 },
                                 InputArtifacts: [{Name: 'build_build_step_Output'}],
                                 Name: 'synth-synth-step',
@@ -643,7 +643,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"01abdb4a3407e777da9ae866dbcfe6992c807fd57a0209066fcbb6efe65dd9cd"}]'
+                                    EnvironmentVariables: Match.anyValue(),
                                 },
                                 InputArtifacts: [{Name: 'synth_synth_step_Output'}],
                                 Name: 'SelfMutate',
@@ -821,14 +821,16 @@ module.exports = {
                         '    "build": {\n' +
                         '      "commands": [\n' +
                         '        "cd codebase",\n' +
-                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public && rm -f .env",\n' +
+                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
                         '        "npm ci",\n' +
                         '        "npm run prod",\n' +
                         '        "rm -rf node_modules tests",\n' +
+                        '        "cp .env.example .env",\n' +
                         '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress",\n' +
                         '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
+                        '        "rm -f .env",\n' +
                         '        "cd .."\n' +
                         '      ]\n' +
                         '    }\n' +

@@ -40,7 +40,9 @@ export class StaticFileProvider {
         if (fs.existsSync(this.baseDirectory)) {
             for (const fileName of fs.readdirSync(this.baseDirectory)) {
                 const fullPath = path.resolve(this.baseDirectory, fileName);
-                fs.rmSync(fullPath);
+                if (fs.existsSync(fullPath)) {
+                    fs.rmSync(fullPath);
+                }
             }
             fs.rmdirSync(this.baseDirectory);
         }
