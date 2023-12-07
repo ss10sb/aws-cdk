@@ -18,11 +18,14 @@ export class PreBuildLookups extends NonConstruct {
     albListener: IApplicationListener;
     distribution?: IDistribution;
     secret?: ISecret;
+    sharedSecret?: ISecret;
     buildType: EnvBuildType;
+    secrets: Secrets;
 
     constructor(scope: Construct, id: string, config: EnvConfig, buildType: EnvBuildType) {
         super(scope, id);
         resetStaticProps();
+        this.secrets = new Secrets(this.scope, this.id);
         this.buildType = buildType;
         const albArn = AlbHelper.getAlbArnFromConfigOrParam(this.scope, config);
         this.albListener = AlbHelper.getApplicationListener(this.scope, config, albArn);
@@ -37,6 +40,9 @@ export class PreBuildLookups extends NonConstruct {
         } else {
             this.secret = this.getSecretByName();
         }
+        if (config.Parameters.sharedSecretArn) {
+            this.sharedSecret = this.getSharedSecret(config.Parameters.sharedSecretArn);
+        }
     }
 
     setDistribution(distribution: IDistribution): void {
@@ -44,13 +50,15 @@ export class PreBuildLookups extends NonConstruct {
     }
 
     getSecretByArn(arn: string): ISecret | undefined {
-        const secrets = new Secrets(this.scope, this.id);
-        return secrets.fetchByArn(arn);
+        return this.secrets.fetchByArn(arn);
     }
 
     getSecretByName(): ISecret | undefined {
-        const secrets = new Secrets(this.scope, this.id);
-        return secrets.fetch();
+        return this.secrets.fetch();
+    }
+
+    getSharedSecret(arn: string): ISecret | undefined {
+        return this.secrets.fetchShared(arn);
     }
 
     getAliasTarget(): IApplicationLoadBalancer | IDistribution {

@@ -1126,15 +1126,15 @@ module.exports = {
                         '      "commands": [\n' +
                         '        "cd codebase",\n' +
                         '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
-                        '        "npm ci",\n' +
-                        '        "npm run prod",\n' +
-                        '        "rm -rf node_modules tests",\n' +
                         '        "cp .env.example .env",\n' +
                         '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress",\n' +
                         '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
                         '        "rm -f .env",\n' +
+                        '        "npm ci",\n' +
+                        '        "npm run prod",\n' +
+                        '        "rm -rf node_modules tests",\n' +
                         '        "cd .."\n' +
                         '      ]\n' +
                         '    }\n' +

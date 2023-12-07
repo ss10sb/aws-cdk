@@ -47,10 +47,12 @@ export interface EnvParameters extends BaseParameters {
     readonly alarmEmails?: string[];
     readonly s3?: S3Props;
     readonly secretKeys?: string[];
+    readonly sharedSecretKeys?: string[];
     readonly steps?: Record<string, object>;
     readonly buildType?: EnvBuildType;
     readonly endpointType?: EnvEndpointType;
     readonly certificates?: DnsValidatedCertificateProps[];
+    readonly sharedSecretArn?: string;
 }
 
 export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
@@ -227,7 +229,10 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
             props['AWS_BUCKET'] = envProps.s3.bucketName;
         }
         if (this.lookups.secret) {
-            props['AWS_SECRET_ARN'] = this.lookups.secret.secretFullArn ?? '';
+            props['AWS_SECRET_ARN'] = this.lookups.secret?.secretFullArn ?? this.lookups.secret?.secretArn;
+        }
+        if (this.lookups.sharedSecret) {
+            props['AWS_SHARED_SECRET_ARN'] = this.lookups.sharedSecret?.secretFullArn ?? this.lookups.sharedSecret?.secretArn;
         }
         props['AWS_APP_NAME'] = this.node.id;
         props['CAN_RUN_CREATE'] = this.config.Parameters?.canCreateTask === false ? '0' : '1';

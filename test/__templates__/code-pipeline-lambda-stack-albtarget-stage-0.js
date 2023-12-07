@@ -539,7 +539,16 @@ module.exports = {
                         MAIL_FROM_ADDRESS: 'no-reply@test.sdlc.example.edu',
                         IMPORTER_FROM: 'importer-no-reply@test.sdlc.example.edu',
                         DYNAMODB_CACHE_TABLE: { Ref: 'pccsdlctestcacheFE02D1F3' },
-                        AWS_SECRET_ARN: '',
+                  AWS_SECRET_ARN: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        'arn:',
+                        { Ref: 'AWS::Partition' },
+                        ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment'
+                      ]
+                    ]
+                  },
                         AWS_APP_NAME: 'pcc-sdlc-test',
                         CAN_RUN_CREATE: '1',
                         S3_ASSET_URL: {

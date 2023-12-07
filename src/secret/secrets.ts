@@ -3,23 +3,38 @@ import {SecretItem} from "./secret-definitions";
 import {aws_ecs, SecretValue} from "aws-cdk-lib";
 import {NonConstruct} from "../core/non-construct";
 import {SecretConfigHelper} from "../utils/secret-config-helper";
+import {NameIncrementer} from "../utils/name-incrementer";
 
 export class Secrets extends NonConstruct {
 
     static secret?: ISecret;
 
+    static sharedSecret?: ISecret;
+
+    static cachedSecrets: Record<string, ISecret> = {}
+
+    nameIncrementer?: NameIncrementer;
+
     fetch(): ISecret {
         if (!Secrets.secret) {
-            Secrets.secret = Secret.fromSecretNameV2(this.scope, `${this.id}-secret-lookup`, this.getSecretName());
+            Secrets.secret = Secret.fromSecretNameV2(this.scope, this.getIncrementedName(`${this.id}-secret-lookup`), this.getSecretName());
+            Secrets.cachedSecrets[Secrets.secret.secretFullArn ?? Secrets.secret.secretArn] = Secrets.secret;
         }
         return Secrets.secret;
     }
 
-    fetchByArn(arn: string): ISecret {
-        if (!Secrets.secret) {
-            Secrets.secret = Secret.fromSecretCompleteArn(this.scope, `${this.id}-secret-lookup-arn`, arn);
+    fetchShared(arn: string): ISecret {
+        if (!Secrets.sharedSecret) {
+            Secrets.sharedSecret = this.fetchByArn(arn);
         }
-        return Secrets.secret;
+        return Secrets.sharedSecret;
+    }
+
+    fetchByArn(arn: string): ISecret {
+        if (!Secrets.cachedSecrets[arn]) {
+            Secrets.cachedSecrets[arn] = Secret.fromSecretCompleteArn(this.scope, this.getIncrementedName(`${this.id}-secret-lookup-arn`), arn);
+        }
+        return Secrets.cachedSecrets[arn];
     }
 
     getEcsSecretsFromSecret(keys: string[], secret: ISecret): Record<string, aws_ecs.Secret> {
@@ -30,9 +45,15 @@ export class Secrets extends NonConstruct {
         return secrets;
     }
 
-    getEcsSecrets(keys: string[]): Record<string, aws_ecs.Secret> {
-        const secret = this.fetch();
-        return this.getEcsSecretsFromSecret(keys, secret);
+    getEcsSecrets(keys: string[], shared = false): Record<string, aws_ecs.Secret> {
+        let secret = Secrets.secret;
+        if (shared) {
+            secret = Secrets.sharedSecret;
+        }
+        if (secret) {
+            return this.getEcsSecretsFromSecret(keys, secret);
+        }
+        return {};
     }
 
     static getReferencesFromSecret(keys: string[], secret: ISecret): Record<string, string> {
@@ -74,5 +95,16 @@ export class Secrets extends NonConstruct {
 
     private convertSecretItemsToJsonString(secretItems: SecretItem[]): string {
         return JSON.stringify(SecretConfigHelper.convertFromSecretItemsToRecords(secretItems));
+    }
+
+    getIncrementedName(name: string): string {
+        return this.getNameIncrementer().next(name);
+    }
+
+    private getNameIncrementer(): NameIncrementer {
+        if (!this.nameIncrementer) {
+            this.nameIncrementer = new NameIncrementer();
+        }
+        return this.nameIncrementer;
     }
 }

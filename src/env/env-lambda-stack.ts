@@ -19,6 +19,7 @@ import {BrefAsAlbTarget, BrefAsAlbTargetProps, BrefAsAlbTargetResult} from "../l
 export interface EnvLambdaStackServicesProps extends EnvStackServicesProps {
     readonly functions: Functions;
     readonly secret?: ISecret;
+    readonly sharedSecret?: ISecret;
 }
 
 export interface EnvLambdaParameters extends EnvParameters {
@@ -57,6 +58,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         this.functionFactory = new PhpBrefFunction(this, this.node.id, {
             vpc: this.lookups.vpc,
             secret: this.lookups.secret,
+            sharedSecret: this.lookups.sharedSecret,
             environment: this.getEnvironment({
                 table: table,
                 queue: queue,

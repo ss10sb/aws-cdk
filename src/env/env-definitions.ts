@@ -29,6 +29,7 @@ export interface EnvStackServicesProps {
     readonly dkimIdentity?: EmailIdentity;
     readonly table?: Table;
     readonly secrets?: ISecret;
+    readonly sharedSecrets?: ISecret;
 }
 
 export interface EnvEnvironmentProps {

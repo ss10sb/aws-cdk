@@ -99,7 +99,8 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             sesVerify: sesVerify,
             startStop: startStopFactory,
             table: table,
-            secrets: this.lookups.secret
+            secrets: this.lookups.secret,
+            sharedSecrets: this.lookups.sharedSecret
         });
     }
 
@@ -130,6 +131,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             containerFactoryProps: {
                 repositoryFactory: this.envProps.repositoryFactory,
                 secretKeys: this.config.Parameters?.secretKeys,
+                sharedSecretKeys: this.config.Parameters?.sharedSecretKeys,
                 environment: props.environment,
                 secrets: secrets
             },
@@ -137,6 +139,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
                 cluster: props.cluster,
                 repositoryFactory: this.envProps.repositoryFactory,
                 secretKeys: this.config.Parameters?.secretKeys,
+                sharedSecretKeys: this.config.Parameters?.sharedSecretKeys,
                 environment: props.environment,
                 secrets: secrets,
                 queue: props.queue

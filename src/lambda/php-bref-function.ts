@@ -36,6 +36,7 @@ export interface PhpBrefFunctionProps {
 export interface PhpBrefFunctionFactoryProps {
     vpc?: IVpc;
     secret?: ISecret;
+    sharedSecret?: ISecret;
     environment: { [key: string]: string };
     secretKeys: string[];
 }
@@ -158,8 +159,19 @@ export class PhpBrefFunction extends NonConstruct {
     }
 
     protected addSecrets(env: Record<string, string>, props: PhpBrefFunctionProps): Record<string, string> {
+        if (this.factoryProps.sharedSecret) {
+            env['BREF_LOAD_SECRETS'] = 'bref-ssm:loadOnly'; // trigger secret loader
+            this.addSecretsAsLookup(
+                'SHARED_SECRETS_LOOKUP',
+                this.factoryProps.secretKeys ?? [],
+                this.factoryProps.sharedSecret,
+                env,
+                props);
+        }
         if (this.factoryProps.secret) {
-            return this.addSecretsAsLookup(
+            env['BREF_LOAD_SECRETS'] = 'bref-ssm:loadOnly'; // trigger secret loader
+            this.addSecretsAsLookup(
+                'SECRETS_LOOKUP',
                 this.factoryProps.secretKeys ?? [],
                 this.factoryProps.secret,
                 env,
@@ -169,10 +181,9 @@ export class PhpBrefFunction extends NonConstruct {
         return env;
     }
 
-    protected addSecretsAsLookup(keys: string[], secret: ISecret, env: Record<string, string>, props: PhpBrefFunctionProps): Record<string, string> {
+    protected addSecretsAsLookup(name: string, keys: string[], secret: ISecret, env: Record<string, string>, props: PhpBrefFunctionProps): Record<string, string> {
         const prepend = props.prependSecretId ?? 'bref-secretsmanager:';
-        env['BREF_LOAD_SECRETS'] = 'bref-ssm:loadOnly';
-        env['SECRETS_LOOKUP'] = `${prepend}${secret.secretArn}`;
+        env[name] = `${prepend}${secret.secretArn}`;
         return env;
     }
 

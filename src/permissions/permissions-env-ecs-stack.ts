@@ -20,6 +20,7 @@ export class PermissionsEnvEcsStack extends NonConstruct {
     }
 
     private handlePermissions() {
+        this.sharedSecretPermissions();
         this.secretPermissions();
         this.queuePermissions();
         this.s3Permissions();
@@ -27,6 +28,12 @@ export class PermissionsEnvEcsStack extends NonConstruct {
         this.startStopPermissions();
         this.tablePermissions();
         this.executeCommandPermissions();
+    }
+
+    private sharedSecretPermissions() {
+        if (this.props.sharedSecrets) {
+            PermissionsSecret.tasksServicesCanReadSecret(this.props.tasksAndServices, this.props.sharedSecrets);
+        }
     }
 
     private secretPermissions() {

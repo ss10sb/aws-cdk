@@ -751,7 +751,19 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
-                            {Name: 'AWS_SECRET_ARN', Value: ''},
+                    {
+                      Name: 'AWS_SECRET_ARN',
+                      Value: {
+                        'Fn::Join': [
+                          '',
+                          [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
+                          ]
+                        ]
+                      }
+                    },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],

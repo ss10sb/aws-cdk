@@ -28,6 +28,7 @@ export interface EcsQueueFactoryProps {
     readonly cluster: Cluster;
     readonly repositoryFactory: EcrRepositoryFactory;
     readonly secretKeys?: string[];
+    readonly sharedSecretKeys?: string[];
     readonly environment?: Record<string, string>;
     readonly secrets: Secrets;
     readonly commandFactory: ContainerCommandFactory;
@@ -100,10 +101,18 @@ export class EcsQueueFactory extends AbstractFactory {
     }
 
     private getEcsSecrets(hasSecrets: boolean): Record<string, Secret> {
+        const secrets = {};
         if (hasSecrets) {
-            return this.getSecrets().getEcsSecrets(this.props.secretKeys ?? []);
+            this.addSecrets(this.getSecrets().getEcsSecrets(this.props.secretKeys ?? []), secrets);
+            this.addSecrets(this.getSecrets().getEcsSecrets(this.props.sharedSecretKeys ?? [], true), secrets);
         }
-        return {};
+        return secrets;
+    }
+
+    private addSecrets(from: Record<string, Secret>, to: Record<string, Secret>): void {
+        for (const [key, secret] of Object.entries(from)) {
+            to[key] = secret;
+        }
     }
 
     private getSecrets(): Secrets {

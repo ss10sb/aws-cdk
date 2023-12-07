@@ -49,6 +49,38 @@ describe('ecs queue factory', () => {
         templateHelper.template.templateMatches(expected);
     });
 
+    it('should create queue factory with shared secrets', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const cluster = new Cluster(stack, 'cluster', {
+            vpc: VpcHelper.getVpcById(stack, 'vpcId')
+        });
+        const ecrRepositories = new EcrRepositories('my-repos', ecrRepoProps);
+        const secrets = new Secrets(stack, 'stack');
+        secrets.fetch();
+        secrets.fetchShared('arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456');
+        const ecsQueueFactory = new EcsQueueFactory(stack, 'queue', {
+            cluster: cluster,
+            repositoryFactory: new EcrRepositoryFactory(stack, 'ecr-repos', ecrRepositories),
+            secretKeys: ['FOO'],
+            sharedSecretKeys: ['BAR'],
+            secrets: secrets,
+            commandFactory: new ContainerCommandFactory(stack, 'commands', {})
+        });
+        ecsQueueFactory.create({
+            hasSecrets: true,
+            type: TaskServiceType.QUEUE_SERVICE,
+            image: EcrRepositoryType.PHPFPM,
+            cpu: 256
+        });
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/ecs-queue-factory-with-shared-secrets');
+        templateHelper.template.templateMatches(expected);
+    });
+
     it('should create queue factory with premade queue', () => {
         const app = new App();
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};

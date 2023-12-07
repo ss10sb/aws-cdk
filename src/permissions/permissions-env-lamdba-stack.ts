@@ -23,6 +23,7 @@ export class PermissionsEnvLambdaStack extends NonConstruct {
         this.sesPermissions();
         this.tablePermissions();
         this.secretPermissions();
+        this.sharedSecretPermissions();
     }
 
     private queuePermissions() {
@@ -49,6 +50,12 @@ export class PermissionsEnvLambdaStack extends NonConstruct {
     private secretPermissions() {
         if (this.props.secret) {
             PermissionsSecret.functionsCanReadSecret(this.props.functions, this.props.secret);
+        }
+    }
+
+    private sharedSecretPermissions() {
+        if (this.props.sharedSecret) {
+            PermissionsSecret.functionsCanReadSecret(this.props.functions, this.props.sharedSecret);
         }
     }
 
