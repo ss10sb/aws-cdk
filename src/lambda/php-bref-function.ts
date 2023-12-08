@@ -63,7 +63,7 @@ export class PhpBrefFunction extends NonConstruct {
         const funcName = this.nameIncrementer.next(this.mixNameWithId(`${this.getType(props)}-fn`));
         const func = new Function(this.scope, funcName, {
             functionName: funcName,
-            runtime: Runtime.PROVIDED_AL2023,
+            runtime: Runtime.PROVIDED_AL2,
             handler: this.getHandler(props),
             layers: this.getLayers(funcName, props),
             code: Code.fromAsset(this.getAppPath(props.appPath), {
