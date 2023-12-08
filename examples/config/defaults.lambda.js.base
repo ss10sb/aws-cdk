@@ -38,6 +38,8 @@ module.exports = {
             Environment: ConfigEnvironments.SDLC,
             Version: "0.0.0",
             Parameters: {
+                sharedSecretArn: 'arn:aws:secretsmanager:us-west-2:11111:secret:pcc-prod-shared-secrets/environment-ABC123',
+                sharedSecretKeys: ['AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID'],
                 buildType: EnvBuildType.LAMBDA,
                 endpointType: EnvEndpointType.CLOUDFRONT,
                 alarmEmails: ['CHANGEME@phoenixcollege.edu'],

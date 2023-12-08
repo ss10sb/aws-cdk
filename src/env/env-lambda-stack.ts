@@ -101,7 +101,8 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             s3: s3,
             sesVerify: sesVerify,
             table: table,
-            secret: this.lookups.secret
+            secret: this.lookups.secret,
+            sharedSecret: this.lookups.sharedSecret
         });
     }
 
