@@ -169,6 +169,14 @@ module.exports = {
                             ],
                             Effect: 'Allow',
                             Resource: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
                         }
                     ],
                     Version: '2012-10-17'
@@ -772,6 +780,14 @@ module.exports = {
                             ],
                             Effect: 'Allow',
                             Resource: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
                         }
                     ],
                     Version: '2012-10-17'

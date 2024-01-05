@@ -8,5 +8,4 @@ export function resetStaticProps(): void {
     AlbHelper.listenerLookups = {};
     Route53Helper.hostedZoneLookups = {};
     VpcHelper.vpcLookups = {};
-    Secrets.secret = undefined;
 }

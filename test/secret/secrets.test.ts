@@ -56,9 +56,9 @@ describe('secrets', () => {
         const stack = new Stack(app, 'stack', stackProps);
         const secrets = new Secrets(stack, 'secrets');
         const ecsSecrets = secrets.getEcsSecrets(['FOO', 'BAR']);
-        expect(Secrets.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
-        expect(Secrets.secret?.secretName).toEqual('secrets-secrets/environment');
-        expect(stack.resolve(Secrets.secret?.secretValue)).toEqual({
+        expect(secrets.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
+        expect(secrets.secret?.secretName).toEqual('secrets-secrets/environment');
+        expect(stack.resolve(secrets.secret?.secretValue)).toEqual({
             "Fn::Join": [
                 "",
                 [
@@ -83,9 +83,9 @@ describe('secrets', () => {
         const secrets = new Secrets(stack, 'secrets');
         const secret = secrets.fetch();
         const refSecrets = Secrets.getReferencesFromSecret(['FOO', 'BAR'], secret);
-        expect(Secrets.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
-        expect(Secrets.secret?.secretName).toEqual('secrets-secrets/environment');
-        expect(stack.resolve(Secrets.secret?.secretValue)).toEqual({
+        expect(secrets.secret?.secretArn).toContain(':secretsmanager:us-east-1:12344:secret:secrets-secrets/environment');
+        expect(secrets.secret?.secretName).toEqual('secrets-secrets/environment');
+        expect(stack.resolve(secrets.secret?.secretValue)).toEqual({
             "Fn::Join": [
                 "",
                 [

@@ -1,9 +1,10 @@
-import {App} from "aws-cdk-lib";
+import {App, Stack} from "aws-cdk-lib";
 import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {CodePipelineEcsStack} from "../../src/stack/code-pipeline-ecs-stack";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {ConfigStackHelper} from "../../src/utils/config-stack-helper";
+import path from "path";
 
 describe('code pipeline ecs stack', () => {
 
@@ -180,8 +181,35 @@ describe('code pipeline ecs stack', () => {
         ]);
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
         // templateHelper.inspect();
-        const expected = getExpected();
+        const expected = getExpected('code-pipeline-ecs-stack');
         templateHelper.template.templateMatches(expected);
+    });
+
+    it('should create pipeline from config with shared secrets', () => {
+        const config = getSharedSecretsConfig();
+        const app = new App();
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new CodePipelineEcsStack(app, name, config, {}, {
+            env: {
+                account: '12344',
+                region: 'us-west-2'
+            }
+        });
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = getExpected('code-pipeline-ecs-stack');
+        templateHelper.template.templateMatches(expected);
+        let count = 0;
+        for (const stage of stack.envStages?.stages ?? []) {
+            const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.envStage.stack));
+            // console.log(count);
+            // templateHelper.inspect();
+            const file = `code-pipeline-ecs-stack-shared-secrets-stage-${count}`;
+            const expected = getExpected(file);
+            templateHelper.template.templateMatches(expected);
+            count ++;
+        }
     });
 });
 
@@ -189,8 +217,12 @@ function getConfig(): Record<string, any> {
     return require('../__configLive__/defaults');
 }
 
-function getExpected() {
-    const template = require('../__templates__/code-pipeline-ecs-stack');
+function getSharedSecretsConfig(): Record<string, any> {
+    return require('../__configLive__/defaults.sharedSecrets');
+}
+
+function getExpected(file: string) {
+    const template = require(path.join('..','__templates__', file));
     // remove "Tags" since they are set in the ConfigStackHelper utility
     let k: keyof typeof template.Resources;
     for (k in template.Resources) {

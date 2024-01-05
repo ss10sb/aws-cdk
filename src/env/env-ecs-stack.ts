@@ -73,8 +73,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
         const cluster = this.createCluster();
-        Secrets.secret = this.lookups.secret;
-        const secrets = new Secrets(this, this.node.id);
+        const secrets = this.lookups.secrets;
         const tasksAndServices = this.createTasksAndServices({
             cluster: cluster,
             targetGroup: targetGroup,

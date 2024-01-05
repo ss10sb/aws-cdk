@@ -8,10 +8,12 @@ import {PermissionsCodePipelineEcsStack} from "../permissions/permissions-code-p
 import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
 import {ConfigStackHelper} from "../utils/config-stack-helper";
 import {CodePipelineEcrSteps, CodePipelineEcrStepsProps} from "../pipeline/code-pipeline-ecr-steps";
+import {CodePipelineEnvStages} from "../pipeline/code-pipeline-env-stages";
 
 export class CodePipelineEcsStack extends CodePipelineBaseStack {
 
     ecrRepositories!: EcrRepositories;
+    envStages?: CodePipelineEnvStages;
 
     setEcrRepositories(ecrRepositories: EcrRepositories) {
         this.ecrRepositories = ecrRepositories;
@@ -37,6 +39,7 @@ export class CodePipelineEcsStack extends CodePipelineBaseStack {
             repositoryFactory: ecrRepositoryFactory,
             environments: this.config.Environments ?? []
         });
+        this.envStages = envStages;
         const notificationRule = this.createPipelineNotifications(pipeline);
         //const notificationRules = this.createPipelineNotifyOnRules(pipeline);
         const runSchedule = this.createPipelineRunSchedule(pipeline);
