@@ -1,6 +1,6 @@
 {
   "name": "@smorken/aws-cdk",
-  "version": "2.118.1",
+  "version": "2.118.2",
   "license": "MIT",
   "author": "Scott Morken <scott.morken@phoenixcollege.edu>",
   "repository": {
@@ -10,7 +10,7 @@
   "scripts": {
     "compile": "tsc",
     "clean": "rm -rf dist",
-    "prebuild": "npm run clean && npm run compile && node dist/setup-package.js",
+    "prebuild": "npm run clean && npm run compile && cp src/start-stop/lambda/*.mjs dist/start-stop/lambda && node dist/setup-package.js",
     "buildpackage": "cd dist && npm pack",
     "lint": "eslint .",
     "madge": "madge --ts-config ./tsconfig.json --circular --extensions ts ./src",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ecr": "^3.342.0",
+    "@aws-sdk/client-ecs": "^3.342.0",
     "@aws-sdk/client-secrets-manager": "^3.342.0",
     "@aws-sdk/client-ssm": "^3.342.0",
     "aws-cdk-lib": "2.118.0",

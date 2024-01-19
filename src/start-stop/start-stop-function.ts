@@ -22,7 +22,7 @@ export class StartStopFunction extends NonConstruct {
     readonly defaults: Record<string, any> = {
         memorySize: 128,
         timeout: 5,
-        runtime: Runtime.NODEJS_16_X,
+        runtime: Runtime.NODEJS_20_X,
         handler: 'index.handler',
         code: Code.fromAsset(path.join(__dirname, '/lambda'))
     }
