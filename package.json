@@ -1,6 +1,6 @@
 {
   "name": "@smorken/aws-cdk",
-  "version": "2.118.4",
+  "version": "2.118.5",
   "license": "MIT",
   "author": "Scott Morken <scott.morken@phoenixcollege.edu>",
   "repository": {

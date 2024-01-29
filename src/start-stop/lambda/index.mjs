@@ -8,7 +8,7 @@ const ecs = new ECSClient();
 export const handler = async (event) => {
     console.log('Event', event);
     const desiredCount = event.status == 'start' ? 1 : 0;
-    const cluster = event.cluster ?? 'pcc-sdlc-directory-cluster';
+    const cluster = event.cluster ?? process.env.CLUSTER;
     try {
         const command = new ListServicesCommand({
             cluster: cluster,

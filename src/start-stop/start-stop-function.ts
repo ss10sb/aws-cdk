@@ -44,7 +44,7 @@ export class StartStopFunction extends NonConstruct {
             logRetention: RetentionDays.ONE_WEEK,
             functionName: name,
             environment: {
-                CLUSTER: this.props.cluster?.clusterArn ?? ''
+                CLUSTER: this.props.cluster?.clusterName ?? ''
             }
         });
     }
