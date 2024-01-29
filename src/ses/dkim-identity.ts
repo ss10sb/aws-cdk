@@ -22,10 +22,7 @@ export class DkimIdentity extends NonConstruct {
         const hostedZone = this.getHostedZone();
         if (hostedZone) {
             return new EmailIdentity(this.scope, this.mixNameWithId(`${domain}-dkim`), {
-                identity: {
-                    value: domain,
-                    hostedZone: hostedZone
-                },
+                identity: Identity.publicHostedZone(hostedZone),
                 mailFromDomain: domain
             });
         }
