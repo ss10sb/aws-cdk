@@ -90,7 +90,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
         }
         const aRecord = this.createARecord();
-        const sesVerify = this.createDkimDomainIdentity();
+        const sesVerify = this.createSesVerifyDomain();
         new PermissionsEnvLambdaStack(this, this.node.id, {
             functions: {
                 functions: wrappers,
@@ -99,7 +99,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: s3,
-            dkimIdentity: sesVerify,
+            sesVerify: sesVerify,
             table: table,
             secret: this.lookups.secret,
             sharedSecret: this.lookups.sharedSecret

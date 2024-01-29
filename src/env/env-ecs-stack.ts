@@ -62,7 +62,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
 
     exec() {
         const aRecord = this.createARecord();
-        const sesVerify = this.createDkimDomainIdentity();
+        const sesVerify = this.createSesVerifyDomain();
         this.createARecordsForCertificates();
         const certificates = this.createCertificates();
         this.createListenerCertificates(certificates);
@@ -95,7 +95,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: s3,
-            dkimIdentity: sesVerify,
+            sesVerify: sesVerify,
             startStop: startStopFactory,
             table: table,
             secrets: this.lookups.secret,
