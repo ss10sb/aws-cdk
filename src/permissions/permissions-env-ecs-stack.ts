@@ -56,7 +56,7 @@ export class PermissionsEnvEcsStack extends NonConstruct {
 
     private startStopPermissions() {
         if (this.props.startStop) {
-            PermissionsEcs.lambdaCanUpdateCluster(this.props.startStop.startStopFunc.function, this.props.cluster);
+            PermissionsEcs.lambdaCanUpdateCluster(this.props.startStop.startStopFunc, this.props.cluster);
         }
     }
 

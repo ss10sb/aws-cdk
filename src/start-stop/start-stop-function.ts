@@ -3,7 +3,6 @@ import {Code, Runtime} from "aws-cdk-lib/aws-lambda";
 import {Construct} from "constructs";
 import {RetentionDays} from "aws-cdk-lib/aws-logs";
 import * as path from "path";
-import {ICluster} from "aws-cdk-lib/aws-ecs";
 import {NonConstruct} from "../core/non-construct";
 
 export interface StartStopFunctionProps {
@@ -12,13 +11,11 @@ export interface StartStopFunctionProps {
     readonly runtime?: Runtime;
     readonly handler?: string;
     readonly code?: string;
-    cluster?: ICluster;
 }
 
 export class StartStopFunction extends NonConstruct {
 
     readonly props: StartStopFunctionProps;
-    readonly function: aws_lambda.Function;
     readonly defaults: Record<string, any> = {
         memorySize: 128,
         timeout: 5,
@@ -30,10 +27,9 @@ export class StartStopFunction extends NonConstruct {
     constructor(scope: Construct, id: string, props: StartStopFunctionProps) {
         super(scope, id);
         this.props = props;
-        this.function = this.create();
     }
 
-    protected create(): aws_lambda.Function {
+    create(clusterName: string): aws_lambda.Function {
         const name = this.mixNameWithId('start-stop-fn');
         return new aws_lambda.Function(this.scope, name, {
             memorySize: this.props.memorySize ?? this.defaults.memorySize,
@@ -44,7 +40,7 @@ export class StartStopFunction extends NonConstruct {
             logRetention: RetentionDays.ONE_WEEK,
             functionName: name,
             environment: {
-                CLUSTER: this.props.cluster?.clusterName ?? ''
+                CLUSTER: clusterName
             }
         });
     }

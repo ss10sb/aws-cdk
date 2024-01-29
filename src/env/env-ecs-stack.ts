@@ -116,7 +116,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         if (this.config.Parameters?.startStop) {
             const startStopProps = this.config.Parameters?.startStop ?? {};
             const startStopFunctionProps = startStopProps.stopStartFunctionProps ?? {};
-            startStopFunctionProps.cluster = cluster;
+            startStopFunctionProps.clusterName = cluster.clusterName;
             startStopProps.stopStartFunctionProps = startStopFunctionProps;
             const factory = new StartStopFactory(this, this.node.id, startStopProps);
             factory.createRules(cluster);

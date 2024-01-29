@@ -4,6 +4,7 @@ import {StartStopEvent} from "./start-stop-event";
 import {Construct} from "constructs";
 import {ICluster} from "aws-cdk-lib/aws-ecs";
 import {NonConstruct} from "../core/non-construct";
+import {aws_lambda} from "aws-cdk-lib";
 
 export interface StartStopFactoryProps {
     readonly start?: string;
@@ -16,17 +17,18 @@ export interface StartStopFactoryProps {
 export class StartStopFactory extends NonConstruct {
 
     readonly props: StartStopFactoryProps;
-    readonly startStopFunc: StartStopFunction;
+    startStopFunc!: aws_lambda.Function;
 
     constructor(scope: Construct, id: string, props: StartStopFactoryProps) {
         super(scope, id);
         this.props = props;
-        this.startStopFunc = this.createStartStopFunction();
     }
 
     createRules(cluster: ICluster): StartStopEvent {
+        const startStopFunc = this.createStartStopFunction(cluster);
+        this.startStopFunc = startStopFunc;
         const event = new StartStopEvent(this.scope, this.id, {
-            lambdaFunction: this.startStopFunc.function
+            lambdaFunction: startStopFunc
         });
         if (this.props.start) {
             event.create({
@@ -43,7 +45,8 @@ export class StartStopFactory extends NonConstruct {
         return event;
     }
 
-    protected createStartStopFunction(): StartStopFunction {
-        return new StartStopFunction(this.scope, this.id, this.props.startStopFunctionProps ?? {});
+    protected createStartStopFunction(cluster: ICluster): aws_lambda.Function {
+        const ssf = new StartStopFunction(this.scope, this.id, this.props.startStopFunctionProps ?? {});
+        return ssf.create(cluster.clusterName);
     }
 }
