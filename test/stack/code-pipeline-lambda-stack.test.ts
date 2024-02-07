@@ -38,6 +38,23 @@ describe('code pipeline lambda test', () => {
         }
     });
 
+    it('should create pipeline from php version config', () => {
+        const config = getConfig('defaults.phpVersion');
+        const app = new App();
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new CodePipelineLambdaStack(app, name, config, {}, {
+            env: {
+                account: '12344',
+                region: 'us-west-2'
+            }
+        });
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = getExpected('code-pipeline-lambda-stack-php-version');
+        templateHelper.template.templateMatches(expected);
+    });
+
     it('should create pipeline from alb target config', () => {
         const config = getConfig('albtarget');
         const app = new App();

@@ -42,7 +42,8 @@ export class CodePipelineLambdaStack extends CodePipelineBaseStack {
 
     private createBuildStep(pipelineSource: CodePipelineCodestarSource): CodePipelineLambdaBuildStep {
         return new CodePipelineLambdaBuildStep(this, this.node.id, {
-            input: pipelineSource.source
+            input: pipelineSource.source,
+            phpVersion: this.config.Parameters?.phpVersion
         });
     }
 
