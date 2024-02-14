@@ -50,7 +50,8 @@ export class PermissionsQueue {
             TaskServiceType.WEB_SERVICE,
             TaskServiceType.RUN_ONCE_TASK,
             TaskServiceType.CREATE_RUN_ONCE_TASK,
-            TaskServiceType.UPDATE_RUN_ONCE_TASK
+            TaskServiceType.UPDATE_RUN_ONCE_TASK,
+            TaskServiceType.QUEUE_SERVICE
         ];
         const consumers: TaskServiceType[] = [TaskServiceType.QUEUE_SERVICE];
         if (senders.includes(type)) {
