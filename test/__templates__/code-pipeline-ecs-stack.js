@@ -798,28 +798,6 @@ module.exports = {
                                     ]
                                 },
                                 RunOrder: 1
-                            },
-                            {
-                                ActionTypeId: {
-                                    Category: 'Build',
-                                    Owner: 'AWS',
-                                    Provider: 'CodeBuild',
-                                    Version: '1'
-                                },
-                                Configuration: {
-                                    ProjectName: {
-                                        Ref: 'pccsharedtestcodepipelineAssetsFileAsset37A91F8F0'
-                                    }
-                                },
-                                InputArtifacts: [{Name: 'pcc_shared_test_synth_step_Output'}],
-                                Name: 'FileAsset3',
-                                RoleArn: {
-                                    'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
-                                        'Arn'
-                                    ]
-                                },
-                                RunOrder: 1
                             }
                         ],
                         Name: 'Assets'
@@ -1626,20 +1604,6 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelineAssetsFileAsset37A91F8F0',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
                                     'pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA',
                                     'Arn'
                                 ]
@@ -2331,113 +2295,6 @@ module.exports = {
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
                                 '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"52c9314b13b741507475c767efe12405a840f6378675be91df8d62589aa0f401:11111-us-west-2\\""\n' +
-                                '      ]\n' +
-                                '    }\n' +
-                                '  }\n' +
-                                '}'
-                            ]
-                        ]
-                    },
-                    Type: 'CODEPIPELINE'
-                }
-            }
-        },
-        pccsharedtestcodepipelineAssetsFileAsset37A91F8F0: {
-            Type: 'AWS::CodeBuild::Project',
-            Properties: {
-                Artifacts: {Type: 'CODEPIPELINE'},
-                Cache: {Type: 'NO_CACHE'},
-                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset3',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
-                        'Arn'
-                    ]
-                },
-                Environment: {
-                    ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
-                    ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
-                    Type: 'LINUX_CONTAINER'
-                },
-                ServiceRole: {
-                    'Fn::GetAtt': [
-                        'pccsharedtestcodepipelineAssetsFileRole8E4F3120',
-                        'Arn'
-                    ]
-                },
-                Source: {
-                    BuildSpec: {
-                        'Fn::Join': [
-                            '',
-                            [
-                                '{\n' +
-                                '  "version": "0.2",\n' +
-                                '  "phases": {\n' +
-                                '    "pre_build": {\n' +
-                                '      "commands": [\n' +
-                                '        "mkdir $HOME/.cdk",\n' +
-                                `        "echo '{\\"version\\":\\"1.0\\",\\"domainCredentials\\":{\\"`,
-                                {
-                                    'Fn::Select': [
-                                        0,
-                                        {
-                                            'Fn::Split': [
-                                                '/',
-                                                {
-                                                    'Fn::Join': [
-                                                        '',
-                                                        [
-                                                            {
-                                                                'Fn::Select': [
-                                                                    4,
-                                                                    {
-                                                                        'Fn::Split': [
-                                                                            ':',
-                                                                            {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                ]
-                                                            },
-                                                            '.dkr.ecr.',
-                                                            {
-                                                                'Fn::Select': [
-                                                                    3,
-                                                                    {
-                                                                        'Fn::Split': [
-                                                                            ':',
-                                                                            {
-                                                                                'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                ]
-                                                            },
-                                                            '.',
-                                                            {Ref: 'AWS::URLSuffix'},
-                                                            '/',
-                                                            {Ref: 'nginxecrC430EE7B'}
-                                                        ]
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
-                                '      ]\n' +
-                                '    },\n' +
-                                '    "install": {\n' +
-                                '      "commands": [\n' +
-                                '        "npm install -g cdk-assets@2"\n' +
-                                '      ]\n' +
-                                '    },\n' +
-                                '    "build": {\n' +
-                                '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35:11111-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +

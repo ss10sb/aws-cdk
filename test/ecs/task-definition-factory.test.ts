@@ -203,7 +203,7 @@ describe('task definition factory', () => {
                                 },
                                 Memory: 64,
                                 Name: 'container-container-nginx-web-u-0',
-                                ReadonlyRootFilesystem: false,
+                                ReadonlyRootFilesystem: true,
                                 PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}]
                             },
                             {
@@ -254,7 +254,7 @@ describe('task definition factory', () => {
                                 },
                                 Memory: 128,
                                 Name: 'container-container-phpfpm-web-u-0',
-                                ReadonlyRootFilesystem: false,
+                                ReadonlyRootFilesystem: true,
                                 PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}]
                             }
                         ],

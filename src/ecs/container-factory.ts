@@ -181,7 +181,7 @@ export class ContainerFactory extends AbstractFactory {
             secrets: this.getEcsSecrets(containerProps.hasSecrets ?? false),
             environment: this.getEnvironment(containerProps.hasEnv ?? false),
             extraHosts: containerProps.extraHosts,
-            readonlyRootFilesystem: containerProps.readonlyRootFilesystem ?? false
+            readonlyRootFilesystem: containerProps.readonlyRootFilesystem ?? true
         };
         this.setEntryPointAndCommandProperties(containerProps, options);
         if (containerProps.portMappings) {

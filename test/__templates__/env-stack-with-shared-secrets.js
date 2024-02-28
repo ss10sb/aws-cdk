@@ -625,7 +625,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-scheduledtask-st-0',
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -1054,7 +1054,7 @@ module.exports = {
                         Memory: 64,
                         Name: 'pcc-sdlc-myapp-container-nginx-web-u-0',
                         PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false
+                        ReadonlyRootFilesystem: true
                     },
                     {
                         Cpu: 128,
@@ -1156,7 +1156,7 @@ module.exports = {
                         Memory: 128,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-web-u-0',
                         PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',

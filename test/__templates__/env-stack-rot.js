@@ -831,7 +831,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-runtask-rot-0',
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',

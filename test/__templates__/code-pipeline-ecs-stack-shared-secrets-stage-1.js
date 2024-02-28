@@ -737,7 +737,7 @@ module.exports = {
                         Memory: 64,
                         Name: 'pcc-prod-test-container-nginx-web-u-0',
                         PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false
+                        ReadonlyRootFilesystem: true
                     },
                     {
                         Cpu: 128,
@@ -839,7 +839,7 @@ module.exports = {
                         Memory: 128,
                         Name: 'pcc-prod-test-container-phpfpm-web-u-0',
                         PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'AZURE_CLIENT_ID',

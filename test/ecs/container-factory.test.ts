@@ -136,7 +136,7 @@ describe('container factory', () => {
                                 },
                                 Memory: 512,
                                 Name: 'container-container-phpfpm-web-u-0',
-                                ReadonlyRootFilesystem: false
+                                ReadonlyRootFilesystem: true
                             }
                         ],
                         Cpu: '256',
@@ -326,7 +326,7 @@ describe('container factory', () => {
                                 },
                                 Memory: 512,
                                 Name: 'container-container-phpfpm-web-u-0',
-                                ReadonlyRootFilesystem: false
+                                ReadonlyRootFilesystem: true
                             }
                         ],
                         Cpu: '256',
@@ -463,7 +463,7 @@ describe('container factory', () => {
                                 },
                                 Memory: 512,
                                 Name: 'container-container-phpfpm-createruntask-u-0',
-                                ReadonlyRootFilesystem: false
+                                ReadonlyRootFilesystem: true
                             }
                         ],
                         Cpu: '256',
@@ -685,7 +685,7 @@ describe('container factory', () => {
                                 },
                                 Memory: 512,
                                 Name: 'container-container-phpfpm-scheduledtask-u-0',
-                                ReadonlyRootFilesystem: false
+                                ReadonlyRootFilesystem: true
                             }
                         ],
                         Cpu: '256',
@@ -1010,7 +1010,7 @@ describe('container factory', () => {
                                 },
                                 Memory: 512,
                                 Name: 'container-container-phpfpm-web-u-0',
-                                ReadonlyRootFilesystem: false,
+                                ReadonlyRootFilesystem: true,
                                 Secrets: [
                                     {
                                         Name: 'FOO',

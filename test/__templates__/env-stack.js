@@ -929,7 +929,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-createruntask-crot-0',
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -1376,7 +1376,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-updateruntask-urot-0',
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -1844,7 +1844,7 @@ module.exports = {
                         },
                         Memory: 512,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-scheduledtask-st-0',
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -2352,7 +2352,7 @@ module.exports = {
                         Memory: 64,
                         Name: 'pcc-sdlc-myapp-container-nginx-web-u-0',
                         PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false
+                        ReadonlyRootFilesystem: true
                     },
                     {
                         Cpu: 128,
@@ -2458,7 +2458,7 @@ module.exports = {
                         Memory: 128,
                         Name: 'pcc-sdlc-myapp-container-phpfpm-web-u-0',
                         PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -3320,6 +3320,7 @@ module.exports = {
                 },
                 FunctionName: 'pcc-sdlc-myapp-start-stop-fn',
                 Handler: 'index.handler',
+              LoggingConfig: { LogGroup: { Ref: 'pccsdlcmyappstartstopfnlg723CA74F' } },
                 MemorySize: 128,
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopfnServiceRole4E724A81', 'Arn']
@@ -3335,110 +3336,6 @@ module.exports = {
             DependsOn: [
                 'pccsdlcmyappstartstopfnServiceRoleDefaultPolicy6AEE6644',
                 'pccsdlcmyappstartstopfnServiceRole4E724A81'
-            ]
-        },
-        pccsdlcmyappstartstopfnLogRetention1C08E520: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {Ref: 'pccsdlcmyappstartstopfnB40C404E'}
-                        ]
-                    ]
-                },
-                RetentionInDays: 7
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: 'nodejs18.x',
-                Timeout: 900,
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'myapp'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
         pccsdlcmyappstartstopstartrule70F0260F: {

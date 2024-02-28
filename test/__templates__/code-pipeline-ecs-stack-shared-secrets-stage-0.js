@@ -737,7 +737,7 @@ module.exports = {
                         Memory: 64,
                         Name: 'pcc-sdlc-test-container-nginx-web-u-0',
                         PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false
+                        ReadonlyRootFilesystem: true
                     },
                     {
                         Cpu: 128,
@@ -839,7 +839,7 @@ module.exports = {
                         Memory: 128,
                         Name: 'pcc-sdlc-test-container-phpfpm-web-u-0',
                         PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
-                        ReadonlyRootFilesystem: false,
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'AZURE_CLIENT_ID',
@@ -1065,6 +1065,19 @@ module.exports = {
                 'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
             ]
         },
+          pccsdlcteststartstopfnlg5E55121D: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 14,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
         pccsdlcteststartstopfnServiceRole451756BA: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -1138,6 +1151,7 @@ module.exports = {
               },
                 FunctionName: 'pcc-sdlc-test-start-stop-fn',
                 Handler: 'index.handler',
+              LoggingConfig: { LogGroup: { Ref: 'pccsdlcteststartstopfnlg5E55121D' } },
                 MemorySize: 128,
                 Role: {
                     'Fn::GetAtt': ['pccsdlcteststartstopfnServiceRole451756BA', 'Arn']
@@ -1153,110 +1167,6 @@ module.exports = {
             DependsOn: [
                 'pccsdlcteststartstopfnServiceRoleDefaultPolicy369D75C4',
                 'pccsdlcteststartstopfnServiceRole451756BA'
-            ]
-        },
-        pccsdlcteststartstopfnLogRetentionE25A7C1D: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {Ref: 'pccsdlcteststartstopfn47B5EC6C'}
-                        ]
-                    ]
-                },
-                RetentionInDays: 7
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: 'nodejs18.x',
-                Timeout: 900,
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35.zip'
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
         pccsdlcteststartstopstopruleD8FE9F5B: {
