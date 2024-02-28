@@ -203,7 +203,7 @@ describe('code pipeline ecs stack', () => {
         let count = 0;
         for (const stage of stack.envStages?.stages ?? []) {
             const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.envStage.stack));
-            // console.log(count);
+            console.log(count);
             // templateHelper.inspect();
             const file = `code-pipeline-ecs-stack-shared-secrets-stage-${count}`;
             const expected = getExpected(file);

@@ -692,6 +692,7 @@ module.exports = {
                     Type: 'S3'
                 },
                 Name: 'pcc-shared-test-code-pipeline',
+              PipelineType: 'V1',
                 RestartExecutionOnUpdate: true,
                 RoleArn: {
                     'Fn::GetAtt': ['pccsharedtestcodepipelinePipelineRole7DA95E27', 'Arn']
@@ -2306,8 +2307,8 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544:11111-us-west-2\\"",\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-def-stage/pccsharedtestpccprodtestdefstagepccprodtestdef27A5C606.assets.json\\" --verbose publish \\"17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544:22222-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"ed6cd104ff5f101d06dae8cb2b87cc6e6d69b9a22055b467ea6cae10ff023023:11111-us-west-2\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-def-stage/pccsharedtestpccprodtestdefstagepccprodtestdef27A5C606.assets.json\\" --verbose publish \\"ed6cd104ff5f101d06dae8cb2b87cc6e6d69b9a22055b467ea6cae10ff023023:22222-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
@@ -2419,7 +2420,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"c012c7fd0e4894113249eb5c826403161dd1c6a34234610b37c7bad30532d0e0:11111-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"52c9314b13b741507475c767efe12405a840f6378675be91df8d62589aa0f401:11111-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +

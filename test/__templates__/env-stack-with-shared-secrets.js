@@ -288,7 +288,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Handler: 'index.handler',
                 Role: {
@@ -1424,6 +1424,17 @@ module.exports = {
                                 'sqs:GetQueueUrl',
                                 'sqs:DeleteMessage',
                                 'sqs:GetQueueAttributes'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']
+                            }
+                        },
+                        {
+                            Action: [
+                                'sqs:SendMessage',
+                                'sqs:GetQueueAttributes',
+                                'sqs:GetQueueUrl'
                             ],
                             Effect: 'Allow',
                             Resource: {

@@ -849,19 +849,19 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
-                    {
-                      Name: 'AWS_SECRET_ARN',
-                      Value: {
-                        'Fn::Join': [
-                          '',
-                          [
-                            'arn:',
-                            { Ref: 'AWS::Partition' },
-                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
-                          ]
-                        ]
-                      }
-                    },
+                            {
+                                Name: 'AWS_SECRET_ARN',
+                                Value: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
+                                        ]
+                                    ]
+                                }
+                            },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
@@ -1296,19 +1296,19 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
-                    {
-                      Name: 'AWS_SECRET_ARN',
-                      Value: {
-                        'Fn::Join': [
-                          '',
-                          [
-                            'arn:',
-                            { Ref: 'AWS::Partition' },
-                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
-                          ]
-                        ]
-                      }
-                    },
+                            {
+                                Name: 'AWS_SECRET_ARN',
+                                Value: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
+                                        ]
+                                    ]
+                                }
+                            },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
@@ -1764,19 +1764,19 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
-                    {
-                      Name: 'AWS_SECRET_ARN',
-                      Value: {
-                        'Fn::Join': [
-                          '',
-                          [
-                            'arn:',
-                            { Ref: 'AWS::Partition' },
-                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
-                          ]
-                        ]
-                      }
-                    },
+                            {
+                                Name: 'AWS_SECRET_ARN',
+                                Value: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
+                                        ]
+                                    ]
+                                }
+                            },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
@@ -2377,19 +2377,19 @@ module.exports = {
                                 Name: 'AWS_BUCKET',
                                 Value: {Ref: 'pccsdlcmyapps352258330'}
                             },
-                    {
-                      Name: 'AWS_SECRET_ARN',
-                      Value: {
-                        'Fn::Join': [
-                          '',
-                          [
-                            'arn:',
-                            { Ref: 'AWS::Partition' },
-                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
-                          ]
-                        ]
-                      }
-                    },
+                            {
+                                Name: 'AWS_SECRET_ARN',
+                                Value: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':secretsmanager:us-west-2:2222:secret:pcc-sdlc-myapp-secrets/environment'
+                                        ]
+                                    ]
+                                }
+                            },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
                             {Name: 'CAN_RUN_CREATE', Value: '1'}
                         ],
@@ -2744,6 +2744,17 @@ module.exports = {
                                 'sqs:GetQueueUrl',
                                 'sqs:DeleteMessage',
                                 'sqs:GetQueueAttributes'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']
+                            }
+                        },
+                        {
+                            Action: [
+                                'sqs:SendMessage',
+                                'sqs:GetQueueAttributes',
+                                'sqs:GetQueueUrl'
                             ],
                             Effect: 'Allow',
                             Resource: {
@@ -3302,16 +3313,18 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'c012c7fd0e4894113249eb5c826403161dd1c6a34234610b37c7bad30532d0e0.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
-                Environment: {Variables: {CLUSTER: ''}},
+                Environment: {
+                    Variables: {CLUSTER: {Ref: 'pccsdlcmyappcluster4E9F2DE3'}}
+                },
                 FunctionName: 'pcc-sdlc-myapp-start-stop-fn',
                 Handler: 'index.handler',
                 MemorySize: 128,
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopfnServiceRole4E724A81', 'Arn']
                 },
-                Runtime: 'nodejs18.x',
+                Runtime: 'nodejs20.x',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},
@@ -3406,6 +3419,7 @@ module.exports = {
             Properties: {
                 Handler: 'index.handler',
                 Runtime: 'nodejs18.x',
+                Timeout: 900,
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')

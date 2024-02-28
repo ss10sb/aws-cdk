@@ -29,7 +29,7 @@ describe('code pipeline lambda test', () => {
         let count = 0;
         for (const stage of stack.envStages?.stages ?? []) {
             const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.envStage.stack));
-            // console.log(count);
+            console.log(count);
             // templateHelper.inspect();
             const file = `code-pipeline-lambda-stack-stage-${count}`;
             const expected = getExpected(file);

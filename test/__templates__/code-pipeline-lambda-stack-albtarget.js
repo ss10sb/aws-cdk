@@ -642,6 +642,7 @@ module.exports = {
                     Type: 'S3'
                 },
                 Name: 'pcc-shared-test-code-pipeline',
+              PipelineType: 'V1',
                 RestartExecutionOnUpdate: true,
                 RoleArn: {
                     'Fn::GetAtt': ['pccsharedtestcodepipelinePipelineRole7DA95E27', 'Arn']
@@ -1784,7 +1785,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"3fb6287214999ddeafa7cd0e3e58bc5144c8678bb720f3b5e45e8fd32f333eb3:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"3322b7049fb0ed2b7cbb644a2ada8d1116ff80c32dca89e6ada846b5de26f961:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1829,7 +1830,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"e976a796f036a5efbf44b99e44cfb5a961df08d8dbf7cd37e60bf216fb982a00:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"2d56e153cac88d3e0c2f842e8e6f6783b8725bf91f95e0673b4725448a56e96d:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -2009,7 +2010,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"ed6cd104ff5f101d06dae8cb2b87cc6e6d69b9a22055b467ea6cae10ff023023:11111-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +

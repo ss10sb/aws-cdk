@@ -120,6 +120,7 @@ describe('code pipeline codestar source', () => {
                             Location: {Ref: templateHelper.startsWithMatch('pipelinePipelineArtifactsBucket')},
                             Type: 'S3'
                         },
+                        PipelineType: 'V1',
                         RestartExecutionOnUpdate: true
                     },
                     DependsOn: [
@@ -246,6 +247,7 @@ describe('code pipeline codestar source', () => {
                             Location: {Ref: templateHelper.startsWithMatch('pipelinePipelineArtifactsBucket')},
                             Type: 'S3'
                         },
+                        PipelineType: 'V1',
                         RestartExecutionOnUpdate: true
                     },
                     DependsOn: [

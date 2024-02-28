@@ -1,4 +1,5 @@
 const {Match} = require("aws-cdk-lib/assertions");
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         pccsdlctesttestsdlcexampleeduarecord40417570: {
@@ -288,7 +289,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Handler: 'index.handler',
                 Role: {
@@ -1130,16 +1131,18 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: 'c012c7fd0e4894113249eb5c826403161dd1c6a34234610b37c7bad30532d0e0.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
-                Environment: {Variables: {CLUSTER: ''}},
+              Environment: {
+                Variables: { CLUSTER: { Ref: 'pccsdlctestcluster8AFBBF8E' } }
+              },
                 FunctionName: 'pcc-sdlc-test-start-stop-fn',
                 Handler: 'index.handler',
                 MemorySize: 128,
                 Role: {
                     'Fn::GetAtt': ['pccsdlcteststartstopfnServiceRole451756BA', 'Arn']
                 },
-                Runtime: 'nodejs18.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},

@@ -5,7 +5,8 @@ import {EcrRepositoriesProps} from "../ecr/ecr-repositories";
 export enum PhpVersion {
     PHP80 = 'php80',
     PHP81 = 'php81',
-    PHP82 = 'php82',
+    PHP82 = 'php82'
+    //PHP83 = 'php83'
 }
 
 export enum ConfigEnvironments {

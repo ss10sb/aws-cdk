@@ -209,7 +209,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'f783265af338426734f8dd0676fbe351130e46ad3456447acf36651a1de9dad4.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Environment: {
                     Variables: {
@@ -360,7 +360,7 @@ module.exports = {
                 Timeout: 900,
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [
@@ -502,7 +502,7 @@ module.exports = {
             Properties: {
                 Content: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '3fb6287214999ddeafa7cd0e3e58bc5144c8678bb720f3b5e45e8fd32f333eb3.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Description: '/opt/awscli/aws'
             }
@@ -518,7 +518,7 @@ module.exports = {
                 },
                 SourceBucketNames: ['cdk-hnb659fds-assets-2222-us-west-2'],
                 SourceObjectKeys: [
-                    '4dd7b3acb0d8c02094bb424ce803d0e3418f6db703e9524905cb0d32ff66b78b.zip'
+                    MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'assetstestdevexampleeduE0289650'},
                 Prune: true
@@ -636,7 +636,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'e976a796f036a5efbf44b99e44cfb5a961df08d8dbf7cd37e60bf216fb982a00.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Environment: {
                     Variables: {
@@ -820,7 +820,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: 'f783265af338426734f8dd0676fbe351130e46ad3456447acf36651a1de9dad4.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Environment: {
                     Variables: {
@@ -1206,7 +1206,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                    S3Key: '17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Handler: 'index.handler',
                 Role: {

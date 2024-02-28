@@ -1,7 +1,7 @@
-import {aws_lambda, Duration} from "aws-cdk-lib";
+import {aws_lambda, Duration, RemovalPolicy} from "aws-cdk-lib";
 import {Code, Runtime} from "aws-cdk-lib/aws-lambda";
 import {Construct} from "constructs";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import * as path from "path";
 import {NonConstruct} from "../core/non-construct";
 
@@ -30,6 +30,7 @@ export class StartStopFunction extends NonConstruct {
     }
 
     create(clusterName: string): aws_lambda.Function {
+        const logGroup = this.createLogGroup();
         const name = this.mixNameWithId('start-stop-fn');
         return new aws_lambda.Function(this.scope, name, {
             memorySize: this.props.memorySize ?? this.defaults.memorySize,
@@ -37,11 +38,18 @@ export class StartStopFunction extends NonConstruct {
             runtime: this.props.runtime ?? this.defaults.runtime,
             handler: this.props.handler ?? this.defaults.handler,
             code: this.props.code ?? this.defaults.code,
-            logRetention: RetentionDays.ONE_WEEK,
+            logGroup: logGroup,
             functionName: name,
             environment: {
                 CLUSTER: clusterName
             }
+        });
+    }
+
+    createLogGroup(): ILogGroup {
+        return new LogGroup(this.scope, this.mixNameWithId('start-stop-fn-lg'), {
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.TWO_WEEKS
         });
     }
 }
