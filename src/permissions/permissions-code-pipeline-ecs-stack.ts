@@ -2,22 +2,23 @@ import {Construct} from "constructs";
 import {Stack} from "aws-cdk-lib";
 import {PermissionsEcr} from "./permissions-ecr";
 import {PermissionsParameter} from "./permissions-parameter";
-import {IGrantable} from "aws-cdk-lib/aws-iam";
+import {IGrantable, IRole, Role} from "aws-cdk-lib/aws-iam";
 import {IStringParameter} from "aws-cdk-lib/aws-ssm";
 import {PermissionsBootstrap} from "./permissions-bootstrap";
 import {EnvConfig} from "../env/env-base-stack";
-import { NonConstruct } from "../core/non-construct";
-import { CodePipelineEcsStackServicesProps } from "../pipeline/code-pipeline-definitions";
+import {NonConstruct} from "../core/non-construct";
+import {CodePipelineEcsStackServicesProps} from "../pipeline/code-pipeline-definitions";
 import {NamingHelper} from "../utils/naming-helper";
 import {SsmHelper} from "../utils/ssm-helper";
+import {MakeConfig} from "../v2/stage/make-definitions";
 
 export class PermissionsCodePipelineEcsStack extends NonConstruct {
 
     readonly props: CodePipelineEcsStackServicesProps;
-    readonly environments: EnvConfig[];
+    readonly environments: EnvConfig[] | MakeConfig[];
     configParam?: IStringParameter;
 
-    constructor(scope: Construct, id: string, props: CodePipelineEcsStackServicesProps, environments: EnvConfig[]) {
+    constructor(scope: Construct, id: string, props: CodePipelineEcsStackServicesProps, environments: EnvConfig[] | MakeConfig[]) {
         super(scope, id);
         this.props = props;
         this.environments = environments;
@@ -73,8 +74,11 @@ export class PermissionsCodePipelineEcsStack extends NonConstruct {
 
     private synthStepPermissions() {
         const grantee = this.props.synthStep.role;
-        this.grantReadToConfigParam(grantee);
         PermissionsEcr.granteeCanDescribeRepositories(grantee, this.props.repositoryFactory.ecrRepositories);
+        if (!this.props.needsSharedSynthStepPermissions) {
+            return;
+        }
+        this.grantReadToConfigParam(grantee);
         grantee.addToPrincipalPolicy(PermissionsBootstrap.policyStatementForBootstrapRole('lookup'));
     }
 

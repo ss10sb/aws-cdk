@@ -1,6 +1,6 @@
 import {BrefRuntime, LaravelHandler} from "./bref-definitions";
 import {Code, Function, IFunction, ILayerVersion, LayerVersion, Runtime} from "aws-cdk-lib/aws-lambda";
-import {Duration} from "aws-cdk-lib";
+import {Duration, RemovalPolicy} from "aws-cdk-lib";
 import {BrefLayerArn} from "./bref-layer-arn";
 import {FunctionType} from "./lambda-definitions";
 import {Construct} from "constructs";
@@ -11,7 +11,7 @@ import {NameIncrementer} from "../utils/name-incrementer";
 import {NamingHelper} from "../utils/naming-helper";
 import fs from "fs";
 import path from "path";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {ScheduledEvent, ScheduledEventProps} from "./scheduled-event";
 import {ProvisionedConcurrency, ProvisionedConcurrencyProps} from "./provisioned-concurrency";
 import {BrefRuntimeCompatibility} from "./bref-runtime-compatibility";
@@ -20,12 +20,12 @@ import {BrefRuntimeCompatibility} from "./bref-runtime-compatibility";
 export interface PhpBrefFunctionProps {
     readonly appPath: string;
     readonly brefRuntime: BrefRuntime | BrefRuntime[];
-    readonly lambdaHandler?: string;
     readonly lambdaMemorySize?: number;
     readonly reservedConcurrentExecutions?: number;
     readonly scheduledEvents?: ScheduledEventProps[];
     readonly version?: string;
     readonly provisionedConcurrency?: ProvisionedConcurrencyProps;
+    lambdaHandler?: string;
     prependSecretId?: string;
     wantsVpc?: boolean;
     environment?: { [key: string]: string };
@@ -81,7 +81,7 @@ export class PhpBrefFunction extends NonConstruct {
             timeout: Duration.seconds(this.getTimeout(props)),
             vpc: this.getVpc(props),
             environment: this.getEnvironment(props),
-            logRetention: RetentionDays.ONE_MONTH,
+            logGroup: this.createLogGroup(funcName),
             memorySize: props.lambdaMemorySize ?? this.defaults.memorySize,
             reservedConcurrentExecutions: props.reservedConcurrentExecutions
         });
@@ -92,6 +92,13 @@ export class PhpBrefFunction extends NonConstruct {
             this.addProvisionedConcurrency(func, props.provisionedConcurrency);
         }
         return func;
+    }
+
+    createLogGroup(funcName: string): ILogGroup {
+        return new LogGroup(this.scope, `${funcName}-lg`, {
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.ONE_MONTH
+        });
     }
 
     getDefaultTimeout(type: FunctionType, apiGateway = true): number {

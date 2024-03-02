@@ -25,6 +25,10 @@ export interface CodePipelineLambdaStackFactoryProps extends CodePipelineStackFa
 
 }
 
+export interface CodePipelineMixedStackFactoryProps extends CodePipelineStackFactoryProps {
+
+}
+
 export interface ConfigParamStackFactoryProps {
     configDir?: string;
     env?: string;

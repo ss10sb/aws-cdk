@@ -65,7 +65,9 @@ export class BrefAsAlbTarget extends NonConstruct {
         if (props.environment === undefined) {
             props.environment = {};
         }
-        props.environment['S3_ASSET_URL'] = `https://${bucket.bucketDomainName}`;
+        const url = `https://${bucket.bucketDomainName}`;
+        props.environment['S3_ASSET_URL'] = url;
+        props.environment['ASSET_URL'] = url;
     }
 
     protected addFunctionToTargetGroup(func: IFunction): void {

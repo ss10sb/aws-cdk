@@ -1,6 +1,9 @@
 import {
     CodePipelineEcsStackFactoryProps,
-    CodePipelineLambdaStackFactoryProps, ConfigParamStackFactoryProps, SecretStackFactoryProps
+    CodePipelineLambdaStackFactoryProps,
+    CodePipelineMixedStackFactoryProps,
+    ConfigParamStackFactoryProps,
+    SecretStackFactoryProps
 } from "./stack-factory/stack-factory-definitions";
 import {HelperRunProps} from "./config/config-definitions";
 import {CodePipelineEcsStack} from "./stack/code-pipeline-ecs-stack";
@@ -12,6 +15,14 @@ import {ConfigParamStackFactory} from "./stack-factory/config-param-stack-factor
 import {SecretStack} from "./stack/secret-stack";
 import {SecretStackFactory} from "./stack-factory/secret-stack-factory";
 import {SecretsDeployFactory, SecretsDeployProps, SecretsDeployResult} from "./secret/secrets-deploy-factory";
+import {CodePipelineStack} from "./v2/pipeline/code-pipeline-stack";
+import {CodePipelineStackFactory} from "./v2/stack-factory/code-pipeline-stack-factory";
+
+export async function buildCodePipelineMixedStack(props: CodePipelineMixedStackFactoryProps, helperRunProps?: HelperRunProps): Promise<CodePipelineStack> {
+    const factory = new CodePipelineStackFactory(props);
+    await factory.initialize();
+    return factory.buildStack(helperRunProps);
+}
 
 export async function buildCodePipelineEcsStack(props: CodePipelineEcsStackFactoryProps, helperRunProps?: HelperRunProps): Promise<CodePipelineEcsStack> {
     const factory = new CodePipelineEcsStackFactory(props);

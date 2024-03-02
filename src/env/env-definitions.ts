@@ -9,7 +9,8 @@ import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 
 export enum EnvBuildType {
     ECS,
-    LAMBDA
+    LAMBDA,
+    MIXED
 }
 
 export enum EnvEndpointType {

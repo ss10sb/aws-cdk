@@ -902,7 +902,7 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
+                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.min.js.copy config/defaults.min.js",\n' +
                         '        "npm ci",\n' +
                         '        "npm run build",\n' +
                         '        "npx cdk synth"\n' +

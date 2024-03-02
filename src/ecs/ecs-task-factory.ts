@@ -19,7 +19,6 @@ export interface EcsTaskFactoryProps {
 }
 
 export interface EcsTaskConfigProps extends EcsServiceAndTaskConfigProps {
-    readonly skipCreateTask?: boolean;
     readonly schedule?: Schedulable;
     readonly enabled?: boolean;
 }
@@ -58,13 +57,6 @@ export class EcsTaskFactory extends AbstractFactory {
                 type: task.type,
                 taskDefinition: taskDefinition,
                 resource: this.createScheduledTask(task, taskDefinition)
-            };
-        }
-        if (task.type === TaskServiceType.CREATE_RUN_ONCE_TASK) {
-            return {
-                type: task.type,
-                taskDefinition: taskDefinition,
-                resource: this.createRunOnceOnCreate(task, taskDefinition)
             };
         }
         if (task.type === TaskServiceType.UPDATE_RUN_ONCE_TASK) {

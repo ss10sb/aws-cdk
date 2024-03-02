@@ -7,7 +7,7 @@ import {ApplicationTargetGroupProps} from "aws-cdk-lib/aws-elasticloadbalancingv
 export interface AlbTargetGroupProps {
     readonly port?: number;
     readonly protocol?: ApplicationProtocol;
-    readonly targetType?: TargetType;
+    targetType?: TargetType;
 }
 
 export class AlbTargetGroup extends NonConstruct {

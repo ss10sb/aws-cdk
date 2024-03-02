@@ -1,9 +1,9 @@
 import {Construct} from "constructs";
-import {Duration, StackProps, Stage, Tags} from "aws-cdk-lib";
+import {Duration, StackProps, Tags} from "aws-cdk-lib";
 import {
     ApplicationListenerCertificate,
     ApplicationListenerRule,
-    ApplicationTargetGroup, IApplicationListener,
+    ApplicationTargetGroup,
     IApplicationLoadBalancer,
     IApplicationTargetGroup
 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
@@ -71,7 +71,7 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
     }
 
     preBuild() {
-        this.lookups = new PreBuildLookups(this, this.node.id, <EnvConfig>this.config, this.buildType);
+        this.lookups = new PreBuildLookups(this, this.node.id, <EnvConfig>this.config);
     }
 
     protected getAliasTarget(): IApplicationLoadBalancer | IDistribution {
@@ -235,7 +235,7 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
             props['AWS_SHARED_SECRET_ARN'] = this.lookups.sharedSecret?.secretFullArn ?? this.lookups.sharedSecret?.secretArn;
         }
         props['AWS_APP_NAME'] = this.node.id;
-        props['CAN_RUN_CREATE'] = this.config.Parameters?.canCreateTask === false ? '0' : '1';
+        props['CAN_RUN_CREATE'] = '0';
         return props;
     }
 

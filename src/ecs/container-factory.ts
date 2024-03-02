@@ -131,14 +131,12 @@ export class ContainerFactory extends AbstractFactory {
         const tasks = [
             TaskServiceType.TASK,
             TaskServiceType.SCHEDULED_TASK,
-            TaskServiceType.CREATE_RUN_ONCE_TASK,
             TaskServiceType.RUN_ONCE_TASK,
             TaskServiceType.UPDATE_RUN_ONCE_TASK
         ];
         const services = [TaskServiceType.WEB_SERVICE];
         const allowedTasks = [
             ContainerType.UNDEFINED,
-            ContainerType.CREATE_RUN_ONCE_TASK,
             ContainerType.UPDATE_RUN_ONCE_TASK,
             ContainerType.RUN_ONCE_TASK,
             ContainerType.SCHEDULED_TASK

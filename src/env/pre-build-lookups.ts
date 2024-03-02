@@ -19,14 +19,12 @@ export class PreBuildLookups extends NonConstruct {
     distribution?: IDistribution;
     secret?: ISecret;
     sharedSecret?: ISecret;
-    buildType: EnvBuildType;
     secrets: Secrets;
 
-    constructor(scope: Construct, id: string, config: EnvConfig, buildType: EnvBuildType) {
+    constructor(scope: Construct, id: string, config: EnvConfig) {
         super(scope, id);
         resetStaticProps();
         this.secrets = new Secrets(this.scope, this.id);
-        this.buildType = buildType;
         const albArn = AlbHelper.getAlbArnFromConfigOrParam(this.scope, config);
         this.albListener = AlbHelper.getApplicationListener(this.scope, config, albArn);
         this.alb = AlbHelper.getAlbByArn(this.scope, albArn);

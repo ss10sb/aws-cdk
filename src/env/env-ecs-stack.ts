@@ -20,7 +20,7 @@ import {Secrets} from "../secret/secrets";
 
 export interface EnvTasksAndServicesProps {
     readonly cluster: Cluster;
-    readonly targetGroup: IApplicationTargetGroup;
+    readonly targetGroup?: IApplicationTargetGroup;
     readonly repositoryFactory: EcrRepositoryFactory;
     readonly environment?: Record<string, any>;
     readonly queue?: Queue;
@@ -29,8 +29,8 @@ export interface EnvTasksAndServicesProps {
 export interface EnvEcsParameters extends EnvParameters {
     readonly canCreateTask?: boolean;
     readonly healthCheck?: HealthCheck;
-    readonly listenerRule: AlbListenerRuleProps;
-    readonly targetGroup: AlbTargetGroupProps;
+    readonly listenerRule?: AlbListenerRuleProps;
+    readonly targetGroup?: AlbTargetGroupProps;
     readonly services: EcsStandardServiceConfigProps[];
     readonly tasks: EcsTaskConfigProps[];
     readonly startStop?: StartStopFactoryProps;
@@ -44,9 +44,9 @@ export interface EnvEcsProps extends EnvProps {
 
 export interface EnvEcsStackServicesProps extends EnvStackServicesProps {
     readonly cluster: Cluster;
-    readonly listenerRule: ApplicationListenerRule;
+    readonly listenerRule?: ApplicationListenerRule;
     readonly repositoryFactory: EcrRepositoryFactory;
-    readonly targetGroup: IApplicationTargetGroup;
+    readonly targetGroup?: IApplicationTargetGroup;
     readonly tasksAndServices: FargateTasksAndServices;
     readonly startStop?: StartStopFactory;
 }
@@ -61,17 +61,17 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
     }
 
     exec() {
-        const aRecord = this.createARecord();
-        const sesVerify = this.createSesVerifyDomain();
-        this.createARecordsForCertificates();
-        const certificates = this.createCertificates();
-        this.createListenerCertificates(certificates);
-        const targetGroup = this.createTargetGroup();
-        const listenerRule = this.createListenerRule(targetGroup);
-        const healthCheck = this.configureTargetGroupHealthCheck(targetGroup);
-        const table = this.createDynamoDbTable();
-        const queue = this.createQueues();
-        const s3 = this.createS3Bucket();
+        const aRecord = this.createARecord(); //v2 make-stack
+        const sesVerify = this.createSesVerifyDomain(); //v2 make-stack
+        this.createARecordsForCertificates(); //v2 make-ecs
+        const certificates = this.createCertificates(); //v2 make-stack
+        this.createListenerCertificates(certificates); //v2 make-stack
+        const targetGroup = this.createTargetGroup(); //v2 make-ecs/lambda
+        const listenerRule = this.createListenerRule(targetGroup); //v2 make-ecs/lambda
+        const healthCheck = this.configureTargetGroupHealthCheck(targetGroup); //v2 make-ecs/lambda
+        const table = this.createDynamoDbTable(); //v2 make-stack
+        const queue = this.createQueues(); //v2 make-stack
+        const s3 = this.createS3Bucket(); //v2 make-stack
         const cluster = this.createCluster();
         const secrets = this.lookups.secrets;
         const tasksAndServices = this.createTasksAndServices({

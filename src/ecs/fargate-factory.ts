@@ -49,7 +49,9 @@ export class FargateFactory extends AbstractFactory {
     create(tasks: EcsTaskConfigProps[], services: EcsStandardServiceConfigProps[], queueProps?: EcsQueueConfigProps): FargateTasksAndServices {
         const wrappers: Wrapper[] = [];
         wrappers.push(...this.getEcsTaskFactory().create(tasks));
-        wrappers.push(...this.getEcsStandardServiceFactory().create(services));
+        if (this.props.standardServiceFactoryProps.targetGroup) {
+            wrappers.push(...this.getEcsStandardServiceFactory().create(services));
+        }
         if (queueProps) {
             wrappers.push(this.getEcsQueueFactory().create(queueProps));
         }

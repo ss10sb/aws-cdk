@@ -29,7 +29,7 @@ describe('pre build lookups with secret arn', () => {
         };
         const app = new App();
         const stack = new Stack(app, 'stack', stackProps);
-        new PreBuildLookups(stack, 'stack', envConfig, EnvBuildType.ECS);
+        new PreBuildLookups(stack, 'stack', envConfig);
         expect(app.synth().manifest.missing).toEqual([
             {
                 "key": "ssm:account=12344:parameterName=pcc-sdlc-alb01-arn:region=us-east-1",
@@ -124,7 +124,7 @@ describe('pre build lookups with secret arn', () => {
         };
         const app = new App();
         const stack = new Stack(app, 'stack', stackProps);
-        new PreBuildLookups(stack, 'stack', envConfig, EnvBuildType.ECS);
+        new PreBuildLookups(stack, 'stack', envConfig);
         expect(app.synth().manifest.missing).toEqual([
             {
                 "key": "ssm:account=12344:parameterName=pcc-sdlc-alb01-arn:region=us-east-1",

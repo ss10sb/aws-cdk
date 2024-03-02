@@ -17,8 +17,12 @@ export class Route53Helper {
     }
 
     public static getDomainFromConfig(config: Record<string, any>): string | undefined {
-        if (config.Parameters?.subdomain && config.Parameters?.hostedZoneDomain) {
-            return `${config.Parameters.subdomain}.${config.Parameters.hostedZoneDomain}`;
+        return Route53Helper.getDomainFromParameters(config.Parameters ?? {});
+    }
+
+    public static getDomainFromParameters(parameters: Record<string, any>): string | undefined {
+        if (parameters.subdomain && parameters.hostedZoneDomain) {
+            return `${parameters.subdomain}.${parameters.hostedZoneDomain}`;
         }
     }
 }
