@@ -67,7 +67,6 @@ export class EcsQueueFactory extends AbstractFactory {
             maxScalingCapacity: props.maxScalingCapacity ?? this.defaults.maxScalingCapacity,
             cpu: props.cpu ?? undefined,
             memoryLimitMiB: props.memoryLimitMiB ?? undefined,
-            memoryReservationMiB: props.softMemoryLimitMiB ?? undefined,
             secrets: this.getEcsSecrets(props.hasSecrets ?? false),
             environment: this.getEnvironment(props.hasEnv ?? false),
             logDriver: this.getLogging(name, props),
