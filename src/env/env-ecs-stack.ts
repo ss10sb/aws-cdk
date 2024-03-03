@@ -99,7 +99,8 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             startStop: startStopFactory,
             table: table,
             secrets: this.lookups.secret,
-            sharedSecrets: this.lookups.sharedSecret
+            sharedSecrets: this.lookups.sharedSecret,
+            needsSharedSynthStepPermissions: true
         });
     }
 
