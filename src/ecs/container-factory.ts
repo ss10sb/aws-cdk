@@ -81,7 +81,8 @@ export interface ContainerProps {
     readonly command?: ContainerCommand;
     readonly additionalCommand?: string[];
     readonly cpu: number;
-    readonly memoryLimitMiB: number;
+    readonly memoryLimitMiB?: number;
+    readonly softMemoryLimitMiB?: number;
     readonly portMappings?: PortMapping[];
     readonly hasSecrets?: boolean;
     readonly hasEnv?: boolean;
@@ -173,7 +174,8 @@ export class ContainerFactory extends AbstractFactory {
         const options: { [key: string]: any } = {
             image: this.getContainerImage(containerProps.image),
             cpu: containerProps.cpu,
-            memoryLimitMiB: containerProps.memoryLimitMiB,
+            memoryLimitMiB: containerProps.memoryLimitMiB ?? undefined,
+            memoryReservationMiB: containerProps.softMemoryLimitMiB ?? undefined,
             essential: containerProps.essential ?? this.defaults.essential,
             logging: this.getLogging(name, containerProps),
             secrets: this.getEcsSecrets(containerProps.hasSecrets ?? false),

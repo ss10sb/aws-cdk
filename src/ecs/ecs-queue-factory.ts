@@ -19,6 +19,7 @@ export interface EcsQueueConfigProps extends BaseServiceAndTaskProps, QueueConfi
     readonly command?: Command;
     readonly cpu: number;
     readonly memoryLimitMiB?: number;
+    readonly softMemoryLimitMiB?: number;
     readonly minScalingCapacity?: number;
     readonly maxScalingCapacity?: number;
     readonly scalingSteps?: ScalingInterval[];
@@ -66,6 +67,7 @@ export class EcsQueueFactory extends AbstractFactory {
             maxScalingCapacity: props.maxScalingCapacity ?? this.defaults.maxScalingCapacity,
             cpu: props.cpu ?? undefined,
             memoryLimitMiB: props.memoryLimitMiB ?? undefined,
+            memoryReservationMiB: props.softMemoryLimitMiB ?? undefined,
             secrets: this.getEcsSecrets(props.hasSecrets ?? false),
             environment: this.getEnvironment(props.hasEnv ?? false),
             logDriver: this.getLogging(name, props),
