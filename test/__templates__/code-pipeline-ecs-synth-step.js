@@ -269,6 +269,12 @@ module.exports = {
         pipelinePipeline4163A4B1: {
             Type: 'AWS::CodePipeline::Pipeline',
             Properties: {
+              ArtifactStore: {
+                Location: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
+                Type: 'S3'
+              },
+              PipelineType: 'V1',
+              RestartExecutionOnUpdate: true,
                 RoleArn: { 'Fn::GetAtt': [ 'pipelinePipelineRole7016E5DF', 'Arn' ] },
                 Stages: [
                     {
@@ -350,12 +356,7 @@ module.exports = {
                         ],
                         Name: 'UpdatePipeline'
                     }
-                ],
-                ArtifactStore: {
-                    Location: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
-                    Type: 'S3'
-                },
-                RestartExecutionOnUpdate: true
+              ]
             },
             DependsOn: [
                 'pipelinePipelineRoleDefaultPolicy16010F3E',
@@ -468,6 +469,9 @@ module.exports = {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step stack/Pipeline/Build/stack-synth-step',
+              EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
@@ -482,7 +486,7 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.min.js.copy config/defaults.min.js",\n' +
+                  '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
                         '        "npm ci",\n' +
                         '        "npm run build",\n' +
                         '        "npx cdk synth"\n' +
@@ -495,10 +499,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step stack/Pipeline/Build/stack-synth-step',
-                EncryptionKey: 'alias/aws/s3'
+              }
             }
         },
         pipelineCodeBuildActionRole4D1FDB53: {
@@ -698,6 +699,9 @@ module.exports = {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
+              EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
@@ -725,10 +729,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
-                EncryptionKey: 'alias/aws/s3'
+                }
             }
         }
     }

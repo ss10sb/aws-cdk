@@ -493,7 +493,7 @@ function getEnvConfig() {
                         memoryMiB: '512',
                         containers: [
                             {
-                                type: ContainerType.CREATE_RUN_ONCE_TASK,
+                                type: ContainerType.RUN_ONCE_TASK,
                                 image: 'phpfpm',
                                 hasSecrets: true,
                                 hasEnv: true,

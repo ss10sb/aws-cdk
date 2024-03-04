@@ -35,7 +35,7 @@ export class PermissionsCodePipelineLambdaStack extends NonConstruct {
 
     private synthStepPermissions() {
         const grantee = this.props.synthStep.role;
-        if (!this.props.needsSharedSynthStepPermissions) {
+        if (!(this.props.needsSharedSynthStepPermissions ?? true)) {
             return;
         }
         this.grantReadToConfigParam(grantee);

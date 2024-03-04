@@ -49,7 +49,6 @@ describe('bref as alb target', () => {
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
         // templateHelper.inspect();
-
         templateHelper.template.templateMatches(getExpected('bref-as-alb-defaults'));
     });
 
@@ -87,7 +86,6 @@ describe('bref as alb target', () => {
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
         // templateHelper.inspect();
-
         templateHelper.template.templateMatches(getExpected('bref-as-alb-prefixed-secrets'));
     });
 

@@ -559,7 +559,7 @@ module.exports = {
                                 Value: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                            {Name: 'CAN_RUN_CREATE', Value: '1'}
+                    { Name: 'CAN_RUN_CREATE', Value: '0' }
                         ],
                         Essential: true,
                         Image: {
@@ -1089,7 +1089,7 @@ module.exports = {
                                 Value: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                            {Name: 'CAN_RUN_CREATE', Value: '1'}
+                    { Name: 'CAN_RUN_CREATE', Value: '0' }
                         ],
                         Essential: true,
                         Image: {

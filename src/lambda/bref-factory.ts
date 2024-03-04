@@ -20,8 +20,9 @@ import {FunctionType, PhpApiProps, PhpApiResult} from "./lambda-definitions";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {Secrets} from "../secret/secrets";
 import {AUTHORIZER_TOKEN} from "./authorizer-base";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {PhpApiFactory} from "./php-api-factory";
+import {RemovalPolicy} from "aws-cdk-lib";
 
 interface BrefFactoryProps {
     functionProps: PhpBrefFunctionProps;
@@ -162,7 +163,14 @@ export class BrefFactory extends NonConstruct {
             ],
             destinationBucket: bucket,
             destinationKeyPrefix: 'assets',
-            logRetention: RetentionDays.ONE_DAY
+            logGroup: this.createLogGroup('s3-assets-copy')
+        });
+    }
+
+    createLogGroup(funcName: string): ILogGroup {
+        return new LogGroup(this.scope, `${funcName}-lg`, {
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.ONE_MONTH
         });
     }
 

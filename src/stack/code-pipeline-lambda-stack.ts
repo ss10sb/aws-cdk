@@ -35,7 +35,8 @@ export class CodePipelineLambdaStack extends CodePipelineBaseStack {
             pipelineSource: pipelineSource,
             notificationRule: notificationRule,
             synthStep: synthStep,
-            runSchedule: runSchedule
+            runSchedule: runSchedule,
+            needsSharedSynthStepPermissions: true
         }
         new PermissionsCodePipelineLambdaStack(this, this.node.id, servicesProps, this.config.Environments ?? []);
     }

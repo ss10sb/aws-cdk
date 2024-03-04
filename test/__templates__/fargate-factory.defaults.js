@@ -5,7 +5,7 @@ module.exports = {
             Type: 'AWS::ECS::Cluster',
             Properties: {
                 ClusterName: 'stack-cluster',
-                ClusterSettings: [{Name: 'containerInsights', Value: 'disabled'}]
+                ClusterSettings: [ { Name: 'containerInsights', Value: 'disabled' } ]
             }
         },
         targetgroup897B0682: {
@@ -14,12 +14,12 @@ module.exports = {
                 Name: 'target-group',
                 Port: 80,
                 Protocol: 'HTTP',
-                TargetGroupAttributes: [{Key: 'stickiness.enabled', Value: 'false'}],
+                TargetGroupAttributes: [ { Key: 'stickiness.enabled', Value: 'false' } ],
                 TargetType: 'ip',
                 VpcId: 'vpc-12345'
             }
         },
-        stacktaskdefcreateruntask0execrole907DA49E: {
+        stacktaskdefruntask0execroleD306382B: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -27,14 +27,14 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 }
             }
         },
-        stacktaskdefcreateruntask0execroleDefaultPolicy0F6E8B7F: {
+        stacktaskdefruntask0execroleDefaultPolicyBCF1B8E7: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -46,7 +46,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -54,11 +54,11 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                                    'stackcontainerphpfpmcreateruntaskcrot0loggroupD33B83FA',
+                                    'stackcontainerphpfpmruntaskrot0loggroupB0329FAC',
                                     'Arn'
                                 ]
                             }
@@ -74,7 +74,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment-??????'
                                     ]
                                 ]
@@ -83,11 +83,11 @@ module.exports = {
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stacktaskdefcreateruntask0execroleDefaultPolicy0F6E8B7F',
-                Roles: [{Ref: 'stacktaskdefcreateruntask0execrole907DA49E'}]
+                PolicyName: 'stacktaskdefruntask0execroleDefaultPolicyBCF1B8E7',
+                Roles: [ { Ref: 'stacktaskdefruntask0execroleD306382B' } ]
             }
         },
-        stacktaskdefcreateruntask0TaskRole9DAF85ED: {
+        stacktaskdefruntask0TaskRoleD154E7B4: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -95,22 +95,22 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
                 }
             }
         },
-        stacktaskdefcreateruntask06F95C280: {
+        stacktaskdefruntask0B12CB5D6: {
             Type: 'AWS::ECS::TaskDefinition',
             Properties: {
                 ContainerDefinitions: [
                     {
-                        Command: ['/on_create.sh'],
+                        Command: [ '/on_create.sh' ],
                         Cpu: 256,
-                        EntryPoint: ['/bin/sh', '-c'],
-                        Environment: [{Name: 'FIZZ', Value: 'buzz'}],
+                        EntryPoint: [ '/bin/sh', '-c' ],
+                        Environment: [ { Name: 'FIZZ', Value: 'buzz' } ],
                         Essential: true,
                         Image: {
                             'Fn::Join': [
@@ -123,7 +123,7 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                     }
                                                 ]
                                             }
@@ -137,16 +137,16 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                     }
                                                 ]
                                             }
                                         ]
                                     },
                                     '.',
-                                    {Ref: 'AWS::URLSuffix'},
+                                    { Ref: 'AWS::URLSuffix' },
                                     '/',
-                                    {Ref: 'phpfpmecr3C5F411B'},
+                                    { Ref: 'phpfpmecr3C5F411B' },
                                     ':1'
                                 ]
                             ]
@@ -155,14 +155,15 @@ module.exports = {
                             LogDriver: 'awslogs',
                             Options: {
                                 'awslogs-group': {
-                                    Ref: 'stackcontainerphpfpmcreateruntaskcrot0loggroupD33B83FA'
+                                    Ref: 'stackcontainerphpfpmruntaskrot0loggroupB0329FAC'
                                 },
                                 'awslogs-stream-prefix': 'phpfpm',
                                 'awslogs-region': 'us-east-1'
                             }
                         },
                         Memory: 512,
-                        Name: 'stack-container-phpfpm-createruntask-crot-0',
+                        Name: 'stack-container-phpfpm-runtask-rot-0',
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -171,7 +172,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:FOO::'
                                         ]
                                     ]
@@ -184,7 +185,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:BAR::'
                                         ]
                                     ]
@@ -195,21 +196,21 @@ module.exports = {
                 ],
                 Cpu: '256',
                 ExecutionRoleArn: {
-                    'Fn::GetAtt': ['stacktaskdefcreateruntask0execrole907DA49E', 'Arn']
+                    'Fn::GetAtt': [ 'stacktaskdefruntask0execroleD306382B', 'Arn' ]
                 },
-                Family: 'stack-task-def-createruntask-0',
+                Family: 'stack-task-def-runtask-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: ['FARGATE'],
+                RequiresCompatibilities: [ 'FARGATE' ],
                 TaskRoleArn: {
-                    'Fn::GetAtt': ['stacktaskdefcreateruntask0TaskRole9DAF85ED', 'Arn']
+                    'Fn::GetAtt': [ 'stacktaskdefruntask0TaskRoleD154E7B4', 'Arn' ]
                 }
             }
         },
         nginxecrC430EE7B: {
             Type: 'AWS::ECR::Repository',
             Properties: {
-                ImageScanningConfiguration: {ScanOnPush: true},
+                ImageScanningConfiguration: { ScanOnPush: true },
                 LifecyclePolicy: {
                     LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
                 },
@@ -221,7 +222,7 @@ module.exports = {
         phpfpmecr3C5F411B: {
             Type: 'AWS::ECR::Repository',
             Properties: {
-                ImageScanningConfiguration: {ScanOnPush: true},
+                ImageScanningConfiguration: { ScanOnPush: true },
                 LifecyclePolicy: {
                     LifecyclePolicyText: '{"rules":[{"rulePriority":1,"selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":3},"action":{"type":"expire"}}]}'
                 },
@@ -230,19 +231,216 @@ module.exports = {
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
         },
-        stackcontainerphpfpmcreateruntaskcrot0loggroupD33B83FA: {
+        stackcontainerphpfpmruntaskrot0loggroupB0329FAC: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-                LogGroupName: 'stack-container-phpfpm-createruntask-crot-0-log-group',
+                LogGroupName: 'stack-container-phpfpm-runtask-rot-0-log-group',
                 RetentionInDays: 30
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
-        stacktaskcreateruntask0SecurityGroup60C3C0F6: {
+        stacktaskdefupdateruntask0execroleEC367416: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        stacktaskdefupdateruntask0execroleDefaultPolicy09BD4082: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
+                        },
+                        {
+                            Action: 'ecr:GetAuthorizationToken',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'stackcontainerphpfpmupdateruntaskurot0loggroup3A9C7432',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        { Ref: 'AWS::Partition' },
+                                        ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment-??????'
+                                    ]
+                                ]
+                            }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'stacktaskdefupdateruntask0execroleDefaultPolicy09BD4082',
+                Roles: [ { Ref: 'stacktaskdefupdateruntask0execroleEC367416' } ]
+            }
+        },
+        stacktaskdefupdateruntask0TaskRoleFEFD1491: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        stacktaskdefupdateruntask04479EE6D: {
+            Type: 'AWS::ECS::TaskDefinition',
+            Properties: {
+                ContainerDefinitions: [
+                    {
+                        Command: [ 'artisan', 'migrate', '--force' ],
+                        Cpu: 256,
+                        EntryPoint: [ '/usr/local/bin/php' ],
+                        Environment: [ { Name: 'FIZZ', Value: 'buzz' } ],
+                        Essential: true,
+                        Image: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    {
+                                        'Fn::Select': [
+                                            4,
+                                            {
+                                                'Fn::Split': [
+                                                    ':',
+                                                    {
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    '.dkr.ecr.',
+                                    {
+                                        'Fn::Select': [
+                                            3,
+                                            {
+                                                'Fn::Split': [
+                                                    ':',
+                                                    {
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    '.',
+                                    { Ref: 'AWS::URLSuffix' },
+                                    '/',
+                                    { Ref: 'phpfpmecr3C5F411B' },
+                                    ':1'
+                                ]
+                            ]
+                        },
+                        LogConfiguration: {
+                            LogDriver: 'awslogs',
+                            Options: {
+                                'awslogs-group': {
+                                    Ref: 'stackcontainerphpfpmupdateruntaskurot0loggroup3A9C7432'
+                                },
+                                'awslogs-stream-prefix': 'phpfpm',
+                                'awslogs-region': 'us-east-1'
+                            }
+                        },
+                        Memory: 512,
+                        Name: 'stack-container-phpfpm-updateruntask-urot-0',
+                        ReadonlyRootFilesystem: true,
+                        Secrets: [
+                            {
+                                Name: 'FOO',
+                                ValueFrom: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            { Ref: 'AWS::Partition' },
+                                            ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:FOO::'
+                                        ]
+                                    ]
+                                }
+                            },
+                            {
+                                Name: 'BAR',
+                                ValueFrom: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            { Ref: 'AWS::Partition' },
+                                            ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:BAR::'
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                Cpu: '256',
+                ExecutionRoleArn: {
+                    'Fn::GetAtt': [ 'stacktaskdefupdateruntask0execroleEC367416', 'Arn' ]
+                },
+                Family: 'stack-task-def-updateruntask-0',
+                Memory: '512',
+                NetworkMode: 'awsvpc',
+                RequiresCompatibilities: [ 'FARGATE' ],
+                TaskRoleArn: {
+                    'Fn::GetAtt': [ 'stacktaskdefupdateruntask0TaskRoleFEFD1491', 'Arn' ]
+                }
+            }
+        },
+        stackcontainerphpfpmupdateruntaskurot0loggroup3A9C7432: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+                LogGroupName: 'stack-container-phpfpm-updateruntask-urot-0-log-group',
+                RetentionInDays: 30
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        stacktaskupdateruntask0SecurityGroup73DC7299: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
-                GroupDescription: 'stack/stack-task-createruntask-0/SecurityGroup',
+                GroupDescription: 'stack/stack-task-updateruntask-0/SecurityGroup',
                 SecurityGroupEgress: [
                     {
                         CidrIp: '0.0.0.0/0',
@@ -253,26 +451,47 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
-        stacktaskcreateruntask0createfn73D8F471: {
+        stacktaskupdateruntask0updatefn284D71FE: {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
-                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
+                    'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
                 },
                 Create: {
                     'Fn::Join': [
                         '',
                         [
                             '{"service":"ECS","action":"runTask","physicalResourceId":{"id":"',
-                            {Ref: 'stacktaskdefcreateruntask06F95C280'},
+                            { Ref: 'stacktaskdefupdateruntask04479EE6D' },
                             '"},"parameters":{"cluster":"',
-                            {Ref: 'stackcluster05FAB0DF'},
+                            { Ref: 'stackcluster05FAB0DF' },
                             '","taskDefinition":"',
-                            {Ref: 'stacktaskdefcreateruntask06F95C280'},
+                            { Ref: 'stacktaskdefupdateruntask04479EE6D' },
                             '","capacityProviderStrategy":[],"launchType":"FARGATE","platformVersion":"LATEST","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","subnets":["p-12345","p-67890"],"securityGroups":["',
                             {
                                 'Fn::GetAtt': [
-                                    'stacktaskcreateruntask0SecurityGroup60C3C0F6',
+                                    'stacktaskupdateruntask0SecurityGroup73DC7299',
+                                    'GroupId'
+                                ]
+                            },
+                            '"]}}}}'
+                        ]
+                    ]
+                },
+                Update: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            '{"service":"ECS","action":"runTask","physicalResourceId":{"id":"',
+                            { Ref: 'stacktaskdefupdateruntask04479EE6D' },
+                            '"},"parameters":{"cluster":"',
+                            { Ref: 'stackcluster05FAB0DF' },
+                            '","taskDefinition":"',
+                            { Ref: 'stacktaskdefupdateruntask04479EE6D' },
+                            '","capacityProviderStrategy":[],"launchType":"FARGATE","platformVersion":"LATEST","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","subnets":["p-12345","p-67890"],"securityGroups":["',
+                            {
+                                'Fn::GetAtt': [
+                                    'stacktaskupdateruntask0SecurityGroup73DC7299',
                                     'GroupId'
                                 ]
                             },
@@ -283,12 +502,12 @@ module.exports = {
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
-                'stacktaskcreateruntask0createfnCustomResourcePolicy211D8038'
+                'stacktaskupdateruntask0updatefnCustomResourcePolicy4B8702A5'
             ],
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
-        stacktaskcreateruntask0createfnCustomResourcePolicy211D8038: {
+        stacktaskupdateruntask0updatefnCustomResourcePolicy4B8702A5: {
             Type: 'AWS::IAM::Policy',
             Properties: {
                 PolicyDocument: {
@@ -296,12 +515,12 @@ module.exports = {
                         {
                             Action: 'ecs:RunTask',
                             Effect: 'Allow',
-                            Resource: {Ref: 'stacktaskdefcreateruntask06F95C280'}
+                            Resource: { Ref: 'stacktaskdefupdateruntask04479EE6D' }
                         }
                     ],
                     Version: '2012-10-17'
                 },
-                PolicyName: 'stacktaskcreateruntask0createfnCustomResourcePolicy211D8038',
+                PolicyName: 'stacktaskupdateruntask0updatefnCustomResourcePolicy4B8702A5',
                 Roles: [
                     {
                         Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
@@ -317,7 +536,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
+                            Principal: { Service: 'lambda.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -328,7 +547,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                {Ref: 'AWS::Partition'},
+                                { Ref: 'AWS::Partition' },
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -341,26 +560,6 @@ module.exports = {
             Properties: {
                 PolicyDocument: {
                     Statement: [
-                        {
-                            Action: 'iam:PassRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stacktaskdefcreateruntask0TaskRole9DAF85ED',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'iam:PassRole',
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stacktaskdefcreateruntask0execrole907DA49E',
-                                    'Arn'
-                                ]
-                            }
-                        },
                         {
                             Action: 'iam:PassRole',
                             Effect: 'Allow',
@@ -399,14 +598,14 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                     S3Key: MatchHelper.endsWith('zip')
                 },
+                FunctionName: 'update-fn',
+                Handler: 'index.handler',
                 Role: {
                     'Fn::GetAtt': [
                         'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2',
                         'Arn'
                     ]
                 },
-                FunctionName: 'create-fn',
-                Handler: 'index.handler',
                 Runtime: MatchHelper.startsWith('nodejs'),
                 Timeout: 120
             },
@@ -429,7 +628,7 @@ module.exports = {
                         '',
                         [
                             '/aws/lambda/',
-                            {Ref: 'AWS679f53fac002430cb0da5b7982bd22872D164C4C'}
+                            { Ref: 'AWS679f53fac002430cb0da5b7982bd22872D164C4C' }
                         ]
                     ]
                 },
@@ -444,7 +643,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
+                            Principal: { Service: 'lambda.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -455,7 +654,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                {Ref: 'AWS::Partition'},
+                                { Ref: 'AWS::Partition' },
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -492,6 +691,7 @@ module.exports = {
             Properties: {
                 Handler: 'index.handler',
                 Runtime: MatchHelper.startsWith('nodejs'),
+                Timeout: 900,
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                     S3Key: MatchHelper.endsWith('zip')
@@ -508,293 +708,6 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
-        stacktaskdefupdateruntask0execroleEC367416: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                }
-            }
-        },
-        stacktaskdefupdateruntask0execroleDefaultPolicy09BD4082: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
-                        },
-                        {
-                            Action: 'ecr:GetAuthorizationToken',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'stackcontainerphpfpmupdateruntaskurot0loggroup3A9C7432',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: [
-                                'secretsmanager:GetSecretValue',
-                                'secretsmanager:DescribeSecret'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        {Ref: 'AWS::Partition'},
-                                        ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment-??????'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'stacktaskdefupdateruntask0execroleDefaultPolicy09BD4082',
-                Roles: [{Ref: 'stacktaskdefupdateruntask0execroleEC367416'}]
-            }
-        },
-        stacktaskdefupdateruntask0TaskRoleFEFD1491: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                }
-            }
-        },
-        stacktaskdefupdateruntask04479EE6D: {
-            Type: 'AWS::ECS::TaskDefinition',
-            Properties: {
-                ContainerDefinitions: [
-                    {
-                        Command: ['artisan', 'migrate', '--force'],
-                        Cpu: 256,
-                        EntryPoint: ['/usr/local/bin/php'],
-                        Environment: [{Name: 'FIZZ', Value: 'buzz'}],
-                        Essential: true,
-                        Image: {
-                            'Fn::Join': [
-                                '',
-                                [
-                                    {
-                                        'Fn::Select': [
-                                            4,
-                                            {
-                                                'Fn::Split': [
-                                                    ':',
-                                                    {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    '.dkr.ecr.',
-                                    {
-                                        'Fn::Select': [
-                                            3,
-                                            {
-                                                'Fn::Split': [
-                                                    ':',
-                                                    {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    '.',
-                                    {Ref: 'AWS::URLSuffix'},
-                                    '/',
-                                    {Ref: 'phpfpmecr3C5F411B'},
-                                    ':1'
-                                ]
-                            ]
-                        },
-                        LogConfiguration: {
-                            LogDriver: 'awslogs',
-                            Options: {
-                                'awslogs-group': {
-                                    Ref: 'stackcontainerphpfpmupdateruntaskurot0loggroup3A9C7432'
-                                },
-                                'awslogs-stream-prefix': 'phpfpm',
-                                'awslogs-region': 'us-east-1'
-                            }
-                        },
-                        Memory: 512,
-                        Name: 'stack-container-phpfpm-updateruntask-urot-0',
-                        Secrets: [
-                            {
-                                Name: 'FOO',
-                                ValueFrom: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:FOO::'
-                                        ]
-                                    ]
-                                }
-                            },
-                            {
-                                Name: 'BAR',
-                                ValueFrom: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:BAR::'
-                                        ]
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                ],
-                Cpu: '256',
-                ExecutionRoleArn: {
-                    'Fn::GetAtt': ['stacktaskdefupdateruntask0execroleEC367416', 'Arn']
-                },
-                Family: 'stack-task-def-updateruntask-0',
-                Memory: '512',
-                NetworkMode: 'awsvpc',
-                RequiresCompatibilities: ['FARGATE'],
-                TaskRoleArn: {
-                    'Fn::GetAtt': ['stacktaskdefupdateruntask0TaskRoleFEFD1491', 'Arn']
-                }
-            }
-        },
-        stackcontainerphpfpmupdateruntaskurot0loggroup3A9C7432: {
-            Type: 'AWS::Logs::LogGroup',
-            Properties: {
-                LogGroupName: 'stack-container-phpfpm-updateruntask-urot-0-log-group',
-                RetentionInDays: 30
-            },
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        stacktaskupdateruntask0SecurityGroup73DC7299: {
-            Type: 'AWS::EC2::SecurityGroup',
-            Properties: {
-                GroupDescription: 'stack/stack-task-updateruntask-0/SecurityGroup',
-                SecurityGroupEgress: [
-                    {
-                        CidrIp: '0.0.0.0/0',
-                        Description: 'Allow all outbound traffic by default',
-                        IpProtocol: '-1'
-                    }
-                ],
-                VpcId: 'vpc-12345'
-            }
-        },
-        stacktaskupdateruntask0updatefn284D71FE: {
-            Type: 'Custom::AWS',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
-                },
-                Create: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '{"service":"ECS","action":"runTask","physicalResourceId":{"id":"',
-                            {Ref: 'stacktaskdefupdateruntask04479EE6D'},
-                            '"},"parameters":{"cluster":"',
-                            {Ref: 'stackcluster05FAB0DF'},
-                            '","taskDefinition":"',
-                            {Ref: 'stacktaskdefupdateruntask04479EE6D'},
-                            '","capacityProviderStrategy":[],"launchType":"FARGATE","platformVersion":"LATEST","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","subnets":["p-12345","p-67890"],"securityGroups":["',
-                            {
-                                'Fn::GetAtt': [
-                                    'stacktaskupdateruntask0SecurityGroup73DC7299',
-                                    'GroupId'
-                                ]
-                            },
-                            '"]}}}}'
-                        ]
-                    ]
-                },
-                Update: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '{"service":"ECS","action":"runTask","physicalResourceId":{"id":"',
-                            {Ref: 'stacktaskdefupdateruntask04479EE6D'},
-                            '"},"parameters":{"cluster":"',
-                            {Ref: 'stackcluster05FAB0DF'},
-                            '","taskDefinition":"',
-                            {Ref: 'stacktaskdefupdateruntask04479EE6D'},
-                            '","capacityProviderStrategy":[],"launchType":"FARGATE","platformVersion":"LATEST","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","subnets":["p-12345","p-67890"],"securityGroups":["',
-                            {
-                                'Fn::GetAtt': [
-                                    'stacktaskupdateruntask0SecurityGroup73DC7299',
-                                    'GroupId'
-                                ]
-                            },
-                            '"]}}}}'
-                        ]
-                    ]
-                },
-                InstallLatestAwsSdk: true
-            },
-            DependsOn: [
-                'stacktaskupdateruntask0updatefnCustomResourcePolicy4B8702A5'
-            ],
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        stacktaskupdateruntask0updatefnCustomResourcePolicy4B8702A5: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'ecs:RunTask',
-                            Effect: 'Allow',
-                            Resource: {Ref: 'stacktaskdefupdateruntask04479EE6D'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'stacktaskupdateruntask0updatefnCustomResourcePolicy4B8702A5',
-                Roles: [
-                    {
-                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
-                    }
-                ]
-            }
-        },
         stacktaskdefweb0execroleF48E5557: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -803,7 +716,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -822,7 +735,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -830,10 +743,10 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
                             Effect: 'Allow',
                             Resource: {
-                                'Fn::GetAtt': ['stackcontainernginxwebu0loggroupA0485B8E', 'Arn']
+                                'Fn::GetAtt': [ 'stackcontainernginxwebu0loggroupA0485B8E', 'Arn' ]
                             }
                         },
                         {
@@ -843,10 +756,10 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         },
                         {
-                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -866,7 +779,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment-??????'
                                     ]
                                 ]
@@ -876,7 +789,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'stacktaskdefweb0execroleDefaultPolicyA1E628C2',
-                Roles: [{Ref: 'stacktaskdefweb0execroleF48E5557'}]
+                Roles: [ { Ref: 'stacktaskdefweb0execroleF48E5557' } ]
             }
         },
         stacktaskdefweb0TaskRole8BC1F26E: {
@@ -887,7 +800,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -927,7 +840,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'stacktaskdefweb0TaskRoleDefaultPolicy30BB6C4E',
-                Roles: [{Ref: 'stacktaskdefweb0TaskRole8BC1F26E'}]
+                Roles: [ { Ref: 'stacktaskdefweb0TaskRole8BC1F26E' } ]
             }
         },
         stacktaskdefweb065A59601: {
@@ -948,7 +861,7 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                        'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                     }
                                                 ]
                                             }
@@ -962,16 +875,16 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['nginxecrC430EE7B', 'Arn']
+                                                        'Fn::GetAtt': [ 'nginxecrC430EE7B', 'Arn' ]
                                                     }
                                                 ]
                                             }
                                         ]
                                     },
                                     '.',
-                                    {Ref: 'AWS::URLSuffix'},
+                                    { Ref: 'AWS::URLSuffix' },
                                     '/',
-                                    {Ref: 'nginxecrC430EE7B'},
+                                    { Ref: 'nginxecrC430EE7B' },
                                     ':1'
                                 ]
                             ]
@@ -979,18 +892,19 @@ module.exports = {
                         LogConfiguration: {
                             LogDriver: 'awslogs',
                             Options: {
-                                'awslogs-group': {Ref: 'stackcontainernginxwebu0loggroupA0485B8E'},
+                                'awslogs-group': { Ref: 'stackcontainernginxwebu0loggroupA0485B8E' },
                                 'awslogs-stream-prefix': 'nginx',
                                 'awslogs-region': 'us-east-1'
                             }
                         },
                         Memory: 64,
                         Name: 'stack-container-nginx-web-u-0',
-                        PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}]
+                        PortMappings: [ { ContainerPort: 80, Protocol: 'tcp' } ],
+                        ReadonlyRootFilesystem: true
                     },
                     {
                         Cpu: 128,
-                        Environment: [{Name: 'FIZZ', Value: 'buzz'}],
+                        Environment: [ { Name: 'FIZZ', Value: 'buzz' } ],
                         Essential: true,
                         Image: {
                             'Fn::Join': [
@@ -1003,7 +917,7 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                     }
                                                 ]
                                             }
@@ -1017,16 +931,16 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                     }
                                                 ]
                                             }
                                         ]
                                     },
                                     '.',
-                                    {Ref: 'AWS::URLSuffix'},
+                                    { Ref: 'AWS::URLSuffix' },
                                     '/',
-                                    {Ref: 'phpfpmecr3C5F411B'},
+                                    { Ref: 'phpfpmecr3C5F411B' },
                                     ':1'
                                 ]
                             ]
@@ -1034,14 +948,15 @@ module.exports = {
                         LogConfiguration: {
                             LogDriver: 'awslogs',
                             Options: {
-                                'awslogs-group': {Ref: 'stackcontainerphpfpmwebu0loggroup678C2866'},
+                                'awslogs-group': { Ref: 'stackcontainerphpfpmwebu0loggroup678C2866' },
                                 'awslogs-stream-prefix': 'phpfpm',
                                 'awslogs-region': 'us-east-1'
                             }
                         },
                         Memory: 128,
                         Name: 'stack-container-phpfpm-web-u-0',
-                        PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
+                        PortMappings: [ { ContainerPort: 9000, Protocol: 'tcp' } ],
+                        ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
                                 Name: 'FOO',
@@ -1050,7 +965,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:FOO::'
                                         ]
                                     ]
@@ -1063,7 +978,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:BAR::'
                                         ]
                                     ]
@@ -1074,14 +989,14 @@ module.exports = {
                 ],
                 Cpu: '256',
                 ExecutionRoleArn: {
-                    'Fn::GetAtt': ['stacktaskdefweb0execroleF48E5557', 'Arn']
+                    'Fn::GetAtt': [ 'stacktaskdefweb0execroleF48E5557', 'Arn' ]
                 },
                 Family: 'stack-task-def-web-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: ['FARGATE'],
+                RequiresCompatibilities: [ 'FARGATE' ],
                 TaskRoleArn: {
-                    'Fn::GetAtt': ['stacktaskdefweb0TaskRole8BC1F26E', 'Arn']
+                    'Fn::GetAtt': [ 'stacktaskdefweb0TaskRole8BC1F26E', 'Arn' ]
                 }
             }
         },
@@ -1106,8 +1021,12 @@ module.exports = {
         stackserviceweb0Service4596BF8E: {
             Type: 'AWS::ECS::Service',
             Properties: {
-                Cluster: {Ref: 'stackcluster05FAB0DF'},
-                DeploymentConfiguration: {MaximumPercent: 200, MinimumHealthyPercent: 50},
+                Cluster: { Ref: 'stackcluster05FAB0DF' },
+                DeploymentConfiguration: {
+                    Alarms: { AlarmNames: [], Enable: false, Rollback: false },
+                    MaximumPercent: 200,
+                    MinimumHealthyPercent: 50
+                },
                 DesiredCount: 1,
                 EnableECSManagedTags: false,
                 EnableExecuteCommand: true,
@@ -1117,7 +1036,7 @@ module.exports = {
                     {
                         ContainerName: 'stack-container-nginx-web-u-0',
                         ContainerPort: 80,
-                        TargetGroupArn: {Ref: 'targetgroup897B0682'}
+                        TargetGroupArn: { Ref: 'targetgroup897B0682' }
                     }
                 ],
                 NetworkConfiguration: {
@@ -1131,13 +1050,17 @@ module.exports = {
                                 ]
                             }
                         ],
-                        Subnets: ['p-12345', 'p-67890']
+                        Subnets: [ 'p-12345', 'p-67890' ]
                     }
                 },
                 PlatformVersion: 'LATEST',
                 ServiceName: 'stack-service-web-0',
-                TaskDefinition: {Ref: 'stacktaskdefweb065A59601'}
-            }
+                TaskDefinition: { Ref: 'stacktaskdefweb065A59601' }
+            },
+            DependsOn: [
+                'stacktaskdefweb0TaskRoleDefaultPolicy30BB6C4E',
+                'stacktaskdefweb0TaskRole8BC1F26E'
+            ]
         },
         stackserviceweb0SecurityGroup2BBE8DB1: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -1151,7 +1074,11 @@ module.exports = {
                     }
                 ],
                 VpcId: 'vpc-12345'
-            }
+            },
+            DependsOn: [
+                'stacktaskdefweb0TaskRoleDefaultPolicy30BB6C4E',
+                'stacktaskdefweb0TaskRole8BC1F26E'
+            ]
         },
         stackserviceweb0TaskCountTarget25516769: {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
@@ -1163,10 +1090,10 @@ module.exports = {
                         '',
                         [
                             'service/',
-                            {Ref: 'stackcluster05FAB0DF'},
+                            { Ref: 'stackcluster05FAB0DF' },
                             '/',
                             {
-                                'Fn::GetAtt': ['stackserviceweb0Service4596BF8E', 'Name']
+                                'Fn::GetAtt': [ 'stackserviceweb0Service4596BF8E', 'Name' ]
                             }
                         ]
                     ]
@@ -1176,40 +1103,52 @@ module.exports = {
                         '',
                         [
                             'arn:',
-                            {Ref: 'AWS::Partition'},
+                            { Ref: 'AWS::Partition' },
                             ':iam::12344:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
                         ]
                     ]
                 },
                 ScalableDimension: 'ecs:service:DesiredCount',
                 ServiceNamespace: 'ecs'
-            }
+            },
+            DependsOn: [
+                'stacktaskdefweb0TaskRoleDefaultPolicy30BB6C4E',
+                'stacktaskdefweb0TaskRole8BC1F26E'
+            ]
         },
         stackserviceweb0TaskCountTargetstackservicescalecpuFCB34C28: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
             Properties: {
                 PolicyName: 'stackstackserviceweb0TaskCountTargetstackservicescalecpu24230823',
                 PolicyType: 'TargetTrackingScaling',
-                ScalingTargetId: {Ref: 'stackserviceweb0TaskCountTarget25516769'},
+                ScalingTargetId: { Ref: 'stackserviceweb0TaskCountTarget25516769' },
                 TargetTrackingScalingPolicyConfiguration: {
-                    PredefinedMetricSpecification: {PredefinedMetricType: 'ECSServiceAverageCPUUtilization'},
+                    PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
                     TargetValue: 75
                 }
-            }
+            },
+            DependsOn: [
+                'stacktaskdefweb0TaskRoleDefaultPolicy30BB6C4E',
+                'stacktaskdefweb0TaskRole8BC1F26E'
+            ]
         },
         stackserviceweb0TaskCountTargetstackservicescalemem7A298342: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
             Properties: {
                 PolicyName: 'stackstackserviceweb0TaskCountTargetstackservicescalemem5B089F4E',
                 PolicyType: 'TargetTrackingScaling',
-                ScalingTargetId: {Ref: 'stackserviceweb0TaskCountTarget25516769'},
+                ScalingTargetId: { Ref: 'stackserviceweb0TaskCountTarget25516769' },
                 TargetTrackingScalingPolicyConfiguration: {
                     PredefinedMetricSpecification: {
                         PredefinedMetricType: 'ECSServiceAverageMemoryUtilization'
                     },
                     TargetValue: 75
                 }
-            }
+            },
+            DependsOn: [
+                'stacktaskdefweb0TaskRoleDefaultPolicy30BB6C4E',
+                'stacktaskdefweb0TaskRole8BC1F26E'
+            ]
         },
         stackservicequeue0loggroup53D31D05: {
             Type: 'AWS::Logs::LogGroup',
@@ -1222,7 +1161,7 @@ module.exports = {
         },
         stackservicequeue0EcsProcessingDeadLetterQueueF40FEAC0: {
             Type: 'AWS::SQS::Queue',
-            Properties: {MessageRetentionPeriod: 1209600},
+            Properties: { MessageRetentionPeriod: 1209600 },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
@@ -1250,7 +1189,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -1303,7 +1242,7 @@ module.exports = {
                             '--sleep=3'
                         ],
                         Environment: [
-                            {Name: 'FIZZ', Value: 'buzz'},
+                            { Name: 'FIZZ', Value: 'buzz' },
                             {
                                 Name: 'QUEUE_NAME',
                                 Value: {
@@ -1326,7 +1265,7 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                     }
                                                 ]
                                             }
@@ -1340,16 +1279,16 @@ module.exports = {
                                                 'Fn::Split': [
                                                     ':',
                                                     {
-                                                        'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']
+                                                        'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ]
                                                     }
                                                 ]
                                             }
                                         ]
                                     },
                                     '.',
-                                    {Ref: 'AWS::URLSuffix'},
+                                    { Ref: 'AWS::URLSuffix' },
                                     '/',
-                                    {Ref: 'phpfpmecr3C5F411B'},
+                                    { Ref: 'phpfpmecr3C5F411B' },
                                     ':1'
                                 ]
                             ]
@@ -1357,7 +1296,7 @@ module.exports = {
                         LogConfiguration: {
                             LogDriver: 'awslogs',
                             Options: {
-                                'awslogs-group': {Ref: 'stackservicequeue0loggroup53D31D05'},
+                                'awslogs-group': { Ref: 'stackservicequeue0loggroup53D31D05' },
                                 'awslogs-stream-prefix': 'phpfpm',
                                 'awslogs-region': 'us-east-1'
                             }
@@ -1371,7 +1310,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:FOO::'
                                         ]
                                     ]
@@ -1384,7 +1323,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            {Ref: 'AWS::Partition'},
+                                            { Ref: 'AWS::Partition' },
                                             ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment:BAR::'
                                         ]
                                     ]
@@ -1403,7 +1342,7 @@ module.exports = {
                 Family: 'stack-service-queue-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: ['FARGATE'],
+                RequiresCompatibilities: [ 'FARGATE' ],
                 TaskRoleArn: {
                     'Fn::GetAtt': [
                         'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C',
@@ -1420,7 +1359,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -1439,7 +1378,7 @@ module.exports = {
                                 'ecr:BatchGetImage'
                             ],
                             Effect: 'Allow',
-                            Resource: {'Fn::GetAtt': ['phpfpmecr3C5F411B', 'Arn']}
+                            Resource: { 'Fn::GetAtt': [ 'phpfpmecr3C5F411B', 'Arn' ] }
                         },
                         {
                             Action: 'ecr:GetAuthorizationToken',
@@ -1447,10 +1386,10 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
                             Effect: 'Allow',
                             Resource: {
-                                'Fn::GetAtt': ['stackservicequeue0loggroup53D31D05', 'Arn']
+                                'Fn::GetAtt': [ 'stackservicequeue0loggroup53D31D05', 'Arn' ]
                             }
                         },
                         {
@@ -1464,7 +1403,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        {Ref: 'AWS::Partition'},
+                                        { Ref: 'AWS::Partition' },
                                         ':secretsmanager:us-east-1:12344:secret:stack-secrets/environment-??????'
                                     ]
                                 ]
@@ -1484,8 +1423,12 @@ module.exports = {
         stackservicequeue0QueueProcessingFargateServiceD4DA0ABF: {
             Type: 'AWS::ECS::Service',
             Properties: {
-                Cluster: {Ref: 'stackcluster05FAB0DF'},
-                DeploymentConfiguration: {MaximumPercent: 200, MinimumHealthyPercent: 50},
+                Cluster: { Ref: 'stackcluster05FAB0DF' },
+                DeploymentConfiguration: {
+                    Alarms: { AlarmNames: [], Enable: false, Rollback: false },
+                    MaximumPercent: 200,
+                    MinimumHealthyPercent: 50
+                },
                 EnableECSManagedTags: false,
                 LaunchType: 'FARGATE',
                 NetworkConfiguration: {
@@ -1499,13 +1442,17 @@ module.exports = {
                                 ]
                             }
                         ],
-                        Subnets: ['p-12345', 'p-67890']
+                        Subnets: [ 'p-12345', 'p-67890' ]
                     }
                 },
                 PlatformVersion: 'LATEST',
                 ServiceName: 'stack-service-queue-0',
-                TaskDefinition: {Ref: 'stackservicequeue0QueueProcessingTaskDef1796ACC1'}
-            }
+                TaskDefinition: { Ref: 'stackservicequeue0QueueProcessingTaskDef1796ACC1' }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceSecurityGroupDD9BE1AC: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -1519,7 +1466,11 @@ module.exports = {
                     }
                 ],
                 VpcId: 'vpc-12345'
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceTaskCountTargetAA840AB8: {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
@@ -1531,7 +1482,7 @@ module.exports = {
                         '',
                         [
                             'service/',
-                            {Ref: 'stackcluster05FAB0DF'},
+                            { Ref: 'stackcluster05FAB0DF' },
                             '/',
                             {
                                 'Fn::GetAtt': [
@@ -1547,14 +1498,18 @@ module.exports = {
                         '',
                         [
                             'arn:',
-                            {Ref: 'AWS::Partition'},
+                            { Ref: 'AWS::Partition' },
                             ':iam::12344:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
                         ]
                     ]
                 },
                 ScalableDimension: 'ecs:service:DesiredCount',
                 ServiceNamespace: 'ecs'
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceTaskCountTargetCpuScalingEE28B00C: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -1565,10 +1520,14 @@ module.exports = {
                     Ref: 'stackservicequeue0QueueProcessingFargateServiceTaskCountTargetAA840AB8'
                 },
                 TargetTrackingScalingPolicyConfiguration: {
-                    PredefinedMetricSpecification: {PredefinedMetricType: 'ECSServiceAverageCPUUtilization'},
+                    PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
                     TargetValue: 50
                 }
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingLowerPolicy7C874CE0: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -1581,21 +1540,24 @@ module.exports = {
                 StepScalingPolicyConfiguration: {
                     AdjustmentType: 'ChangeInCapacity',
                     MetricAggregationType: 'Maximum',
-                    StepAdjustments: [{MetricIntervalUpperBound: 0, ScalingAdjustment: -1}]
+                    StepAdjustments: [ { MetricIntervalUpperBound: 0, ScalingAdjustment: -1 } ]
                 }
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingLowerAlarm9DEA3919: {
             Type: 'AWS::CloudWatch::Alarm',
             Properties: {
-                ComparisonOperator: 'LessThanOrEqualToThreshold',
-                EvaluationPeriods: 1,
                 AlarmActions: [
                     {
                         Ref: 'stackservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingLowerPolicy7C874CE0'
                     }
                 ],
                 AlarmDescription: 'Lower threshold scaling alarm',
+                ComparisonOperator: 'LessThanOrEqualToThreshold',
                 Dimensions: [
                     {
                         Name: 'QueueName',
@@ -1607,12 +1569,17 @@ module.exports = {
                         }
                     }
                 ],
+                EvaluationPeriods: 1,
                 MetricName: 'ApproximateNumberOfMessagesVisible',
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
                 Threshold: 0
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingUpperPolicy7F90BD53: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
@@ -1631,22 +1598,25 @@ module.exports = {
                             MetricIntervalUpperBound: 9,
                             ScalingAdjustment: 1
                         },
-                        {MetricIntervalLowerBound: 9, ScalingAdjustment: 2}
+                        { MetricIntervalLowerBound: 9, ScalingAdjustment: 2 }
                     ]
                 }
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         },
         stackservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingUpperAlarm09E09486: {
             Type: 'AWS::CloudWatch::Alarm',
             Properties: {
-                ComparisonOperator: 'GreaterThanOrEqualToThreshold',
-                EvaluationPeriods: 1,
                 AlarmActions: [
                     {
                         Ref: 'stackservicequeue0QueueProcessingFargateServiceTaskCountTargetQueueMessagesVisibleScalingUpperPolicy7F90BD53'
                     }
                 ],
                 AlarmDescription: 'Upper threshold scaling alarm',
+                ComparisonOperator: 'GreaterThanOrEqualToThreshold',
                 Dimensions: [
                     {
                         Name: 'QueueName',
@@ -1658,12 +1628,17 @@ module.exports = {
                         }
                     }
                 ],
+                EvaluationPeriods: 1,
                 MetricName: 'ApproximateNumberOfMessagesVisible',
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
                 Threshold: 1
-            }
+            },
+            DependsOn: [
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicy1B9DFD49',
+                'stackservicequeue0QueueProcessingTaskDefTaskRoleE3846A7C'
+            ]
         }
     },
     Outputs: {
@@ -1693,7 +1668,7 @@ module.exports = {
         },
         stackservicequeue0SQSQueueArnDB42E6EB: {
             Value: {
-                'Fn::GetAtt': ['stackservicequeue0EcsProcessingQueue856D2EE2', 'Arn']
+                'Fn::GetAtt': [ 'stackservicequeue0EcsProcessingQueue856D2EE2', 'Arn' ]
             }
         }
     }

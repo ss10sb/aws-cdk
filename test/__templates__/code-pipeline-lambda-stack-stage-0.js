@@ -4,16 +4,17 @@ module.exports = {
         pccsdlctestcacheFE02D1F3: {
             Type: 'AWS::DynamoDB::Table',
             Properties: {
-                KeySchema: [{AttributeName: 'key', KeyType: 'HASH'}],
                 AttributeDefinitions: [{AttributeName: 'key', AttributeType: 'S'}],
                 BillingMode: 'PAY_PER_REQUEST',
+              KeySchema: [ { AttributeName: 'key', KeyType: 'HASH' } ],
                 SSESpecification: {SSEEnabled: true},
                 TableName: 'pcc-sdlc-test-cache',
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
                     {Key: 'Environment', Value: 'sdlc'}
-                ]
+              ],
+              TimeToLiveSpecification: { AttributeName: 'expires_at', Enabled: true }
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -42,6 +43,19 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
+          pccsdlctestwebfn0lg4B926758: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 30,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
         pccsdlctestwebfn0ServiceRoleBF73EA7E: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -167,8 +181,35 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {
-                    'Fn::GetAtt': ['pccsdlctestwebfn0ServiceRoleBF73EA7E', 'Arn']
+              Environment: {
+                Variables: {
+                  MAIL_FROM_ADDRESS: 'no-reply@test.sdlc.example.edu',
+                  IMPORTER_FROM: 'importer-no-reply@test.sdlc.example.edu',
+                  DYNAMODB_CACHE_TABLE: { Ref: 'pccsdlctestcacheFE02D1F3' },
+                  AWS_SECRET_ARN: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        'arn:',
+                        { Ref: 'AWS::Partition' },
+                        ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment'
+                      ]
+                    ]
+                  },
+                  AWS_APP_NAME: 'pcc-sdlc-test',
+                  CAN_RUN_CREATE: '0',
+                  BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                  SECRETS_LOOKUP: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        'bref-secretsmanager:arn:',
+                        { Ref: 'AWS::Partition' },
+                        ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment'
+                      ]
+                    ]
+                  }
+                }
                 },
                 FunctionName: 'pcc-sdlc-test-web-fn-0',
                 Handler: 'public/index.php',
@@ -184,7 +225,11 @@ module.exports = {
                         ]
                     }
                 ],
+              LoggingConfig: { LogGroup: { Ref: 'pccsdlctestwebfn0lg4B926758' } },
                 MemorySize: 512,
+              Role: {
+                'Fn::GetAtt': [ 'pccsdlctestwebfn0ServiceRoleBF73EA7E', 'Arn' ]
+              },
                 Runtime: 'provided.al2',
                 Tags: [
                     {Key: 'App', Value: 'test'},
@@ -204,107 +249,6 @@ module.exports = {
             DependsOn: [
                 'pccsdlctestwebfn0ServiceRoleDefaultPolicy78EAC02D',
                 'pccsdlctestwebfn0ServiceRoleBF73EA7E'
-            ]
-        },
-        pccsdlctestwebfn0LogRetention7C256B9B: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        ['/aws/lambda/', {Ref: 'pccsdlctestwebfn051C9C4DD'}]
-                    ]
-                },
-                RetentionInDays: 30
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Timeout: 900,
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
         },
         pccsdlctestlocaltestsdlcexampleeduCD22174F: {
@@ -331,6 +275,19 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
+          pccsdlctestauthorizerfnlg7CF1BC1E: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 7,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
         pccsdlctestauthorizerfnServiceRole7F5FF31D: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -443,6 +400,7 @@ module.exports = {
                 },
                 FunctionName: 'pcc-sdlc-test-authorizer-fn',
                 Handler: 'token.handler',
+              LoggingConfig: { LogGroup: { Ref: 'pccsdlctestauthorizerfnlg7CF1BC1E' } },
                 Role: {
                     'Fn::GetAtt': ['pccsdlctestauthorizerfnServiceRole7F5FF31D', 'Arn']
                 },
@@ -458,27 +416,6 @@ module.exports = {
                 'pccsdlctestauthorizerfnServiceRoleDefaultPolicyB4E147EB',
                 'pccsdlctestauthorizerfnServiceRole7F5FF31D'
             ]
-        },
-        pccsdlctestauthorizerfnLogRetention52D501C3: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {Ref: 'pccsdlctestauthorizerfnB9B5C7F9'}
-                        ]
-                    ]
-                },
-                RetentionInDays: 7
-            }
         },
         pccsdlctestrestapiAAD4F80F: {
             Type: 'AWS::ApiGateway::RestApi',
@@ -914,6 +851,19 @@ module.exports = {
                 }
             }
         },
+          s3assetscopylg083B90F8: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 1,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
         s3assetscopyAwsCliLayerA9EB8F42: {
             Type: 'AWS::Lambda::LayerVersion',
             Properties: {
@@ -1063,6 +1013,7 @@ module.exports = {
                 },
                 Handler: 'index.handler',
                 Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
+              LoggingConfig: { LogGroup: { Ref: 's3assetscopylg083B90F8' } },
                 Role: {
                     'Fn::GetAtt': [
                         'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
@@ -1081,29 +1032,6 @@ module.exports = {
                 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF',
                 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265'
             ]
-        },
-        CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CLogRetention1948627D: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {
-                                Ref: 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536'
-                            }
-                        ]
-                    ]
-                },
-                RetentionInDays: 1
-            }
         },
         pccsdlctestoriginrequestpolicy4A546A08: {
             Type: 'AWS::CloudFront::OriginRequestPolicy',

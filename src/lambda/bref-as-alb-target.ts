@@ -8,7 +8,7 @@ import {PhpVersion} from "../config/config-definitions";
 import {Construct} from "constructs";
 import {FunctionType} from "./lambda-definitions";
 import {BucketDeployment, Source} from "aws-cdk-lib/aws-s3-deployment";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import fs from "fs";
 import path from "path";
 import {ApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
@@ -105,7 +105,14 @@ export class BrefAsAlbTarget extends NonConstruct {
                 Source.asset(path, {exclude: ['index.php', '.htaccess']})
             ],
             destinationBucket: bucket,
-            logRetention: RetentionDays.ONE_DAY
+            logGroup: this.createLogGroup('s3-assets-copy')
+        });
+    }
+
+    createLogGroup(funcName: string): ILogGroup {
+        return new LogGroup(this.scope, `${funcName}-lg`, {
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.ONE_DAY
         });
     }
 

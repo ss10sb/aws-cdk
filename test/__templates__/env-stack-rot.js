@@ -765,7 +765,7 @@ module.exports = {
                       }
                     },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                            {Name: 'CAN_RUN_CREATE', Value: '1'}
+                    { Name: 'CAN_RUN_CREATE', Value: '0' }
                         ],
                         Essential: true,
                         Image: {

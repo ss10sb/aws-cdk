@@ -1,6 +1,12 @@
 const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
+          functionwebfn0lgD95A7CF9: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: { RetentionInDays: 30 },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
         functionwebfn0ServiceRole21C72759: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -59,9 +65,6 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {
-                    'Fn::GetAtt': ['functionwebfn0ServiceRole21C72759', 'Arn']
-                },
                 FunctionName: 'function-web-fn-0',
                 Handler: 'public/index.php',
                 Layers: [
@@ -76,7 +79,11 @@ module.exports = {
                         ]
                     }
                 ],
+                LoggingConfig: {LogGroup: {Ref: 'functionwebfn0lgD95A7CF9'}},
                 MemorySize: 512,
+                Role: {
+                    'Fn::GetAtt': ['functionwebfn0ServiceRole21C72759', 'Arn']
+                },
                 Runtime: 'provided.al2',
                 Timeout: 28,
                 VpcConfig: {
@@ -89,96 +96,6 @@ module.exports = {
                 }
             },
             DependsOn: ['functionwebfn0ServiceRole21C72759']
-        },
-        functionwebfn0LogRetention760A77D0: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        ['/aws/lambda/', {Ref: 'functionwebfn0DF20C809'}]
-                    ]
-                },
-                RetentionInDays: 30
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                }
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-            ]
         }
     }
 }

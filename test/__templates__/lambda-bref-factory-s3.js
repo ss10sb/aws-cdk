@@ -5,12 +5,18 @@ module.exports = {
             Type: 'AWS::CertificateManager::Certificate',
             Properties: {
                 DomainName: 'foo.bar.com',
-                DomainValidationOptions: [ { DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY' } ],
+                DomainValidationOptions: [{DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY'}],
                 Tags: [
-                    { Key: 'Name', Value: 'stack/my-app-default-foo.bar.com' }
+                    {Key: 'Name', Value: 'stack/my-app-default-foo.bar.com'}
                 ],
                 ValidationMethod: 'DNS'
             },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        funcwebfn0lg7D0BB952: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {RetentionInDays: 30},
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
@@ -48,7 +54,6 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {'Fn::GetAtt': ['funcwebfn0ServiceRoleA9004225', 'Arn']},
                 FunctionName: 'func-web-fn-0',
                 Handler: 'public/index.php',
                 Layers: [
@@ -63,107 +68,28 @@ module.exports = {
                         ]
                     }
                 ],
+                LoggingConfig: {LogGroup: {Ref: 'funcwebfn0lg7D0BB952'}},
                 MemorySize: 512,
+                Role: {'Fn::GetAtt': ['funcwebfn0ServiceRoleA9004225', 'Arn']},
                 Runtime: 'provided.al2',
                 Timeout: 28
             },
             DependsOn: ['funcwebfn0ServiceRoleA9004225']
         },
-        funcwebfn0LogRetentionF9CFF3D3: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': ['', ['/aws/lambda/', {Ref: 'funcwebfn067A6530A'}]]
-                },
-                RetentionInDays: 30
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                }
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-            ]
-        },
         myapplocalfoobarcom8042E6FE: {
             Type: 'AWS::CertificateManager::Certificate',
             Properties: {
                 DomainName: 'foo.bar.com',
-                DomainValidationOptions: [ { DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY' } ],
-                Tags: [ { Key: 'Name', Value: 'stack/my-app-local-foo.bar.com' } ],
+                DomainValidationOptions: [{DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY'}],
+                Tags: [{Key: 'Name', Value: 'stack/my-app-local-foo.bar.com'}],
                 ValidationMethod: 'DNS'
             },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        myappauthorizerfnlg23C1AACD: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {RetentionInDays: 7},
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
@@ -201,34 +127,17 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {
-                    'Fn::GetAtt': ['myappauthorizerfnServiceRole2952ABDD', 'Arn']
-                },
                 Environment: {Variables: {AUTHORIZER_TOKEN: 'INVALID'}},
                 FunctionName: 'my-app-authorizer-fn',
                 Handler: 'token.handler',
+                LoggingConfig: {LogGroup: {Ref: 'myappauthorizerfnlg23C1AACD'}},
+                Role: {
+                    'Fn::GetAtt': ['myappauthorizerfnServiceRole2952ABDD', 'Arn']
+                },
                 Runtime: MatchHelper.startsWith('nodejs'),
                 Timeout: 5
             },
             DependsOn: ['myappauthorizerfnServiceRole2952ABDD']
-        },
-        myappauthorizerfnLogRetention55CB4DDF: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        ['/aws/lambda/', {Ref: 'myappauthorizerfn61B51A4F'}]
-                    ]
-                },
-                RetentionInDays: 7
-            }
         },
         myapprestapiA58A667F: {
             Type: 'AWS::ApiGateway::RestApi',
@@ -281,8 +190,8 @@ module.exports = {
         myapprestapiDeployment12B3E9C9195db37062f799c38906cb088bd6ffdd: {
             Type: 'AWS::ApiGateway::Deployment',
             Properties: {
-                RestApiId: {Ref: 'myapprestapiA58A667F'},
-                Description: 'Automatically created by the RestApi construct'
+                Description: 'Automatically created by the RestApi construct',
+                RestApiId: {Ref: 'myapprestapiA58A667F'}
             },
             DependsOn: [
                 'myapprestapiproxyANYC6BA8B79',
@@ -293,10 +202,10 @@ module.exports = {
         myapprestapiDeploymentStageprod4D80311E: {
             Type: 'AWS::ApiGateway::Stage',
             Properties: {
-                RestApiId: {Ref: 'myapprestapiA58A667F'},
                 DeploymentId: {
                     Ref: 'myapprestapiDeployment12B3E9C9195db37062f799c38906cb088bd6ffdd'
                 },
+                RestApiId: {Ref: 'myapprestapiA58A667F'},
                 StageName: 'prod'
             },
             DependsOn: ['myapprestapiAccount8A1D9816']
@@ -306,7 +215,7 @@ module.exports = {
             Properties: {
                 DomainName: 'foo.bar.com',
                 EndpointConfiguration: {Types: ['REGIONAL']},
-                RegionalCertificateArn: { Ref: 'myapplocalfoobarcom8042E6FE' }
+                RegionalCertificateArn: {Ref: 'myapplocalfoobarcom8042E6FE'}
             }
         },
         myapprestapiCustomDomainMapstackmyapprestapi9020B329247EBF5F: {
@@ -372,10 +281,8 @@ module.exports = {
         myapprestapiproxyANYC6BA8B79: {
             Type: 'AWS::ApiGateway::Method',
             Properties: {
-                HttpMethod: 'ANY',
-                ResourceId: {Ref: 'myapprestapiproxyA8E921A0'},
-                RestApiId: {Ref: 'myapprestapiA58A667F'},
                 AuthorizationType: 'CUSTOM',
+                HttpMethod: 'ANY',
                 Integration: {
                     IntegrationHttpMethod: 'POST',
                     Type: 'AWS_PROXY',
@@ -391,7 +298,9 @@ module.exports = {
                             ]
                         ]
                     }
-                }
+                },
+                ResourceId: {Ref: 'myapprestapiproxyA8E921A0'},
+                RestApiId: {Ref: 'myapprestapiA58A667F'}
             }
         },
         myapprestapiANYApiPermissionstackmyapprestapi9020B329ANY54901306: {
@@ -439,12 +348,8 @@ module.exports = {
         myapprestapiANY919BD794: {
             Type: 'AWS::ApiGateway::Method',
             Properties: {
-                HttpMethod: 'ANY',
-                ResourceId: {
-                    'Fn::GetAtt': ['myapprestapiA58A667F', 'RootResourceId']
-                },
-                RestApiId: {Ref: 'myapprestapiA58A667F'},
                 AuthorizationType: 'CUSTOM',
+                HttpMethod: 'ANY',
                 Integration: {
                     IntegrationHttpMethod: 'POST',
                     Type: 'AWS_PROXY',
@@ -460,7 +365,11 @@ module.exports = {
                             ]
                         ]
                     }
-                }
+                },
+                ResourceId: {
+                    'Fn::GetAtt': ['myapprestapiA58A667F', 'RootResourceId']
+                },
+                RestApiId: {Ref: 'myapprestapiA58A667F'}
             }
         },
         myappassets1E699741: {
@@ -474,6 +383,7 @@ module.exports = {
                     ]
                 },
                 BucketName: 'my-app-assets',
+                OwnershipControls: {Rules: [{ObjectOwnership: 'BucketOwnerEnforced'}]},
                 PublicAccessBlockConfiguration: {
                     BlockPublicAcls: true,
                     BlockPublicPolicy: true,
@@ -563,6 +473,12 @@ module.exports = {
                     Version: '2012-10-17'
                 }
             }
+        },
+        s3assetscopylg083B90F8: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {RetentionInDays: 1},
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
         },
         s3assetscopyAwsCliLayerA9EB8F42: {
             Type: 'AWS::Lambda::LayerVersion',
@@ -699,14 +615,20 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
+                Environment: {
+                    Variables: {
+                        AWS_CA_BUNDLE: '/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem'
+                    }
+                },
+                Handler: 'index.handler',
+                Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
+                LoggingConfig: {LogGroup: {Ref: 's3assetscopylg083B90F8'}},
                 Role: {
                     'Fn::GetAtt': [
                         'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
                         'Arn'
                     ]
                 },
-                Handler: 'index.handler',
-                Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
                 Runtime: 'python3.9',
                 Timeout: 900
             },
@@ -714,29 +636,6 @@ module.exports = {
                 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF',
                 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265'
             ]
-        },
-        CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CLogRetention1948627D: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {
-                                Ref: 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536'
-                            }
-                        ]
-                    ]
-                },
-                RetentionInDays: 1
-            }
         },
         myapporiginrequestpolicy353E9D0B: {
             Type: 'AWS::CloudFront::OriginRequestPolicy',
@@ -912,7 +811,7 @@ module.exports = {
                     ],
                     PriceClass: 'PriceClass_100',
                     ViewerCertificate: {
-                        AcmCertificateArn: { Ref: 'myappdefaultfoobarcom221C8B61' },
+                        AcmCertificateArn: {Ref: 'myappdefaultfoobarcom221C8B61'},
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
                     }
@@ -929,24 +828,6 @@ module.exports = {
             Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
             Properties: {
                 CloudFrontOriginAccessIdentityConfig: {Comment: 'Identity for stackmyappcfdistOrigin3F2382364'}
-            }
-        }
-    },
-    Outputs: {
-        myapprestapiEndpointC8CD91C1: {
-            Value: {
-                'Fn::Join': [
-                    '',
-                    [
-                        'https://',
-                        {Ref: 'myapprestapiA58A667F'},
-                        '.execute-api.us-west-2.',
-                        {Ref: 'AWS::URLSuffix'},
-                        '/',
-                        {Ref: 'myapprestapiDeploymentStageprod4D80311E'},
-                        '/'
-                    ]
-                ]
             }
         }
     }

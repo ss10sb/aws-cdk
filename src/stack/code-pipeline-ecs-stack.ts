@@ -51,7 +51,8 @@ export class CodePipelineEcsStack extends CodePipelineBaseStack {
             ecrSteps: ecrSteps,
             envStages: envStages,
             notificationRule: notificationRule,
-            runSchedule: runSchedule
+            runSchedule: runSchedule,
+            needsSharedSynthStepPermissions: true
         };
         new PermissionsCodePipelineEcsStack(this, this.node.id, servicesProps, this.config.Environments ?? []);
     }

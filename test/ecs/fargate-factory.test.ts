@@ -87,7 +87,7 @@ describe('fargate factory', () => {
         });
         const tasks = [
             {
-                type: TaskServiceType.CREATE_RUN_ONCE_TASK,
+                type: TaskServiceType.RUN_ONCE_TASK,
                 taskDefinition: {
                     cpu: '256',
                     memoryMiB: '512',

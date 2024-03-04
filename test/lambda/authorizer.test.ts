@@ -18,6 +18,12 @@ describe('authorizer v1', () => {
         // templateHelper.inspect();
         const expected = {
             Resources: {
+                authorizerauthorizerfnlgDF5C9AE3: {
+                    Type: 'AWS::Logs::LogGroup',
+                    Properties: { RetentionInDays: 7 },
+                    UpdateReplacePolicy: 'Delete',
+                    DeletionPolicy: 'Delete'
+                },
                 authorizerauthorizerfnServiceRole5010DDC1: {
                     Type: 'AWS::IAM::Role',
                     Properties: {
@@ -50,111 +56,19 @@ describe('authorizer v1', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: MatchHelper.endsWith('zip')
-                        },
-                        Role: {
-                            'Fn::GetAtt': [ 'authorizerauthorizerfnServiceRole5010DDC1', 'Arn' ]
+                            S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
                         },
                         Environment: { Variables: { AUTHORIZER_TOKEN: 'abc123' } },
                         FunctionName: 'authorizer-authorizer-fn',
                         Handler: 'token.handler',
-                        Runtime: MatchHelper.startsWith('nodejs'),
+                        LoggingConfig: { LogGroup: { Ref: 'authorizerauthorizerfnlgDF5C9AE3' } },
+                        Role: {
+                            'Fn::GetAtt': [ 'authorizerauthorizerfnServiceRole5010DDC1', 'Arn' ]
+                        },
+                        Runtime: 'nodejs18.x',
                         Timeout: 5
                     },
                     DependsOn: [ 'authorizerauthorizerfnServiceRole5010DDC1' ]
-                },
-                authorizerauthorizerfnLogRetention6CEBB528: {
-                    Type: 'Custom::LogRetention',
-                    Properties: {
-                        ServiceToken: {
-                            'Fn::GetAtt': [
-                                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                                'Arn'
-                            ]
-                        },
-                        LogGroupName: {
-                            'Fn::Join': [
-                                '',
-                                [
-                                    '/aws/lambda/',
-                                    { Ref: 'authorizerauthorizerfn4F0DAFF0' }
-                                ]
-                            ]
-                        },
-                        RetentionInDays: 7
-                    }
-                },
-                LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-                    Type: 'AWS::IAM::Role',
-                    Properties: {
-                        AssumeRolePolicyDocument: {
-                            Statement: [
-                                {
-                                    Action: 'sts:AssumeRole',
-                                    Effect: 'Allow',
-                                    Principal: { Service: 'lambda.amazonaws.com' }
-                                }
-                            ],
-                            Version: '2012-10-17'
-                        },
-                        ManagedPolicyArns: [
-                            {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                                    ]
-                                ]
-                            }
-                        ]
-                    }
-                },
-                LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-                    Type: 'AWS::IAM::Policy',
-                    Properties: {
-                        PolicyDocument: {
-                            Statement: [
-                                {
-                                    Action: [
-                                        'logs:PutRetentionPolicy',
-                                        'logs:DeleteRetentionPolicy'
-                                    ],
-                                    Effect: 'Allow',
-                                    Resource: '*'
-                                }
-                            ],
-                            Version: '2012-10-17'
-                        },
-                        PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                        Roles: [
-                            {
-                                Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                            }
-                        ]
-                    }
-                },
-                LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-                    Type: 'AWS::Lambda::Function',
-                    Properties: {
-                        Handler: 'index.handler',
-                        Runtime: MatchHelper.startsWith('nodejs'),
-                        Code: {
-                            S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                            S3Key: MatchHelper.endsWith('zip')
-                        },
-                        Role: {
-                            'Fn::GetAtt': [
-                                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                                'Arn'
-                            ]
-                        }
-                    },
-                    DependsOn: [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    ]
                 }
             }
         };

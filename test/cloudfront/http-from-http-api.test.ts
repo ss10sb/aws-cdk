@@ -22,12 +22,18 @@ describe('http from http api', () => {
         const phpHttpApi = new PhpHttpApi(stack, 'http-api');
         const httpApi = phpHttpApi.create({lambdaFunction: func, logProps: {}});
         const fromHttpApi = new HttpFromHttpApi(stack, 'origin');
-        fromHttpApi.create(<HttpApi> httpApi.api);
+        fromHttpApi.create(<HttpApi>httpApi.api);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
         // templateHelper.inspect();
         const expected = {
             Resources: {
+                functioneventfn0lgD47CFCEB: {
+                    Type: 'AWS::Logs::LogGroup',
+                    Properties: {RetentionInDays: 30},
+                    UpdateReplacePolicy: 'Delete',
+                    DeletionPolicy: 'Delete'
+                },
                 functioneventfn0ServiceRole30E080B7: {
                     Type: 'AWS::IAM::Role',
                     Properties: {
@@ -36,7 +42,7 @@ describe('http from http api', () => {
                                 {
                                     Action: 'sts:AssumeRole',
                                     Effect: 'Allow',
-                                    Principal: { Service: 'lambda.amazonaws.com' }
+                                    Principal: {Service: 'lambda.amazonaws.com'}
                                 }
                             ],
                             Version: '2012-10-17'
@@ -47,7 +53,7 @@ describe('http from http api', () => {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                                     ]
                                 ]
@@ -60,10 +66,7 @@ describe('http from http api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                            S3Key: MatchHelper.endsWith('zip')
-                        },
-                        Role: {
-                            'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
+                            S3Key: 'f783265af338426734f8dd0676fbe351130e46ad3456447acf36651a1de9dad4.zip'
                         },
                         FunctionName: 'function-event-fn-0',
                         Handler: 'artisan',
@@ -73,107 +76,21 @@ describe('http from http api', () => {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':lambda:us-west-2:534081306603:layer:php-81-fpm:59'
                                     ]
                                 ]
                             }
                         ],
+                        LoggingConfig: {LogGroup: {Ref: 'functioneventfn0lgD47CFCEB'}},
                         MemorySize: 512,
+                        Role: {
+                            'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
+                        },
                         Runtime: 'provided.al2',
                         Timeout: 120
                     },
-                    DependsOn: [ 'functioneventfn0ServiceRole30E080B7' ]
-                },
-                functioneventfn0LogRetention13B86148: {
-                    Type: 'Custom::LogRetention',
-                    Properties: {
-                        ServiceToken: {
-                            'Fn::GetAtt': [
-                                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                                'Arn'
-                            ]
-                        },
-                        LogGroupName: {
-                            'Fn::Join': [
-                                '',
-                                [ '/aws/lambda/', { Ref: 'functioneventfn01CDA78AF' } ]
-                            ]
-                        },
-                        RetentionInDays: 30
-                    }
-                },
-                LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-                    Type: 'AWS::IAM::Role',
-                    Properties: {
-                        AssumeRolePolicyDocument: {
-                            Statement: [
-                                {
-                                    Action: 'sts:AssumeRole',
-                                    Effect: 'Allow',
-                                    Principal: { Service: 'lambda.amazonaws.com' }
-                                }
-                            ],
-                            Version: '2012-10-17'
-                        },
-                        ManagedPolicyArns: [
-                            {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                                    ]
-                                ]
-                            }
-                        ]
-                    }
-                },
-                LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-                    Type: 'AWS::IAM::Policy',
-                    Properties: {
-                        PolicyDocument: {
-                            Statement: [
-                                {
-                                    Action: [
-                                        'logs:PutRetentionPolicy',
-                                        'logs:DeleteRetentionPolicy'
-                                    ],
-                                    Effect: 'Allow',
-                                    Resource: '*'
-                                }
-                            ],
-                            Version: '2012-10-17'
-                        },
-                        PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                        Roles: [
-                            {
-                                Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                            }
-                        ]
-                    }
-                },
-                LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-                    Type: 'AWS::Lambda::Function',
-                    Properties: {
-                        Handler: 'index.handler',
-                        Runtime: MatchHelper.startsWith('nodejs'),
-                        Code: {
-                            S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                            S3Key: MatchHelper.endsWith('zip')
-                        },
-                        Role: {
-                            'Fn::GetAtt': [
-                                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                                'Arn'
-                            ]
-                        }
-                    },
-                    DependsOn: [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    ]
+                    DependsOn: ['functioneventfn0ServiceRole30E080B7']
                 },
                 httpapihttpapi5E89BCFA: {
                     Type: 'AWS::ApiGatewayV2::Api',
@@ -186,9 +103,9 @@ describe('http from http api', () => {
                 httpapihttpapiDefaultRoutehttpapihttpapiint560D1C07: {
                     Type: 'AWS::ApiGatewayV2::Integration',
                     Properties: {
-                        ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
+                        ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
                         IntegrationType: 'AWS_PROXY',
-                        IntegrationUri: { 'Fn::GetAtt': [ 'functioneventfn01CDA78AF', 'Arn' ] },
+                        IntegrationUri: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
                         PayloadFormatVersion: '2.0',
                         RequestParameters: {
                             'append:header.x-cf-source-ip': '$request.header.x-cf-source-ip'
@@ -199,16 +116,16 @@ describe('http from http api', () => {
                     Type: 'AWS::Lambda::Permission',
                     Properties: {
                         Action: 'lambda:InvokeFunction',
-                        FunctionName: { 'Fn::GetAtt': [ 'functioneventfn01CDA78AF', 'Arn' ] },
+                        FunctionName: {'Fn::GetAtt': ['functioneventfn01CDA78AF', 'Arn']},
                         Principal: 'apigateway.amazonaws.com',
                         SourceArn: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':execute-api:us-west-2:12344:',
-                                    { Ref: 'httpapihttpapi5E89BCFA' },
+                                    {Ref: 'httpapihttpapi5E89BCFA'},
                                     '/*/*'
                                 ]
                             ]
@@ -218,9 +135,9 @@ describe('http from http api', () => {
                 httpapihttpapiDefaultRouteBFDE9743: {
                     Type: 'AWS::ApiGatewayV2::Route',
                     Properties: {
-                        ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
-                        RouteKey: '$default',
+                        ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
                         AuthorizationType: 'NONE',
+                        RouteKey: '$default',
                         Target: {
                             'Fn::Join': [
                                 '',
@@ -237,15 +154,15 @@ describe('http from http api', () => {
                 httpapihttpapiDefaultStage2FC5FDEF: {
                     Type: 'AWS::ApiGatewayV2::Stage',
                     Properties: {
-                        ApiId: { Ref: 'httpapihttpapi5E89BCFA' },
-                        StageName: '$default',
                         AccessLogSettings: {
                             DestinationArn: {
-                                'Fn::GetAtt': [ 'httpapihttpapihttpapilg4B355C71', 'Arn' ]
+                                'Fn::GetAtt': ['httpapihttpapihttpapilg4B355C71', 'Arn']
                             },
                             Format: '{"requestTime":"$context.requestTime","requestId":"$context.requestId","httpMethod":"$context.httpMethod","path":"$context.path","resourcePath":"$context.resourcePath","status":$context.status,"responseLatency":$context.responseLatency,"integrationRequestId":"$context.integration.requestId","functionResponseStatus":"$context.integration.status","integrationLatency":"$context.integration.latency","integrationServiceStatus":"$context.integration.integrationStatus","integrationErrorMessage":"$context.integrationErrorMessage","authorizerStatus":"$context.authorizer.status","authorizerLatency":"$context.authorizer.latency","authorizerRequestId":"$context.authorizer.requestId","authorizerError":"$context.authorizer.error","ip":"$context.identity.sourceIp","userAgent":"$context.identity.userAgent","principalId":"$context.authorizer.principalId"}'
                         },
-                        AutoDeploy: true
+                        ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
+                        AutoDeploy: true,
+                        StageName: '$default'
                     }
                 },
                 httpapihttpapihttpapilg4B355C71: {

@@ -102,8 +102,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             sesVerify: sesVerify,
             table: table,
             secret: this.lookups.secret,
-            sharedSecret: this.lookups.sharedSecret,
-            needsSharedSynthStepPermissions: true
+            sharedSecret: this.lookups.sharedSecret
         });
     }
 

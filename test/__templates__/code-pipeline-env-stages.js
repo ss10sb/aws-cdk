@@ -503,6 +503,49 @@ module.exports = {
         stackcodepipelinePipelineEA58A55A: {
             Type: 'AWS::CodePipeline::Pipeline',
             Properties: {
+              ArtifactStores: [
+                {
+                  ArtifactStore: {
+                    EncryptionKey: {
+                      Id: {
+                        'Fn::Join': [
+                          '',
+                          [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':kms:us-west-2:123pipeline:alias/s-west-2tencryptionaliasf83493dbd32c8c9316d6'
+                          ]
+                        ]
+                      },
+                      Type: 'KMS'
+                    },
+                    Location: 'stack-support-us-west-2eplicationbucketaa28122cdebd900ecf2a',
+                    Type: 'S3'
+                  },
+                  Region: 'us-west-2'
+                },
+                {
+                  ArtifactStore: {
+                    EncryptionKey: {
+                      Id: {
+                        'Fn::GetAtt': [
+                          'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
+                          'Arn'
+                        ]
+                      },
+                      Type: 'KMS'
+                    },
+                    Location: {
+                      Ref: 'stackcodepipelinePipelineArtifactsBucket38CD8833'
+                    },
+                    Type: 'S3'
+                  },
+                  Region: 'us-pipeline'
+                }
+              ],
+              Name: 'stack-code-pipeline',
+              PipelineType: 'V1',
+              RestartExecutionOnUpdate: true,
                 RoleArn: {
                     'Fn::GetAtt': ['stackcodepipelinePipelineRoleABF819A4', 'Arn']
                 },
@@ -750,50 +793,8 @@ module.exports = {
                         ],
                         Name: 'pcc-prod-myapp-stage'
                     }
-                ],
-                ArtifactStores: [
-                    {
-                        ArtifactStore: {
-                            EncryptionKey: {
-                                Id: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':kms:us-west-2:123pipeline:alias/s-west-2tencryptionaliasf83493dbd32c8c9316d6'
-                                        ]
                                     ]
                                 },
-                                Type: 'KMS'
-                            },
-                            Location: 'stack-support-us-west-2eplicationbucketaa28122cdebd900ecf2a',
-                            Type: 'S3'
-                        },
-                        Region: 'us-west-2'
-                    },
-                    {
-                        ArtifactStore: {
-                            EncryptionKey: {
-                                Id: {
-                                    'Fn::GetAtt': [
-                                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                                        'Arn'
-                                    ]
-                                },
-                                Type: 'KMS'
-                            },
-                            Location: {
-                                Ref: 'stackcodepipelinePipelineArtifactsBucket38CD8833'
-                            },
-                            Type: 'S3'
-                        },
-                        Region: 'us-pipeline'
-                    }
-                ],
-                Name: 'stack-code-pipeline',
-                RestartExecutionOnUpdate: true
-            },
             DependsOn: [
                 'stackcodepipelinePipelineRoleDefaultPolicy71C0C6F5',
                 'stackcodepipelinePipelineRoleABF819A4'
@@ -921,6 +922,14 @@ module.exports = {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: {Type: 'CODEPIPELINE'},
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step stack/Pipeline/Build/stack-synth-step',
+              EncryptionKey: {
+                'Fn::GetAtt': [
+                  'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
+                  'Arn'
+                ]
+              },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:6.0',
@@ -994,7 +1003,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cp config/_common.js.copy config/_common.js && cp config/defaults.min.js.copy config/defaults.min.js",\n' +
+                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
                                 '        "npm ci",\n' +
                                 '        "npm run build",\n' +
                                 '        "npx cdk synth"\n' +
@@ -1012,14 +1021,6 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-                },
-                Cache: {Type: 'NO_CACHE'},
-                Description: 'Pipeline step stack/Pipeline/Build/stack-synth-step',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                        'Arn'
-                    ]
                 }
             }
         },
@@ -1301,6 +1302,14 @@ module.exports = {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: {Type: 'CODEPIPELINE'},
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
+              EncryptionKey: {
+                'Fn::GetAtt': [
+                  'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
+                  'Arn'
+                ]
+              },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
@@ -1308,6 +1317,7 @@ module.exports = {
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
+              Name: 'stack-code-pipeline-selfupdate',
                 ServiceRole: {
                     'Fn::GetAtt': [
                         'stackcodepipelineUpdatePipelineSelfMutationRoleA17E13D7',
@@ -1393,16 +1403,7 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-                },
-                Cache: {Type: 'NO_CACHE'},
-                Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'stackcodepipelinePipelineArtifactsBucketEncryptionKeyEE92E262',
-                        'Arn'
-                    ]
-                },
-                Name: 'stack-code-pipeline-selfupdate'
+                }
             }
         }
     }

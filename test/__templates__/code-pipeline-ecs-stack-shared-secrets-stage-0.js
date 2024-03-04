@@ -772,7 +772,7 @@ module.exports = {
                                 Value: 'arn:aws:secretsmanager:us-west-2:11111:secret:pcc-sdlc-shared-secrets/environment-abc123'
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-test'},
-                            {Name: 'CAN_RUN_CREATE', Value: '1'}
+                    { Name: 'CAN_RUN_CREATE', Value: '0' }
                         ],
                         Essential: true,
                         Image: {

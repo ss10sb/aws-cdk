@@ -12,13 +12,14 @@ import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {Construct} from "constructs";
 import {PhpApiFactory} from "./php-api-factory";
 import {BucketDeployment, Source} from "aws-cdk-lib/aws-s3-deployment";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import fs from "fs";
 import path from "path";
 import {Secrets} from "../secret/secrets";
 import {AUTHORIZER_TOKEN} from "./authorizer-base";
 import {BrefFactoryDistributionProps} from "./bref-factory";
 import {WebDistribution} from "../cloudfront/web-distribution";
+import {RemovalPolicy} from "aws-cdk-lib";
 
 export interface BrefDistributionFactoryProps {
     readonly functionFactory: PhpBrefFunction;
@@ -141,7 +142,14 @@ export class BrefDistribution extends NonConstruct {
             ],
             destinationBucket: bucket,
             destinationKeyPrefix: 'assets',
-            logRetention: RetentionDays.ONE_DAY
+            logGroup: this.createLogGroup('s3-assets-copy')
+        });
+    }
+
+    createLogGroup(funcName: string): ILogGroup {
+        return new LogGroup(this.scope, `${funcName}-lg`, {
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.ONE_DAY
         });
     }
 

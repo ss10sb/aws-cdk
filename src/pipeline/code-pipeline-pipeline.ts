@@ -1,6 +1,5 @@
 import {CodePipeline, CodePipelineProps, DockerCredential} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
-import {IBuildImage, LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
 import {IRepository} from "aws-cdk-lib/aws-ecr";
 import {Pipeline} from "aws-cdk-lib/aws-codepipeline";
 import {CodePipelineCodestarSource} from "./code-pipeline-codestar-source";

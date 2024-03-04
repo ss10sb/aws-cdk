@@ -37,6 +37,19 @@ module.exports = {
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
+          },
+          pccprodtestwebfn0lgAD4873DC: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 30,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
         },
         pccprodtestwebfn0ServiceRole6B6FD81D: {
             Type: 'AWS::IAM::Role',
@@ -161,7 +174,7 @@ module.exports = {
                         DYNAMODB_CACHE_TABLE: {Ref: 'pccprodtestcache90B0E581'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-prod-test-secrets/environment-ABC123',
                         AWS_APP_NAME: 'pcc-prod-test',
-                        CAN_RUN_CREATE: '1',
+                  CAN_RUN_CREATE: '0',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-prod-test-secrets/environment-ABC123'
                     }
@@ -180,6 +193,7 @@ module.exports = {
                         ]
                     }
                 ],
+              LoggingConfig: { LogGroup: { Ref: 'pccprodtestwebfn0lgAD4873DC' } },
                 MemorySize: 512,
                 Role: {
                     'Fn::GetAtt': ['pccprodtestwebfn0ServiceRole6B6FD81D', 'Arn']
@@ -205,107 +219,6 @@ module.exports = {
                 'pccprodtestwebfn0ServiceRole6B6FD81D'
             ]
         },
-        pccprodtestwebfn0LogRetention2C8F5B9C: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        ['/aws/lambda/', {Ref: 'pccprodtestwebfn0B6D4CE6D'}]
-                    ]
-                },
-                RetentionInDays: 30
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'prod'}
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Timeout: 900,
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'prod'}
-                ]
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-            ]
-        },
         pccprodtestlocaltestexampleeduF294436F: {
             Type: 'AWS::CertificateManager::Certificate',
             Properties: {
@@ -321,6 +234,19 @@ module.exports = {
                     }
                 ],
                 ValidationMethod: 'DNS'
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          pccprodtestauthorizerfnlgD25B0475: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 7,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -419,6 +345,7 @@ module.exports = {
                 },
                 FunctionName: 'pcc-prod-test-authorizer-fn',
                 Handler: 'token.handler',
+              LoggingConfig: { LogGroup: { Ref: 'pccprodtestauthorizerfnlgD25B0475' } },
                 Role: {
                     'Fn::GetAtt': ['pccprodtestauthorizerfnServiceRoleF62FCC42', 'Arn']
                 },
@@ -434,27 +361,6 @@ module.exports = {
                 'pccprodtestauthorizerfnServiceRoleDefaultPolicyA4587C93',
                 'pccprodtestauthorizerfnServiceRoleF62FCC42'
             ]
-        },
-        pccprodtestauthorizerfnLogRetention4104E0B8: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {Ref: 'pccprodtestauthorizerfn5C96E50D'}
-                        ]
-                    ]
-                },
-                RetentionInDays: 7
-            }
         },
         pccprodtestrestapilg3340C571: {
             Type: 'AWS::Logs::LogGroup',
@@ -917,6 +823,19 @@ module.exports = {
                 }
             }
         },
+          s3assetscopylg083B90F8: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 1,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
         s3assetscopyAwsCliLayerA9EB8F42: {
             Type: 'AWS::Lambda::LayerVersion',
             Properties: {
@@ -1066,6 +985,7 @@ module.exports = {
                 },
                 Handler: 'index.handler',
                 Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
+              LoggingConfig: { LogGroup: { Ref: 's3assetscopylg083B90F8' } },
                 Role: {
                     'Fn::GetAtt': [
                         'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
@@ -1084,29 +1004,6 @@ module.exports = {
                 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF',
                 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265'
             ]
-        },
-        CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CLogRetention1948627D: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {
-                                Ref: 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536'
-                            }
-                        ]
-                    ]
-                },
-                RetentionInDays: 1
-            }
         },
         pccprodtestoriginrequestpolicyEFFFF1EE: {
             Type: 'AWS::CloudFront::OriginRequestPolicy',

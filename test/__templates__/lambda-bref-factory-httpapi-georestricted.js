@@ -48,7 +48,6 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {'Fn::GetAtt': ['funcwebfn0ServiceRoleA9004225', 'Arn']},
                 FunctionName: 'func-web-fn-0',
                 Handler: 'public/index.php',
                 Layers: [
@@ -63,98 +62,13 @@ module.exports = {
                         ]
                     }
                 ],
+              LoggingConfig: { LogGroup: { Ref: 'funcwebfn0lg7D0BB952' } },
                 MemorySize: 512,
+              Role: { 'Fn::GetAtt': [ 'funcwebfn0ServiceRoleA9004225', 'Arn' ] },
                 Runtime: 'provided.al2',
                 Timeout: 28
             },
             DependsOn: ['funcwebfn0ServiceRoleA9004225']
-        },
-        funcwebfn0LogRetentionF9CFF3D3: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': ['', ['/aws/lambda/', {Ref: 'funcwebfn067A6530A'}]]
-                },
-                RetentionInDays: 30
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                }
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-            ]
         },
         myapplocalfoobarcom8042E6FE: {
             Type: 'AWS::CertificateManager::Certificate',
@@ -164,6 +78,12 @@ module.exports = {
                 Tags: [ { Key: 'Name', Value: 'stack/my-app-local-foo.bar.com' } ],
                 ValidationMethod: 'DNS'
             },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          myappauthorizerfnlg23C1AACD: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: { RetentionInDays: 7 },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
@@ -201,34 +121,17 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {
-                    'Fn::GetAtt': ['myappauthorizerfnServiceRole2952ABDD', 'Arn']
-                },
                 Environment: {Variables: {AUTHORIZER_TOKEN: 'INVALID'}},
                 FunctionName: 'my-app-authorizer-fn',
                 Handler: 'token.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
+              LoggingConfig: { LogGroup: { Ref: 'myappauthorizerfnlg23C1AACD' } },
+              Role: {
+                'Fn::GetAtt': [ 'myappauthorizerfnServiceRole2952ABDD', 'Arn' ]
+              },
+              Runtime: MatchHelper.startsWith('nodejs'),
                 Timeout: 5
             },
             DependsOn: ['myappauthorizerfnServiceRole2952ABDD']
-        },
-        myappauthorizerfnLogRetention55CB4DDF: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        ['/aws/lambda/', {Ref: 'myappauthorizerfn61B51A4F'}]
-                    ]
-                },
-                RetentionInDays: 7
-            }
         },
         myappdomainnamefoobarcomB8FC36EF: {
             Type: 'AWS::ApiGatewayV2::DomainName',
@@ -286,9 +189,9 @@ module.exports = {
             Type: 'AWS::ApiGatewayV2::Route',
             Properties: {
                 ApiId: {Ref: 'myapphttpapiF20864F5'},
-                RouteKey: '$default',
                 AuthorizationType: 'CUSTOM',
                 AuthorizerId: {Ref: 'myapphttpapiauthorizerFB2D4417'},
+              RouteKey: '$default',
                 Target: {
                     'Fn::Join': [
                         '',
@@ -306,10 +209,9 @@ module.exports = {
             Type: 'AWS::ApiGatewayV2::Authorizer',
             Properties: {
                 ApiId: {Ref: 'myapphttpapiF20864F5'},
-                AuthorizerType: 'REQUEST',
-                Name: 'my-app-http-lambda-authorizer',
                 AuthorizerPayloadFormatVersion: '1.0',
                 AuthorizerResultTtlInSeconds: 300,
+              AuthorizerType: 'REQUEST',
                 AuthorizerUri: {
                     'Fn::Join': [
                         '',
@@ -327,7 +229,8 @@ module.exports = {
                 IdentitySource: [
                     '$request.header.x-auth-token',
                     '$context.identity.sourceIp'
-                ]
+              ],
+              Name: 'my-app-http-lambda-authorizer'
             }
         },
         myapphttpapistackmyapphttpapiauthorizerA42E3832PermissionA17444B7: {
@@ -355,8 +258,8 @@ module.exports = {
             Type: 'AWS::ApiGatewayV2::Stage',
             Properties: {
                 ApiId: {Ref: 'myapphttpapiF20864F5'},
-                StageName: '$default',
-                AutoDeploy: true
+              AutoDeploy: true,
+              StageName: '$default'
             },
             DependsOn: ['myappdomainnamefoobarcomB8FC36EF']
         },

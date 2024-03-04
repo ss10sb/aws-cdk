@@ -1,10 +1,10 @@
 import {NonConstruct} from "../core/non-construct";
 import {AuthorizerProps, AuthorizerResult} from "./lambda-definitions";
 import {HttpLambdaAuthorizer} from "aws-cdk-lib/aws-apigatewayv2-authorizers";
-import {Duration} from "aws-cdk-lib";
+import {Duration, RemovalPolicy} from "aws-cdk-lib";
 import {Code, Function, IFunction, Runtime} from "aws-cdk-lib/aws-lambda";
 import path from "path";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {RequestAuthorizer} from "aws-cdk-lib/aws-apigateway";
 
 export const AUTHORIZER_TOKEN = 'AUTHORIZER_TOKEN';
@@ -40,7 +40,7 @@ export abstract class AuthorizerBase extends NonConstruct {
             timeout: Duration.seconds(5),
             code: Code.fromAsset(path.join(__dirname, 'authorizers/')),
             environment: this.getEnvironment(props),
-            logRetention: RetentionDays.ONE_WEEK
+            logGroup: this.createLogGroup(name)
         });
     }
 
@@ -55,5 +55,12 @@ export abstract class AuthorizerBase extends NonConstruct {
             env['AUTHORIZER_LOG_LEVEL'] = 'DEBUG';
         }
         return env;
+    }
+
+    createLogGroup(funcName: string): ILogGroup {
+        return new LogGroup(this.scope, `${funcName}-lg`, {
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.ONE_WEEK
+        });
     }
 }

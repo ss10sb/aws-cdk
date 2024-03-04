@@ -64,13 +64,13 @@ module.exports = {
                 },
                 tasks: [
                     {
-                        type: TaskServiceType.CREATE_RUN_ONCE_TASK,
+                        type: TaskServiceType.RUN_ONCE_TASK,
                         taskDefinition: {
                             cpu: '256',
                             memoryMiB: '512',
                             containers: [
                                 {
-                                    type: ContainerType.CREATE_RUN_ONCE_TASK,
+                                    type: ContainerType.RUN_ONCE_TASK,
                                     image: 'phpfpm',
                                     hasSecrets: true,
                                     hasEnv: true,
@@ -175,13 +175,13 @@ module.exports = {
                 },
                 tasks: [
                     {
-                        type: TaskServiceType.CREATE_RUN_ONCE_TASK,
+                        type: TaskServiceType.RUN_ONCE_TASK,
                         taskDefinition: {
                             cpu: '256',
                             memoryMiB: '512',
                             containers: [
                                 {
-                                    type: ContainerType.CREATE_RUN_ONCE_TASK,
+                                    type: ContainerType.RUN_ONCE_TASK,
                                     image: 'phpfpm',
                                     hasSecrets: true,
                                     hasEnv: true,

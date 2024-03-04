@@ -75,7 +75,7 @@ export class PermissionsCodePipelineEcsStack extends NonConstruct {
     private synthStepPermissions() {
         const grantee = this.props.synthStep.role;
         PermissionsEcr.granteeCanDescribeRepositories(grantee, this.props.repositoryFactory.ecrRepositories);
-        if (!this.props.needsSharedSynthStepPermissions) {
+        if (!(this.props.needsSharedSynthStepPermissions ?? true)) {
             return;
         }
         this.grantReadToConfigParam(grantee);

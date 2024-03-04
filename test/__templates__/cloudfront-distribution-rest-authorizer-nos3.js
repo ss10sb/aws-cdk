@@ -63,13 +63,72 @@ module.exports = {
                         ]
                     }
                 ],
+              LoggingConfig: { LogGroup: { Ref: 'functioneventfn0lgD47CFCEB' } },
                 MemorySize: 512,
                 Runtime: 'provided.al2',
                 Timeout: 120
             },
             DependsOn: ['functioneventfn0ServiceRole30E080B7']
         },
-        functioneventfn0LogRetention13B86148: {
+          httpapiauthorizerfnServiceRoleE977EE3D: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'lambda.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              ManagedPolicyArns: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          httpapiauthorizerfn8B4D1E1C: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+              Code: {
+                S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
+                S3Key: 'c53d3eefd84eda81ec21cae72089e12b7729368cb85e86fc9fb8b2031b76415b.zip'
+              },
+              Environment: {
+                Variables: {
+                  AUTHORIZER_TOKEN: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        '{{resolve:secretsmanager:arn:',
+                        { Ref: 'AWS::Partition' },
+                        ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
+                      ]
+                    ]
+                  }
+                }
+              },
+              FunctionName: 'http-api-authorizer-fn',
+              Handler: 'token.handler',
+              Role: {
+                'Fn::GetAtt': [ 'httpapiauthorizerfnServiceRoleE977EE3D', 'Arn' ]
+              },
+              Runtime: 'nodejs18.x',
+              Timeout: 5
+            },
+            DependsOn: [ 'httpapiauthorizerfnServiceRoleE977EE3D' ]
+          },
+          httpapiauthorizerfnLogRetention5E1645C2: {
             Type: 'Custom::LogRetention',
             Properties: {
                 ServiceToken: {
@@ -81,10 +140,13 @@ module.exports = {
                 LogGroupName: {
                     'Fn::Join': [
                         '',
-                        ['/aws/lambda/', {Ref: 'functioneventfn01CDA78AF'}]
+                  [
+                    '/aws/lambda/',
+                    { Ref: 'httpapiauthorizerfn8B4D1E1C' }
+                  ]
                     ]
                 },
-                RetentionInDays: 30
+              RetentionInDays: 7
             }
         },
         LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
@@ -158,85 +220,6 @@ module.exports = {
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
                 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
-        },
-        httpapiauthorizerfnServiceRoleE977EE3D: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        httpapiauthorizerfn8B4D1E1C: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': ['httpapiauthorizerfnServiceRoleE977EE3D', 'Arn']
-                },
-                Environment: {
-                    Variables: {
-                        AUTHORIZER_TOKEN: {
-                            'Fn::Join': [
-                                '',
-                                [
-                                    '{{resolve:secretsmanager:arn:',
-                                    {Ref: 'AWS::Partition'},
-                                    ':secretsmanager:us-west-2:12344:secret:secrets-secrets/environment:SecretString:AUTHORIZER_TOKEN::}}'
-                                ]
-                            ]
-                        }
-                    }
-                },
-                FunctionName: 'http-api-authorizer-fn',
-                Handler: 'token.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Timeout: 5
-            },
-            DependsOn: ['httpapiauthorizerfnServiceRoleE977EE3D']
-        },
-        httpapiauthorizerfnLogRetention5E1645C2: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                        [
-                            '/aws/lambda/',
-                            {Ref: 'httpapiauthorizerfn8B4D1E1C'}
-                        ]
-                    ]
-                },
-                RetentionInDays: 7
-            }
         },
         httpapirestapi0816E9CD: {
             Type: 'AWS::ApiGateway::RestApi',
@@ -364,10 +347,8 @@ module.exports = {
         httpapirestapiproxyANY628EF2C4: {
             Type: 'AWS::ApiGateway::Method',
             Properties: {
-                HttpMethod: 'ANY',
-                ResourceId: {Ref: 'httpapirestapiproxyE1EF9649'},
-                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
                 AuthorizationType: 'CUSTOM',
+              HttpMethod: 'ANY',
                 Integration: {
                     IntegrationHttpMethod: 'POST',
                     Type: 'AWS_PROXY',
@@ -385,7 +366,9 @@ module.exports = {
                             ]
                         ]
                     }
-                }
+              },
+              ResourceId: { Ref: 'httpapirestapiproxyE1EF9649' },
+              RestApiId: { Ref: 'httpapirestapi0816E9CD' }
             }
         },
         httpapirestapiANYApiPermissionstackhttpapirestapi4AFCA52EANY11A75849: {
@@ -433,12 +416,8 @@ module.exports = {
         httpapirestapiANY8D6F2651: {
             Type: 'AWS::ApiGateway::Method',
             Properties: {
-                HttpMethod: 'ANY',
-                ResourceId: {
-                    'Fn::GetAtt': ['httpapirestapi0816E9CD', 'RootResourceId']
-                },
-                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
                 AuthorizationType: 'CUSTOM',
+              HttpMethod: 'ANY',
                 Integration: {
                     IntegrationHttpMethod: 'POST',
                     Type: 'AWS_PROXY',
@@ -456,7 +435,11 @@ module.exports = {
                             ]
                         ]
                     }
-                }
+              },
+              ResourceId: {
+                'Fn::GetAtt': [ 'httpapirestapi0816E9CD', 'RootResourceId' ]
+              },
+              RestApiId: { Ref: 'httpapirestapi0816E9CD' }
             }
         },
         distributionoriginrequestpolicyF5975AB2: {

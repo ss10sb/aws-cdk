@@ -31,6 +31,7 @@ describe('config param stack factory', () => {
         stackFactory.initialize();
         const stack = stackFactory.buildStack();
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
         const expected = getExpected();
         templateHelper.expectResource('AWS::SSM::Parameter', {
             properties: Match.objectEquals({
@@ -104,12 +105,12 @@ function getExpected() {
                 "targetGroup": {},
                 "startStop": {"stop": "cron(0 5 * * ? *)"},
                 "tasks": [{
-                    "type": "createruntask",
+                    "type": "runtask",
                     "taskDefinition": {
                         "cpu": "256",
                         "memoryMiB": "512",
                         "containers": [{
-                            "type": "crot",
+                            "type": "rot",
                             "image": "phpfpm",
                             "hasSecrets": true,
                             "hasEnv": true,
@@ -183,12 +184,12 @@ function getExpected() {
                 "targetGroup": {},
                 "steps": {"manualApproval": {}},
                 "tasks": [{
-                    "type": "createruntask",
+                    "type": "runtask",
                     "taskDefinition": {
                         "cpu": "256",
                         "memoryMiB": "512",
                         "containers": [{
-                            "type": "crot",
+                            "type": "rot",
                             "image": "phpfpm",
                             "hasSecrets": true,
                             "hasEnv": true,

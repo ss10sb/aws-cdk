@@ -544,6 +544,7 @@ module.exports = {
                     Type: 'S3'
                 },
                 Name: 'pipeline-code-pipeline',
+              PipelineType: 'V1',
                 RestartExecutionOnUpdate: true,
                 RoleArn: {
                     'Fn::GetAtt': ['pipelinecodepipelinePipelineRoleCE72FCDC', 'Arn']
@@ -870,7 +871,7 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cp config/_common.js.copy config/_common.js && cp config/defaults.min.js.copy config/defaults.min.js",\n' +
+                  '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
                         '        "npm ci",\n' +
                         '        "npm run build",\n' +
                         '        "npx cdk synth"\n' +

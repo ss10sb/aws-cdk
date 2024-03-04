@@ -4,14 +4,14 @@ module.exports = {
         pccsdlcmyapptestdevexampleeduarecord1EBFD14B: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
-                Name: 'test.dev.example.edu.',
-                Type: 'A',
                 AliasTarget: {
                     DNSName: 'dualstack.my-load-balancer-1234567890.us-west-2.elb.amazonaws.com',
                     HostedZoneId: 'Z3DZXE0EXAMPLE'
                 },
                 Comment: 'pcc-sdlc-myapp: test.dev.example.edu',
-                HostedZoneId: 'DUMMY'
+              HostedZoneId: 'DUMMY',
+              Name: 'test.dev.example.edu.',
+              Type: 'A'
             }
         },
         pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E: {
@@ -55,9 +55,8 @@ module.exports = {
         pccsdlcmyappsesverifytestSesVerificationRecord5CAAC1A0: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
+              HostedZoneId: 'DUMMY',
                 Name: '_amazonses.test.dev.example.edu.',
-                Type: 'TXT',
-                HostedZoneId: 'DUMMY',
                 ResourceRecords: [
                     {
                         'Fn::Join': [
@@ -75,7 +74,8 @@ module.exports = {
                         ]
                     }
                 ],
-                TTL: '1800'
+              TTL: '1800',
+              Type: 'TXT'
             },
             DependsOn: [
                 'pccsdlcmyappsesverifytestVerifyDomainIdentityCustomResourcePolicy4BE20186',
@@ -128,6 +128,7 @@ module.exports = {
         pccsdlcmyappsesverifytestSesDkimVerificationRecord043B916AD: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
+              HostedZoneId: 'DUMMY',
                 Name: {
                     'Fn::Join': [
                         '',
@@ -142,8 +143,6 @@ module.exports = {
                         ]
                     ]
                 },
-                Type: 'CNAME',
-                HostedZoneId: 'DUMMY',
                 ResourceRecords: [
                     {
                         'Fn::Join': [
@@ -160,7 +159,8 @@ module.exports = {
                         ]
                     }
                 ],
-                TTL: '1800'
+              TTL: '1800',
+              Type: 'CNAME'
             },
             DependsOn: [
                 'pccsdlcmyappsesverifytestVerifyDomainDkimCustomResourcePolicyD5E756D9',
@@ -170,6 +170,7 @@ module.exports = {
         pccsdlcmyappsesverifytestSesDkimVerificationRecord1B5DB9210: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
+              HostedZoneId: 'DUMMY',
                 Name: {
                     'Fn::Join': [
                         '',
@@ -184,8 +185,6 @@ module.exports = {
                         ]
                     ]
                 },
-                Type: 'CNAME',
-                HostedZoneId: 'DUMMY',
                 ResourceRecords: [
                     {
                         'Fn::Join': [
@@ -202,7 +201,8 @@ module.exports = {
                         ]
                     }
                 ],
-                TTL: '1800'
+              TTL: '1800',
+              Type: 'CNAME'
             },
             DependsOn: [
                 'pccsdlcmyappsesverifytestVerifyDomainDkimCustomResourcePolicyD5E756D9',
@@ -212,6 +212,7 @@ module.exports = {
         pccsdlcmyappsesverifytestSesDkimVerificationRecord265DB581E: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
+              HostedZoneId: 'DUMMY',
                 Name: {
                     'Fn::Join': [
                         '',
@@ -226,8 +227,6 @@ module.exports = {
                         ]
                     ]
                 },
-                Type: 'CNAME',
-                HostedZoneId: 'DUMMY',
                 ResourceRecords: [
                     {
                         'Fn::Join': [
@@ -244,7 +243,8 @@ module.exports = {
                         ]
                     }
                 ],
-                TTL: '1800'
+              TTL: '1800',
+              Type: 'CNAME'
             },
             DependsOn: [
                 'pccsdlcmyappsesverifytestVerifyDomainDkimCustomResourcePolicyD5E756D9',
@@ -290,14 +290,14 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
+              Handler: 'index.handler',
                 Role: {
                     'Fn::GetAtt': [
                         'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2',
                         'Arn'
                     ]
                 },
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
+              Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     { Key: 'App', Value: 'myapp' },
                     { Key: 'College', Value: 'PCC' },
@@ -310,14 +310,14 @@ module.exports = {
         pccsdlcmyappt1testdevexampleeduarecordA7325488: {
             Type: 'AWS::Route53::RecordSet',
             Properties: {
-                Name: 't1.test.dev.example.edu.',
-                Type: 'A',
                 AliasTarget: {
                     DNSName: 'dualstack.my-load-balancer-1234567890.us-west-2.elb.amazonaws.com',
                     HostedZoneId: 'Z3DZXE0EXAMPLE'
                 },
                 Comment: 'pcc-sdlc-myapp: t1.test.dev.example.edu',
-                HostedZoneId: 'DUMMY'
+              HostedZoneId: 'DUMMY',
+              Name: 't1.test.dev.example.edu.',
+              Type: 'A'
             }
         },
         pccsdlcmyapptestdevexampleedu4278E0AC: {
