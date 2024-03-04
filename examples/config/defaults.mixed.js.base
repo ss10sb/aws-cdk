@@ -1,0 +1,341 @@
+const common = require('./_common');
+const {DetailType} = require("aws-cdk-lib/aws-codestarnotifications");
+const {PipelineNotificationEvents} = require("aws-cdk-lib/aws-codepipeline");
+const {Protocol} = require("aws-cdk-lib/aws-elasticloadbalancingv2");
+const {ConfigEnvironments, PhpVersion} = require("@smorken/aws-cdk/config/config-definitions");
+const {EcrRepositoryType} = require("@smorken/aws-cdk/ecr/ecr-definitions");
+const {TaskServiceType, SchedulableTypes, ScalableTypes} = require("@smorken/aws-cdk/ecs/task-definitions");
+const {ContainerType} = require("@smorken/aws-cdk/ecs/container-definitions");
+const {ContainerEntryPoint, ContainerCommand} = require("@smorken/aws-cdk/ecs/container-command-factory");
+const {BrefRuntime, LaravelHandler} = require("@smorken/aws-cdk/lambda/bref-definitions");
+const {FunctionType} = require("@smorken/aws-cdk/lambda/lambda-definitions");
+const path = require("path");
+
+module.exports = {
+    Name: common.Name,
+    College: common.College,
+    Environment: ConfigEnvironments.SHARED,
+    Version: "0.0.0",
+    Parameters: {
+        repositories: {
+            repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
+        },
+        sourceProps: {
+            "owner": "phoenixcollege",
+            "repo": "CHANGEME",
+            "connectionArn": "arn..."
+        },
+        pipelineNotification: {
+            detailType: DetailType.FULL,
+            events: [
+                PipelineNotificationEvents.MANUAL_APPROVAL_NEEDED,
+                PipelineNotificationEvents.PIPELINE_EXECUTION_FAILED,
+                PipelineNotificationEvents.PIPELINE_EXECUTION_SUCCEEDED
+            ],
+            emails: ['CHANGEME@phoenixcollege.edu']
+        },
+        runPipelineSchedule: 'cron(0 8 ? * 2#1 *)',
+        phpVersion: PhpVersion.PHP82
+    },
+    Environments: [
+        {
+            AWSAccountId: '11111',
+            AWSRegion: 'us-west-2',
+            Name: common.Name,
+            College: common.College,
+            Environment: ConfigEnvironments.SDLC,
+            Version: "0.0.0",
+            Parameters: {
+                sharedSecretArn: 'arn:aws:secretsmanager:us-west-2:11111:secret:pcc-sdlc-shared-secrets/environment-abc123',
+                sharedSecretKeys: ['AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID'],
+                alarmEmails: ['CHANGEME@phoenixcollege.edu'],
+                hostedZoneDomain: `sdlc.${common.domain}`,
+                dynamoDb: {},
+                subdomain: common.subdomain,
+                targetGroup: {},
+                queue: {},
+                startStop: {
+                    start: 'cron(0 13 ? * MON-FRI *)',
+                    stop: 'cron(0 5 ? * TUE-SAT *)',
+                },
+                ecs: {
+                    healthCheck: {
+                        path: '/api/healthz',
+                        protocol: Protocol.HTTP
+                    },
+                    listenerRule: {
+                        priority: common.priority,
+                        conditions: {
+                            hostHeaders: [`${common.subdomain}.sdlc.${common.domain}`]
+                        }
+                    },
+                    tasks: [
+                        {
+                            type: TaskServiceType.UPDATE_RUN_ONCE_TASK,
+                            taskDefinition: {
+                                cpu: '256',
+                                memoryMiB: '512',
+                                containers: [
+                                    {
+                                        type: ContainerType.UPDATE_RUN_ONCE_TASK,
+                                        image: 'phpfpm',
+                                        hasSecrets: true,
+                                        hasEnv: true,
+                                        cpu: 256,
+                                        memoryLimitMiB: 512,
+                                        readonlyRootFilesystem: true,
+                                        essential: true,
+                                        dependsOn: true,
+                                        entryPoint: ContainerEntryPoint.PHP,
+                                        command: ContainerCommand.MIGRATE,
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            type: TaskServiceType.SCHEDULED_TASK,
+                            schedule: {
+                                type: SchedulableTypes.EXPRESSION,
+                                value: 'cron(0 12 * * ? *)'
+                            },
+                            taskDefinition: {
+                                cpu: '256',
+                                memoryMiB: '512',
+                                containers: [
+                                    {
+                                        type: ContainerType.SCHEDULED_TASK,
+                                        image: 'phpfpm',
+                                        hasSecrets: true,
+                                        hasEnv: true,
+                                        cpu: 256,
+                                        memoryLimitMiB: 512,
+                                        readonlyRootFilesystem: true,
+                                        essential: true,
+                                        dependsOn: true,
+                                        entryPoint: ContainerEntryPoint.PHP,
+                                        command: ContainerCommand.ARTISAN,
+                                        additionalCommand: ['CHANGEME']
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            type: TaskServiceType.SCHEDULED_TASK,
+                            schedule: {
+                                type: SchedulableTypes.EXPRESSION,
+                                value: 'cron(0 14 ? * SUN *)'
+                            },
+                            taskDefinition: {
+                                cpu: '256',
+                                memoryMiB: '512',
+                                containers: [
+                                    {
+                                        type: ContainerType.SCHEDULED_TASK,
+                                        image: 'phpfpm',
+                                        hasSecrets: true,
+                                        hasEnv: true,
+                                        cpu: 256,
+                                        memoryLimitMiB: 512,
+                                        readonlyRootFilesystem: true,
+                                        essential: true,
+                                        dependsOn: true,
+                                        entryPoint: ContainerEntryPoint.PHP,
+                                        command: ContainerCommand.ARTISAN,
+                                        additionalCommand: ['CHANGEME']
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    services: [
+                        {
+                            type: TaskServiceType.WEB_SERVICE,
+                            attachToTargetGroup: true,
+                            enableExecuteCommand: true,
+                            scalable: {
+                                types: [ScalableTypes.CPU, ScalableTypes.MEMORY],
+                                scaleAt: 75,
+                                minCapacity: 1,
+                                maxCapacity: 3
+                            },
+                            taskDefinition: {
+                                cpu: '512',
+                                memoryMiB: '1024',
+                                containers: [
+                                    {
+                                        image: 'nginx',
+                                        cpu: 128,
+                                        memoryLimitMiB: 128,
+                                        readonlyRootFilesystem: true,
+                                        portMappings: [{
+                                            containerPort: 80
+                                        }]
+                                    },
+                                    {
+                                        image: 'phpfpm',
+                                        hasSecrets: true,
+                                        hasEnv: true,
+                                        cpu: 256,
+                                        memoryLimitMiB: 256,
+                                        readonlyRootFilesystem: true,
+                                        portMappings: [{
+                                            containerPort: 9000
+                                        }],
+                                        entryPoint: ContainerEntryPoint.SH,
+                                        command: ContainerCommand.UNDEFINED,
+                                        additionalCommand: ['/entrypoint.sh']
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                },
+                lamda: {
+                    queue: {
+                        functionProps: {
+                            appPath: path.join('.', 'codebase'),
+                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.SQLSRV82],
+                            environment: {
+                                BREF_LOOP_MAX: '10',
+                                ODBCSYSINI: '/opt/microsoft/conf/'
+                            }
+                        }
+                    },
+                    functions: [
+                        {
+                            appPath: path.join('.', 'codebase'),
+                            lambdaHandler: LaravelHandler.ARTISAN,
+                            type: FunctionType.ARTISAN,
+                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.SQLSRV82, BrefRuntime.CONSOLE],
+                            environment: {
+                                ODBCSYSINI: '/opt/microsoft/conf/'
+                            },
+                        }
+                    ]
+                },
+            }
+        },
+        {
+            AWSAccountId: '22222',
+            AWSRegion: 'us-west-2',
+            Name: common.Name,
+            College: common.College,
+            Environment: ConfigEnvironments.PROD,
+            Version: "0.0.0",
+            Parameters: {
+                sharedSecretArn: 'arn:aws:secretsmanager:us-west-2:2222:secret:pcc-prod-shared-secrets/environment-abc123',
+                sharedSecretKeys: ['AZURE_CLIENT_ID', 'AZURE_CLIENT_SECRET', 'AZURE_TENANT_ID'],
+                alarmEmails: ['aws_apps_prod@phoenixcollege.edu'],
+                hostedZoneDomain: common.domain,
+                dynamoDb: {},
+                subdomain: common.subdomain,
+                targetGroup: {},
+                queue: {},
+                steps: {
+                    manualApproval: {}
+                },
+                ecs: {
+                    healthCheck: {
+                        path: '/api/healthz',
+                        protocol: Protocol.HTTP
+                    },
+                    listenerRule: {
+                        priority: common.priority,
+                        conditions: {
+                            hostHeaders: [`${common.subdomain}.${common.domain}`]
+                        }
+                    },
+                    tasks: [
+                        {
+                            type: TaskServiceType.UPDATE_RUN_ONCE_TASK,
+                            taskDefinition: {
+                                cpu: '256',
+                                memoryMiB: '512',
+                                containers: [
+                                    {
+                                        type: ContainerType.UPDATE_RUN_ONCE_TASK,
+                                        image: 'phpfpm',
+                                        hasSecrets: true,
+                                        hasEnv: true,
+                                        cpu: 256,
+                                        memoryLimitMiB: 512,
+                                        readonlyRootFilesystem: true,
+                                        essential: true,
+                                        dependsOn: true,
+                                        entryPoint: ContainerEntryPoint.PHP,
+                                        command: ContainerCommand.MIGRATE,
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    services: [
+                        {
+                            type: TaskServiceType.WEB_SERVICE,
+                            attachToTargetGroup: true,
+                            enableExecuteCommand: true,
+                            scalable: {
+                                types: [ScalableTypes.CPU, ScalableTypes.MEMORY],
+                                scaleAt: 75,
+                                minCapacity: 1,
+                                maxCapacity: 3
+                            },
+                            taskDefinition: {
+                                cpu: '512',
+                                memoryMiB: '1024',
+                                containers: [
+                                    {
+                                        image: 'nginx',
+                                        cpu: 64,
+                                        memoryLimitMiB: 64,
+                                        readonlyRootFilesystem: true,
+                                        portMappings: [{
+                                            containerPort: 80
+                                        }]
+                                    },
+                                    {
+                                        image: 'phpfpm',
+                                        hasSecrets: true,
+                                        hasEnv: true,
+                                        cpu: 128,
+                                        memoryLimitMiB: 128,
+                                        readonlyRootFilesystem: true,
+                                        portMappings: [{
+                                            containerPort: 9000
+                                        }],
+                                        entryPoint: ContainerEntryPoint.SH,
+                                        command: ContainerCommand.UNDEFINED,
+                                        additionalCommand: ['/entrypoint.sh']
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                },
+                lambda: {
+                    queue: {
+                        functionProps: {
+                            appPath: path.join('.', 'codebase'),
+                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.SQLSRV82],
+                            environment: {
+                                BREF_LOOP_MAX: '10',
+                                ODBCSYSINI: '/opt/microsoft/conf/'
+                            }
+                        }
+                    },
+                    functions: [
+                        {
+                            appPath: path.join('.', 'codebase'),
+                            lambdaHandler: LaravelHandler.ARTISAN,
+                            type: FunctionType.ARTISAN,
+                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.SQLSRV82, BrefRuntime.CONSOLE],
+                            environment: {
+                                ODBCSYSINI: '/opt/microsoft/conf/'
+                            },
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

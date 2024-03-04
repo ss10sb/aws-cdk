@@ -9,7 +9,7 @@ import {BrefAsAlbTarget, BrefAsAlbTargetProps, BrefAsAlbTargetResult} from "../.
 import {AlbResources, MakeAlbResources} from "./make-alb-resources";
 import {Queue} from "aws-cdk-lib/aws-sqs";
 import {SqsEventSource} from "aws-cdk-lib/aws-lambda-event-sources";
-import {EnvEndpointType} from "../../../env/env-definitions";
+import {EnvEndpointType, EnvEnvironmentProps} from "../../../env/env-definitions";
 import {BrefDistribution, BrefDistributionProps, BrefDistributionResult} from "../../../lambda/bref-distribution";
 import {PermissionsEnvLambdaStack} from "../../../permissions/permissions-env-lamdba-stack";
 import {MakeParameters} from "../make-definitions";
@@ -84,6 +84,10 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             secret: this.lookups.secret,
             sharedSecret: this.lookups.sharedSecret
         });
+    }
+
+    protected addEnvironmentForThis(envProps: EnvEnvironmentProps, environment: Record<string, string>) {
+        environment['APP_BASE_PATH'] = '/var/task';
     }
 
     private brefAsAlbTarget(targetGroup: ApplicationTargetGroup, props: BrefAsAlbTargetProps): BrefAsAlbTargetResult {

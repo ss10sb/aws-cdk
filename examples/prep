@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-cp cdk.lambda.json cdk.json
+cp cdk.mixed.json cdk.json
 cp config_stack.copy config_stack
-cp pipeline_stack.lambda.copy pipeline_stack
+cp pipeline_stack.mixed.copy pipeline_stack
 cp secrets_stack.copy secrets_stack
 cp secrets_deploy.copy secrets_deploy
 chmod +x *_stack

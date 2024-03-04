@@ -3,6 +3,5 @@ module.exports = {
     College: "PCC",
     domain: 'phoenixcollege.edu',
     subdomain: 'test',
-    priority: 310,
-    canCreateTask: true
+    priority: 999
 };

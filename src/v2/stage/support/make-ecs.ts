@@ -18,6 +18,7 @@ import {PermissionsEnvEcsStack} from "../../../permissions/permissions-env-ecs-s
 import {MakeConfig, MakeParameters} from "../make-definitions";
 import {AlbResources, MakeAlbResources} from "./make-alb-resources";
 import {CoreMakeResources} from "./make-core-resources";
+import {EnvEnvironmentProps} from "../../../env/env-definitions";
 
 export interface MakeEcsParameters extends MakeParameters {
     repositoryFactory: EcrRepositoryFactory;
@@ -73,6 +74,10 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
             secrets: services.secret,
             sharedSecrets: services.sharedSecret
         });
+    }
+
+    protected addEnvironmentForThis(envProps: EnvEnvironmentProps, environment: Record<string, string>) {
+        environment['APP_BASE_PATH'] = '/app';
     }
 
     private getTargetGroupProps(): AlbTargetGroupProps {
