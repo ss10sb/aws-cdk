@@ -603,6 +603,7 @@ module.exports = {
                         AWS_BUCKET: {Ref: 'pccsdlcmyapps352258330'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                  APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
@@ -900,6 +901,7 @@ module.exports = {
                         AWS_BUCKET: {Ref: 'pccsdlcmyapps352258330'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                  APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
@@ -1299,7 +1301,8 @@ module.exports = {
                             {
                                 Name: 'AWS_SHARED_SECRET_ARN',
                                 Value: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
-                            }
+                    },
+                    { Name: 'APP_BASE_PATH', Value: '/app' }
                         ],
                         Essential: true,
                         Image: {
@@ -1918,7 +1921,8 @@ module.exports = {
                             {
                                 Name: 'AWS_SHARED_SECRET_ARN',
                                 Value: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
-                            }
+                    },
+                    { Name: 'APP_BASE_PATH', Value: '/app' }
                         ],
                         Essential: true,
                         Image: {

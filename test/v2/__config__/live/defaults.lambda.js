@@ -41,7 +41,6 @@ module.exports = {
                 hostedZoneDomain: `sdlc.${common.domain}`,
                 dynamoDb: {},
                 subdomain: common.subdomain,
-                targetGroup: {},
                 queue: {},
                 startStop: {
                     stop: 'cron(0 5 * * ? *)',
@@ -98,7 +97,6 @@ module.exports = {
                 hostedZoneDomain: common.domain,
                 dynamoDb: {},
                 subdomain: common.subdomain,
-                targetGroup: {},
                 queue: {},
                 steps: {
                     manualApproval: {}

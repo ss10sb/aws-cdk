@@ -49,7 +49,6 @@ module.exports = {
                 hostedZoneDomain: `sdlc.${common.domain}`,
                 dynamoDb: {},
                 subdomain: common.subdomain,
-                targetGroup: {},
                 startStop: {
                     stop: 'cron(0 5 * * ? *)',
                 },
@@ -78,6 +77,7 @@ module.exports = {
                     ]
                 },
                 ecs: {
+                    targetGroup: {},
                     healthCheck: {
                         path: '/api/healthz',
                         protocol: Protocol.HTTP
@@ -187,7 +187,6 @@ module.exports = {
                 hostedZoneDomain: common.domain,
                 dynamoDb: {},
                 subdomain: common.subdomain,
-                targetGroup: {},
                 steps: {
                     manualApproval: {}
                 },
@@ -216,6 +215,7 @@ module.exports = {
                     ]
                 },
                 ecs: {
+                    targetGroup: {},
                     healthCheck: {
                         path: '/api/healthz',
                         protocol: Protocol.HTTP

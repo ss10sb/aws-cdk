@@ -364,6 +364,87 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
+          pccsdlctesttg0CACFFBC: {
+            Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
+            Properties: {
+              HealthCheckPath: '/api/healthz',
+              HealthCheckProtocol: 'HTTP',
+              Name: 'pcc-sdlc-test-tg',
+              Port: 80,
+              Protocol: 'HTTP',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
+              TargetGroupAttributes: [ { Key: 'stickiness.enabled', Value: 'false' } ],
+              TargetType: 'ip',
+              VpcId: 'vpc-12345'
+            }
+          },
+          pccsdlctestlistenerrule100C49C5383: {
+            Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
+            Properties: {
+              Actions: [
+                {
+                  TargetGroupArn: { Ref: 'pccsdlctesttg0CACFFBC' },
+                  Type: 'forward'
+                }
+              ],
+              Conditions: [
+                {
+                  Field: 'host-header',
+                  HostHeaderConfig: { Values: [ 'test.sdlc.example.edu' ] }
+                }
+              ],
+              ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2',
+              Priority: 100
+            }
+          },
+          pccsdlctesttghealthhealthtopicE7461CB4: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          pccsdlctesttghealthhealthtopicsdlcexampleeduB75F543C: {
+            Type: 'AWS::SNS::Subscription',
+            Properties: {
+              Endpoint: 'sdlc@example.edu',
+              Protocol: 'email',
+              TopicArn: { Ref: 'pccsdlctesttghealthhealthtopicE7461CB4' }
+            }
+          },
+          pccsdlctesttghealthhealthalarm0255CC3E: {
+            Type: 'AWS::CloudWatch::Alarm',
+            Properties: {
+              AlarmActions: [ { Ref: 'pccsdlctesttghealthhealthtopicE7461CB4' } ],
+              ComparisonOperator: 'GreaterThanOrEqualToThreshold',
+              Dimensions: [
+                {
+                  Name: 'LoadBalancer',
+                  Value: 'application/my-load-balancer/50dc6c495c0c9188'
+                },
+                {
+                  Name: 'TargetGroup',
+                  Value: {
+                    'Fn::GetAtt': [ 'pccsdlctesttg0CACFFBC', 'TargetGroupFullName' ]
+                  }
+                }
+              ],
+              EvaluationPeriods: 3,
+              MetricName: 'UnHealthyHostCount',
+              Namespace: 'AWS/ApplicationELB',
+              OKActions: [ { Ref: 'pccsdlctesttghealthhealthtopicE7461CB4' } ],
+              Period: 60,
+              Statistic: 'Maximum',
+              Threshold: 1
+            }
+          },
         pccsdlctestcluster8AFBBF8E: {
             Type: 'AWS::ECS::Cluster',
             Properties: {
@@ -614,7 +695,8 @@ module.exports = {
                                         ]
                                     ]
                                 }
-                            }
+                    },
+                    { Name: 'APP_BASE_PATH', Value: '/app' }
                         ],
                         Essential: true,
                         Image: {
@@ -882,7 +964,8 @@ module.exports = {
                                         ]
                                     ]
                                 }
-                            }
+                    },
+                    { Name: 'APP_BASE_PATH', Value: '/app' }
                         ],
                         Essential: true,
                         Image: {
@@ -1085,6 +1168,568 @@ module.exports = {
                 ]
             }
         },
+          pccsdlctesttaskdefweb0execrole33B297FF: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                {
+                  Key: 'aws-cdk:id',
+                  Value: 'pcc-sdlc-test_c85929a4a3a49658cfd5c77ee35b1dc791992ba00d'
+                },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          pccsdlctesttaskdefweb0execroleDefaultPolicy3CC3C592: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'ecr:BatchCheckLayerAvailability',
+                      'ecr:GetDownloadUrlForLayer',
+                      'ecr:BatchGetImage'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':ecr:us-west-2:12344:repository/pcc-test/nginx'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: 'ecr:GetAuthorizationToken',
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsdlctestcontainernginxwebu0loggroup84744344',
+                        'Arn'
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      'ecr:BatchCheckLayerAvailability',
+                      'ecr:GetDownloadUrlForLayer',
+                      'ecr:BatchGetImage'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsdlctestcontainerphpfpmwebu0loggroup11DFEEF9',
+                        'Arn'
+                      ]
+                    }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccsdlctesttaskdefweb0execroleDefaultPolicy3CC3C592',
+              Roles: [ { Ref: 'pccsdlctesttaskdefweb0execrole33B297FF' } ]
+            }
+          },
+          pccsdlctesttaskdefweb0TaskRoleFFDD04CB: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'ssmmessages:CreateControlChannel',
+                      'ssmmessages:CreateDataChannel',
+                      'ssmmessages:OpenControlChannel',
+                      'ssmmessages:OpenDataChannel'
+                    ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: 'logs:DescribeLogGroups',
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [
+                      'logs:CreateLogStream',
+                      'logs:DescribeLogStreams',
+                      'logs:PutLogEvents'
+                    ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [
+                      'dynamodb:BatchGetItem',
+                      'dynamodb:GetRecords',
+                      'dynamodb:GetShardIterator',
+                      'dynamodb:Query',
+                      'dynamodb:GetItem',
+                      'dynamodb:Scan',
+                      'dynamodb:ConditionCheckItem',
+                      'dynamodb:BatchWriteItem',
+                      'dynamodb:PutItem',
+                      'dynamodb:UpdateItem',
+                      'dynamodb:DeleteItem',
+                      'dynamodb:DescribeTable'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlctestcacheFE02D1F3', 'Arn' ]
+                      },
+                      { Ref: 'AWS::NoValue' }
+                    ]
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              Roles: [ { Ref: 'pccsdlctesttaskdefweb0TaskRoleFFDD04CB' } ]
+            }
+          },
+          pccsdlctesttaskdefweb08FC2D8B2: {
+            Type: 'AWS::ECS::TaskDefinition',
+            Properties: {
+              ContainerDefinitions: [
+                {
+                  Cpu: 64,
+                  Essential: true,
+                  Image: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        {
+                          'Fn::Select': [
+                            4,
+                            {
+                              'Fn::Split': [
+                                ':',
+                                {
+                                  'Fn::Join': [
+                                    '',
+                                    [
+                                      'arn:',
+                                      { Ref: 'AWS::Partition' },
+                                      ':ecr:us-west-2:12344:repository/pcc-test/nginx'
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        '.dkr.ecr.',
+                        {
+                          'Fn::Select': [
+                            3,
+                            {
+                              'Fn::Split': [
+                                ':',
+                                {
+                                  'Fn::Join': [
+                                    '',
+                                    [
+                                      'arn:',
+                                      { Ref: 'AWS::Partition' },
+                                      ':ecr:us-west-2:12344:repository/pcc-test/nginx'
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        '.',
+                        { Ref: 'AWS::URLSuffix' },
+                        '/pcc-test/nginx:1'
+                      ]
+                    ]
+                  },
+                  LogConfiguration: {
+                    LogDriver: 'awslogs',
+                    Options: {
+                      'awslogs-group': {
+                        Ref: 'pccsdlctestcontainernginxwebu0loggroup84744344'
+                      },
+                      'awslogs-stream-prefix': 'nginx',
+                      'awslogs-region': 'us-west-2'
+                    }
+                  },
+                  Memory: 64,
+                  Name: 'pcc-sdlc-test-container-nginx-web-u-0',
+                  PortMappings: [ { ContainerPort: 80, Protocol: 'tcp' } ],
+                  ReadonlyRootFilesystem: true
+                },
+                {
+                  Cpu: 128,
+                  Environment: [
+                    { Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-test' },
+                    {
+                      Name: 'MAIL_FROM_ADDRESS',
+                      Value: 'no-reply@test.sdlc.example.edu'
+                    },
+                    {
+                      Name: 'IMPORTER_FROM',
+                      Value: 'importer-no-reply@test.sdlc.example.edu'
+                    },
+                    {
+                      Name: 'DYNAMODB_CACHE_TABLE',
+                      Value: { Ref: 'pccsdlctestcacheFE02D1F3' }
+                    },
+                    {
+                      Name: 'AWS_SECRET_ARN',
+                      Value: {
+                        'Fn::Join': [
+                          '',
+                          [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment'
+                          ]
+                        ]
+                      }
+                    },
+                    { Name: 'APP_BASE_PATH', Value: '/app' }
+                  ],
+                  Essential: true,
+                  Image: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        {
+                          'Fn::Select': [
+                            4,
+                            {
+                              'Fn::Split': [
+                                ':',
+                                {
+                                  'Fn::Join': [
+                                    '',
+                                    [
+                                      'arn:',
+                                      { Ref: 'AWS::Partition' },
+                                      ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        '.dkr.ecr.',
+                        {
+                          'Fn::Select': [
+                            3,
+                            {
+                              'Fn::Split': [
+                                ':',
+                                {
+                                  'Fn::Join': [
+                                    '',
+                                    [
+                                      'arn:',
+                                      { Ref: 'AWS::Partition' },
+                                      ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
+                                    ]
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        '.',
+                        { Ref: 'AWS::URLSuffix' },
+                        '/pcc-test/phpfpm:1'
+                      ]
+                    ]
+                  },
+                  LogConfiguration: {
+                    LogDriver: 'awslogs',
+                    Options: {
+                      'awslogs-group': {
+                        Ref: 'pccsdlctestcontainerphpfpmwebu0loggroup11DFEEF9'
+                      },
+                      'awslogs-stream-prefix': 'phpfpm',
+                      'awslogs-region': 'us-west-2'
+                    }
+                  },
+                  Memory: 128,
+                  Name: 'pcc-sdlc-test-container-phpfpm-web-u-0',
+                  PortMappings: [ { ContainerPort: 9000, Protocol: 'tcp' } ],
+                  ReadonlyRootFilesystem: true
+                }
+              ],
+              Cpu: '256',
+              ExecutionRoleArn: {
+                'Fn::GetAtt': [ 'pccsdlctesttaskdefweb0execrole33B297FF', 'Arn' ]
+              },
+              Family: 'pcc-sdlc-test-task-def-web-0',
+              Memory: '512',
+              NetworkMode: 'awsvpc',
+              RequiresCompatibilities: [ 'FARGATE' ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
+              TaskRoleArn: {
+                'Fn::GetAtt': [ 'pccsdlctesttaskdefweb0TaskRoleFFDD04CB', 'Arn' ]
+              }
+            }
+          },
+          pccsdlctestcontainernginxwebu0loggroup84744344: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              LogGroupName: 'pcc-sdlc-test-container-nginx-web-u-0-log-group',
+              RetentionInDays: 30,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          pccsdlctestcontainerphpfpmwebu0loggroup11DFEEF9: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              LogGroupName: 'pcc-sdlc-test-container-phpfpm-web-u-0-log-group',
+              RetentionInDays: 30,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          pccsdlctestserviceweb0ServiceC3F36893: {
+            Type: 'AWS::ECS::Service',
+            Properties: {
+              Cluster: { Ref: 'pccsdlctestcluster8AFBBF8E' },
+              DeploymentConfiguration: {
+                Alarms: { AlarmNames: [], Enable: false, Rollback: false },
+                MaximumPercent: 200,
+                MinimumHealthyPercent: 50
+              },
+              DesiredCount: 1,
+              EnableECSManagedTags: false,
+              EnableExecuteCommand: true,
+              HealthCheckGracePeriodSeconds: 60,
+              LaunchType: 'FARGATE',
+              LoadBalancers: [
+                {
+                  ContainerName: 'pcc-sdlc-test-container-nginx-web-u-0',
+                  ContainerPort: 80,
+                  TargetGroupArn: { Ref: 'pccsdlctesttg0CACFFBC' }
+                }
+              ],
+              NetworkConfiguration: {
+                AwsvpcConfiguration: {
+                  AssignPublicIp: 'DISABLED',
+                  SecurityGroups: [
+                    {
+                      'Fn::GetAtt': [
+                        'pccsdlctestserviceweb0SecurityGroup73F359E4',
+                        'GroupId'
+                      ]
+                    }
+                  ],
+                  Subnets: [ 'p-12345', 'p-67890' ]
+                }
+              },
+              PlatformVersion: 'LATEST',
+              ServiceName: 'pcc-sdlc-test-service-web-0',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
+              TaskDefinition: { Ref: 'pccsdlctesttaskdefweb08FC2D8B2' }
+            },
+            DependsOn: [
+              'pccsdlctestlistenerrule100C49C5383',
+              'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
+            ]
+          },
+          pccsdlctestserviceweb0SecurityGroup73F359E4: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+              GroupDescription: 'pcc-shared-test/pcc-sdlc-test-stage/pcc-sdlc-test/pcc-sdlc-test-service-web-0/SecurityGroup',
+              SecurityGroupEgress: [
+                {
+                  CidrIp: '0.0.0.0/0',
+                  Description: 'Allow all outbound traffic by default',
+                  IpProtocol: '-1'
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
+              VpcId: 'vpc-12345'
+            },
+            DependsOn: [
+              'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
+            ]
+          },
+          pccsdlctestserviceweb0SecurityGroupfrompccsharedtestpccsdlcteststagepccsdlctestlookuphttpslistenerSecurityGroupsg1234567890123CA5764080862B313A: {
+            Type: 'AWS::EC2::SecurityGroupIngress',
+            Properties: {
+              Description: 'Load balancer to target',
+              FromPort: 80,
+              GroupId: {
+                'Fn::GetAtt': [
+                  'pccsdlctestserviceweb0SecurityGroup73F359E4',
+                  'GroupId'
+                ]
+              },
+              IpProtocol: 'tcp',
+              SourceSecurityGroupId: 'sg-12345678',
+              ToPort: 80
+            },
+            DependsOn: [
+              'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
+            ]
+          },
+          pccsdlctestserviceweb0TaskCountTargetDDBC0BD8: {
+            Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
+            Properties: {
+              MaxCapacity: 3,
+              MinCapacity: 1,
+              ResourceId: {
+                'Fn::Join': [
+                  '',
+                  [
+                    'service/',
+                    { Ref: 'pccsdlctestcluster8AFBBF8E' },
+                    '/',
+                    {
+                      'Fn::GetAtt': [ 'pccsdlctestserviceweb0ServiceC3F36893', 'Name' ]
+                    }
+                  ]
+                ]
+              },
+              RoleARN: {
+                'Fn::Join': [
+                  '',
+                  [
+                    'arn:',
+                    { Ref: 'AWS::Partition' },
+                    ':iam::11111:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
+                  ]
+                ]
+              },
+              ScalableDimension: 'ecs:service:DesiredCount',
+              ServiceNamespace: 'ecs'
+            },
+            DependsOn: [
+              'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
+            ]
+          },
+          pccsdlctestserviceweb0TaskCountTargetpccsdlctestservicescalecpu85A29FBE: {
+            Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
+            Properties: {
+              PolicyName: 'pccsharedtestpccsdlcteststagepccsdlctestpccsdlctestserviceweb0TaskCountTargetpccsdlctestservicescalecpuE263534B',
+              PolicyType: 'TargetTrackingScaling',
+              ScalingTargetId: { Ref: 'pccsdlctestserviceweb0TaskCountTargetDDBC0BD8' },
+              TargetTrackingScalingPolicyConfiguration: {
+                PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
+                TargetValue: 75
+              }
+            },
+            DependsOn: [
+              'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
+            ]
+          },
+          pccsdlctestserviceweb0TaskCountTargetpccsdlctestservicescalemem08710950: {
+            Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
+            Properties: {
+              PolicyName: 'pccsharedtestpccsdlcteststagepccsdlctestpccsdlctestserviceweb0TaskCountTargetpccsdlctestservicescalemem42627C7E',
+              PolicyType: 'TargetTrackingScaling',
+              ScalingTargetId: { Ref: 'pccsdlctestserviceweb0TaskCountTargetDDBC0BD8' },
+              TargetTrackingScalingPolicyConfiguration: {
+                PredefinedMetricSpecification: {
+                  PredefinedMetricType: 'ECSServiceAverageMemoryUtilization'
+                },
+                TargetValue: 75
+              }
+            },
+            DependsOn: [
+              'pccsdlctesttaskdefweb0TaskRoleDefaultPolicy5EA04ED0',
+              'pccsdlctesttaskdefweb0TaskRoleFFDD04CB'
+            ]
+          },
         pccsdlcteststartstopfnlg5E55121D: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
