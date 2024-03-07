@@ -1,6 +1,6 @@
 {
   "name": "@smorken/aws-cdk",
-  "version": "2.130.3",
+  "version": "2.130.4",
   "license": "MIT",
   "author": "Scott Morken <scott.morken@phoenixcollege.edu>",
   "repository": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-ecr": "^3.523.0",
     "@aws-sdk/client-ecs": "^3.523.0",
+    "@aws-sdk/client-ses": "^3.523.0",
     "@aws-sdk/client-secrets-manager": "^3.523.0",
     "@aws-sdk/client-ssm": "^3.523.0",
     "aws-cdk-lib": "2.130.0",
