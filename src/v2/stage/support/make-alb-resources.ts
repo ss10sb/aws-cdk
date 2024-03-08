@@ -35,10 +35,10 @@ export class MakeAlbResources extends NonConstruct {
         this.lookups = lookups;
     }
 
-    public make(): AlbResources {
+    public make(isLambda: boolean): AlbResources {
         const targetGroup = this.createTargetGroup();
         const listenerRule = this.createListenerRule(targetGroup);
-        const healthCheck = this.configureTargetGroupHealthCheck(targetGroup);
+        const healthCheck = this.configureTargetGroupHealthCheck(targetGroup, isLambda);
         return {
             targetGroup: targetGroup,
             listenerRule: listenerRule,
@@ -60,12 +60,14 @@ export class MakeAlbResources extends NonConstruct {
         return albListenerRule.create(targetGroup, <AlbListenerRuleProps>this.props.listenerRule);
     }
 
-    protected configureTargetGroupHealthCheck(targetGroup: ApplicationTargetGroup): AlbTargetGroupHealthCheck {
+    protected configureTargetGroupHealthCheck(targetGroup: ApplicationTargetGroup, isLambda: boolean): AlbTargetGroupHealthCheck {
         const healthCheck = new AlbTargetGroupHealthCheck(this.scope, this.getName('tg-health'), {
             healthCheck: this.props.healthCheck,
             alarmEmails: this.props.alarmEmails ?? []
         });
-        healthCheck.addHealthCheck(targetGroup);
+        if (!isLambda) {
+            healthCheck.addHealthCheck(targetGroup);
+        }
         return healthCheck;
     }
 

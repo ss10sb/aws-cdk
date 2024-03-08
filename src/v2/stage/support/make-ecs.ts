@@ -48,7 +48,7 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
                 healthCheck: this.parameters.ecs.healthCheck,
                 alarmEmails: this.parameters.alarmEmails ?? [],
             });
-            albServices = makeAlbServices.make();
+            albServices = makeAlbServices.make(false);
         }
         const cluster = this.createCluster();
         const tasksAndServices = this.createTasksAndServices({

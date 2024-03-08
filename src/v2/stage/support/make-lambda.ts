@@ -44,7 +44,7 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
                 healthCheck: this.parameters.lambda.healthCheck,
                 alarmEmails: this.parameters.alarmEmails ?? [],
             });
-            albServices = makeAlbServices.make();
+            albServices = makeAlbServices.make(true);
         }
         this.functionFactory = new PhpBrefFunction(this.scope, this.scope.node.id, {
             vpc: this.lookups.vpc,
