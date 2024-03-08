@@ -15,9 +15,10 @@ import {Sqs, SqsProps} from "../../../sqs/sqs";
 import {Duration} from "aws-cdk-lib";
 import {Bucket} from "aws-cdk-lib/aws-s3";
 import {S3Bucket} from "../../../s3/s3-bucket";
-import {VerifySesDomain} from "../../../ses/verify-ses-domain";
-import {SesVerifyDomain} from "../../../ses/ses-verify-domain";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
+import {VerifySesDomain} from "@seeebiii/ses-verify-identities";
+import {Route53Helper} from "../../../utils/route53-helper";
+import {VerifyDomainWrapper} from "../../../ses/verify-domain-wrapper";
 
 export interface CoreMakeResources {
     aRecord?: ARecord;
@@ -141,8 +142,8 @@ export class MakeCoreResources extends NonConstruct {
 
     protected createSesVerifyDomain(): VerifySesDomain | undefined {
         if (this.config.Parameters?.hostedZoneDomain && this.config.Parameters?.subdomain) {
-            const ses = new SesVerifyDomain(this.scope, this.scope.node.id);
-            return ses.verifyDomain({
+            const wrapper = new VerifyDomainWrapper(this.scope, this.scope.node.id);
+            return wrapper.verifyDomain({
                 subdomain: this.config.Parameters.subdomain,
                 hostedZone: this.config.Parameters.hostedZoneDomain
             });

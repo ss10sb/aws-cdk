@@ -1,9 +1,10 @@
 import {App, Stack} from "aws-cdk-lib";
 import {Match, Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
-import {SesVerifyDomain} from "../../src/ses/ses-verify-domain";
 import {MatchHelper} from "../../src/utils/testing/match-helper";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
+import {VerifySesDomain} from "@seeebiii/ses-verify-identities";
+import {VerifyDomainWrapper} from "../../src/ses/verify-domain-wrapper";
 
 describe('ses verify domain', () => {
 
@@ -15,9 +16,9 @@ describe('ses verify domain', () => {
         const app = new App();
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
-        const sesVerifyDomain = new SesVerifyDomain(stack, 'ses-verify-domain');
-        sesVerifyDomain.verifyDomain({
-            subdomain: 'test.example.edu',
+        const wrapper = new VerifyDomainWrapper(stack, 'ses-verify-domain');
+        wrapper.verifyDomain({
+            subdomain: 'test',
             hostedZone: 'example.edu'
         });
         const template = Template.fromStack(stack);

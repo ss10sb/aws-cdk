@@ -11,6 +11,12 @@ module.exports = {
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
+          },
+          functioneventfn0lgD47CFCEB: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: { RetentionInDays: 30 },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
         },
         functioneventfn0ServiceRole30E080B7: {
             Type: 'AWS::IAM::Role',
@@ -46,9 +52,6 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {
-                    'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
-                },
                 FunctionName: 'function-event-fn-0',
                 Handler: 'artisan',
                 Layers: [
@@ -65,11 +68,20 @@ module.exports = {
                 ],
               LoggingConfig: { LogGroup: { Ref: 'functioneventfn0lgD47CFCEB' } },
                 MemorySize: 512,
+              Role: {
+                'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
+              },
                 Runtime: 'provided.al2',
                 Timeout: 120
             },
             DependsOn: ['functioneventfn0ServiceRole30E080B7']
         },
+          httpapiauthorizerfnlg7D7CDD47: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: { RetentionInDays: 7 },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
           httpapiauthorizerfnServiceRoleE977EE3D: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -120,6 +132,7 @@ module.exports = {
               },
               FunctionName: 'http-api-authorizer-fn',
               Handler: 'token.handler',
+              LoggingConfig: { LogGroup: { Ref: 'httpapiauthorizerfnlg7D7CDD47' } },
               Role: {
                 'Fn::GetAtt': [ 'httpapiauthorizerfnServiceRoleE977EE3D', 'Arn' ]
               },
@@ -128,99 +141,6 @@ module.exports = {
             },
             DependsOn: [ 'httpapiauthorizerfnServiceRoleE977EE3D' ]
           },
-          httpapiauthorizerfnLogRetention5E1645C2: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                        'Arn'
-                    ]
-                },
-                LogGroupName: {
-                    'Fn::Join': [
-                        '',
-                  [
-                    '/aws/lambda/',
-                    { Ref: 'httpapiauthorizerfn8B4D1E1C' }
-                  ]
-                    ]
-                },
-              RetentionInDays: 7
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:PutRetentionPolicy',
-                                'logs:DeleteRetentionPolicy'
-                            ],
-                            Effect: 'Allow',
-                            Resource: '*'
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                Roles: [
-                    {
-                        Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                    }
-                ]
-            }
-        },
-        LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Handler: 'index.handler',
-                Runtime: MatchHelper.startsWith('nodejs'),
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Role: {
-                    'Fn::GetAtt': [
-                        'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                        'Arn'
-                    ]
-                }
-            },
-            DependsOn: [
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-                'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-            ]
-        },
         httpapirestapi0816E9CD: {
             Type: 'AWS::ApiGateway::RestApi',
             Properties: {
@@ -272,8 +192,8 @@ module.exports = {
         httpapirestapiDeployment21137E35d43a23f862da801afce015678d98e954: {
             Type: 'AWS::ApiGateway::Deployment',
             Properties: {
-                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
-                Description: 'Automatically created by the RestApi construct'
+              Description: 'Automatically created by the RestApi construct',
+              RestApiId: { Ref: 'httpapirestapi0816E9CD' }
             },
             DependsOn: [
                 'httpapirestapiproxyANY628EF2C4',
@@ -284,10 +204,10 @@ module.exports = {
         httpapirestapiDeploymentStageprodF4611BAD: {
             Type: 'AWS::ApiGateway::Stage',
             Properties: {
-                RestApiId: {Ref: 'httpapirestapi0816E9CD'},
                 DeploymentId: {
                     Ref: 'httpapirestapiDeployment21137E35d43a23f862da801afce015678d98e954'
                 },
+              RestApiId: { Ref: 'httpapirestapi0816E9CD' },
                 StageName: 'prod'
             },
             DependsOn: ['httpapirestapiAccount656712A3']
