@@ -56,7 +56,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
             'cp .env.example .env',
             'composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress',
             'composer dump-autoload --optimize --classmap-authoritative',
-            'php artisan route:cache',
+            //'php artisan route:cache',
             'rm -rf vendor/bin',
             'rm -f .env',
             'npm ci',
