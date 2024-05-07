@@ -37,16 +37,16 @@ module.exports = {
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
-          pccprodtestwebfn0lgAD4873DC: {
+        },
+        pccprodtestwebfn0lgAD4873DC: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              RetentionInDays: 30,
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                RetentionInDays: 30,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -174,7 +174,7 @@ module.exports = {
                         DYNAMODB_CACHE_TABLE: {Ref: 'pccprodtestcache90B0E581'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-prod-test-secrets/environment-ABC123',
                         AWS_APP_NAME: 'pcc-prod-test',
-                  CAN_RUN_CREATE: '0',
+                        CAN_RUN_CREATE: '0',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-prod-test-secrets/environment-ABC123'
                     }
@@ -193,7 +193,7 @@ module.exports = {
                         ]
                     }
                 ],
-              LoggingConfig: { LogGroup: { Ref: 'pccprodtestwebfn0lgAD4873DC' } },
+                LoggingConfig: {LogGroup: {Ref: 'pccprodtestwebfn0lgAD4873DC'}},
                 MemorySize: 512,
                 Role: {
                     'Fn::GetAtt': ['pccprodtestwebfn0ServiceRole6B6FD81D', 'Arn']
@@ -237,16 +237,16 @@ module.exports = {
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
-          pccprodtestauthorizerfnlgD25B0475: {
+        },
+        pccprodtestauthorizerfnlgD25B0475: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              RetentionInDays: 7,
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                RetentionInDays: 7,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -345,7 +345,7 @@ module.exports = {
                 },
                 FunctionName: 'pcc-prod-test-authorizer-fn',
                 Handler: 'token.handler',
-              LoggingConfig: { LogGroup: { Ref: 'pccprodtestauthorizerfnlgD25B0475' } },
+                LoggingConfig: {LogGroup: {Ref: 'pccprodtestauthorizerfnlgD25B0475'}},
                 Role: {
                     'Fn::GetAtt': ['pccprodtestauthorizerfnServiceRoleF62FCC42', 'Arn']
                 },
@@ -680,6 +680,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccprodtestrestapialarmtopic5D40EF12'}],
                 Period: 300,
                 Statistic: 'Sum',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
                 Threshold: 5,
                 TreatMissingData: 'notBreaching'
             }
@@ -696,6 +701,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccprodtestrestapialarmtopic5D40EF12'}],
                 Period: 300,
                 Statistic: 'Sum',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
                 Threshold: 5,
                 TreatMissingData: 'notBreaching'
             }
@@ -712,6 +722,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccprodtestrestapialarmtopic5D40EF12'}],
                 Period: 300,
                 Statistic: 'SampleCount',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
                 Threshold: 500,
                 TreatMissingData: 'notBreaching'
             }
@@ -823,19 +838,19 @@ module.exports = {
                 }
             }
         },
-          s3assetscopylg083B90F8: {
+        s3assetscopylg083B90F8: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              RetentionInDays: 1,
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                RetentionInDays: 1,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
+        },
         s3assetscopyAwsCliLayerA9EB8F42: {
             Type: 'AWS::Lambda::LayerVersion',
             Properties: {
@@ -985,7 +1000,7 @@ module.exports = {
                 },
                 Handler: 'index.handler',
                 Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
-              LoggingConfig: { LogGroup: { Ref: 's3assetscopylg083B90F8' } },
+                LoggingConfig: {LogGroup: {Ref: 's3assetscopylg083B90F8'}},
                 Role: {
                     'Fn::GetAtt': [
                         'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
@@ -1241,9 +1256,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1309,8 +1324,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1509,7 +1524,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                    S3Key: 'ed6cd104ff5f101d06dae8cb2b87cc6e6d69b9a22055b467ea6cae10ff023023.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Handler: 'index.handler',
                 Role: {
@@ -1527,6 +1542,30 @@ module.exports = {
                 Timeout: 120
             },
             DependsOn: ['AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2']
+        }
+    },
+    Outputs: {
+        pccprodtestrestapiEndpointCC100E89: {
+            Value: {
+                'Fn::Join': [
+                    '',
+                    [
+                        'https://',
+                        {Ref: 'pccprodtestrestapiFDFF2D0E'},
+                        '.execute-api.us-west-2.',
+                        {Ref: 'AWS::URLSuffix'},
+                        '/',
+                        {Ref: 'pccprodtestrestapiDeploymentStageprodDAE88F7E'},
+                        '/'
+                    ]
+                ]
+            }
+        }
+    },
+    Mappings: {
+        AWSCloudFrontPartitionHostedZoneIdMap: {
+            aws: {zoneId: 'Z2FDTNDATAQYW2'},
+            'aws-cn': {zoneId: 'Z3RFFRIM2A3IF5'}
         }
     }
 }

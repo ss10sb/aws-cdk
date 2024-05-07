@@ -1944,8 +1944,8 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"ed6cd104ff5f101d06dae8cb2b87cc6e6d69b9a22055b467ea6cae10ff023023:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"ed6cd104ff5f101d06dae8cb2b87cc6e6d69b9a22055b467ea6cae10ff023023:22222-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4:11111-us-west-2\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4:22222-us-west-2\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +

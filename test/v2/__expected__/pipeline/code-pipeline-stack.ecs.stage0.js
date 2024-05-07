@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.sdlc.example.edu"}}',
+              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.sdlc.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -51,6 +51,69 @@ module.exports = {
                     }
                 ]
             }
+          },
+          pccsdlctestsesverifytestSesNotificationTopicF2D450E7: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            DependsOn: [
+              'pccsdlctestsesverifytestVerifyDomainIdentityCustomResourcePolicyC09302B4',
+              'pccsdlctestsesverifytestVerifyDomainIdentity1170B174'
+            ]
+          },
+          pccsdlctestsesverifytestAddComplaintTopictestsdlcexampleedu7C639B49: {
+            Type: 'Custom::AWS',
+            Properties: {
+              ServiceToken: {
+                'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
+              },
+              Create: {
+                'Fn::Join': [
+                  '',
+                  [
+                    '{"service":"SES","action":"setIdentityNotificationTopic","parameters":{"Identity":"test.sdlc.example.edu","NotificationType":"Complaint","SnsTopic":"',
+                    {
+                      Ref: 'pccsdlctestsesverifytestSesNotificationTopicF2D450E7'
+                    },
+                    '"},"physicalResourceId":{"id":"test.sdlc.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                  ]
+                ]
+              },
+              InstallLatestAwsSdk: true
+            },
+            DependsOn: [
+              'pccsdlctestsesverifytestAddComplaintTopictestsdlcexampleeduCustomResourcePolicyF71B0FE2',
+              'pccsdlctestsesverifytestSesNotificationTopicF2D450E7'
+            ],
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          pccsdlctestsesverifytestAddComplaintTopictestsdlcexampleeduCustomResourcePolicyF71B0FE2: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'ses:SetIdentityNotificationTopic',
+                    Effect: 'Allow',
+                    Resource: '*'
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccsdlctestsesverifytestAddComplaintTopictestsdlcexampleeduCustomResourcePolicyF71B0FE2',
+              Roles: [
+                {
+                  Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
+                }
+              ]
+            },
+            DependsOn: [ 'pccsdlctestsesverifytestSesNotificationTopicF2D450E7' ]
         },
         pccsdlctestsesverifytestSesVerificationRecord44B46B12: {
             Type: 'AWS::Route53::RecordSet',
@@ -82,14 +145,40 @@ module.exports = {
                 'pccsdlctestsesverifytestVerifyDomainIdentity1170B174'
             ]
         },
+          pccsdlctestsesverifytestSesMxRecordEBA4BEB7: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+              HostedZoneId: 'DUMMY',
+              Name: 'test.sdlc.example.edu.',
+              ResourceRecords: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      '10 ',
+                      {
+                        'Fn::Sub': 'inbound-smtp.${AWS::Region}.amazonaws.com'
+                      }
+                    ]
+                  ]
+                }
+              ],
+              TTL: '1800',
+              Type: 'MX'
+            },
+            DependsOn: [
+              'pccsdlctestsesverifytestVerifyDomainIdentityCustomResourcePolicyC09302B4',
+              'pccsdlctestsesverifytestVerifyDomainIdentity1170B174'
+            ]
+          },
         pccsdlctestsesverifytestVerifyDomainDkimB9257EE5: {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
                     'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
+              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -442,6 +531,11 @@ module.exports = {
               OKActions: [ { Ref: 'pccsdlctesttghealthhealthtopicE7461CB4' } ],
               Period: 60,
               Statistic: 'Maximum',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
               Threshold: 1
             }
           },
@@ -492,6 +586,11 @@ module.exports = {
                 OKActions: [ { Ref: 'pccsdlctestclusteralarmtopicF04676D2' } ],
                 Period: 300,
                 Statistic: 'Average',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Threshold: 90
             }
         },
@@ -512,6 +611,11 @@ module.exports = {
                 OKActions: [ { Ref: 'pccsdlctestclusteralarmtopicF04676D2' } ],
                 Period: 300,
                 Statistic: 'Average',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Threshold: 90
             }
         },
@@ -1114,7 +1218,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}}}'
+                    '"]}}},"logApiResponseData":true}'
                         ]
                     ]
                 },
@@ -1135,7 +1239,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}}}'
+                    '"]}}},"logApiResponseData":true}'
                         ]
                     ]
                 },
@@ -1872,5 +1976,11 @@ module.exports = {
                 }
             }
         }
-    }
+        },
+        Outputs: {
+            pccsdlctestsesverifytesttestsdlcexampleeduSesNotificationTopic707B824F: {
+                Description: 'SES notification topic for test.sdlc.example.edu',
+                Value: {Ref: 'pccsdlctestsesverifytestSesNotificationTopicF2D450E7'}
+            }
+        }
 }

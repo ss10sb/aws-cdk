@@ -949,6 +949,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccsdlcmyapprestapialarmtopicDE1D141D'}],
                 Period: 300,
                 Statistic: 'Sum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 5,
                 TreatMissingData: 'notBreaching'
             }
@@ -965,6 +970,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccsdlcmyapprestapialarmtopicDE1D141D'}],
                 Period: 300,
                 Statistic: 'Sum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 5,
                 TreatMissingData: 'notBreaching'
             }
@@ -981,6 +991,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccsdlcmyapprestapialarmtopicDE1D141D'}],
                 Period: 300,
                 Statistic: 'SampleCount',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 500,
                 TreatMissingData: 'notBreaching'
             }
@@ -1516,9 +1531,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1584,8 +1599,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1802,6 +1817,30 @@ module.exports = {
                 Timeout: 120
             },
             DependsOn: ['AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2']
+        }
+    },
+    Outputs: {
+        pccsdlcmyapprestapiEndpointF393938F: {
+            Value: {
+                'Fn::Join': [
+                    '',
+                    [
+                        'https://',
+                        {Ref: 'pccsdlcmyapprestapi9C566785'},
+                        '.execute-api.us-west-2.',
+                        {Ref: 'AWS::URLSuffix'},
+                        '/',
+                        {Ref: 'pccsdlcmyapprestapiDeploymentStageprod3055E24F'},
+                        '/'
+                    ]
+                ]
+            }
+        }
+    },
+    Mappings: {
+        AWSCloudFrontPartitionHostedZoneIdMap: {
+            aws: {zoneId: 'Z2FDTNDATAQYW2'},
+            'aws-cn': {zoneId: 'Z3RFFRIM2A3IF5'}
         }
     }
 }

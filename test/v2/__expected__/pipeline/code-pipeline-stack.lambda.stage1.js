@@ -18,11 +18,11 @@ module.exports = {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
-                    'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -37,7 +37,7 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
-                            Action: [ 'ses:VerifyDomainIdentity', 'ses:DeleteIdentity' ],
+                            Action: ['ses:VerifyDomainIdentity', 'ses:DeleteIdentity'],
                             Effect: 'Allow',
                             Resource: '*'
                         }
@@ -51,6 +51,69 @@ module.exports = {
                     }
                 ]
             }
+        },
+        pccprodtestsesverifytestSesNotificationTopicE0DECAC2: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
+            },
+            DependsOn: [
+                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
+                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
+            ]
+        },
+        pccprodtestsesverifytestAddComplaintTopictestexampleeduDEBDE091: {
+            Type: 'Custom::AWS',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
+                },
+                Create: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            '{"service":"SES","action":"setIdentityNotificationTopic","parameters":{"Identity":"test.example.edu","NotificationType":"Complaint","SnsTopic":"',
+                            {
+                                Ref: 'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'
+                            },
+                            '"},"physicalResourceId":{"id":"test.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                        ]
+                    ]
+                },
+                InstallLatestAwsSdk: true
+            },
+            DependsOn: [
+                'pccprodtestsesverifytestAddComplaintTopictestexampleeduCustomResourcePolicy746F326B',
+                'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'
+            ],
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        pccprodtestsesverifytestAddComplaintTopictestexampleeduCustomResourcePolicy746F326B: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'ses:SetIdentityNotificationTopic',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccprodtestsesverifytestAddComplaintTopictestexampleeduCustomResourcePolicy746F326B',
+                Roles: [
+                    {
+                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
+                    }
+                ]
+            },
+            DependsOn: ['pccprodtestsesverifytestSesNotificationTopicE0DECAC2']
         },
         pccprodtestsesverifytestSesVerificationRecordEE0838F9: {
             Type: 'AWS::Route53::RecordSet',
@@ -82,14 +145,40 @@ module.exports = {
                 'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
             ]
         },
+        pccprodtestsesverifytestSesMxRecord14A765C0: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                HostedZoneId: 'DUMMY',
+                Name: 'test.example.edu.',
+                ResourceRecords: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '10 ',
+                                {
+                                    'Fn::Sub': 'inbound-smtp.${AWS::Region}.amazonaws.com'
+                                }
+                            ]
+                        ]
+                    }
+                ],
+                TTL: '1800',
+                Type: 'MX'
+            },
+            DependsOn: [
+                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
+                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
+            ]
+        },
         pccprodtestsesverifytestVerifyDomainDkim5FC89C53: {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
-                    'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -259,7 +348,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
+                            Principal: {Service: 'lambda.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -270,16 +359,16 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -299,28 +388,28 @@ module.exports = {
                 },
                 Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 Timeout: 120
             },
-            DependsOn: [ 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2' ]
+            DependsOn: ['AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2']
         },
         pccprodtestcache90B0E581: {
             Type: 'AWS::DynamoDB::Table',
             Properties: {
-                AttributeDefinitions: [ { AttributeName: 'key', AttributeType: 'S' } ],
+                AttributeDefinitions: [{AttributeName: 'key', AttributeType: 'S'}],
                 BillingMode: 'PAY_PER_REQUEST',
-                KeySchema: [ { AttributeName: 'key', KeyType: 'HASH' } ],
-                SSESpecification: { SSEEnabled: true },
+                KeySchema: [{AttributeName: 'key', KeyType: 'HASH'}],
+                SSESpecification: {SSEEnabled: true},
                 TableName: 'pcc-prod-test-cache',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
-                TimeToLiveSpecification: { AttributeName: 'expires_at', Enabled: true }
+                TimeToLiveSpecification: {AttributeName: 'expires_at', Enabled: true}
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -331,9 +420,9 @@ module.exports = {
                 KmsMasterKeyId: 'alias/aws/sqs',
                 QueueName: 'pcc-prod-test-queue',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -344,14 +433,14 @@ module.exports = {
             Properties: {
                 Name: 'pcc-prod-test-tg',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 TargetType: 'lambda',
                 Targets: [
                     {
-                        Id: { 'Fn::GetAtt': [ 'pccprodtestwebfn0B6D4CE6D', 'Arn' ] }
+                        Id: {'Fn::GetAtt': ['pccprodtestwebfn0B6D4CE6D', 'Arn']}
                     }
                 ]
             },
@@ -364,14 +453,14 @@ module.exports = {
             Properties: {
                 Actions: [
                     {
-                        TargetGroupArn: { Ref: 'pccprodtesttgAE852883' },
+                        TargetGroupArn: {Ref: 'pccprodtesttgAE852883'},
                         Type: 'forward'
                     }
                 ],
                 Conditions: [
                     {
                         Field: 'host-header',
-                        HostHeaderConfig: { Values: [ 'foo.sdlc.example.edu' ] }
+                        HostHeaderConfig: {Values: ['foo.sdlc.example.edu']}
                     }
                 ],
                 ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2',
@@ -383,9 +472,9 @@ module.exports = {
             Properties: {
                 RetentionInDays: 30,
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -399,7 +488,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
+                            Principal: {Service: 'lambda.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -410,7 +499,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -420,16 +509,16 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
                             ]
                         ]
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -445,10 +534,10 @@ module.exports = {
                                 'sqs:GetQueueUrl'
                             ],
                             Effect: 'Allow',
-                            Resource: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] }
+                            Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
-                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
                         },
@@ -470,9 +559,9 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
                                 },
-                                { Ref: 'AWS::NoValue' }
+                                {Ref: 'AWS::NoValue'}
                             ]
                         },
                         {
@@ -486,7 +575,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment-??????'
                                     ]
                                 ]
@@ -496,7 +585,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccprodtesteventfn0ServiceRoleDefaultPolicyCEAFAB52',
-                Roles: [ { Ref: 'pccprodtesteventfn0ServiceRoleF3F26E3C' } ]
+                Roles: [{Ref: 'pccprodtesteventfn0ServiceRoleF3F26E3C'}]
             }
         },
         pccprodtesteventfn0SecurityGroup19F10904: {
@@ -511,9 +600,9 @@ module.exports = {
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 VpcId: 'vpc-12345'
             }
@@ -530,25 +619,26 @@ module.exports = {
                         AWS_APP_NAME: 'pcc-prod-test',
                         MAIL_FROM_ADDRESS: 'no-reply@test.example.edu',
                         IMPORTER_FROM: 'importer-no-reply@test.example.edu',
-                        DYNAMODB_CACHE_TABLE: { Ref: 'pccprodtestcache90B0E581' },
-                        SQS_QUEUE: { Ref: 'pccprodtestqueue7472DA6D' },
+                        DYNAMODB_CACHE_TABLE: {Ref: 'pccprodtestcache90B0E581'},
+                        SQS_QUEUE: {Ref: 'pccprodtestqueue7472DA6D'},
                         AWS_SECRET_ARN: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                 ]
                             ]
                         },
+                        APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'bref-secretsmanager:arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                 ]
                             ]
@@ -563,7 +653,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':lambda:us-west-2:534081306603:layer:php-82:48'
                             ]
                         ]
@@ -573,22 +663,22 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':lambda:us-west-2:534081306603:layer:console:58'
                             ]
                         ]
                     }
                 ],
-                LoggingConfig: { LogGroup: { Ref: 'pccprodtesteventfn0lg49C9809B' } },
+                LoggingConfig: {LogGroup: {Ref: 'pccprodtesteventfn0lg49C9809B'}},
                 MemorySize: 512,
                 Role: {
-                    'Fn::GetAtt': [ 'pccprodtesteventfn0ServiceRoleF3F26E3C', 'Arn' ]
+                    'Fn::GetAtt': ['pccprodtesteventfn0ServiceRoleF3F26E3C', 'Arn']
                 },
                 Runtime: 'provided.al2',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 Timeout: 120,
                 VpcConfig: {
@@ -600,7 +690,7 @@ module.exports = {
                             ]
                         }
                     ],
-                    SubnetIds: [ 'p-12345', 'p-67890' ]
+                    SubnetIds: ['p-12345', 'p-67890']
                 }
             },
             DependsOn: [
@@ -617,7 +707,7 @@ module.exports = {
                 Targets: [
                     {
                         Arn: {
-                            'Fn::GetAtt': [ 'pccprodtesteventfn06B99FE66', 'Arn' ]
+                            'Fn::GetAtt': ['pccprodtesteventfn06B99FE66', 'Arn']
                         },
                         Id: 'Target0',
                         Input: '{"cli":"schedule:run"}'
@@ -629,10 +719,10 @@ module.exports = {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: { 'Fn::GetAtt': [ 'pccprodtesteventfn06B99FE66', 'Arn' ] },
+                FunctionName: {'Fn::GetAtt': ['pccprodtesteventfn06B99FE66', 'Arn']},
                 Principal: 'events.amazonaws.com',
                 SourceArn: {
-                    'Fn::GetAtt': [ 'pccprodtesteventfn0scheduledevent0F7203651', 'Arn' ]
+                    'Fn::GetAtt': ['pccprodtesteventfn0scheduledevent0F7203651', 'Arn']
                 }
             }
         },
@@ -641,9 +731,9 @@ module.exports = {
             Properties: {
                 RetentionInDays: 30,
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -657,7 +747,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
+                            Principal: {Service: 'lambda.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -668,7 +758,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -678,16 +768,16 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
                             ]
                         ]
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -705,7 +795,7 @@ module.exports = {
                                 'sqs:GetQueueAttributes'
                             ],
                             Effect: 'Allow',
-                            Resource: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] }
+                            Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
                             Action: [
@@ -714,7 +804,7 @@ module.exports = {
                                 'sqs:GetQueueUrl'
                             ],
                             Effect: 'Allow',
-                            Resource: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] }
+                            Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
                             Action: [
@@ -723,10 +813,10 @@ module.exports = {
                                 'sqs:GetQueueUrl'
                             ],
                             Effect: 'Allow',
-                            Resource: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] }
+                            Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
-                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
                         },
@@ -748,9 +838,9 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
                                 },
-                                { Ref: 'AWS::NoValue' }
+                                {Ref: 'AWS::NoValue'}
                             ]
                         },
                         {
@@ -764,7 +854,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment-??????'
                                     ]
                                 ]
@@ -774,7 +864,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccprodtestqueuefn0ServiceRoleDefaultPolicy9B6CD734',
-                Roles: [ { Ref: 'pccprodtestqueuefn0ServiceRole654705B9' } ]
+                Roles: [{Ref: 'pccprodtestqueuefn0ServiceRole654705B9'}]
             }
         },
         pccprodtestqueuefn0SecurityGroup2CCD097E: {
@@ -789,9 +879,9 @@ module.exports = {
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 VpcId: 'vpc-12345'
             }
@@ -808,25 +898,26 @@ module.exports = {
                         AWS_APP_NAME: 'pcc-prod-test',
                         MAIL_FROM_ADDRESS: 'no-reply@test.example.edu',
                         IMPORTER_FROM: 'importer-no-reply@test.example.edu',
-                        DYNAMODB_CACHE_TABLE: { Ref: 'pccprodtestcache90B0E581' },
-                        SQS_QUEUE: { Ref: 'pccprodtestqueue7472DA6D' },
+                        DYNAMODB_CACHE_TABLE: {Ref: 'pccprodtestcache90B0E581'},
+                        SQS_QUEUE: {Ref: 'pccprodtestqueue7472DA6D'},
                         AWS_SECRET_ARN: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                 ]
                             ]
                         },
+                        APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'bref-secretsmanager:arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                 ]
                             ]
@@ -841,22 +932,22 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':lambda:us-west-2:534081306603:layer:php-82:48'
                             ]
                         ]
                     }
                 ],
-                LoggingConfig: { LogGroup: { Ref: 'pccprodtestqueuefn0lgE7D75594' } },
+                LoggingConfig: {LogGroup: {Ref: 'pccprodtestqueuefn0lgE7D75594'}},
                 MemorySize: 512,
                 Role: {
-                    'Fn::GetAtt': [ 'pccprodtestqueuefn0ServiceRole654705B9', 'Arn' ]
+                    'Fn::GetAtt': ['pccprodtestqueuefn0ServiceRole654705B9', 'Arn']
                 },
                 Runtime: 'provided.al2',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 Timeout: 120,
                 VpcConfig: {
@@ -868,7 +959,7 @@ module.exports = {
                             ]
                         }
                     ],
-                    SubnetIds: [ 'p-12345', 'p-67890' ]
+                    SubnetIds: ['p-12345', 'p-67890']
                 }
             },
             DependsOn: [
@@ -879,8 +970,8 @@ module.exports = {
         pccprodtestqueuefn0SqsEventSourcepccsharedtestpccprodteststagepccprodtestpccprodtestqueue210C3883B7AA06FE: {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
-                EventSourceArn: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] },
-                FunctionName: { Ref: 'pccprodtestqueuefn0816902CA' }
+                EventSourceArn: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']},
+                FunctionName: {Ref: 'pccprodtestqueuefn0816902CA'}
             }
         },
         assetstestexampleedu17784CFA: {
@@ -890,9 +981,9 @@ module.exports = {
                 CorsConfiguration: {
                     CorsRules: [
                         {
-                            AllowedHeaders: [ '*' ],
-                            AllowedMethods: [ 'GET' ],
-                            AllowedOrigins: [ 'https://test.example.edu' ],
+                            AllowedHeaders: ['*'],
+                            AllowedMethods: ['GET'],
+                            AllowedOrigins: ['https://test.example.edu'],
                             MaxAge: 3000
                         }
                     ]
@@ -904,10 +995,10 @@ module.exports = {
                     RestrictPublicBuckets: false
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'aws-cdk:cr-owned:15be1f63', Value: 'true' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'aws-cdk:cr-owned:15be1f63', Value: 'true'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Retain',
@@ -916,24 +1007,24 @@ module.exports = {
         assetstestexampleeduPolicy3AAD0C7B: {
             Type: 'AWS::S3::BucketPolicy',
             Properties: {
-                Bucket: { Ref: 'assetstestexampleedu17784CFA' },
+                Bucket: {Ref: 'assetstestexampleedu17784CFA'},
                 PolicyDocument: {
                     Statement: [
                         {
                             Action: 's3:*',
-                            Condition: { Bool: { 'aws:SecureTransport': 'false' } },
+                            Condition: {Bool: {'aws:SecureTransport': 'false'}},
                             Effect: 'Deny',
-                            Principal: { AWS: '*' },
+                            Principal: {AWS: '*'},
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'Arn' ]
+                                    'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'Arn']
                                 },
                                 {
                                     'Fn::Join': [
                                         '',
                                         [
                                             {
-                                                'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'Arn' ]
+                                                'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'Arn']
                                             },
                                             '/*'
                                         ]
@@ -944,13 +1035,13 @@ module.exports = {
                         {
                             Action: 's3:GetObject',
                             Effect: 'Allow',
-                            Principal: { AWS: '*' },
+                            Principal: {AWS: '*'},
                             Resource: {
                                 'Fn::Join': [
                                     '',
                                     [
                                         {
-                                            'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'Arn' ]
+                                            'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'Arn']
                                         },
                                         '/*'
                                     ]
@@ -962,19 +1053,19 @@ module.exports = {
                 }
             }
         },
-          s3assetscopylg083B90F8: {
+        s3assetscopylg083B90F8: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              RetentionInDays: 1,
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                RetentionInDays: 1,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
+        },
         s3assetscopyAwsCliLayerA9EB8F42: {
             Type: 'AWS::Lambda::LayerVersion',
             Properties: {
@@ -994,11 +1085,11 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                SourceBucketNames: [ 'cdk-hnb659fds-assets-22222-us-west-2' ],
+                SourceBucketNames: ['cdk-hnb659fds-assets-22222-us-west-2'],
                 SourceObjectKeys: [
                     MatchHelper.endsWith('zip')
                 ],
-                DestinationBucketName: { Ref: 'assetstestexampleedu17784CFA' },
+                DestinationBucketName: {Ref: 'assetstestexampleedu17784CFA'},
                 Prune: true
             },
             UpdateReplacePolicy: 'Delete',
@@ -1012,7 +1103,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
+                            Principal: {Service: 'lambda.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -1023,16 +1114,16 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -1042,7 +1133,7 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
-                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
+                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
                             Effect: 'Allow',
                             Resource: [
                                 {
@@ -1050,7 +1141,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':s3:::cdk-hnb659fds-assets-22222-us-west-2'
                                         ]
                                     ]
@@ -1060,7 +1151,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':s3:::cdk-hnb659fds-assets-22222-us-west-2/*'
                                         ]
                                     ]
@@ -1083,14 +1174,14 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'Arn' ]
+                                    'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'Arn']
                                 },
                                 {
                                     'Fn::Join': [
                                         '',
                                         [
                                             {
-                                                'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'Arn' ]
+                                                'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'Arn']
                                             },
                                             '/*'
                                         ]
@@ -1122,8 +1213,8 @@ module.exports = {
                     }
                 },
                 Handler: 'index.handler',
-                Layers: [ { Ref: 's3assetscopyAwsCliLayerA9EB8F42' } ],
-              LoggingConfig: { LogGroup: { Ref: 's3assetscopylg083B90F8' } },
+                Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
+                LoggingConfig: {LogGroup: {Ref: 's3assetscopylg083B90F8'}},
                 Role: {
                     'Fn::GetAtt': [
                         'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
@@ -1132,9 +1223,9 @@ module.exports = {
                 },
                 Runtime: 'python3.9',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 Timeout: 900
             },
@@ -1148,9 +1239,9 @@ module.exports = {
             Properties: {
                 RetentionInDays: 30,
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -1164,7 +1255,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
+                            Principal: {Service: 'lambda.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -1175,7 +1266,7 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
@@ -1185,16 +1276,16 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
                             ]
                         ]
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -1210,10 +1301,10 @@ module.exports = {
                                 'sqs:GetQueueUrl'
                             ],
                             Effect: 'Allow',
-                            Resource: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] }
+                            Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
-                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
                         },
@@ -1235,9 +1326,9 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
                                 },
-                                { Ref: 'AWS::NoValue' }
+                                {Ref: 'AWS::NoValue'}
                             ]
                         },
                         {
@@ -1251,7 +1342,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment-??????'
                                     ]
                                 ]
@@ -1261,7 +1352,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccprodtestwebfn0ServiceRoleDefaultPolicy08BFFBDA',
-                Roles: [ { Ref: 'pccprodtestwebfn0ServiceRole6B6FD81D' } ]
+                Roles: [{Ref: 'pccprodtestwebfn0ServiceRole6B6FD81D'}]
             }
         },
         pccprodtestwebfn0SecurityGroup38080B55: {
@@ -1276,9 +1367,9 @@ module.exports = {
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 VpcId: 'vpc-12345'
             }
@@ -1295,25 +1386,26 @@ module.exports = {
                         AWS_APP_NAME: 'pcc-prod-test',
                         MAIL_FROM_ADDRESS: 'no-reply@test.example.edu',
                         IMPORTER_FROM: 'importer-no-reply@test.example.edu',
-                        DYNAMODB_CACHE_TABLE: { Ref: 'pccprodtestcache90B0E581' },
-                        SQS_QUEUE: { Ref: 'pccprodtestqueue7472DA6D' },
+                        DYNAMODB_CACHE_TABLE: {Ref: 'pccprodtestcache90B0E581'},
+                        SQS_QUEUE: {Ref: 'pccprodtestqueue7472DA6D'},
                         AWS_SECRET_ARN: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                 ]
                             ]
                         },
+                        APP_BASE_PATH: '/var/task',
                         S3_ASSET_URL: {
                             'Fn::Join': [
                                 '',
                                 [
                                     'https://',
                                     {
-                                        'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'DomainName' ]
+                                        'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'DomainName']
                                     }
                                 ]
                             ]
@@ -1324,7 +1416,7 @@ module.exports = {
                                 [
                                     'https://',
                                     {
-                                        'Fn::GetAtt': [ 'assetstestexampleedu17784CFA', 'DomainName' ]
+                                        'Fn::GetAtt': ['assetstestexampleedu17784CFA', 'DomainName']
                                     }
                                 ]
                             ]
@@ -1335,7 +1427,7 @@ module.exports = {
                                 '',
                                 [
                                     'bref-secretsmanager:arn:',
-                                    { Ref: 'AWS::Partition' },
+                                    {Ref: 'AWS::Partition'},
                                     ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                 ]
                             ]
@@ -1350,31 +1442,31 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':lambda:us-west-2:534081306603:layer:php-82-fpm:48'
                             ]
                         ]
                     }
                 ],
-                LoggingConfig: { LogGroup: { Ref: 'pccprodtestwebfn0lgAD4873DC' } },
+                LoggingConfig: {LogGroup: {Ref: 'pccprodtestwebfn0lgAD4873DC'}},
                 MemorySize: 512,
                 Role: {
-                    'Fn::GetAtt': [ 'pccprodtestwebfn0ServiceRole6B6FD81D', 'Arn' ]
+                    'Fn::GetAtt': ['pccprodtestwebfn0ServiceRole6B6FD81D', 'Arn']
                 },
                 Runtime: 'provided.al2',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 Timeout: 120,
                 VpcConfig: {
                     SecurityGroupIds: [
                         {
-                            'Fn::GetAtt': [ 'pccprodtestwebfn0SecurityGroup38080B55', 'GroupId' ]
+                            'Fn::GetAtt': ['pccprodtestwebfn0SecurityGroup38080B55', 'GroupId']
                         }
                     ],
-                    SubnetIds: [ 'p-12345', 'p-67890' ]
+                    SubnetIds: ['p-12345', 'p-67890']
                 }
             },
             DependsOn: [
@@ -1386,9 +1478,15 @@ module.exports = {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: { 'Fn::GetAtt': [ 'pccprodtestwebfn0B6D4CE6D', 'Arn' ] },
+                FunctionName: {'Fn::GetAtt': ['pccprodtestwebfn0B6D4CE6D', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
             }
+        }
+    },
+    Outputs: {
+        pccprodtestsesverifytesttestexampleeduSesNotificationTopic54474B14: {
+            Description: 'SES notification topic for test.example.edu',
+            Value: {Ref: 'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'}
         }
     }
 }

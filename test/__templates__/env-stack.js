@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -88,8 +88,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -424,6 +424,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccsdlcmyapptghealthtopic931BBE6A'}],
                 Period: 60,
                 Statistic: 'Maximum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 1
             }
         },
@@ -583,6 +588,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccsdlcmyappclusteralarmtopic96EDDED7'}],
                 Period: 300,
                 Statistic: 'Average',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 90
             }
         },
@@ -603,6 +613,11 @@ module.exports = {
                 OKActions: [{Ref: 'pccsdlcmyappclusteralarmtopic96EDDED7'}],
                 Period: 300,
                 Statistic: 'Average',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 90
             }
         },
@@ -663,7 +678,7 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
-                        'pccsdlcmyappcontainerphpfpmcreateruntaskrot0loggroup3A8B324B',
+                                    'pccsdlcmyappcontainerphpfpmcreateruntaskrot0loggroup3A8B324B',
                                     'Arn'
                                 ]
                             }
@@ -759,7 +774,7 @@ module.exports = {
                                 }
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                    { Name: 'CAN_RUN_CREATE', Value: '0' }
+                            {Name: 'CAN_RUN_CREATE', Value: '0'}
                         ],
                         Essential: true,
                         Image: {
@@ -817,14 +832,14 @@ module.exports = {
                             LogDriver: 'awslogs',
                             Options: {
                                 'awslogs-group': {
-                        Ref: 'pccsdlcmyappcontainerphpfpmcreateruntaskrot0loggroup3A8B324B'
+                                    Ref: 'pccsdlcmyappcontainerphpfpmcreateruntaskrot0loggroup3A8B324B'
                                 },
                                 'awslogs-stream-prefix': 'phpfpm',
                                 'awslogs-region': 'us-west-2'
                             }
                         },
                         Memory: 512,
-                  Name: 'pcc-sdlc-myapp-container-phpfpm-createruntask-rot-0',
+                        Name: 'pcc-sdlc-myapp-container-phpfpm-createruntask-rot-0',
                         ReadonlyRootFilesystem: true,
                         Secrets: [
                             {
@@ -880,10 +895,10 @@ module.exports = {
                 }
             }
         },
-          pccsdlcmyappcontainerphpfpmcreateruntaskrot0loggroup3A8B324B: {
+        pccsdlcmyappcontainerphpfpmcreateruntaskrot0loggroup3A8B324B: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              LogGroupName: 'pcc-sdlc-myapp-container-phpfpm-createruntask-rot-0-log-group',
+                LogGroupName: 'pcc-sdlc-myapp-container-phpfpm-createruntask-rot-0-log-group',
                 RetentionInDays: 30,
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
@@ -1131,7 +1146,7 @@ module.exports = {
                                 }
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                    { Name: 'CAN_RUN_CREATE', Value: '0' }
+                            {Name: 'CAN_RUN_CREATE', Value: '0'}
                         ],
                         Essential: true,
                         Image: {
@@ -1308,7 +1323,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}}}'
+                            '"]}}},"logApiResponseData":true}'
                         ]
                     ]
                 },
@@ -1329,7 +1344,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}}}'
+                            '"]}}},"logApiResponseData":true}'
                         ]
                     ]
                 },
@@ -1599,7 +1614,7 @@ module.exports = {
                                 }
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                    { Name: 'CAN_RUN_CREATE', Value: '0' }
+                            {Name: 'CAN_RUN_CREATE', Value: '0'}
                         ],
                         Essential: true,
                         Image: {
@@ -1756,6 +1771,22 @@ module.exports = {
                             },
                             Effect: 'Allow',
                             Resource: {Ref: 'pccsdlcmyapptaskdefscheduledtask0DC6034F0'}
+                        },
+                        {
+                            Action: 'ecs:TagResource',
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':ecs:us-west-2:*:task/',
+                                        {Ref: 'pccsdlcmyappcluster4E9F2DE3'},
+                                        '/*'
+                                    ]
+                                ]
+                            }
                         },
                         {
                             Action: 'iam:PassRole',
@@ -2212,7 +2243,7 @@ module.exports = {
                                 }
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                    { Name: 'CAN_RUN_CREATE', Value: '0' }
+                            {Name: 'CAN_RUN_CREATE', Value: '0'}
                         ],
                         Essential: true,
                         Image: {
@@ -3005,6 +3036,11 @@ module.exports = {
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 0
             },
             DependsOn: [
@@ -3061,6 +3097,11 @@ module.exports = {
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 1
             },
             DependsOn: [
@@ -3068,19 +3109,19 @@ module.exports = {
                 'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
             ]
         },
-          pccsdlcmyappstartstopfnlg723CA74F: {
+        pccsdlcmyappstartstopfnlg723CA74F: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              RetentionInDays: 14,
-              Tags: [
-                { Key: 'App', Value: 'myapp' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'sdlc' }
-              ]
+                RetentionInDays: 14,
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
+        },
         pccsdlcmyappstartstopfnServiceRole4E724A81: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -3154,7 +3195,7 @@ module.exports = {
                 },
                 FunctionName: 'pcc-sdlc-myapp-start-stop-fn',
                 Handler: 'index.handler',
-              LoggingConfig: { LogGroup: { Ref: 'pccsdlcmyappstartstopfnlg723CA74F' } },
+                LoggingConfig: {LogGroup: {Ref: 'pccsdlcmyappstartstopfnlg723CA74F'}},
                 MemorySize: 128,
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopfnServiceRole4E724A81', 'Arn']
@@ -3251,6 +3292,14 @@ module.exports = {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopstopruleE9201095', 'Arn']
                 }
             }
+        }
+    },
+    Outputs: {
+        pccsdlcmyappservicequeue0SQSQueue8306BFF0: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']}
+        },
+        pccsdlcmyappservicequeue0SQSQueueArn061B9BC6: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']}
         }
     }
 };

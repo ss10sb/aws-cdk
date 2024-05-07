@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"foo.sdlc.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"foo.sdlc.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -51,6 +51,69 @@ module.exports = {
                     }
                 ]
             }
+        },
+        pccsdlcmyappsesverifyfooSesNotificationTopic99002DE8: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ]
+            },
+            DependsOn: [
+                'pccsdlcmyappsesverifyfooVerifyDomainIdentityCustomResourcePolicy31BD3CDF',
+                'pccsdlcmyappsesverifyfooVerifyDomainIdentity12CDE9A5'
+            ]
+        },
+        pccsdlcmyappsesverifyfooAddComplaintTopicfoosdlcexampleedu2648C576: {
+            Type: 'Custom::AWS',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
+                },
+                Create: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            '{"service":"SES","action":"setIdentityNotificationTopic","parameters":{"Identity":"foo.sdlc.example.edu","NotificationType":"Complaint","SnsTopic":"',
+                            {
+                                Ref: 'pccsdlcmyappsesverifyfooSesNotificationTopic99002DE8'
+                            },
+                            '"},"physicalResourceId":{"id":"foo.sdlc.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                        ]
+                    ]
+                },
+                InstallLatestAwsSdk: true
+            },
+            DependsOn: [
+                'pccsdlcmyappsesverifyfooAddComplaintTopicfoosdlcexampleeduCustomResourcePolicyB39B76FC',
+                'pccsdlcmyappsesverifyfooSesNotificationTopic99002DE8'
+            ],
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        pccsdlcmyappsesverifyfooAddComplaintTopicfoosdlcexampleeduCustomResourcePolicyB39B76FC: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'ses:SetIdentityNotificationTopic',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsdlcmyappsesverifyfooAddComplaintTopicfoosdlcexampleeduCustomResourcePolicyB39B76FC',
+                Roles: [
+                    {
+                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
+                    }
+                ]
+            },
+            DependsOn: ['pccsdlcmyappsesverifyfooSesNotificationTopic99002DE8']
         },
         pccsdlcmyappsesverifyfooSesVerificationRecordA035C070: {
             Type: 'AWS::Route53::RecordSet',
@@ -82,14 +145,40 @@ module.exports = {
                 'pccsdlcmyappsesverifyfooVerifyDomainIdentity12CDE9A5'
             ]
         },
+        pccsdlcmyappsesverifyfooSesMxRecord6E4D608F: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                HostedZoneId: 'DUMMY',
+                Name: 'foo.sdlc.example.edu.',
+                ResourceRecords: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '10 ',
+                                {
+                                    'Fn::Sub': 'inbound-smtp.${AWS::Region}.amazonaws.com'
+                                }
+                            ]
+                        ]
+                    }
+                ],
+                TTL: '1800',
+                Type: 'MX'
+            },
+            DependsOn: [
+                'pccsdlcmyappsesverifyfooVerifyDomainIdentityCustomResourcePolicy31BD3CDF',
+                'pccsdlcmyappsesverifyfooVerifyDomainIdentity12CDE9A5'
+            ]
+        },
         pccsdlcmyappsesverifyfooVerifyDomainDkimF4C21CA2: {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -642,6 +731,7 @@ module.exports = {
                         AWS_BUCKET: {Ref: 'pccsdlcmyapps352258330'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                        APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
@@ -939,6 +1029,7 @@ module.exports = {
                         AWS_BUCKET: {Ref: 'pccsdlcmyapps352258330'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                        APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
@@ -1073,19 +1164,19 @@ module.exports = {
                 }
             }
         },
-          s3assetscopylg083B90F8: {
+        s3assetscopylg083B90F8: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              RetentionInDays: 1,
-              Tags: [
-                { Key: 'App', Value: 'myapp' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'sdlc' }
-              ]
+                RetentionInDays: 1,
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
+        },
         s3assetscopyAwsCliLayerA9EB8F42: {
             Type: 'AWS::Lambda::LayerVersion',
             Properties: {
@@ -1234,7 +1325,7 @@ module.exports = {
                 },
                 Handler: 'index.handler',
                 Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
-              LoggingConfig: { LogGroup: { Ref: 's3assetscopylg083B90F8' } },
+                LoggingConfig: {LogGroup: {Ref: 's3assetscopylg083B90F8'}},
                 Role: {
                     'Fn::GetAtt': [
                         'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
@@ -1441,6 +1532,7 @@ module.exports = {
                         AWS_BUCKET: {Ref: 'pccsdlcmyapps352258330'},
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                        APP_BASE_PATH: '/var/task',
                         S3_ASSET_URL: {
                             'Fn::Join': [
                                 '',
@@ -1524,6 +1616,12 @@ module.exports = {
                 FunctionName: {'Fn::GetAtt': ['pccsdlcmyappwebfn023B6D61B', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
             }
+        }
+    },
+    Outputs: {
+        pccsdlcmyappsesverifyfoofoosdlcexampleeduSesNotificationTopic75284EDE: {
+            Description: 'SES notification topic for foo.sdlc.example.edu',
+            Value: {Ref: 'pccsdlcmyappsesverifyfooSesNotificationTopic99002DE8'}
         }
     }
 }

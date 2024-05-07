@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -88,8 +88,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -559,7 +559,7 @@ module.exports = {
                                 Value: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                    { Name: 'CAN_RUN_CREATE', Value: '0' }
+                            {Name: 'CAN_RUN_CREATE', Value: '0'}
                         ],
                         Essential: true,
                         Image: {
@@ -698,6 +698,22 @@ module.exports = {
                             },
                             Effect: 'Allow',
                             Resource: {Ref: 'pccsdlcmyapptaskdefscheduledtask0DC6034F0'}
+                        },
+                        {
+                            Action: 'ecs:TagResource',
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':ecs:us-west-2:*:task/',
+                                        {Ref: 'pccsdlcmyappcluster4E9F2DE3'},
+                                        '/*'
+                                    ]
+                                ]
+                            }
                         },
                         {
                             Action: 'iam:PassRole',
@@ -1089,7 +1105,7 @@ module.exports = {
                                 Value: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
                             },
                             {Name: 'AWS_APP_NAME', Value: 'pcc-sdlc-myapp'},
-                    { Name: 'CAN_RUN_CREATE', Value: '0' }
+                            {Name: 'CAN_RUN_CREATE', Value: '0'}
                         ],
                         Essential: true,
                         Image: {
@@ -1830,6 +1846,11 @@ module.exports = {
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 0
             },
             DependsOn: [
@@ -1886,12 +1907,25 @@ module.exports = {
                 Namespace: 'AWS/SQS',
                 Period: 300,
                 Statistic: 'Maximum',
+                Tags: [
+                    {Key: 'App', Value: 'myapp'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Threshold: 1
             },
             DependsOn: [
                 'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleDefaultPolicyDBA3B087',
                 'pccsdlcmyappservicequeue0QueueProcessingTaskDefTaskRoleECEB1AA4'
             ]
+        }
+    },
+    Outputs: {
+        pccsdlcmyappservicequeue0SQSQueue8306BFF0: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'QueueName']}
+        },
+        pccsdlcmyappservicequeue0SQSQueueArn061B9BC6: {
+            Value: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']}
         }
     }
 };

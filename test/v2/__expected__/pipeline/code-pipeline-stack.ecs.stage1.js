@@ -18,11 +18,11 @@ module.exports = {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
-                    'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -37,7 +37,7 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
-                            Action: [ 'ses:VerifyDomainIdentity', 'ses:DeleteIdentity' ],
+                            Action: ['ses:VerifyDomainIdentity', 'ses:DeleteIdentity'],
                             Effect: 'Allow',
                             Resource: '*'
                         }
@@ -51,6 +51,69 @@ module.exports = {
                     }
                 ]
             }
+        },
+        pccprodtestsesverifytestSesNotificationTopicE0DECAC2: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
+            },
+            DependsOn: [
+                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
+                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
+            ]
+        },
+        pccprodtestsesverifytestAddComplaintTopictestexampleeduDEBDE091: {
+            Type: 'Custom::AWS',
+            Properties: {
+                ServiceToken: {
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
+                },
+                Create: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            '{"service":"SES","action":"setIdentityNotificationTopic","parameters":{"Identity":"test.example.edu","NotificationType":"Complaint","SnsTopic":"',
+                            {
+                                Ref: 'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'
+                            },
+                            '"},"physicalResourceId":{"id":"test.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                        ]
+                    ]
+                },
+                InstallLatestAwsSdk: true
+            },
+            DependsOn: [
+                'pccprodtestsesverifytestAddComplaintTopictestexampleeduCustomResourcePolicy746F326B',
+                'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'
+            ],
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        pccprodtestsesverifytestAddComplaintTopictestexampleeduCustomResourcePolicy746F326B: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'ses:SetIdentityNotificationTopic',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccprodtestsesverifytestAddComplaintTopictestexampleeduCustomResourcePolicy746F326B',
+                Roles: [
+                    {
+                        Ref: 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
+                    }
+                ]
+            },
+            DependsOn: ['pccprodtestsesverifytestSesNotificationTopicE0DECAC2']
         },
         pccprodtestsesverifytestSesVerificationRecordEE0838F9: {
             Type: 'AWS::Route53::RecordSet',
@@ -82,14 +145,40 @@ module.exports = {
                 'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
             ]
         },
+        pccprodtestsesverifytestSesMxRecord14A765C0: {
+            Type: 'AWS::Route53::RecordSet',
+            Properties: {
+                HostedZoneId: 'DUMMY',
+                Name: 'test.example.edu.',
+                ResourceRecords: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                '10 ',
+                                {
+                                    'Fn::Sub': 'inbound-smtp.${AWS::Region}.amazonaws.com'
+                                }
+                            ]
+                        ]
+                    }
+                ],
+                TTL: '1800',
+                Type: 'MX'
+            },
+            DependsOn: [
+                'pccprodtestsesverifytestVerifyDomainIdentityCustomResourcePolicyDACCBB6D',
+                'pccprodtestsesverifytestVerifyDomainIdentityB3C4D659'
+            ]
+        },
         pccprodtestsesverifytestVerifyDomainDkim5FC89C53: {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
-                    'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -259,7 +348,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'lambda.amazonaws.com' }
+                            Principal: {Service: 'lambda.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -270,16 +359,16 @@ module.exports = {
                             '',
                             [
                                 'arn:',
-                                { Ref: 'AWS::Partition' },
+                                {Ref: 'AWS::Partition'},
                                 ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
                             ]
                         ]
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -335,9 +424,9 @@ module.exports = {
                 },
                 Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 Timeout: 120
             },
@@ -349,111 +438,116 @@ module.exports = {
         pccprodtestcache90B0E581: {
             Type: 'AWS::DynamoDB::Table',
             Properties: {
-                AttributeDefinitions: [ { AttributeName: 'key', AttributeType: 'S' } ],
+                AttributeDefinitions: [{AttributeName: 'key', AttributeType: 'S'}],
                 BillingMode: 'PAY_PER_REQUEST',
-                KeySchema: [ { AttributeName: 'key', KeyType: 'HASH' } ],
-                SSESpecification: { SSEEnabled: true },
+                KeySchema: [{AttributeName: 'key', KeyType: 'HASH'}],
+                SSESpecification: {SSEEnabled: true},
                 TableName: 'pcc-prod-test-cache',
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
-                TimeToLiveSpecification: { AttributeName: 'expires_at', Enabled: true }
+                TimeToLiveSpecification: {AttributeName: 'expires_at', Enabled: true}
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
-          pccprodtesttgAE852883: {
+        pccprodtesttgAE852883: {
             Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
             Properties: {
-              HealthCheckPath: '/api/healthz',
-              HealthCheckProtocol: 'HTTP',
-              Name: 'pcc-prod-test-tg',
-              Port: 80,
-              Protocol: 'HTTP',
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ],
-              TargetGroupAttributes: [ { Key: 'stickiness.enabled', Value: 'false' } ],
-              TargetType: 'ip',
-              VpcId: 'vpc-12345'
+                HealthCheckPath: '/api/healthz',
+                HealthCheckProtocol: 'HTTP',
+                Name: 'pcc-prod-test-tg',
+                Port: 80,
+                Protocol: 'HTTP',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
+                TargetGroupAttributes: [{Key: 'stickiness.enabled', Value: 'false'}],
+                TargetType: 'ip',
+                VpcId: 'vpc-12345'
             }
-          },
-          pccprodtestlistenerrule1001DDE5657: {
+        },
+        pccprodtestlistenerrule1001DDE5657: {
             Type: 'AWS::ElasticLoadBalancingV2::ListenerRule',
             Properties: {
-              Actions: [
-                {
-                  TargetGroupArn: { Ref: 'pccprodtesttgAE852883' },
-                  Type: 'forward'
-                }
-              ],
-              Conditions: [
-                {
-                  Field: 'host-header',
-                  HostHeaderConfig: { Values: [ 'test.example.edu' ] }
-                }
-              ],
-              ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2',
-              Priority: 100
+                Actions: [
+                    {
+                        TargetGroupArn: {Ref: 'pccprodtesttgAE852883'},
+                        Type: 'forward'
+                    }
+                ],
+                Conditions: [
+                    {
+                        Field: 'host-header',
+                        HostHeaderConfig: {Values: ['test.example.edu']}
+                    }
+                ],
+                ListenerArn: 'arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2',
+                Priority: 100
             }
-          },
-          pccprodtesttghealthhealthtopic1A4E6FA6: {
+        },
+        pccprodtesttghealthhealthtopic1A4E6FA6: {
             Type: 'AWS::SNS::Topic',
             Properties: {
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             }
-          },
-          pccprodtesttghealthhealthtopicprodexampleedu04677B4C: {
+        },
+        pccprodtesttghealthhealthtopicprodexampleedu04677B4C: {
             Type: 'AWS::SNS::Subscription',
             Properties: {
-              Endpoint: 'prod@example.edu',
-              Protocol: 'email',
-              TopicArn: { Ref: 'pccprodtesttghealthhealthtopic1A4E6FA6' }
+                Endpoint: 'prod@example.edu',
+                Protocol: 'email',
+                TopicArn: {Ref: 'pccprodtesttghealthhealthtopic1A4E6FA6'}
             }
-          },
-          pccprodtesttghealthhealthalarm566A65AE: {
+        },
+        pccprodtesttghealthhealthalarm566A65AE: {
             Type: 'AWS::CloudWatch::Alarm',
             Properties: {
-              AlarmActions: [ { Ref: 'pccprodtesttghealthhealthtopic1A4E6FA6' } ],
-              ComparisonOperator: 'GreaterThanOrEqualToThreshold',
-              Dimensions: [
-                {
-                  Name: 'LoadBalancer',
-                  Value: 'application/my-load-balancer/50dc6c495c0c9188'
-                },
-                {
-                  Name: 'TargetGroup',
-                  Value: {
-                    'Fn::GetAtt': [ 'pccprodtesttgAE852883', 'TargetGroupFullName' ]
-                  }
-                }
-              ],
-              EvaluationPeriods: 3,
-              MetricName: 'UnHealthyHostCount',
-              Namespace: 'AWS/ApplicationELB',
-              OKActions: [ { Ref: 'pccprodtesttghealthhealthtopic1A4E6FA6' } ],
-              Period: 60,
-              Statistic: 'Maximum',
-              Threshold: 1
+                AlarmActions: [{Ref: 'pccprodtesttghealthhealthtopic1A4E6FA6'}],
+                ComparisonOperator: 'GreaterThanOrEqualToThreshold',
+                Dimensions: [
+                    {
+                        Name: 'LoadBalancer',
+                        Value: 'application/my-load-balancer/50dc6c495c0c9188'
+                    },
+                    {
+                        Name: 'TargetGroup',
+                        Value: {
+                            'Fn::GetAtt': ['pccprodtesttgAE852883', 'TargetGroupFullName']
+                        }
+                    }
+                ],
+                EvaluationPeriods: 3,
+                MetricName: 'UnHealthyHostCount',
+                Namespace: 'AWS/ApplicationELB',
+                OKActions: [{Ref: 'pccprodtesttghealthhealthtopic1A4E6FA6'}],
+                Period: 60,
+                Statistic: 'Maximum',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
+                Threshold: 1
             }
-          },
+        },
         pccprodtestclusterB438B945: {
             Type: 'AWS::ECS::Cluster',
             Properties: {
                 ClusterName: 'pcc-prod-test-cluster',
-                ClusterSettings: [ { Name: 'containerInsights', Value: 'disabled' } ],
+                ClusterSettings: [{Name: 'containerInsights', Value: 'disabled'}],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -461,9 +555,9 @@ module.exports = {
             Type: 'AWS::SNS::Topic',
             Properties: {
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -472,46 +566,56 @@ module.exports = {
             Properties: {
                 Endpoint: 'prod@example.edu',
                 Protocol: 'email',
-                TopicArn: { Ref: 'pccprodtestclusteralarmtopic047C7141' }
+                TopicArn: {Ref: 'pccprodtestclusteralarmtopic047C7141'}
             }
         },
         pccprodtestclustercpualarm72892A4F: {
             Type: 'AWS::CloudWatch::Alarm',
             Properties: {
-                AlarmActions: [ { Ref: 'pccprodtestclusteralarmtopic047C7141' } ],
+                AlarmActions: [{Ref: 'pccprodtestclusteralarmtopic047C7141'}],
                 ComparisonOperator: 'GreaterThanOrEqualToThreshold',
                 Dimensions: [
                     {
                         Name: 'ClusterName',
-                        Value: { Ref: 'pccprodtestclusterB438B945' }
+                        Value: {Ref: 'pccprodtestclusterB438B945'}
                     }
                 ],
                 EvaluationPeriods: 1,
                 MetricName: 'CPUUtilization',
                 Namespace: 'AWS/ECS',
-                OKActions: [ { Ref: 'pccprodtestclusteralarmtopic047C7141' } ],
+                OKActions: [{Ref: 'pccprodtestclusteralarmtopic047C7141'}],
                 Period: 300,
                 Statistic: 'Average',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
                 Threshold: 90
             }
         },
         pccprodtestclustermemoryalarm899FB323: {
             Type: 'AWS::CloudWatch::Alarm',
             Properties: {
-                AlarmActions: [ { Ref: 'pccprodtestclusteralarmtopic047C7141' } ],
+                AlarmActions: [{Ref: 'pccprodtestclusteralarmtopic047C7141'}],
                 ComparisonOperator: 'GreaterThanOrEqualToThreshold',
                 Dimensions: [
                     {
                         Name: 'ClusterName',
-                        Value: { Ref: 'pccprodtestclusterB438B945' }
+                        Value: {Ref: 'pccprodtestclusterB438B945'}
                     }
                 ],
                 EvaluationPeriods: 1,
                 MetricName: 'MemoryUtilization',
                 Namespace: 'AWS/ECS',
-                OKActions: [ { Ref: 'pccprodtestclusteralarmtopic047C7141' } ],
+                OKActions: [{Ref: 'pccprodtestclusteralarmtopic047C7141'}],
                 Period: 300,
                 Statistic: 'Average',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
                 Threshold: 90
             }
         },
@@ -523,19 +627,19 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
+                    {Key: 'App', Value: 'test'},
                     {
                         Key: 'aws-cdk:id',
                         Value: 'pcc-prod-test_c83e89abbb1c0d1ca067a9a4283eda25f68ff50051'
                     },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -556,7 +660,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                     ]
                                 ]
@@ -568,7 +672,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
+                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -581,7 +685,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccprodtesttaskdefruntask0execroleDefaultPolicy7690A062',
-                Roles: [ { Ref: 'pccprodtesttaskdefruntask0execrole272FD33D' } ]
+                Roles: [{Ref: 'pccprodtesttaskdefruntask0execrole272FD33D'}]
             }
         },
         pccprodtesttaskdefruntask0TaskRoleFEF2C7DE: {
@@ -592,15 +696,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -620,14 +724,14 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment-??????'
                                     ]
                                 ]
                             }
                         },
                         {
-                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
                         },
@@ -649,16 +753,16 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
                                 },
-                                { Ref: 'AWS::NoValue' }
+                                {Ref: 'AWS::NoValue'}
                             ]
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pccprodtesttaskdefruntask0TaskRoleDefaultPolicyE36A7388',
-                Roles: [ { Ref: 'pccprodtesttaskdefruntask0TaskRoleFEF2C7DE' } ]
+                Roles: [{Ref: 'pccprodtesttaskdefruntask0TaskRoleFEF2C7DE'}]
             }
         },
         pccprodtesttaskdefruntask02B9EB660: {
@@ -666,11 +770,11 @@ module.exports = {
             Properties: {
                 ContainerDefinitions: [
                     {
-                        Command: [ '/on_create.sh' ],
+                        Command: ['/on_create.sh'],
                         Cpu: 256,
-                        EntryPoint: [ '/bin/sh', '-c' ],
+                        EntryPoint: ['/bin/sh', '-c'],
                         Environment: [
-                            { Name: 'AWS_APP_NAME', Value: 'pcc-prod-test' },
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-prod-test'},
                             {
                                 Name: 'MAIL_FROM_ADDRESS',
                                 Value: 'no-reply@test.example.edu'
@@ -681,7 +785,7 @@ module.exports = {
                             },
                             {
                                 Name: 'DYNAMODB_CACHE_TABLE',
-                                Value: { Ref: 'pccprodtestcache90B0E581' }
+                                Value: {Ref: 'pccprodtestcache90B0E581'}
                             },
                             {
                                 Name: 'AWS_SECRET_ARN',
@@ -690,13 +794,13 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                         ]
                                     ]
                                 }
-                    },
-                    { Name: 'APP_BASE_PATH', Value: '/app' }
+                            },
+                            {Name: 'APP_BASE_PATH', Value: '/app'}
                         ],
                         Essential: true,
                         Image: {
@@ -714,7 +818,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                { Ref: 'AWS::Partition' },
+                                                                {Ref: 'AWS::Partition'},
                                                                 ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                                             ]
                                                         ]
@@ -735,7 +839,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                { Ref: 'AWS::Partition' },
+                                                                {Ref: 'AWS::Partition'},
                                                                 ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                                             ]
                                                         ]
@@ -745,7 +849,7 @@ module.exports = {
                                         ]
                                     },
                                     '.',
-                                    { Ref: 'AWS::URLSuffix' },
+                                    {Ref: 'AWS::URLSuffix'},
                                     '/pcc-test/phpfpm:1'
                                 ]
                             ]
@@ -767,19 +871,19 @@ module.exports = {
                 ],
                 Cpu: '256',
                 ExecutionRoleArn: {
-                    'Fn::GetAtt': [ 'pccprodtesttaskdefruntask0execrole272FD33D', 'Arn' ]
+                    'Fn::GetAtt': ['pccprodtesttaskdefruntask0execrole272FD33D', 'Arn']
                 },
                 Family: 'pcc-prod-test-task-def-runtask-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: [ 'FARGATE' ],
+                RequiresCompatibilities: ['FARGATE'],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 TaskRoleArn: {
-                    'Fn::GetAtt': [ 'pccprodtesttaskdefruntask0TaskRoleFEF2C7DE', 'Arn' ]
+                    'Fn::GetAtt': ['pccprodtesttaskdefruntask0TaskRoleFEF2C7DE', 'Arn']
                 }
             }
         },
@@ -789,9 +893,9 @@ module.exports = {
                 LogGroupName: 'pcc-prod-test-container-phpfpm-runtask-rot-0-log-group',
                 RetentionInDays: 30,
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -805,19 +909,19 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
+                    {Key: 'App', Value: 'test'},
                     {
                         Key: 'aws-cdk:id',
                         Value: 'pcc-prod-test_c82d6a347e8bcd728b3e99562398f8927f47e6cd8b'
                     },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -838,7 +942,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                     ]
                                 ]
@@ -850,7 +954,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
+                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -864,7 +968,7 @@ module.exports = {
                 },
                 PolicyName: 'pccprodtesttaskdefupdateruntask0execroleDefaultPolicy1B270B54',
                 Roles: [
-                    { Ref: 'pccprodtesttaskdefupdateruntask0execroleAEEDC0D9' }
+                    {Ref: 'pccprodtesttaskdefupdateruntask0execroleAEEDC0D9'}
                 ]
             }
         },
@@ -876,15 +980,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -894,7 +998,7 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
-                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
                         },
@@ -916,9 +1020,9 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
                                 },
-                                { Ref: 'AWS::NoValue' }
+                                {Ref: 'AWS::NoValue'}
                             ]
                         }
                     ],
@@ -926,7 +1030,7 @@ module.exports = {
                 },
                 PolicyName: 'pccprodtesttaskdefupdateruntask0TaskRoleDefaultPolicy3A23C3C2',
                 Roles: [
-                    { Ref: 'pccprodtesttaskdefupdateruntask0TaskRoleBF0B3EFC' }
+                    {Ref: 'pccprodtesttaskdefupdateruntask0TaskRoleBF0B3EFC'}
                 ]
             }
         },
@@ -935,11 +1039,11 @@ module.exports = {
             Properties: {
                 ContainerDefinitions: [
                     {
-                        Command: [ 'artisan', 'migrate', '--force' ],
+                        Command: ['artisan', 'migrate', '--force'],
                         Cpu: 256,
-                        EntryPoint: [ '/usr/local/bin/php' ],
+                        EntryPoint: ['/usr/local/bin/php'],
                         Environment: [
-                            { Name: 'AWS_APP_NAME', Value: 'pcc-prod-test' },
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-prod-test'},
                             {
                                 Name: 'MAIL_FROM_ADDRESS',
                                 Value: 'no-reply@test.example.edu'
@@ -950,7 +1054,7 @@ module.exports = {
                             },
                             {
                                 Name: 'DYNAMODB_CACHE_TABLE',
-                                Value: { Ref: 'pccprodtestcache90B0E581' }
+                                Value: {Ref: 'pccprodtestcache90B0E581'}
                             },
                             {
                                 Name: 'AWS_SECRET_ARN',
@@ -959,13 +1063,13 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                         ]
                                     ]
                                 }
-                    },
-                    { Name: 'APP_BASE_PATH', Value: '/app' }
+                            },
+                            {Name: 'APP_BASE_PATH', Value: '/app'}
                         ],
                         Essential: true,
                         Image: {
@@ -983,7 +1087,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                { Ref: 'AWS::Partition' },
+                                                                {Ref: 'AWS::Partition'},
                                                                 ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                                             ]
                                                         ]
@@ -1004,7 +1108,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                { Ref: 'AWS::Partition' },
+                                                                {Ref: 'AWS::Partition'},
                                                                 ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                                             ]
                                                         ]
@@ -1014,7 +1118,7 @@ module.exports = {
                                         ]
                                     },
                                     '.',
-                                    { Ref: 'AWS::URLSuffix' },
+                                    {Ref: 'AWS::URLSuffix'},
                                     '/pcc-test/phpfpm:1'
                                 ]
                             ]
@@ -1044,11 +1148,11 @@ module.exports = {
                 Family: 'pcc-prod-test-task-def-updateruntask-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: [ 'FARGATE' ],
+                RequiresCompatibilities: ['FARGATE'],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 TaskRoleArn: {
                     'Fn::GetAtt': [
@@ -1064,9 +1168,9 @@ module.exports = {
                 LogGroupName: 'pcc-prod-test-container-phpfpm-updateruntask-urot-0-log-group',
                 RetentionInDays: 30,
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -1084,9 +1188,9 @@ module.exports = {
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 VpcId: 'vpc-12345'
             }
@@ -1095,18 +1199,18 @@ module.exports = {
             Type: 'Custom::AWS',
             Properties: {
                 ServiceToken: {
-                    'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
+                    'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
                 Create: {
                     'Fn::Join': [
                         '',
                         [
                             '{"service":"ECS","action":"runTask","physicalResourceId":{"id":"',
-                            { Ref: 'pccprodtesttaskdefupdateruntask002C2B09C' },
+                            {Ref: 'pccprodtesttaskdefupdateruntask002C2B09C'},
                             '"},"parameters":{"cluster":"',
-                            { Ref: 'pccprodtestclusterB438B945' },
+                            {Ref: 'pccprodtestclusterB438B945'},
                             '","taskDefinition":"',
-                            { Ref: 'pccprodtesttaskdefupdateruntask002C2B09C' },
+                            {Ref: 'pccprodtesttaskdefupdateruntask002C2B09C'},
                             '","capacityProviderStrategy":[],"launchType":"FARGATE","platformVersion":"LATEST","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","subnets":["p-12345","p-67890"],"securityGroups":["',
                             {
                                 'Fn::GetAtt': [
@@ -1114,7 +1218,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}}}'
+                            '"]}}},"logApiResponseData":true}'
                         ]
                     ]
                 },
@@ -1123,11 +1227,11 @@ module.exports = {
                         '',
                         [
                             '{"service":"ECS","action":"runTask","physicalResourceId":{"id":"',
-                            { Ref: 'pccprodtesttaskdefupdateruntask002C2B09C' },
+                            {Ref: 'pccprodtesttaskdefupdateruntask002C2B09C'},
                             '"},"parameters":{"cluster":"',
-                            { Ref: 'pccprodtestclusterB438B945' },
+                            {Ref: 'pccprodtestclusterB438B945'},
                             '","taskDefinition":"',
-                            { Ref: 'pccprodtesttaskdefupdateruntask002C2B09C' },
+                            {Ref: 'pccprodtesttaskdefupdateruntask002C2B09C'},
                             '","capacityProviderStrategy":[],"launchType":"FARGATE","platformVersion":"LATEST","networkConfiguration":{"awsvpcConfiguration":{"assignPublicIp":"DISABLED","subnets":["p-12345","p-67890"],"securityGroups":["',
                             {
                                 'Fn::GetAtt': [
@@ -1135,7 +1239,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}}}'
+                            '"]}}},"logApiResponseData":true}'
                         ]
                     ]
                 },
@@ -1155,7 +1259,7 @@ module.exports = {
                         {
                             Action: 'ecs:RunTask',
                             Effect: 'Allow',
-                            Resource: { Ref: 'pccprodtesttaskdefupdateruntask002C2B09C' }
+                            Resource: {Ref: 'pccprodtesttaskdefupdateruntask002C2B09C'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -1176,19 +1280,19 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
+                    {Key: 'App', Value: 'test'},
                     {
                         Key: 'aws-cdk:id',
                         Value: 'pcc-prod-test_c80b899e2785628ba687108ca49227f83756936224'
                     },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -1209,7 +1313,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                     ]
                                 ]
@@ -1221,7 +1325,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
+                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::GetAtt': [
@@ -1235,7 +1339,7 @@ module.exports = {
                 },
                 PolicyName: 'pccprodtesttaskdefscheduledtask0execroleDefaultPolicyD5DF53C1',
                 Roles: [
-                    { Ref: 'pccprodtesttaskdefscheduledtask0execroleAB6CBFED' }
+                    {Ref: 'pccprodtesttaskdefscheduledtask0execroleAB6CBFED'}
                 ]
             }
         },
@@ -1247,15 +1351,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'ecs-tasks.amazonaws.com' }
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -1265,7 +1369,7 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
-                            Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
                         },
@@ -1287,9 +1391,9 @@ module.exports = {
                             Effect: 'Allow',
                             Resource: [
                                 {
-                                    'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
                                 },
-                                { Ref: 'AWS::NoValue' }
+                                {Ref: 'AWS::NoValue'}
                             ]
                         }
                     ],
@@ -1297,7 +1401,7 @@ module.exports = {
                 },
                 PolicyName: 'pccprodtesttaskdefscheduledtask0TaskRoleDefaultPolicy58305BFF',
                 Roles: [
-                    { Ref: 'pccprodtesttaskdefscheduledtask0TaskRole0CE57D0C' }
+                    {Ref: 'pccprodtesttaskdefscheduledtask0TaskRole0CE57D0C'}
                 ]
             }
         },
@@ -1306,11 +1410,11 @@ module.exports = {
             Properties: {
                 ContainerDefinitions: [
                     {
-                        Command: [ 'artisan', 'something:daily' ],
+                        Command: ['artisan', 'something:daily'],
                         Cpu: 256,
-                        EntryPoint: [ '/usr/local/bin/php' ],
+                        EntryPoint: ['/usr/local/bin/php'],
                         Environment: [
-                            { Name: 'AWS_APP_NAME', Value: 'pcc-prod-test' },
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-prod-test'},
                             {
                                 Name: 'MAIL_FROM_ADDRESS',
                                 Value: 'no-reply@test.example.edu'
@@ -1321,7 +1425,7 @@ module.exports = {
                             },
                             {
                                 Name: 'DYNAMODB_CACHE_TABLE',
-                                Value: { Ref: 'pccprodtestcache90B0E581' }
+                                Value: {Ref: 'pccprodtestcache90B0E581'}
                             },
                             {
                                 Name: 'AWS_SECRET_ARN',
@@ -1330,13 +1434,13 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
                                         ]
                                     ]
                                 }
-                    },
-                    { Name: 'APP_BASE_PATH', Value: '/app' }
+                            },
+                            {Name: 'APP_BASE_PATH', Value: '/app'}
                         ],
                         Essential: true,
                         Image: {
@@ -1354,7 +1458,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                { Ref: 'AWS::Partition' },
+                                                                {Ref: 'AWS::Partition'},
                                                                 ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                                             ]
                                                         ]
@@ -1375,7 +1479,7 @@ module.exports = {
                                                             '',
                                                             [
                                                                 'arn:',
-                                                                { Ref: 'AWS::Partition' },
+                                                                {Ref: 'AWS::Partition'},
                                                                 ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
                                                             ]
                                                         ]
@@ -1385,7 +1489,7 @@ module.exports = {
                                         ]
                                     },
                                     '.',
-                                    { Ref: 'AWS::URLSuffix' },
+                                    {Ref: 'AWS::URLSuffix'},
                                     '/pcc-test/phpfpm:1'
                                 ]
                             ]
@@ -1415,11 +1519,11 @@ module.exports = {
                 Family: 'pcc-prod-test-task-def-scheduledtask-0',
                 Memory: '512',
                 NetworkMode: 'awsvpc',
-                RequiresCompatibilities: [ 'FARGATE' ],
+                RequiresCompatibilities: ['FARGATE'],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 TaskRoleArn: {
                     'Fn::GetAtt': [
@@ -1437,15 +1541,15 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'events.amazonaws.com' }
+                            Principal: {Service: 'events.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             }
         },
@@ -1459,12 +1563,28 @@ module.exports = {
                             Condition: {
                                 ArnEquals: {
                                     'ecs:cluster': {
-                                        'Fn::GetAtt': [ 'pccprodtestclusterB438B945', 'Arn' ]
+                                        'Fn::GetAtt': ['pccprodtestclusterB438B945', 'Arn']
                                     }
                                 }
                             },
                             Effect: 'Allow',
-                            Resource: { Ref: 'pccprodtesttaskdefscheduledtask02728AB1F' }
+                            Resource: {Ref: 'pccprodtesttaskdefscheduledtask02728AB1F'}
+                        },
+                        {
+                            Action: 'ecs:TagResource',
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':ecs:us-west-2:*:task/',
+                                        {Ref: 'pccprodtestclusterB438B945'},
+                                        '/*'
+                                    ]
+                                ]
+                            }
                         },
                         {
                             Action: 'iam:PassRole',
@@ -1509,9 +1629,9 @@ module.exports = {
                     }
                 ],
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ],
                 VpcId: 'vpc-12345'
             }
@@ -1522,9 +1642,9 @@ module.exports = {
                 LogGroupName: 'pcc-prod-test-container-phpfpm-scheduledtask-st-0-log-group',
                 RetentionInDays: 30,
                 Tags: [
-                    { Key: 'App', Value: 'test' },
-                    { Key: 'College', Value: 'PCC' },
-                    { Key: 'Environment', Value: 'prod' }
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
                 ]
             },
             UpdateReplacePolicy: 'Delete',
@@ -1538,7 +1658,7 @@ module.exports = {
                 State: 'ENABLED',
                 Targets: [
                     {
-                        Arn: { 'Fn::GetAtt': [ 'pccprodtestclusterB438B945', 'Arn' ] },
+                        Arn: {'Fn::GetAtt': ['pccprodtestclusterB438B945', 'Arn']},
                         EcsParameters: {
                             LaunchType: 'FARGATE',
                             NetworkConfiguration: {
@@ -1552,12 +1672,12 @@ module.exports = {
                                             ]
                                         }
                                     ],
-                                    Subnets: [ 'p-12345', 'p-67890' ]
+                                    Subnets: ['p-12345', 'p-67890']
                                 }
                             },
                             PlatformVersion: 'LATEST',
                             TaskCount: 1,
-                            TaskDefinitionArn: { Ref: 'pccprodtesttaskdefscheduledtask02728AB1F' }
+                            TaskDefinitionArn: {Ref: 'pccprodtesttaskdefscheduledtask02728AB1F'}
                         },
                         Id: 'Target0',
                         Input: '{}',
@@ -1570,570 +1690,576 @@ module.exports = {
                     }
                 ]
             }
-          },
-          pccprodtesttaskdefweb0execroleE6E7A48B: {
+        },
+        pccprodtesttaskdefweb0execroleE6E7A48B: {
             Type: 'AWS::IAM::Role',
             Properties: {
-              AssumeRolePolicyDocument: {
-                Statement: [
-                  {
-                    Action: 'sts:AssumeRole',
-                    Effect: 'Allow',
-                    Principal: { Service: 'ecs-tasks.amazonaws.com' }
-                  }
-                ],
-                Version: '2012-10-17'
-              },
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                {
-                  Key: 'aws-cdk:id',
-                  Value: 'pcc-prod-test_c8377fe56a6e467df695938bbf33321cd042464048'
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
                 },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {
+                        Key: 'aws-cdk:id',
+                        Value: 'pcc-prod-test_c8377fe56a6e467df695938bbf33321cd042464048'
+                    },
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             }
-          },
-          pccprodtesttaskdefweb0execroleDefaultPolicy728E5871: {
+        },
+        pccprodtesttaskdefweb0execroleDefaultPolicy728E5871: {
             Type: 'AWS::IAM::Policy',
             Properties: {
-              PolicyDocument: {
-                Statement: [
-                  {
-                    Action: [
-                      'ecr:BatchCheckLayerAvailability',
-                      'ecr:GetDownloadUrlForLayer',
-                      'ecr:BatchGetImage'
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':ecr:us-west-2:12344:repository/pcc-test/nginx'
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Action: 'ecr:GetAuthorizationToken',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccprodtestcontainernginxwebu0loggroup73502B24',
+                                    'Arn'
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'ecr:BatchCheckLayerAvailability',
+                                'ecr:GetDownloadUrlForLayer',
+                                'ecr:BatchGetImage'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Action: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::GetAtt': [
+                                    'pccprodtestcontainerphpfpmwebu0loggroupDFF439A5',
+                                    'Arn'
+                                ]
+                            }
+                        }
                     ],
-                    Effect: 'Allow',
-                    Resource: {
-                      'Fn::Join': [
-                        '',
-                        [
-                          'arn:',
-                          { Ref: 'AWS::Partition' },
-                          ':ecr:us-west-2:12344:repository/pcc-test/nginx'
-                        ]
-                      ]
-                    }
-                  },
-                  {
-                    Action: 'ecr:GetAuthorizationToken',
-                    Effect: 'Allow',
-                    Resource: '*'
-                  },
-                  {
-                    Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
-                    Effect: 'Allow',
-                    Resource: {
-                      'Fn::GetAtt': [
-                        'pccprodtestcontainernginxwebu0loggroup73502B24',
-                        'Arn'
-                      ]
-                    }
-                  },
-                  {
-                    Action: [
-                      'ecr:BatchCheckLayerAvailability',
-                      'ecr:GetDownloadUrlForLayer',
-                      'ecr:BatchGetImage'
-                    ],
-                    Effect: 'Allow',
-                    Resource: {
-                      'Fn::Join': [
-                        '',
-                        [
-                          'arn:',
-                          { Ref: 'AWS::Partition' },
-                          ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
-                        ]
-                      ]
-                    }
-                  },
-                  {
-                    Action: [ 'logs:CreateLogStream', 'logs:PutLogEvents' ],
-                    Effect: 'Allow',
-                    Resource: {
-                      'Fn::GetAtt': [
-                        'pccprodtestcontainerphpfpmwebu0loggroupDFF439A5',
-                        'Arn'
-                      ]
-                    }
-                  }
-                ],
-                Version: '2012-10-17'
-              },
-              PolicyName: 'pccprodtesttaskdefweb0execroleDefaultPolicy728E5871',
-              Roles: [ { Ref: 'pccprodtesttaskdefweb0execroleE6E7A48B' } ]
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccprodtesttaskdefweb0execroleDefaultPolicy728E5871',
+                Roles: [{Ref: 'pccprodtesttaskdefweb0execroleE6E7A48B'}]
             }
-          },
-          pccprodtesttaskdefweb0TaskRole6981EBC4: {
+        },
+        pccprodtesttaskdefweb0TaskRole6981EBC4: {
             Type: 'AWS::IAM::Role',
             Properties: {
-              AssumeRolePolicyDocument: {
-                Statement: [
-                  {
-                    Action: 'sts:AssumeRole',
-                    Effect: 'Allow',
-                    Principal: { Service: 'ecs-tasks.amazonaws.com' }
-                  }
-                ],
-                Version: '2012-10-17'
-              },
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'ecs-tasks.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             }
-          },
-          pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B: {
+        },
+        pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B: {
             Type: 'AWS::IAM::Policy',
             Properties: {
-              PolicyDocument: {
-                Statement: [
-                  {
-                    Action: [
-                      'ssmmessages:CreateControlChannel',
-                      'ssmmessages:CreateDataChannel',
-                      'ssmmessages:OpenControlChannel',
-                      'ssmmessages:OpenDataChannel'
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'ssmmessages:CreateControlChannel',
+                                'ssmmessages:CreateDataChannel',
+                                'ssmmessages:OpenControlChannel',
+                                'ssmmessages:OpenDataChannel'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: 'logs:DescribeLogGroups',
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'logs:CreateLogStream',
+                                'logs:DescribeLogStreams',
+                                'logs:PutLogEvents'
+                            ],
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'dynamodb:BatchGetItem',
+                                'dynamodb:GetRecords',
+                                'dynamodb:GetShardIterator',
+                                'dynamodb:Query',
+                                'dynamodb:GetItem',
+                                'dynamodb:Scan',
+                                'dynamodb:ConditionCheckItem',
+                                'dynamodb:BatchWriteItem',
+                                'dynamodb:PutItem',
+                                'dynamodb:UpdateItem',
+                                'dynamodb:DeleteItem',
+                                'dynamodb:DescribeTable'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
+                                },
+                                {Ref: 'AWS::NoValue'}
+                            ]
+                        }
                     ],
-                    Effect: 'Allow',
-                    Resource: '*'
-                  },
-                  {
-                    Action: 'logs:DescribeLogGroups',
-                    Effect: 'Allow',
-                    Resource: '*'
-                  },
-                  {
-                    Action: [
-                      'logs:CreateLogStream',
-                      'logs:DescribeLogStreams',
-                      'logs:PutLogEvents'
-                    ],
-                    Effect: 'Allow',
-                    Resource: '*'
-                  },
-                  {
-                    Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
-                    Effect: 'Allow',
-                    Resource: '*'
-                  },
-                  {
-                    Action: [
-                      'dynamodb:BatchGetItem',
-                      'dynamodb:GetRecords',
-                      'dynamodb:GetShardIterator',
-                      'dynamodb:Query',
-                      'dynamodb:GetItem',
-                      'dynamodb:Scan',
-                      'dynamodb:ConditionCheckItem',
-                      'dynamodb:BatchWriteItem',
-                      'dynamodb:PutItem',
-                      'dynamodb:UpdateItem',
-                      'dynamodb:DeleteItem',
-                      'dynamodb:DescribeTable'
-                    ],
-                    Effect: 'Allow',
-                    Resource: [
-                      {
-                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
-                      },
-                      { Ref: 'AWS::NoValue' }
-                    ]
-                  }
-                ],
-                Version: '2012-10-17'
-              },
-              PolicyName: 'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-              Roles: [ { Ref: 'pccprodtesttaskdefweb0TaskRole6981EBC4' } ]
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                Roles: [{Ref: 'pccprodtesttaskdefweb0TaskRole6981EBC4'}]
             }
-          },
-          pccprodtesttaskdefweb0F11751C9: {
+        },
+        pccprodtesttaskdefweb0F11751C9: {
             Type: 'AWS::ECS::TaskDefinition',
             Properties: {
-              ContainerDefinitions: [
-                {
-                  Cpu: 64,
-                  Essential: true,
-                  Image: {
-                    'Fn::Join': [
-                      '',
-                      [
-                        {
-                          'Fn::Select': [
-                            4,
-                            {
-                              'Fn::Split': [
-                                ':',
-                                {
-                                  'Fn::Join': [
-                                    '',
-                                    [
-                                      'arn:',
-                                      { Ref: 'AWS::Partition' },
-                                      ':ecr:us-west-2:12344:repository/pcc-test/nginx'
-                                    ]
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
+                ContainerDefinitions: [
+                    {
+                        Cpu: 64,
+                        Essential: true,
+                        Image: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    {
+                                        'Fn::Select': [
+                                            4,
+                                            {
+                                                'Fn::Split': [
+                                                    ':',
+                                                    {
+                                                        'Fn::Join': [
+                                                            '',
+                                                            [
+                                                                'arn:',
+                                                                {Ref: 'AWS::Partition'},
+                                                                ':ecr:us-west-2:12344:repository/pcc-test/nginx'
+                                                            ]
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    '.dkr.ecr.',
+                                    {
+                                        'Fn::Select': [
+                                            3,
+                                            {
+                                                'Fn::Split': [
+                                                    ':',
+                                                    {
+                                                        'Fn::Join': [
+                                                            '',
+                                                            [
+                                                                'arn:',
+                                                                {Ref: 'AWS::Partition'},
+                                                                ':ecr:us-west-2:12344:repository/pcc-test/nginx'
+                                                            ]
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    '.',
+                                    {Ref: 'AWS::URLSuffix'},
+                                    '/pcc-test/nginx:1'
+                                ]
+                            ]
                         },
-                        '.dkr.ecr.',
-                        {
-                          'Fn::Select': [
-                            3,
-                            {
-                              'Fn::Split': [
-                                ':',
-                                {
-                                  'Fn::Join': [
-                                    '',
-                                    [
-                                      'arn:',
-                                      { Ref: 'AWS::Partition' },
-                                      ':ecr:us-west-2:12344:repository/pcc-test/nginx'
-                                    ]
-                                  ]
-                                }
-                              ]
+                        LogConfiguration: {
+                            LogDriver: 'awslogs',
+                            Options: {
+                                'awslogs-group': {
+                                    Ref: 'pccprodtestcontainernginxwebu0loggroup73502B24'
+                                },
+                                'awslogs-stream-prefix': 'nginx',
+                                'awslogs-region': 'us-west-2'
                             }
-                          ]
                         },
-                        '.',
-                        { Ref: 'AWS::URLSuffix' },
-                        '/pcc-test/nginx:1'
-                      ]
-                    ]
-                  },
-                  LogConfiguration: {
-                    LogDriver: 'awslogs',
-                    Options: {
-                      'awslogs-group': {
-                        Ref: 'pccprodtestcontainernginxwebu0loggroup73502B24'
-                      },
-                      'awslogs-stream-prefix': 'nginx',
-                      'awslogs-region': 'us-west-2'
+                        Memory: 64,
+                        Name: 'pcc-prod-test-container-nginx-web-u-0',
+                        PortMappings: [{ContainerPort: 80, Protocol: 'tcp'}],
+                        ReadonlyRootFilesystem: true
+                    },
+                    {
+                        Command: ['/entrypoint.sh'],
+                        Cpu: 128,
+                        EntryPoint: ['/bin/sh', '-c'],
+                        Environment: [
+                            {Name: 'AWS_APP_NAME', Value: 'pcc-prod-test'},
+                            {
+                                Name: 'MAIL_FROM_ADDRESS',
+                                Value: 'no-reply@test.example.edu'
+                            },
+                            {
+                                Name: 'IMPORTER_FROM',
+                                Value: 'importer-no-reply@test.example.edu'
+                            },
+                            {
+                                Name: 'DYNAMODB_CACHE_TABLE',
+                                Value: {Ref: 'pccprodtestcache90B0E581'}
+                            },
+                            {
+                                Name: 'AWS_SECRET_ARN',
+                                Value: {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            'arn:',
+                                            {Ref: 'AWS::Partition'},
+                                            ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
+                                        ]
+                                    ]
+                                }
+                            },
+                            {Name: 'APP_BASE_PATH', Value: '/app'}
+                        ],
+                        Essential: true,
+                        Image: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    {
+                                        'Fn::Select': [
+                                            4,
+                                            {
+                                                'Fn::Split': [
+                                                    ':',
+                                                    {
+                                                        'Fn::Join': [
+                                                            '',
+                                                            [
+                                                                'arn:',
+                                                                {Ref: 'AWS::Partition'},
+                                                                ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
+                                                            ]
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    '.dkr.ecr.',
+                                    {
+                                        'Fn::Select': [
+                                            3,
+                                            {
+                                                'Fn::Split': [
+                                                    ':',
+                                                    {
+                                                        'Fn::Join': [
+                                                            '',
+                                                            [
+                                                                'arn:',
+                                                                {Ref: 'AWS::Partition'},
+                                                                ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
+                                                            ]
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    '.',
+                                    {Ref: 'AWS::URLSuffix'},
+                                    '/pcc-test/phpfpm:1'
+                                ]
+                            ]
+                        },
+                        LogConfiguration: {
+                            LogDriver: 'awslogs',
+                            Options: {
+                                'awslogs-group': {
+                                    Ref: 'pccprodtestcontainerphpfpmwebu0loggroupDFF439A5'
+                                },
+                                'awslogs-stream-prefix': 'phpfpm',
+                                'awslogs-region': 'us-west-2'
+                            }
+                        },
+                        Memory: 128,
+                        Name: 'pcc-prod-test-container-phpfpm-web-u-0',
+                        PortMappings: [{ContainerPort: 9000, Protocol: 'tcp'}],
+                        ReadonlyRootFilesystem: true
                     }
-                  },
-                  Memory: 64,
-                  Name: 'pcc-prod-test-container-nginx-web-u-0',
-                  PortMappings: [ { ContainerPort: 80, Protocol: 'tcp' } ],
-                  ReadonlyRootFilesystem: true
+                ],
+                Cpu: '512',
+                ExecutionRoleArn: {
+                    'Fn::GetAtt': ['pccprodtesttaskdefweb0execroleE6E7A48B', 'Arn']
                 },
-                {
-                  Command: [ '/entrypoint.sh' ],
-                  Cpu: 128,
-                  EntryPoint: [ '/bin/sh', '-c' ],
-                  Environment: [
-                    { Name: 'AWS_APP_NAME', Value: 'pcc-prod-test' },
-                    {
-                      Name: 'MAIL_FROM_ADDRESS',
-                      Value: 'no-reply@test.example.edu'
-                    },
-                    {
-                      Name: 'IMPORTER_FROM',
-                      Value: 'importer-no-reply@test.example.edu'
-                    },
-                    {
-                      Name: 'DYNAMODB_CACHE_TABLE',
-                      Value: { Ref: 'pccprodtestcache90B0E581' }
-                    },
-                    {
-                      Name: 'AWS_SECRET_ARN',
-                      Value: {
-                        'Fn::Join': [
-                          '',
-                          [
-                            'arn:',
-                            { Ref: 'AWS::Partition' },
-                            ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
-                          ]
-                        ]
-                      }
-                    },
-                    { Name: 'APP_BASE_PATH', Value: '/app' }
-                  ],
-                  Essential: true,
-                  Image: {
-                    'Fn::Join': [
-                      '',
-                      [
-                        {
-                          'Fn::Select': [
-                            4,
-                            {
-                              'Fn::Split': [
-                                ':',
-                                {
-                                  'Fn::Join': [
-                                    '',
-                                    [
-                                      'arn:',
-                                      { Ref: 'AWS::Partition' },
-                                      ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
-                                    ]
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        '.dkr.ecr.',
-                        {
-                          'Fn::Select': [
-                            3,
-                            {
-                              'Fn::Split': [
-                                ':',
-                                {
-                                  'Fn::Join': [
-                                    '',
-                                    [
-                                      'arn:',
-                                      { Ref: 'AWS::Partition' },
-                                      ':ecr:us-west-2:12344:repository/pcc-test/phpfpm'
-                                    ]
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        '.',
-                        { Ref: 'AWS::URLSuffix' },
-                        '/pcc-test/phpfpm:1'
-                      ]
-                    ]
-                  },
-                  LogConfiguration: {
-                    LogDriver: 'awslogs',
-                    Options: {
-                      'awslogs-group': {
-                        Ref: 'pccprodtestcontainerphpfpmwebu0loggroupDFF439A5'
-                      },
-                      'awslogs-stream-prefix': 'phpfpm',
-                      'awslogs-region': 'us-west-2'
-                    }
-                  },
-                  Memory: 128,
-                  Name: 'pcc-prod-test-container-phpfpm-web-u-0',
-                  PortMappings: [ { ContainerPort: 9000, Protocol: 'tcp' } ],
-                  ReadonlyRootFilesystem: true
+                Family: 'pcc-prod-test-task-def-web-0',
+                Memory: '1024',
+                NetworkMode: 'awsvpc',
+                RequiresCompatibilities: ['FARGATE'],
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
+                TaskRoleArn: {
+                    'Fn::GetAtt': ['pccprodtesttaskdefweb0TaskRole6981EBC4', 'Arn']
                 }
-              ],
-              Cpu: '512',
-              ExecutionRoleArn: {
-                'Fn::GetAtt': [ 'pccprodtesttaskdefweb0execroleE6E7A48B', 'Arn' ]
-              },
-              Family: 'pcc-prod-test-task-def-web-0',
-              Memory: '1024',
-              NetworkMode: 'awsvpc',
-              RequiresCompatibilities: [ 'FARGATE' ],
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ],
-              TaskRoleArn: {
-                'Fn::GetAtt': [ 'pccprodtesttaskdefweb0TaskRole6981EBC4', 'Arn' ]
-              }
             }
-          },
-          pccprodtestcontainernginxwebu0loggroup73502B24: {
+        },
+        pccprodtestcontainernginxwebu0loggroup73502B24: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              LogGroupName: 'pcc-prod-test-container-nginx-web-u-0-log-group',
-              RetentionInDays: 30,
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                LogGroupName: 'pcc-prod-test-container-nginx-web-u-0-log-group',
+                RetentionInDays: 30,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
-          pccprodtestcontainerphpfpmwebu0loggroupDFF439A5: {
+        },
+        pccprodtestcontainerphpfpmwebu0loggroupDFF439A5: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
-              LogGroupName: 'pcc-prod-test-container-phpfpm-web-u-0-log-group',
-              RetentionInDays: 30,
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ]
+                LogGroupName: 'pcc-prod-test-container-phpfpm-web-u-0-log-group',
+                RetentionInDays: 30,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
-          pccprodtestserviceweb0ServiceF76D8A1A: {
+        },
+        pccprodtestserviceweb0ServiceF76D8A1A: {
             Type: 'AWS::ECS::Service',
             Properties: {
-              Cluster: { Ref: 'pccprodtestclusterB438B945' },
-              DeploymentConfiguration: {
-                Alarms: { AlarmNames: [], Enable: false, Rollback: false },
-                MaximumPercent: 200,
-                MinimumHealthyPercent: 50
-              },
-              DesiredCount: 1,
-              EnableECSManagedTags: false,
-              EnableExecuteCommand: true,
-              HealthCheckGracePeriodSeconds: 60,
-              LaunchType: 'FARGATE',
-              LoadBalancers: [
-                {
-                  ContainerName: 'pcc-prod-test-container-nginx-web-u-0',
-                  ContainerPort: 80,
-                  TargetGroupArn: { Ref: 'pccprodtesttgAE852883' }
-                }
-              ],
-              NetworkConfiguration: {
-                AwsvpcConfiguration: {
-                  AssignPublicIp: 'DISABLED',
-                  SecurityGroups: [
+                Cluster: {Ref: 'pccprodtestclusterB438B945'},
+                DeploymentConfiguration: {
+                    Alarms: {AlarmNames: [], Enable: false, Rollback: false},
+                    MaximumPercent: 200,
+                    MinimumHealthyPercent: 50
+                },
+                DesiredCount: 1,
+                EnableECSManagedTags: false,
+                EnableExecuteCommand: true,
+                HealthCheckGracePeriodSeconds: 60,
+                LaunchType: 'FARGATE',
+                LoadBalancers: [
                     {
-                      'Fn::GetAtt': [
-                        'pccprodtestserviceweb0SecurityGroup4F23E23D',
-                        'GroupId'
-                      ]
+                        ContainerName: 'pcc-prod-test-container-nginx-web-u-0',
+                        ContainerPort: 80,
+                        TargetGroupArn: {Ref: 'pccprodtesttgAE852883'}
                     }
-                  ],
-                  Subnets: [ 'p-12345', 'p-67890' ]
-                }
-              },
-              PlatformVersion: 'LATEST',
-              ServiceName: 'pcc-prod-test-service-web-0',
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ],
-              TaskDefinition: { Ref: 'pccprodtesttaskdefweb0F11751C9' }
+                ],
+                NetworkConfiguration: {
+                    AwsvpcConfiguration: {
+                        AssignPublicIp: 'DISABLED',
+                        SecurityGroups: [
+                            {
+                                'Fn::GetAtt': [
+                                    'pccprodtestserviceweb0SecurityGroup4F23E23D',
+                                    'GroupId'
+                                ]
+                            }
+                        ],
+                        Subnets: ['p-12345', 'p-67890']
+                    }
+                },
+                PlatformVersion: 'LATEST',
+                ServiceName: 'pcc-prod-test-service-web-0',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
+                TaskDefinition: {Ref: 'pccprodtesttaskdefweb0F11751C9'}
             },
             DependsOn: [
-              'pccprodtestlistenerrule1001DDE5657',
-              'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-              'pccprodtesttaskdefweb0TaskRole6981EBC4'
+                'pccprodtestlistenerrule1001DDE5657',
+                'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                'pccprodtesttaskdefweb0TaskRole6981EBC4'
             ]
-          },
-          pccprodtestserviceweb0SecurityGroup4F23E23D: {
+        },
+        pccprodtestserviceweb0SecurityGroup4F23E23D: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
-              GroupDescription: 'pcc-shared-test/pcc-prod-test-stage/pcc-prod-test/pcc-prod-test-service-web-0/SecurityGroup',
-              SecurityGroupEgress: [
-                {
-                  CidrIp: '0.0.0.0/0',
-                  Description: 'Allow all outbound traffic by default',
-                  IpProtocol: '-1'
-                }
-              ],
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'prod' }
-              ],
-              VpcId: 'vpc-12345'
+                GroupDescription: 'pcc-shared-test/pcc-prod-test-stage/pcc-prod-test/pcc-prod-test-service-web-0/SecurityGroup',
+                SecurityGroupEgress: [
+                    {
+                        CidrIp: '0.0.0.0/0',
+                        Description: 'Allow all outbound traffic by default',
+                        IpProtocol: '-1'
+                    }
+                ],
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'prod'}
+                ],
+                VpcId: 'vpc-12345'
             },
             DependsOn: [
-              'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-              'pccprodtesttaskdefweb0TaskRole6981EBC4'
+                'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                'pccprodtesttaskdefweb0TaskRole6981EBC4'
             ]
-          },
-          pccprodtestserviceweb0SecurityGroupfrompccsharedtestpccprodteststagepccprodtestlookuphttpslistenerSecurityGroupsg1234567890129A0533B78035769511: {
+        },
+        pccprodtestserviceweb0SecurityGroupfrompccsharedtestpccprodteststagepccprodtestlookuphttpslistenerSecurityGroupsg1234567890129A0533B78035769511: {
             Type: 'AWS::EC2::SecurityGroupIngress',
             Properties: {
-              Description: 'Load balancer to target',
-              FromPort: 80,
-              GroupId: {
-                'Fn::GetAtt': [
-                  'pccprodtestserviceweb0SecurityGroup4F23E23D',
-                  'GroupId'
-                ]
-              },
-              IpProtocol: 'tcp',
-              SourceSecurityGroupId: 'sg-12345678',
-              ToPort: 80
+                Description: 'Load balancer to target',
+                FromPort: 80,
+                GroupId: {
+                    'Fn::GetAtt': [
+                        'pccprodtestserviceweb0SecurityGroup4F23E23D',
+                        'GroupId'
+                    ]
+                },
+                IpProtocol: 'tcp',
+                SourceSecurityGroupId: 'sg-12345678',
+                ToPort: 80
             },
             DependsOn: [
-              'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-              'pccprodtesttaskdefweb0TaskRole6981EBC4'
+                'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                'pccprodtesttaskdefweb0TaskRole6981EBC4'
             ]
-          },
-          pccprodtestserviceweb0TaskCountTargetFBBD0985: {
+        },
+        pccprodtestserviceweb0TaskCountTargetFBBD0985: {
             Type: 'AWS::ApplicationAutoScaling::ScalableTarget',
             Properties: {
-              MaxCapacity: 3,
-              MinCapacity: 1,
-              ResourceId: {
-                'Fn::Join': [
-                  '',
-                  [
-                    'service/',
-                    { Ref: 'pccprodtestclusterB438B945' },
-                    '/',
-                    {
-                      'Fn::GetAtt': [ 'pccprodtestserviceweb0ServiceF76D8A1A', 'Name' ]
-                    }
-                  ]
-                ]
-              },
-              RoleARN: {
-                'Fn::Join': [
-                  '',
-                  [
-                    'arn:',
-                    { Ref: 'AWS::Partition' },
-                    ':iam::22222:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
-                  ]
-                ]
-              },
-              ScalableDimension: 'ecs:service:DesiredCount',
-              ServiceNamespace: 'ecs'
+                MaxCapacity: 3,
+                MinCapacity: 1,
+                ResourceId: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'service/',
+                            {Ref: 'pccprodtestclusterB438B945'},
+                            '/',
+                            {
+                                'Fn::GetAtt': ['pccprodtestserviceweb0ServiceF76D8A1A', 'Name']
+                            }
+                        ]
+                    ]
+                },
+                RoleARN: {
+                    'Fn::Join': [
+                        '',
+                        [
+                            'arn:',
+                            {Ref: 'AWS::Partition'},
+                            ':iam::22222:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService'
+                        ]
+                    ]
+                },
+                ScalableDimension: 'ecs:service:DesiredCount',
+                ServiceNamespace: 'ecs'
             },
             DependsOn: [
-              'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-              'pccprodtesttaskdefweb0TaskRole6981EBC4'
+                'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                'pccprodtesttaskdefweb0TaskRole6981EBC4'
             ]
-          },
-          pccprodtestserviceweb0TaskCountTargetpccprodtestservicescalecpu25C41293: {
+        },
+        pccprodtestserviceweb0TaskCountTargetpccprodtestservicescalecpu25C41293: {
             Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
             Properties: {
-              PolicyName: 'pccsharedtestpccprodteststagepccprodtestpccprodtestserviceweb0TaskCountTargetpccprodtestservicescalecpu2C7FAA9A',
-              PolicyType: 'TargetTrackingScaling',
-              ScalingTargetId: { Ref: 'pccprodtestserviceweb0TaskCountTargetFBBD0985' },
-              TargetTrackingScalingPolicyConfiguration: {
-                PredefinedMetricSpecification: { PredefinedMetricType: 'ECSServiceAverageCPUUtilization' },
-                TargetValue: 75
-        }
+                PolicyName: 'pccsharedtestpccprodteststagepccprodtestpccprodtestserviceweb0TaskCountTargetpccprodtestservicescalecpu2C7FAA9A',
+                PolicyType: 'TargetTrackingScaling',
+                ScalingTargetId: {Ref: 'pccprodtestserviceweb0TaskCountTargetFBBD0985'},
+                TargetTrackingScalingPolicyConfiguration: {
+                    PredefinedMetricSpecification: {PredefinedMetricType: 'ECSServiceAverageCPUUtilization'},
+                    TargetValue: 75
+                }
             },
             DependsOn: [
-              'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-              'pccprodtesttaskdefweb0TaskRole6981EBC4'
+                'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                'pccprodtesttaskdefweb0TaskRole6981EBC4'
             ]
-          },
-          pccprodtestserviceweb0TaskCountTargetpccprodtestservicescalemem9DCAF5B8: {
-              Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
-              Properties: {
-                  PolicyName: 'pccsharedtestpccprodteststagepccprodtestpccprodtestserviceweb0TaskCountTargetpccprodtestservicescalemem226A522F',
-                  PolicyType: 'TargetTrackingScaling',
-                  ScalingTargetId: {Ref: 'pccprodtestserviceweb0TaskCountTargetFBBD0985'},
-                  TargetTrackingScalingPolicyConfiguration: {
-                      PredefinedMetricSpecification: {
-                          PredefinedMetricType: 'ECSServiceAverageMemoryUtilization'
-                      },
-                      TargetValue: 75
-                  }
-              },
-              DependsOn: [
-                  'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
-                  'pccprodtesttaskdefweb0TaskRole6981EBC4'
-              ]
-          }
+        },
+        pccprodtestserviceweb0TaskCountTargetpccprodtestservicescalemem9DCAF5B8: {
+            Type: 'AWS::ApplicationAutoScaling::ScalingPolicy',
+            Properties: {
+                PolicyName: 'pccsharedtestpccprodteststagepccprodtestpccprodtestserviceweb0TaskCountTargetpccprodtestservicescalemem226A522F',
+                PolicyType: 'TargetTrackingScaling',
+                ScalingTargetId: {Ref: 'pccprodtestserviceweb0TaskCountTargetFBBD0985'},
+                TargetTrackingScalingPolicyConfiguration: {
+                    PredefinedMetricSpecification: {
+                        PredefinedMetricType: 'ECSServiceAverageMemoryUtilization'
+                    },
+                    TargetValue: 75
+                }
+            },
+            DependsOn: [
+                'pccprodtesttaskdefweb0TaskRoleDefaultPolicyA38EEE7B',
+                'pccprodtesttaskdefweb0TaskRole6981EBC4'
+            ]
+        }
+    },
+    Outputs: {
+        pccprodtestsesverifytesttestexampleeduSesNotificationTopic54474B14: {
+            Description: 'SES notification topic for test.example.edu',
+            Value: {Ref: 'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'}
+        }
     }
 }
