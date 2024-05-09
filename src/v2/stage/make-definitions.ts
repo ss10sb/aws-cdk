@@ -22,6 +22,7 @@ export interface MakeParameters extends BaseParameters {
     readonly steps?: Record<string, object>;
     readonly certificates?: DnsValidatedCertificateProps[];
     readonly sharedSecretArn?: string;
+    readonly createDkim?: boolean;
     ecs?: EcsParameters;
     lambda?: LambdaParameters;
 }

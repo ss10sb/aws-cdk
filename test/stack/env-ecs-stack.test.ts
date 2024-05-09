@@ -223,6 +223,28 @@ describe('env ecs stack', () => {
         templateHelper.template.templateMatches(expected);
     });
 
+    it('should create env stack without dkim', () => {
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
+        const envConfig = getEnvConfigWithoutDkim();
+        const app = new App();
+        const stack = new Stack(app, 'pcc-shared-stack', stackProps);
+        const ecrRepositories = new EcrRepositories(ConfigStackHelper.getAppName(envConfig), {
+            repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
+        });
+        const factory = new EcrRepositoryFactory(stack, ConfigStackHelper.getAppName(envConfig), ecrRepositories);
+        factory.create();
+        const name = ConfigStackHelper.getMainStackName(envConfig);
+        const envStack = new EnvEcsStack(stack, name, envConfig, {}, envStackProps, {
+            repositoryFactory: factory
+        });
+        envStack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(envStack));
+        // templateHelper.inspect();
+        const expected = require('../__templates__/env-stack-without-dkim');
+        templateHelper.template.templateMatches(expected);
+    });
+
     it('should create env stack with shared secrets', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
@@ -458,6 +480,154 @@ function getEnvConfig() {
         Environment: ConfigEnvironments.SDLC,
         Version: "0.0.0",
         Parameters: {
+            alarmEmails: ['test@example.edu'],
+            secretKeys: ['FOO', 'BAR'],
+            listenerRule: {
+                priority: 100,
+                conditions: {
+                    hostHeaders: ['test.dev.example.edu']
+                }
+            },
+            targetGroup: {},
+            healthCheck: {
+                path: '/api/healthz',
+                protocol: Protocol.HTTP
+            },
+            hostedZoneDomain: 'dev.example.edu',
+            subdomain: 'test',
+            dynamoDb: {},
+            startStop: {
+                start: 'cron(0 13 * * ? *)',
+                stop: 'cron(0 5 * * ? *)',
+            },
+            queue: {
+                type: TaskServiceType.QUEUE_SERVICE,
+                image: EcrRepositoryType.PHPFPM,
+                cpu: 256,
+                hasDeadLetterQueue: true
+            },
+            s3: {},
+            tasks: [
+                {
+                    type: TaskServiceType.CREATE_RUN_ONCE_TASK,
+                    taskDefinition: {
+                        cpu: '256',
+                        memoryMiB: '512',
+                        containers: [
+                            {
+                                type: ContainerType.RUN_ONCE_TASK,
+                                image: 'phpfpm',
+                                hasSecrets: true,
+                                hasEnv: true,
+                                cpu: 256,
+                                memoryLimitMiB: 512,
+                                essential: true,
+                                dependency: true,
+                                entryPoint: ContainerEntryPoint.SH,
+                                command: ContainerCommand.ON_CREATE
+                            }
+                        ]
+                    }
+                },
+                {
+                    type: TaskServiceType.UPDATE_RUN_ONCE_TASK,
+                    taskDefinition: {
+                        cpu: '256',
+                        memoryMiB: '512',
+                        containers: [
+                            {
+                                type: ContainerType.UPDATE_RUN_ONCE_TASK,
+                                image: 'phpfpm',
+                                hasSecrets: true,
+                                hasEnv: true,
+                                cpu: 256,
+                                memoryLimitMiB: 512,
+                                essential: true,
+                                dependsOn: true,
+                                entryPoint: ContainerEntryPoint.PHP,
+                                command: ContainerCommand.MIGRATE,
+                            }
+                        ]
+                    }
+                },
+                {
+                    type: TaskServiceType.SCHEDULED_TASK,
+                    schedule: {
+                        type: SchedulableTypes.EXPRESSION,
+                        value: 'cron(0 12 * * ? *)'
+                    },
+                    taskDefinition: {
+                        cpu: '256',
+                        memoryMiB: '512',
+                        containers: [
+                            {
+                                type: ContainerType.SCHEDULED_TASK,
+                                image: 'phpfpm',
+                                hasSecrets: true,
+                                hasEnv: true,
+                                cpu: 256,
+                                memoryLimitMiB: 512,
+                                essential: true,
+                                dependsOn: true,
+                                entryPoint: ContainerEntryPoint.PHP,
+                                command: ContainerCommand.ARTISAN,
+                                additionalCommand: ['catalyst:daily']
+                            }
+                        ]
+                    }
+                }
+            ],
+            services: [
+                {
+                    type: TaskServiceType.WEB_SERVICE,
+                    attachToTargetGroup: true,
+                    enableExecuteCommand: true,
+                    scalable: {
+                        types: [ScalableTypes.CPU, ScalableTypes.MEMORY],
+                        scaleAt: 75,
+                        minCapacity: 1,
+                        maxCapacity: 3
+                    },
+                    taskDefinition: {
+                        cpu: '512',
+                        memoryMiB: '1024',
+                        containers: [
+                            {
+                                image: 'nginx',
+                                cpu: 64,
+                                memoryLimitMiB: 64,
+                                portMappings: [{
+                                    containerPort: 80
+                                }]
+                            },
+                            {
+                                image: 'phpfpm',
+                                hasSecrets: true,
+                                hasEnv: true,
+                                cpu: 128,
+                                memoryLimitMiB: 128,
+                                portMappings: [{
+                                    containerPort: 9000
+                                }]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    };
+}
+
+function getEnvConfigWithoutDkim() {
+    return {
+        AWSAccountId: '2222',
+        AWSRegion: 'us-west-2',
+        Name: 'myapp',
+        College: 'PCC',
+        Environment: ConfigEnvironments.SDLC,
+        Version: "0.0.0",
+        Parameters: {
+            createDkim: false,
             alarmEmails: ['test@example.edu'],
             secretKeys: ['FOO', 'BAR'],
             listenerRule: {

@@ -105,6 +105,21 @@ describe('make stack test', () => {
         templateHelper.template.templateMatches(expected);
     });
 
+    it('creates a default stack without dkim', () => {
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
+        const config = getMinConfigWithoutDkim();
+        const app = new App();
+        const baseStack = new Stack(app, 'pcc-shared-stack', stackProps);
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new MakeStack(baseStack, name, config, {}, envStackProps, {});
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = require('../__expected__/env/make-stack.min.without-dkim');
+        templateHelper.template.templateMatches(expected);
+    });
+
     it('creates a mixed stack using lambda for queue and scheduled and ecs for web and scheduled', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
@@ -136,6 +151,25 @@ describe('make stack test', () => {
             Environment: ConfigEnvironments.SDLC,
             Version: "0.0.0",
             Parameters: {
+                hostedZoneDomain: 'sdlc.example.edu',
+                dynamoDb: {},
+                subdomain: 'foo',
+                s3: {},
+                queue: {}
+            }
+        }
+    }
+
+    function getMinConfigWithoutDkim() {
+        return {
+            AWSAccountId: '2222',
+            AWSRegion: 'us-west-2',
+            Name: 'myapp',
+            College: 'PCC',
+            Environment: ConfigEnvironments.SDLC,
+            Version: "0.0.0",
+            Parameters: {
+                createDkim: false,
                 hostedZoneDomain: 'sdlc.example.edu',
                 dynamoDb: {},
                 subdomain: 'foo',

@@ -53,6 +53,7 @@ export interface EnvParameters extends BaseParameters {
     readonly endpointType?: EnvEndpointType;
     readonly certificates?: DnsValidatedCertificateProps[];
     readonly sharedSecretArn?: string;
+    readonly createDkim?: boolean;
 }
 
 export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
@@ -113,6 +114,9 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
     }
 
     protected createDkimDomainIdentity(): EmailIdentity | undefined {
+        if (!(this.config.Parameters.createDkim ?? true)) {
+            return;
+        }
         const domain = this.getDefaultDomainName();
         if (domain) {
             const ses = new DkimIdentity(this, this.node.id, this.config.Parameters.hostedZoneDomain);
@@ -193,6 +197,9 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
     }
 
     protected createSesVerifyDomain(): VerifySesDomain | undefined {
+        if (!(this.config.Parameters.createDkim ?? true)) {
+            return;
+        }
         if (this.config.Parameters?.hostedZoneDomain && this.config.Parameters?.subdomain) {
             const ses = new SesVerifyDomain(this, this.node.id);
             return ses.verifyDomain({

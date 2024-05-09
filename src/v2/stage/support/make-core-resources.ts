@@ -141,6 +141,9 @@ export class MakeCoreResources extends NonConstruct {
     }
 
     protected createSesVerifyDomain(): VerifySesDomain | undefined {
+        if (!(this.config.Parameters?.createDkim ?? true)) {
+            return;
+        }
         if (this.config.Parameters?.hostedZoneDomain && this.config.Parameters?.subdomain) {
             const wrapper = new VerifyDomainWrapper(this.scope, this.scope.node.id);
             return wrapper.verifyDomain({
