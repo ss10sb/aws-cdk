@@ -37,6 +37,6 @@ describe('bref layer arn', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
         const brefLayerArn = new BrefLayerArn(stack, 'layer-arn', path.join(__dirname));
-        expect(() => brefLayerArn.layerArn(BrefRuntime.LDAP80, 'latest')).toThrowError('[ldap-php-80] no layers.json files found in vendor bref/bref or bref/extra-php-extensions in /tmp');
+        expect(() => brefLayerArn.layerArn(BrefRuntime.LDAP81, 'latest')).toThrowError('[ldap-php-81] no layers.json files found in vendor bref/bref or bref/extra-php-extensions in /tmp');
     });
 });

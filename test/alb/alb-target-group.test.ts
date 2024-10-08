@@ -1,4 +1,4 @@
-import {App} from "aws-cdk-lib";
+import {App, Duration} from "aws-cdk-lib";
 import {Template} from "aws-cdk-lib/assertions";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {ConfigEnvironments, StackConfig} from "../../src/config/config-definitions";
@@ -98,6 +98,64 @@ describe('alb target group', () => {
                             AssertDescription: "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
                         }
                     ]
+                }
+            }
+        };
+        templateHelper.template.templateMatches(expected);
+    });
+
+    it('can create alb target group with stickiness', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const buildConfig = <StackConfig>{
+            Name: 'test',
+            College: 'PCC',
+            Environment: ConfigEnvironments.PROD,
+            Parameters: {}
+        }
+        const envConfig = <EnvConfig>{
+            Name: 'test',
+            College: 'PCC',
+            Environment: ConfigEnvironments.PROD,
+            Parameters: {
+                targetGroup: {
+                    stickinessCookieDuration: Duration.hours(2)
+                },
+                listenerRule: {
+                    priority: 100,
+                    conditions: {
+                        hostHeaders: ['test.example.edu']
+                    }
+                },
+                services: [],
+                tasks: []
+            }
+        }
+        const stack = new ConfigStack(app, 'test', buildConfig, {}, stackProps);
+        const vpc = VpcHelper.getVpcFromConfig(stack, buildConfig);
+        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc);
+        albTargetGroup.create(envConfig.Parameters.targetGroup ?? {});
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = {
+            Resources: {
+                targetgroup897B0682: {
+                    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
+                    Properties: {
+                        Name: 'target-group',
+                        Port: 80,
+                        Protocol: 'HTTP',
+                        TargetGroupAttributes: [
+                            {Key: 'stickiness.enabled', Value: 'true'},
+                            {Key: 'stickiness.type', Value: 'lb_cookie'},
+                            {
+                                Key: 'stickiness.lb_cookie.duration_seconds',
+                                Value: '7200'
+                            }
+                        ],
+                        TargetType: 'ip',
+                        VpcId: 'vpc-12345'
+                    }
                 }
             }
         };

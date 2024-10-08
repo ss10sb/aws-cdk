@@ -14,16 +14,14 @@ export class DkimIdentity extends NonConstruct {
     }
 
     /**
-     * Does not work.  Identity must be at the hosted zone level but then
-     * it wants to create keys for the hosted zone and not for the subdomain
+     * Manual domain dkim creation?
      * @param domain
      */
     createForDomain(domain: string): EmailIdentity | undefined {
         const hostedZone = this.getHostedZone();
         if (hostedZone) {
             return new EmailIdentity(this.scope, this.mixNameWithId(`${domain}-dkim`), {
-                identity: Identity.publicHostedZone(hostedZone),
-                mailFromDomain: domain
+                identity: Identity.domain(domain),
             });
         }
     }

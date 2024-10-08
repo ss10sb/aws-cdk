@@ -474,7 +474,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                    '"]}}},"logApiResponseData":true}'
+                    '"]}}}}'
                         ]
                     ]
                 },
@@ -495,7 +495,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                    '"]}}},"logApiResponseData":true}'
+                    '"]}}}}'
                         ]
                     ]
                 },

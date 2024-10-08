@@ -136,7 +136,7 @@ module.exports = {
               Role: {
                 'Fn::GetAtt': [ 'httpapiauthorizerfnServiceRoleE977EE3D', 'Arn' ]
               },
-              Runtime: 'nodejs18.x',
+              Runtime: MatchHelper.startsWith('nodejs'),
               Timeout: 5
             },
             DependsOn: [ 'httpapiauthorizerfnServiceRoleE977EE3D' ]

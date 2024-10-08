@@ -69,6 +69,13 @@ describe('alb listener rule', () => {
                 "key": "load-balancer-listener:account=12344:listenerPort=443:listenerProtocol=HTTPS:loadBalancerArn=arn:loadBalancerType=application:region=us-east-1",
                 "props": {
                     "account": "12344",
+                    "dummyValue": {
+                        "listenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2",
+                        "listenerPort": 80,
+                        "securityGroupIds": [
+                            "sg-123456789012"
+                        ]
+                    },
                     "listenerPort": 443,
                     "listenerProtocol": "HTTPS",
                     "loadBalancerArn": "arn",
@@ -82,6 +89,10 @@ describe('alb listener rule', () => {
                 "key": "security-group:account=12344:region=us-east-1:securityGroupId=sg-123456789012",
                 "props": {
                     "account": "12344",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
                     "region": "us-east-1",
                     "securityGroupId": "sg-123456789012"

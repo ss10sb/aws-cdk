@@ -1145,7 +1145,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
@@ -1938,22 +1938,6 @@ module.exports = {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
                             Principal: { Service: 'codebuild.amazonaws.com' }
-                        },
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {
-                                AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':iam::12344:root'
-                                        ]
-                                    ]
-                                }
-                            }
                         }
                     ],
                     Version: '2012-10-17'
@@ -2106,7 +2090,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -2182,13 +2166,13 @@ module.exports = {
                                 '    },\n' +
                                 '    "install": {\n' +
                                 '      "commands": [\n' +
-                                '        "npm install -g cdk-assets@2"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                                 '      ]\n' +
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4:11111-us-west-2\\"",\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4:22222-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"1b76a89c99861d4099552c5b48e16daafabc13fd66f42ccdcef246972442caf6:11111-us-west-2\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"1b76a89c99861d4099552c5b48e16daafabc13fd66f42ccdcef246972442caf6:22222-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
@@ -2214,7 +2198,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                    Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
@@ -2290,7 +2274,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "install": {\n' +
                                 '      "commands": [\n' +
-                                '        "npm install -g cdk-assets@2"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                                 '      ]\n' +
                                 '    },\n' +
                                 '    "build": {\n' +

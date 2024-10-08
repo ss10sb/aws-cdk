@@ -5,16 +5,16 @@ module.exports = {
             Type: 'AWS::CertificateManager::Certificate',
             Properties: {
                 DomainName: 'foo.bar.com',
-                DomainValidationOptions: [ { DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY' } ],
-                Tags: [ { Key: 'Name', Value: 'stack/cert-foo.bar.com' } ],
+                DomainValidationOptions: [{DomainName: 'foo.bar.com', HostedZoneId: 'DUMMY'}],
+                Tags: [{Key: 'Name', Value: 'stack/cert-foo.bar.com'}],
                 ValidationMethod: 'DNS'
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
-          functioneventfn0lgD47CFCEB: {
+        },
+        functioneventfn0lgD47CFCEB: {
             Type: 'AWS::Logs::LogGroup',
-            Properties: { RetentionInDays: 30 },
+            Properties: {RetentionInDays: 30},
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
@@ -52,9 +52,6 @@ module.exports = {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
                     S3Key: MatchHelper.endsWith('zip')
                 },
-                Role: {
-                    'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
-                },
                 FunctionName: 'function-event-fn-0',
                 Handler: 'artisan',
                 Layers: [
@@ -69,7 +66,11 @@ module.exports = {
                         ]
                     }
                 ],
+                LoggingConfig: {LogGroup: {Ref: 'functioneventfn0lgD47CFCEB'}},
                 MemorySize: 512,
+                Role: {
+                    'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
+                },
                 Runtime: 'provided.al2',
                 Timeout: 120
             },
@@ -119,8 +120,8 @@ module.exports = {
             Type: 'AWS::ApiGatewayV2::Route',
             Properties: {
                 ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
-                RouteKey: '$default',
                 AuthorizationType: 'NONE',
+                RouteKey: '$default',
                 Target: {
                     'Fn::Join': [
                         '',
@@ -138,8 +139,8 @@ module.exports = {
             Type: 'AWS::ApiGatewayV2::Stage',
             Properties: {
                 ApiId: {Ref: 'httpapihttpapi5E89BCFA'},
-                StageName: '$default',
-                AutoDeploy: true
+                AutoDeploy: true,
+                StageName: '$default'
             }
         },
         s3assets19FA3000: {
@@ -153,7 +154,7 @@ module.exports = {
                     ]
                 },
                 BucketName: 's3-assets',
-              OwnershipControls: { Rules: [ { ObjectOwnership: 'BucketOwnerEnforced' } ] },
+                OwnershipControls: {Rules: [{ObjectOwnership: 'BucketOwnerEnforced'}]},
                 PublicAccessBlockConfiguration: {
                     BlockPublicAcls: true,
                     BlockPublicPolicy: true,
@@ -190,36 +191,25 @@ module.exports = {
                         },
                         {
                             Action: 's3:GetObject',
-                            Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'distributioncfdistOrigin2S3Origin5AB00B01',
-                                        'S3CanonicalUserId'
-                                    ]
+                            Condition: {
+                                StringEquals: {
+                                    'AWS:SourceArn': {
+                                        'Fn::Join': [
+                                            '',
+                                            [
+                                                'arn:',
+                                                {Ref: 'AWS::Partition'},
+                                                ':cloudfront::',
+                                                {Ref: 'AWS::AccountId'},
+                                                ':distribution/',
+                                                {Ref: 'distributioncfdistD32B15FD'}
+                                            ]
+                                        ]
+                                    }
                                 }
                             },
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        {'Fn::GetAtt': ['s3assets19FA3000', 'Arn']},
-                                        '/*'
-                                    ]
-                                ]
-                            }
-                        },
-                        {
-                            Action: 's3:GetObject',
                             Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'distributioncfdistOrigin3S3Origin7D5564C5',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
+                            Principal: {Service: 'cloudfront.amazonaws.com'},
                             Resource: {
                                 'Fn::Join': [
                                     '',
@@ -334,63 +324,57 @@ module.exports = {
                                 'Fn::GetAtt': ['s3assets19FA3000', 'RegionalDomainName']
                             },
                             Id: 'stackdistributioncfdistOrigin2C6C208F6',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {
-                                                Ref: 'distributioncfdistOrigin2S3Origin5AB00B01'
-                                            }
-                                        ]
-                                    ]
-                                }
-                            }
+                            OriginAccessControlId: {
+                                'Fn::GetAtt': [
+                                    'distributioncfdistOrigin2S3OriginAccessControl900BE977',
+                                    'Id'
+                                ]
+                            },
+                            S3OriginConfig: {OriginAccessIdentity: ''}
                         },
                         {
                             DomainName: {
                                 'Fn::GetAtt': ['s3assets19FA3000', 'RegionalDomainName']
                             },
                             Id: 'stackdistributioncfdistOrigin3226BA5D8',
+                            OriginAccessControlId: {
+                                'Fn::GetAtt': [
+                                    'distributioncfdistOrigin3S3OriginAccessControl86129E20',
+                                    'Id'
+                                ]
+                            },
                             OriginPath: '/assets',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {
-                                                Ref: 'distributioncfdistOrigin3S3Origin7D5564C5'
-                                            }
-                                        ]
-                                    ]
-                                }
-                            }
+                            S3OriginConfig: {OriginAccessIdentity: ''}
                         }
                     ],
                     PriceClass: 'PriceClass_100',
                     ViewerCertificate: {
-                        AcmCertificateArn: { Ref: 'certfoobarcom430629AB' },
+                        AcmCertificateArn: {Ref: 'certfoobarcom430629AB'},
                         MinimumProtocolVersion: 'TLSv1.2_2019',
                         SslSupportMethod: 'sni-only'
                     }
                 }
             }
         },
-        distributioncfdistOrigin2S3Origin5AB00B01: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+        distributioncfdistOrigin2S3OriginAccessControl900BE977: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {
-                    Comment: 'Identity for stackdistributioncfdistOrigin2C6C208F6'
+                OriginAccessControlConfig: {
+                    Name: 'stackdistributioncfdistOrigin2S3OriginAccessControl63C43D63',
+                    OriginAccessControlOriginType: 's3',
+                    SigningBehavior: 'always',
+                    SigningProtocol: 'sigv4'
                 }
             }
         },
-        distributioncfdistOrigin3S3Origin7D5564C5: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+        distributioncfdistOrigin3S3OriginAccessControl86129E20: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {
-                    Comment: 'Identity for stackdistributioncfdistOrigin3226BA5D8'
+                OriginAccessControlConfig: {
+                    Name: 'stackdistributioncfdistOrigin3S3OriginAccessControlA6100630',
+                    OriginAccessControlOriginType: 's3',
+                    SigningBehavior: 'always',
+                    SigningProtocol: 'sigv4'
                 }
             }
         }

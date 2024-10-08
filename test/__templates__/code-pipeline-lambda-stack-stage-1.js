@@ -789,38 +789,25 @@ module.exports = {
                         },
                         {
                             Action: 's3:GetObject',
-                            Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'pccprodtestcfdistOrigin2S3Origin62B417D8',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
-                            Resource: {
+                    Condition: {
+                      StringEquals: {
+                        'AWS:SourceArn': {
                                 'Fn::Join': [
                                     '',
                                     [
-                                        {
-                                            'Fn::GetAtt': ['pccprodtestassetsEFBAF31D', 'Arn']
-                                        },
-                                        '/*'
+                              'arn:',
+                              { Ref: 'AWS::Partition' },
+                              ':cloudfront::',
+                              { Ref: 'AWS::AccountId' },
+                              ':distribution/',
+                              { Ref: 'pccprodtestcfdistE17F313E' }
                                     ]
                                 ]
                             }
+                      }
                         },
-                        {
-                            Action: 's3:GetObject',
                             Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'pccprodtestcfdistOrigin3S3Origin181B9166',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
+                    Principal: { Service: 'cloudfront.amazonaws.com' },
                             Resource: {
                                 'Fn::Join': [
                                     '',
@@ -876,7 +863,8 @@ module.exports = {
                 ],
                 DestinationBucketName: {Ref: 'pccprodtestassetsEFBAF31D'},
                 DestinationBucketKeyPrefix: 'assets',
-                Prune: true
+              Prune: true,
+              OutputObjectKeys: true
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -1007,7 +995,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'python3.9',
+                Runtime: MatchHelper.startsWith('python3'),
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
@@ -1163,39 +1151,27 @@ module.exports = {
                                 'Fn::GetAtt': ['pccprodtestassetsEFBAF31D', 'RegionalDomainName']
                             },
                             Id: 'pccsharedtestpccprodteststagepccprodtestpccprodtestcfdistOrigin2EFA5D6B6',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {
-                                                Ref: 'pccprodtestcfdistOrigin2S3Origin62B417D8'
-                                            }
+                    OriginAccessControlId: {
+                      'Fn::GetAtt': [
+                        'pccprodtestcfdistOrigin2S3OriginAccessControl8F654823',
+                        'Id'
                                         ]
-                                    ]
-                                }
-                            }
+                    },
+                    S3OriginConfig: { OriginAccessIdentity: '' }
                         },
                         {
                             DomainName: {
                                 'Fn::GetAtt': ['pccprodtestassetsEFBAF31D', 'RegionalDomainName']
                             },
                             Id: 'pccsharedtestpccprodteststagepccprodtestpccprodtestcfdistOrigin35AE50698',
+                    OriginAccessControlId: {
+                      'Fn::GetAtt': [
+                        'pccprodtestcfdistOrigin3S3OriginAccessControlF4C2E535',
+                        'Id'
+                      ]
+                    },
                             OriginPath: '/assets',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {
-                                                Ref: 'pccprodtestcfdistOrigin3S3Origin181B9166'
-                                            }
-                                        ]
-                                    ]
-                                }
-                            }
+                    S3OriginConfig: { OriginAccessIdentity: '' }
                         }
                     ],
                     PriceClass: 'PriceClass_100',
@@ -1213,19 +1189,25 @@ module.exports = {
                 ]
             }
         },
-        pccprodtestcfdistOrigin2S3Origin62B417D8: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+          pccprodtestcfdistOrigin2S3OriginAccessControl8F654823: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {
-                    Comment: 'Identity for pccsharedtestpccprodteststagepccprodtestpccprodtestcfdistOrigin2EFA5D6B6'
+              OriginAccessControlConfig: {
+                Name: 'pccprodtestpccprodtestcfdistOrigin2S3OriginAccessControl34BC7916',
+                OriginAccessControlOriginType: 's3',
+                SigningBehavior: 'always',
+                SigningProtocol: 'sigv4'
                 }
             }
         },
-        pccprodtestcfdistOrigin3S3Origin181B9166: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+          pccprodtestcfdistOrigin3S3OriginAccessControlF4C2E535: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {
-                    Comment: 'Identity for pccsharedtestpccprodteststagepccprodtestpccprodtestcfdistOrigin35AE50698'
+              OriginAccessControlConfig: {
+                Name: 'pccprodtestpccprodtestcfdistOrigin3S3OriginAccessControlA8714407',
+                OriginAccessControlOriginType: 's3',
+                SigningBehavior: 'always',
+                SigningProtocol: 'sigv4'
                 }
             }
         },
@@ -1256,9 +1238,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1324,8 +1306,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
+              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [

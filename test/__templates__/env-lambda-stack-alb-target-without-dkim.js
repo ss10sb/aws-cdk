@@ -276,7 +276,12 @@ module.exports = {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
                 EventSourceArn: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']},
-                FunctionName: {Ref: 'pccsdlcmyappqueuefn0959517EB'}
+              FunctionName: { Ref: 'pccsdlcmyappqueuefn0959517EB' },
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
             }
         },
         pccsdlcmyapptg1E18EDE5: {
@@ -434,7 +439,8 @@ module.exports = {
                     MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'assetstestdevexampleeduE0289650'},
-                Prune: true
+              Prune: true,
+              OutputObjectKeys: true
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -565,7 +571,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'python3.9',
+                Runtime: MatchHelper.startsWith('python3'),
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},

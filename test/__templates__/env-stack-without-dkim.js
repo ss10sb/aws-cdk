@@ -991,7 +991,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}},"logApiResponseData":true}'
+                            '"]}}}}'
                         ]
                     ]
                 },
@@ -1012,7 +1012,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                            '"]}}},"logApiResponseData":true}'
+                            '"]}}}}'
                         ]
                     ]
                 },
@@ -1118,7 +1118,7 @@ module.exports = {
             Properties: {
               Code: {
                 S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                S3Key: '97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip'
+                S3Key: MatchHelper.endsWith('zip')
               },
               FunctionName: 'update-fn',
               Handler: 'index.handler',
@@ -1128,7 +1128,7 @@ module.exports = {
                   'Arn'
                 ]
               },
-              Runtime: 'nodejs18.x',
+              Runtime: MatchHelper.startsWith('nodejs'),
               Tags: [
                 { Key: 'App', Value: 'myapp' },
                 { Key: 'College', Value: 'PCC' },
@@ -1222,11 +1222,11 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
               Handler: 'index.handler',
-              Runtime: 'nodejs18.x',
+              Runtime: MatchHelper.startsWith('nodejs'),
               Timeout: 900,
               Code: {
                 S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                S3Key: '4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35.zip'
+                S3Key: MatchHelper.endsWith('zip')
               },
               Role: {
                 'Fn::GetAtt': [

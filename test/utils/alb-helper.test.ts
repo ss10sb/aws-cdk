@@ -24,6 +24,16 @@ describe('alb helper', () => {
                 "key": "load-balancer:account=12344:loadBalancerArn=arn:loadBalancerType=application:region=us-east-1",
                 "props": {
                     "account": "12344",
+                    "dummyValue": {
+                        "ipAddressType": "dualstack",
+                        "loadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/application/my-load-balancer/50dc6c495c0c9188",
+                        "loadBalancerCanonicalHostedZoneId": "Z3DZXE0EXAMPLE",
+                        "loadBalancerDnsName": "my-load-balancer-1234567890.us-west-2.elb.amazonaws.com",
+                        "securityGroupIds": [
+                            "sg-1234"
+                        ],
+                        "vpcId": "vpc-12345"
+                    },
                     "loadBalancerArn": "arn",
                     "loadBalancerType": "application",
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
@@ -48,6 +58,10 @@ describe('alb helper', () => {
                 "key": "security-group:account=12344:region=us-east-1:securityGroupId=sg-1234",
                 "props": {
                     "account": "12344",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
                     "region": "us-east-1",
                     "securityGroupId": "sg-1234"
@@ -88,6 +102,8 @@ describe('alb helper', () => {
                 key: 'ssm:account=12344:parameterName=alb:region=us-east-1',
                 props: {
                     account: '12344',
+                    "dummyValue": "dummy-value-for-alb",
+                    "ignoreErrorOnMissingContext": false,
                     lookupRoleArn: "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
                     region: 'us-east-1',
                     parameterName: 'alb',
@@ -129,6 +145,13 @@ describe('alb helper', () => {
                 "key": "load-balancer-listener:account=12344:listenerPort=443:listenerProtocol=HTTPS:loadBalancerArn=arn:loadBalancerType=application:region=us-east-1",
                 "props": {
                     "account": "12344",
+                    "dummyValue": {
+                        "listenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2",
+                        "listenerPort": 80,
+                        "securityGroupIds": [
+                            "sg-123456789012"
+                        ]
+                    },
                     "listenerPort": 443,
                     "listenerProtocol": "HTTPS",
                     "loadBalancerArn": "arn",
@@ -142,6 +165,10 @@ describe('alb helper', () => {
                 "key": "security-group:account=12344:region=us-east-1:securityGroupId=sg-123456789012",
                 "props": {
                     "account": "12344",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
                     "region": "us-east-1",
                     "securityGroupId": "sg-123456789012"

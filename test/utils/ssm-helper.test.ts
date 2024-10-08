@@ -45,6 +45,8 @@ describe('ssm helper utils', () => {
                 key: 'ssm:account=12344:parameterName=test-key:region=us-east-1',
                 props: {
                     account: '12344',
+                    "dummyValue": "dummy-value-for-test-key",
+                    "ignoreErrorOnMissingContext": false,
                     lookupRoleArn: "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
                     region: 'us-east-1',
                     parameterName: 'test-key',

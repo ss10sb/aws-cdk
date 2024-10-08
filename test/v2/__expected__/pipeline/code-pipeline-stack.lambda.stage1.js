@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.example.edu"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -80,7 +80,7 @@ module.exports = {
                             {
                                 Ref: 'pccprodtestsesverifytestSesNotificationTopicE0DECAC2'
                             },
-                            '"},"physicalResourceId":{"id":"test.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                    '"},"physicalResourceId":{"id":"test.example.edu-set-Complaint-topic"}}'
                         ]
                     ]
                 },
@@ -177,8 +177,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
+              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.example.edu"},"physicalResourceId":{"id":"test.example.edu-verify-domain-dkim"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -971,7 +971,12 @@ module.exports = {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
                 EventSourceArn: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']},
-                FunctionName: {Ref: 'pccprodtestqueuefn0816902CA'}
+              FunctionName: { Ref: 'pccprodtestqueuefn0816902CA' },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
             }
         },
         assetstestexampleedu17784CFA: {
@@ -1090,7 +1095,8 @@ module.exports = {
                     MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'assetstestexampleedu17784CFA'},
-                Prune: true
+              Prune: true,
+              OutputObjectKeys: true
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -1221,7 +1227,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'python3.9',
+                Runtime: MatchHelper.startsWith('python3'),
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},

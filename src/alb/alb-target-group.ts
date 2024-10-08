@@ -3,10 +3,12 @@ import {Construct} from "constructs";
 import {ApplicationProtocol, ApplicationTargetGroup, TargetType} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {NonConstruct} from "../core/non-construct";
 import {ApplicationTargetGroupProps} from "aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-target-group";
+import {Duration} from "aws-cdk-lib";
 
 export interface AlbTargetGroupProps {
     readonly port?: number;
     readonly protocol?: ApplicationProtocol;
+    readonly stickinessCookieDuration?: Duration;
     targetType?: TargetType;
 }
 
@@ -34,6 +36,9 @@ export class AlbTargetGroup extends NonConstruct {
         newProps.port = props.port ?? 80;
         newProps.protocol = props.protocol ?? ApplicationProtocol.HTTP;
         newProps.targetType = props.targetType ?? TargetType.IP;
+        if (props.stickinessCookieDuration) {
+            newProps.stickinessCookieDuration = props.stickinessCookieDuration;
+        }
         return <ApplicationTargetGroupProps>newProps;
     }
 }

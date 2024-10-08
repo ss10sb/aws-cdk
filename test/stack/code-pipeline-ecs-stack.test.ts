@@ -28,6 +28,8 @@ describe('code pipeline ecs stack', () => {
                 "key": "ssm:account=11111:parameterName=pcc-sdlc-alb01-arn:region=us-west-2",
                 "props": {
                     "account": "11111",
+                    "dummyValue": "dummy-value-for-pcc-sdlc-alb01-arn",
+                    "ignoreErrorOnMissingContext": false,
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::11111:role/cdk-hnb659fds-lookup-role-11111-us-west-2",
                     "parameterName": "pcc-sdlc-alb01-arn",
                     "region": "us-west-2"
@@ -38,6 +40,13 @@ describe('code pipeline ecs stack', () => {
                 "key": "load-balancer-listener:account=11111:listenerPort=443:listenerProtocol=HTTPS:loadBalancerArn=dummy-value-for-pcc-sdlc-alb01-arn:loadBalancerType=application:region=us-west-2",
                 "props": {
                     "account": "11111",
+                    "dummyValue": {
+                        "listenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2",
+                        "listenerPort": 80,
+                        "securityGroupIds": [
+                            "sg-123456789012"
+                        ]
+                    },
                     "listenerPort": 443,
                     "listenerProtocol": "HTTPS",
                     "loadBalancerArn": "dummy-value-for-pcc-sdlc-alb01-arn",
@@ -51,6 +60,10 @@ describe('code pipeline ecs stack', () => {
                 "key": "security-group:account=11111:region=us-west-2:securityGroupId=sg-123456789012",
                 "props": {
                     "account": "11111",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::11111:role/cdk-hnb659fds-lookup-role-11111-us-west-2",
                     "region": "us-west-2",
                     "securityGroupId": "sg-123456789012"
@@ -61,6 +74,16 @@ describe('code pipeline ecs stack', () => {
                 "key": "load-balancer:account=11111:loadBalancerArn=dummy-value-for-pcc-sdlc-alb01-arn:loadBalancerType=application:region=us-west-2",
                 "props": {
                     "account": "11111",
+                    "dummyValue": {
+                        "ipAddressType": "dualstack",
+                        "loadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/application/my-load-balancer/50dc6c495c0c9188",
+                        "loadBalancerCanonicalHostedZoneId": "Z3DZXE0EXAMPLE",
+                        "loadBalancerDnsName": "my-load-balancer-1234567890.us-west-2.elb.amazonaws.com",
+                        "securityGroupIds": [
+                            "sg-1234"
+                        ],
+                        "vpcId": "vpc-12345"
+                    },
                     "loadBalancerArn": "dummy-value-for-pcc-sdlc-alb01-arn",
                     "loadBalancerType": "application",
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::11111:role/cdk-hnb659fds-lookup-role-11111-us-west-2",
@@ -85,6 +108,10 @@ describe('code pipeline ecs stack', () => {
                 "key": "security-group:account=11111:region=us-west-2:securityGroupId=sg-1234",
                 "props": {
                     "account": "11111",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::11111:role/cdk-hnb659fds-lookup-role-11111-us-west-2",
                     "region": "us-west-2",
                     "securityGroupId": "sg-1234"
@@ -95,6 +122,10 @@ describe('code pipeline ecs stack', () => {
                 "key": "hosted-zone:account=11111:domainName=sdlc.example.edu:region=us-west-2",
                 "props": {
                     "account": "11111",
+                    "dummyValue": {
+                        "Id": "DUMMY",
+                        "Name": "sdlc.example.edu"
+                    },
                     "domainName": "sdlc.example.edu",
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::11111:role/cdk-hnb659fds-lookup-role-11111-us-west-2",
                     "region": "us-west-2"
@@ -105,6 +136,8 @@ describe('code pipeline ecs stack', () => {
                 "key": "ssm:account=22222:parameterName=pcc-prod-alb01-arn:region=us-west-2",
                 "props": {
                     "account": "22222",
+                    "dummyValue": "dummy-value-for-pcc-prod-alb01-arn",
+                    "ignoreErrorOnMissingContext": false,
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::22222:role/cdk-hnb659fds-lookup-role-22222-us-west-2",
                     "parameterName": "pcc-prod-alb01-arn",
                     "region": "us-west-2"
@@ -115,6 +148,13 @@ describe('code pipeline ecs stack', () => {
                 "key": "load-balancer-listener:account=22222:listenerPort=443:listenerProtocol=HTTPS:loadBalancerArn=dummy-value-for-pcc-prod-alb01-arn:loadBalancerType=application:region=us-west-2",
                 "props": {
                     "account": "22222",
+                    "dummyValue": {
+                        "listenerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/application/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2",
+                        "listenerPort": 80,
+                        "securityGroupIds": [
+                            "sg-123456789012"
+                        ]
+                    },
                     "listenerPort": 443,
                     "listenerProtocol": "HTTPS",
                     "loadBalancerArn": "dummy-value-for-pcc-prod-alb01-arn",
@@ -128,6 +168,10 @@ describe('code pipeline ecs stack', () => {
                 "key": "security-group:account=22222:region=us-west-2:securityGroupId=sg-123456789012",
                 "props": {
                     "account": "22222",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::22222:role/cdk-hnb659fds-lookup-role-22222-us-west-2",
                     "region": "us-west-2",
                     "securityGroupId": "sg-123456789012"
@@ -138,6 +182,16 @@ describe('code pipeline ecs stack', () => {
                 "key": "load-balancer:account=22222:loadBalancerArn=dummy-value-for-pcc-prod-alb01-arn:loadBalancerType=application:region=us-west-2",
                 "props": {
                     "account": "22222",
+                    "dummyValue": {
+                        "ipAddressType": "dualstack",
+                        "loadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/application/my-load-balancer/50dc6c495c0c9188",
+                        "loadBalancerCanonicalHostedZoneId": "Z3DZXE0EXAMPLE",
+                        "loadBalancerDnsName": "my-load-balancer-1234567890.us-west-2.elb.amazonaws.com",
+                        "securityGroupIds": [
+                            "sg-1234"
+                        ],
+                        "vpcId": "vpc-12345"
+                    },
                     "loadBalancerArn": "dummy-value-for-pcc-prod-alb01-arn",
                     "loadBalancerType": "application",
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::22222:role/cdk-hnb659fds-lookup-role-22222-us-west-2",
@@ -162,6 +216,10 @@ describe('code pipeline ecs stack', () => {
                 "key": "security-group:account=22222:region=us-west-2:securityGroupId=sg-1234",
                 "props": {
                     "account": "22222",
+                    "dummyValue": {
+                        "allowAllOutbound": true,
+                        "securityGroupId": "sg-12345678"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::22222:role/cdk-hnb659fds-lookup-role-22222-us-west-2",
                     "region": "us-west-2",
                     "securityGroupId": "sg-1234"
@@ -172,6 +230,10 @@ describe('code pipeline ecs stack', () => {
                 "key": "hosted-zone:account=22222:domainName=example.edu:region=us-west-2",
                 "props": {
                     "account": "22222",
+                    "dummyValue": {
+                        "Id": "DUMMY",
+                        "Name": "example.edu"
+                    },
                     "domainName": "example.edu",
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::22222:role/cdk-hnb659fds-lookup-role-22222-us-west-2",
                     "region": "us-west-2"

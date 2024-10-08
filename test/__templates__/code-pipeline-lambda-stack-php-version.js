@@ -645,7 +645,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"14f62d18e7087aa1b802000a4bf1e8619c492ebfac7fe3f75beeb4a89df56c67"}]'
+                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"768c20d761f32ba5122c2d9bdff138e58691d1a4860c7c74a163cc1fbe536894"}]'
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_build_step_Output'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -889,7 +889,7 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:6.0',
+                Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'

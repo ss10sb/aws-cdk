@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"foo.sdlc.example.edu"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"foo.sdlc.example.edu"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -80,7 +80,7 @@ module.exports = {
                             {
                                 Ref: 'pccsdlcmyappsesverifyfooSesNotificationTopic99002DE8'
                             },
-                            '"},"physicalResourceId":{"id":"foo.sdlc.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                    '"},"physicalResourceId":{"id":"foo.sdlc.example.edu-set-Complaint-topic"}}'
                         ]
                     ]
                 },
@@ -177,8 +177,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
-              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"}}',
+              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"foo.sdlc.example.edu"},"physicalResourceId":{"id":"foo.sdlc.example.edu-verify-domain-dkim"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1043,7 +1043,12 @@ module.exports = {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
                 EventSourceArn: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']},
-                FunctionName: {Ref: 'pccsdlcmyappqueuefn0959517EB'}
+              FunctionName: { Ref: 'pccsdlcmyappqueuefn0959517EB' },
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
             }
         },
         pccsdlcmyapptg1E18EDE5: {

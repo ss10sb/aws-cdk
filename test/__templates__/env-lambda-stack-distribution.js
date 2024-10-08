@@ -276,7 +276,12 @@ module.exports = {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
                 EventSourceArn: {'Fn::GetAtt': ['pccsdlcmyappqueue069E607A', 'Arn']},
-                FunctionName: {Ref: 'pccsdlcmyappqueuefn0959517EB'}
+              FunctionName: { Ref: 'pccsdlcmyappqueuefn0959517EB' },
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
             }
         },
         pccsdlcmyappdefaulttestdevexampleedu4A366C5F: {
@@ -1058,38 +1063,25 @@ module.exports = {
                         },
                         {
                             Action: 's3:GetObject',
-                            Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'pccsdlcmyappcfdistOrigin2S3OriginC74A342C',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
-                            Resource: {
+                    Condition: {
+                      StringEquals: {
+                        'AWS:SourceArn': {
                                 'Fn::Join': [
                                     '',
                                     [
-                                        {
-                                            'Fn::GetAtt': ['pccsdlcmyappassets5EE4E88C', 'Arn']
-                                        },
-                                        '/*'
+                              'arn:',
+                              { Ref: 'AWS::Partition' },
+                              ':cloudfront::',
+                              { Ref: 'AWS::AccountId' },
+                              ':distribution/',
+                              { Ref: 'pccsdlcmyappcfdist7CEB1764' }
                                     ]
                                 ]
                             }
+                      }
                         },
-                        {
-                            Action: 's3:GetObject',
                             Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'pccsdlcmyappcfdistOrigin3S3Origin851F5391',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
+                    Principal: { Service: 'cloudfront.amazonaws.com' },
                             Resource: {
                                 'Fn::Join': [
                                     '',
@@ -1145,7 +1137,8 @@ module.exports = {
                 ],
                 DestinationBucketName: {Ref: 'pccsdlcmyappassets5EE4E88C'},
                 DestinationBucketKeyPrefix: 'assets',
-                Prune: true
+              Prune: true,
+              OutputObjectKeys: true
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -1276,7 +1269,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'python3.9',
+                Runtime: MatchHelper.startsWith('python3'),
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},
@@ -1435,19 +1428,13 @@ module.exports = {
                                 ]
                             },
                             Id: 'pccsharedstackpccsdlcmyapppccsdlcmyappcfdistOrigin21EE63934',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {
-                                                Ref: 'pccsdlcmyappcfdistOrigin2S3OriginC74A342C'
-                                            }
+                    OriginAccessControlId: {
+                      'Fn::GetAtt': [
+                        'pccsdlcmyappcfdistOrigin2S3OriginAccessControlADF05D43',
+                        'Id'
                                         ]
-                                    ]
-                                }
-                            }
+                    },
+                    S3OriginConfig: { OriginAccessIdentity: '' }
                         },
                         {
                             DomainName: {
@@ -1457,20 +1444,14 @@ module.exports = {
                                 ]
                             },
                             Id: 'pccsharedstackpccsdlcmyapppccsdlcmyappcfdistOrigin3365CFF60',
+                    OriginAccessControlId: {
+                      'Fn::GetAtt': [
+                        'pccsdlcmyappcfdistOrigin3S3OriginAccessControlCF1D61C4',
+                        'Id'
+                      ]
+                    },
                             OriginPath: '/assets',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {
-                                                Ref: 'pccsdlcmyappcfdistOrigin3S3Origin851F5391'
-                                            }
-                                        ]
-                                    ]
-                                }
-                            }
+                    S3OriginConfig: { OriginAccessIdentity: '' }
                         }
                     ],
                     PriceClass: 'PriceClass_100',
@@ -1488,19 +1469,25 @@ module.exports = {
                 ]
             }
         },
-        pccsdlcmyappcfdistOrigin2S3OriginC74A342C: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+          pccsdlcmyappcfdistOrigin2S3OriginAccessControlADF05D43: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {
-                    Comment: 'Identity for pccsharedstackpccsdlcmyapppccsdlcmyappcfdistOrigin21EE63934'
+              OriginAccessControlConfig: {
+                Name: 'pccsharedstackpccsdlcmyapp6FOrigin2S3OriginAccessControlEA22A008',
+                OriginAccessControlOriginType: 's3',
+                SigningBehavior: 'always',
+                SigningProtocol: 'sigv4'
                 }
             }
         },
-        pccsdlcmyappcfdistOrigin3S3Origin851F5391: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+          pccsdlcmyappcfdistOrigin3S3OriginAccessControlCF1D61C4: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {
-                    Comment: 'Identity for pccsharedstackpccsdlcmyapppccsdlcmyappcfdistOrigin3365CFF60'
+              OriginAccessControlConfig: {
+                Name: 'pccsharedstackpccsdlcmyapp6FOrigin3S3OriginAccessControl37B38844',
+                OriginAccessControlOriginType: 's3',
+                SigningBehavior: 'always',
+                SigningProtocol: 'sigv4'
                 }
             }
         },
@@ -1531,9 +1518,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.dev.example.edu"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1599,8 +1586,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
-                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
+              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.dev.example.edu"},"physicalResourceId":{"id":"test.dev.example.edu-verify-domain-dkim"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [

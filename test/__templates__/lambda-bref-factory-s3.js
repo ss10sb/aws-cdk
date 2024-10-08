@@ -425,38 +425,25 @@ module.exports = {
                         },
                         {
                             Action: 's3:GetObject',
-                            Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'myappcfdistOrigin2S3Origin6C1C6091',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
-                            Resource: {
+                    Condition: {
+                      StringEquals: {
+                        'AWS:SourceArn': {
                                 'Fn::Join': [
                                     '',
                                     [
-                                        {
-                                            'Fn::GetAtt': ['myappassets1E699741', 'Arn']
-                                        },
-                                        '/*'
+                              'arn:',
+                              { Ref: 'AWS::Partition' },
+                              ':cloudfront::',
+                              { Ref: 'AWS::AccountId' },
+                              ':distribution/',
+                              { Ref: 'myappcfdist8AC41345' }
                                     ]
                                 ]
                             }
+                      }
                         },
-                        {
-                            Action: 's3:GetObject',
                             Effect: 'Allow',
-                            Principal: {
-                                CanonicalUser: {
-                                    'Fn::GetAtt': [
-                                        'myappcfdistOrigin3S3OriginB7CE0F5C',
-                                        'S3CanonicalUserId'
-                                    ]
-                                }
-                            },
+                    Principal: { Service: 'cloudfront.amazonaws.com' },
                             Resource: {
                                 'Fn::Join': [
                                     '',
@@ -629,7 +616,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'python3.9',
+                Runtime: MatchHelper.startsWith('python3'),
                 Timeout: 900
             },
             DependsOn: [
@@ -778,35 +765,27 @@ module.exports = {
                                 'Fn::GetAtt': ['myappassets1E699741', 'RegionalDomainName']
                             },
                             Id: 'stackmyappcfdistOrigin208B05384',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {Ref: 'myappcfdistOrigin2S3Origin6C1C6091'}
+                    OriginAccessControlId: {
+                      'Fn::GetAtt': [
+                        'myappcfdistOrigin2S3OriginAccessControl48A66C5D',
+                        'Id'
                                         ]
-                                    ]
-                                }
-                            }
+                    },
+                    S3OriginConfig: { OriginAccessIdentity: '' }
                         },
                         {
                             DomainName: {
                                 'Fn::GetAtt': ['myappassets1E699741', 'RegionalDomainName']
                             },
                             Id: 'stackmyappcfdistOrigin3F2382364',
+                    OriginAccessControlId: {
+                      'Fn::GetAtt': [
+                        'myappcfdistOrigin3S3OriginAccessControlAF6F4C51',
+                        'Id'
+                      ]
+                    },
                             OriginPath: '/assets',
-                            S3OriginConfig: {
-                                OriginAccessIdentity: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'origin-access-identity/cloudfront/',
-                                            {Ref: 'myappcfdistOrigin3S3OriginB7CE0F5C'}
-                                        ]
-                                    ]
-                                }
-                            }
+                    S3OriginConfig: { OriginAccessIdentity: '' }
                         }
                     ],
                     PriceClass: 'PriceClass_100',
@@ -818,16 +797,26 @@ module.exports = {
                 }
             }
         },
-        myappcfdistOrigin2S3Origin6C1C6091: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+          myappcfdistOrigin2S3OriginAccessControl48A66C5D: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {Comment: 'Identity for stackmyappcfdistOrigin208B05384'}
+              OriginAccessControlConfig: {
+                Name: 'stackmyappcfdistOrigin2S3OriginAccessControl503EACDD',
+                OriginAccessControlOriginType: 's3',
+                SigningBehavior: 'always',
+                SigningProtocol: 'sigv4'
+              }
             }
         },
-        myappcfdistOrigin3S3OriginB7CE0F5C: {
-            Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity',
+          myappcfdistOrigin3S3OriginAccessControlAF6F4C51: {
+            Type: 'AWS::CloudFront::OriginAccessControl',
             Properties: {
-                CloudFrontOriginAccessIdentityConfig: {Comment: 'Identity for stackmyappcfdistOrigin3F2382364'}
+              OriginAccessControlConfig: {
+                Name: 'stackmyappcfdistOrigin3S3OriginAccessControlBC9883B3',
+                OriginAccessControlOriginType: 's3',
+                SigningBehavior: 'always',
+                SigningProtocol: 'sigv4'
+              }
             }
         }
     }

@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
                 },
-              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"},"logApiResponseData":true}',
-              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.sdlc.example.edu"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.sdlc.example.edu"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -80,7 +80,7 @@ module.exports = {
                     {
                       Ref: 'pccsdlctestsesverifytestSesNotificationTopicF2D450E7'
                     },
-                    '"},"physicalResourceId":{"id":"test.sdlc.example.edu-set-Complaint-topic"},"logApiResponseData":true}'
+                    '"},"physicalResourceId":{"id":"test.sdlc.example.edu-set-Complaint-topic"}}'
                   ]
                 ]
               },
@@ -177,8 +177,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': [ 'AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn' ]
                 },
-              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
-              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"},"logApiResponseData":true}',
+              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
+              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -1218,7 +1218,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                    '"]}}},"logApiResponseData":true}'
+                    '"]}}}}'
                         ]
                     ]
                 },
@@ -1239,7 +1239,7 @@ module.exports = {
                                     'GroupId'
                                 ]
                             },
-                    '"]}}},"logApiResponseData":true}'
+                    '"]}}}}'
                         ]
                     ]
                 },

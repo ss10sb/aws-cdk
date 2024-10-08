@@ -28,6 +28,10 @@ describe('ses verify domain', () => {
                 "props": {
                     "account": "12344",
                     "domainName": "example.edu",
+                    "dummyValue": {
+                        "Id": "DUMMY",
+                        "Name": "example.edu"
+                    },
                     "lookupRoleArn": "arn:${AWS::Partition}:iam::12344:role/cdk-hnb659fds-lookup-role-12344-us-east-1",
                     "region": "us-east-1"
                 },

@@ -78,7 +78,7 @@ module.exports = {
                             {
                                 'Fn::GetAtt': ['runtaskSecurityGroup04CE6B59', 'GroupId']
                             },
-                            '"]}}},"logApiResponseData":true}'
+                            '"]}}}}'
                         ]
                     ]
                 },
@@ -96,7 +96,7 @@ module.exports = {
                             {
                                 'Fn::GetAtt': ['runtaskSecurityGroup04CE6B59', 'GroupId']
                             },
-                            '"]}}},"logApiResponseData":true}'
+                            '"]}}}}'
                         ]
                     ]
                 },
@@ -187,7 +187,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                    S3Key: '97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 FunctionName: 'update-fn',
                 Handler: 'index.handler',
@@ -197,7 +197,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'nodejs18.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Timeout: 120
             },
             DependsOn: [
@@ -281,11 +281,11 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Handler: 'index.handler',
-                Runtime: 'nodejs18.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Timeout: 900,
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                    S3Key: '4e26bf2d0a26f2097fb2b261f22bb51e3f6b4b52635777b1e54edbd8e2d58c35.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 Role: {
                     'Fn::GetAtt': [

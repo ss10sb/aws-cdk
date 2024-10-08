@@ -21,13 +21,14 @@ import {
     ViewerProtocolPolicy
 } from "aws-cdk-lib/aws-cloudfront";
 import {HttpApi} from "aws-cdk-lib/aws-apigatewayv2";
-import {RestApiOrigin, S3Origin} from "aws-cdk-lib/aws-cloudfront-origins";
+import {RestApiOrigin, S3BucketOrigin, S3Origin} from "aws-cdk-lib/aws-cloudfront-origins";
 import {IBucket} from "aws-cdk-lib/aws-s3";
 import {ICertificate} from "aws-cdk-lib/aws-certificatemanager";
 import {NonConstruct} from "../core/non-construct";
 import {RestApi} from "aws-cdk-lib/aws-apigateway";
 import {Construct} from "constructs";
 import {HttpApiOrigin, HttpApiOriginProps} from "./http-api-origin";
+import {aws_cloudfront_origins} from "aws-cdk-lib";
 
 export interface WebDistributionProps {
     readonly api: HttpApi | RestApi;
@@ -87,8 +88,8 @@ export class WebDistribution extends NonConstruct {
 
     protected addS3AssetBucket(distribution: Distribution, props: WebDistributionProps): void {
         if (props.s3AssetBucket) {
-            const origin = new S3Origin(props.s3AssetBucket);
-            const originWithPath = new S3Origin(props.s3AssetBucket, {
+            const origin = aws_cloudfront_origins.S3BucketOrigin.withOriginAccessControl(props.s3AssetBucket);
+            const originWithPath = aws_cloudfront_origins.S3BucketOrigin.withOriginAccessControl(props.s3AssetBucket, {
                 originPath: '/assets',
             });
             const behaviorProps = {

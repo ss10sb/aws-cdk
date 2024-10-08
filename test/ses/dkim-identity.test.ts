@@ -21,89 +21,9 @@ describe('dkim email domain verify', () => {
         // templateHelper.inspect();
         const expected = {
             Resources: {
-                stacktestexampleedudkimDkimDnsToken105936A7B: {
-                    Type: 'AWS::Route53::RecordSet',
-                    Properties: {
-                        HostedZoneId: 'DUMMY',
-                        Name: {
-                            'Fn::GetAtt': [ 'stacktestexampleedudkim599ECBB6', 'DkimDNSTokenName1' ]
-                        },
-                        ResourceRecords: [
-                            {
-                                'Fn::GetAtt': [
-                                    'stacktestexampleedudkim599ECBB6',
-                                    'DkimDNSTokenValue1'
-                                ]
-                            }
-                        ],
-                        TTL: '1800',
-                        Type: 'CNAME'
-                    }
-                },
-                stacktestexampleedudkimDkimDnsToken24D14CD82: {
-                    Type: 'AWS::Route53::RecordSet',
-                    Properties: {
-                        HostedZoneId: 'DUMMY',
-                        Name: {
-                            'Fn::GetAtt': [ 'stacktestexampleedudkim599ECBB6', 'DkimDNSTokenName2' ]
-                        },
-                        ResourceRecords: [
-                            {
-                                'Fn::GetAtt': [
-                                    'stacktestexampleedudkim599ECBB6',
-                                    'DkimDNSTokenValue2'
-                                ]
-                            }
-                        ],
-                        TTL: '1800',
-                        Type: 'CNAME'
-                    }
-                },
-                stacktestexampleedudkimDkimDnsToken357F57837: {
-                    Type: 'AWS::Route53::RecordSet',
-                    Properties: {
-                        HostedZoneId: 'DUMMY',
-                        Name: {
-                            'Fn::GetAtt': [ 'stacktestexampleedudkim599ECBB6', 'DkimDNSTokenName3' ]
-                        },
-                        ResourceRecords: [
-                            {
-                                'Fn::GetAtt': [
-                                    'stacktestexampleedudkim599ECBB6',
-                                    'DkimDNSTokenValue3'
-                                ]
-                            }
-                        ],
-                        TTL: '1800',
-                        Type: 'CNAME'
-                    }
-                },
                 stacktestexampleedudkim599ECBB6: {
                     Type: 'AWS::SES::EmailIdentity',
-                    Properties: {
-                        EmailIdentity: 'example.edu',
-                        MailFromAttributes: { MailFromDomain: 'test.example.edu' }
-                    }
-                },
-                stacktestexampleedudkimMailFromMxRecord9BE996F6: {
-                    Type: 'AWS::Route53::RecordSet',
-                    Properties: {
-                        HostedZoneId: 'DUMMY',
-                        Name: 'test.example.edu.',
-                        ResourceRecords: [ '10 feedback-smtp.us-east-1.amazonses.com' ],
-                        TTL: '1800',
-                        Type: 'MX'
-                    }
-                },
-                stacktestexampleedudkimMailFromTxtRecord9B904AB3: {
-                    Type: 'AWS::Route53::RecordSet',
-                    Properties: {
-                        HostedZoneId: 'DUMMY',
-                        Name: 'test.example.edu.',
-                        ResourceRecords: [ '"v=spf1 include:amazonses.com ~all"' ],
-                        TTL: '1800',
-                        Type: 'TXT'
-                    }
+                    Properties: { EmailIdentity: 'test.example.edu' }
                 }
             }
         };
