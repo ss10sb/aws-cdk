@@ -66,6 +66,12 @@ module.exports = {
                         {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             lambdaHandler: LaravelHandler.ARTISAN,
+                            type: FunctionType.ARTISAN,
+                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.CONSOLE]
+                        },
+                        {
+                            appPath: path.join(__dirname, '..', '..', '__codebase__'),
+                            lambdaHandler: LaravelHandler.ARTISAN,
                             brefRuntime: [BrefRuntime.PHP82, BrefRuntime.CONSOLE],
                             scheduledEvents: [
                                 {
@@ -201,6 +207,12 @@ module.exports = {
                         }
                     },
                     functions: [
+                        {
+                            appPath: path.join(__dirname, '..', '..', '__codebase__'),
+                            lambdaHandler: LaravelHandler.ARTISAN,
+                            type: FunctionType.ARTISAN,
+                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.CONSOLE]
+                        },
                         {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             lambdaHandler: LaravelHandler.ARTISAN,

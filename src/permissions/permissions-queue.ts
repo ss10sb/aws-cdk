@@ -22,7 +22,7 @@ export class PermissionsQueue {
 
     static functionCanUseQueue(func: IFunction, queue: Queue, type: FunctionType): void {
         // the queue function needs "sendmessages"
-        const senders: FunctionType[] = [FunctionType.EVENT, FunctionType.QUEUE, FunctionType.SCHEDULED, FunctionType.WEB];
+        const senders: FunctionType[] = [FunctionType.EVENT, FunctionType.QUEUE, FunctionType.SCHEDULED, FunctionType.WEB, FunctionType.ARTISAN];
         const consumers: FunctionType[] = [FunctionType.QUEUE];
         if (senders.includes(type)) {
             queue.grantSendMessages(func.grantPrincipal);

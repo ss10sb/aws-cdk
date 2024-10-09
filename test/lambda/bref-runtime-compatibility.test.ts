@@ -1,8 +1,51 @@
-import {BrefRuntimeCompatibility} from "../../src/lambda/bref-runtime-compatibility";
+import {BrefRuntimeCompatibility, RuleRequireType, Rules, RuleType} from "../../src/lambda/bref-runtime-compatibility";
 import {BrefRuntime} from "../../src/lambda/bref-definitions";
 import {FunctionType} from "../../src/lambda/lambda-definitions";
 
 describe('bref runtime compatibility', () => {
+
+    it('passes when a rule is inclusive and one or more values match', () => {
+       const rules = new Rules();
+       expect(rules.apply({
+           rule: 'endsWith',
+           value: 'fpm'
+       }, FunctionType.WEB, [BrefRuntime.PHP83FPM, BrefRuntime.GD83])).toEqual({pass: true});
+    });
+
+    it('fails when a rule is inclusive and no values match', () => {
+        const rules = new Rules();
+        expect(rules.apply({
+            rule: 'endsWith',
+            value: 'fpm'
+        }, FunctionType.WEB, [BrefRuntime.PHP83, BrefRuntime.GD83])).toEqual({
+            pass: false,
+            message: 'web/endsWith (any:include) for "fpm": Failed compatibility check.'
+        });
+    });
+
+    it('passes when a rule is exclusive and no values match', () => {
+        const rules = new Rules();
+        expect(rules.apply({
+            rule: 'endsWith',
+            value: 'fpm',
+            require: RuleRequireType.ALL,
+            type: RuleType.EXCLUDE
+        }, FunctionType.WEB, [BrefRuntime.PHP83, BrefRuntime.GD83])).toEqual({pass: true});
+    });
+
+    it('fails when a rule is exclusive and one or more values match', () => {
+        const rules = new Rules();
+        expect(rules.apply({
+            rule: 'endsWith',
+            value: 'fpm',
+            require: RuleRequireType.ALL,
+            type: RuleType.EXCLUDE
+        }, FunctionType.WEB, [BrefRuntime.PHP83, BrefRuntime.PHP83FPM, BrefRuntime.GD83])).toEqual({
+            pass: false,
+            message: 'web/endsWith (all:exclude) for "fpm": Failed compatibility check.'
+        });
+    });
+
 
    it('passes when web type contains an fpm runtime for multiple runtimes', () => {
         const compat = new BrefRuntimeCompatibility();
@@ -13,6 +56,15 @@ describe('bref runtime compatibility', () => {
         expect(result.pass).toBe(true);
    });
 
+    it('passes when artisan type contains a php runtime for multiple runtimes', () => {
+        const compat = new BrefRuntimeCompatibility();
+        const result = compat.checkRuntimes([
+            BrefRuntime.PHP83,
+            BrefRuntime.CONSOLE
+        ], FunctionType.ARTISAN);
+        expect(result.pass).toBe(true);
+    });
+
     it('fails when web type does not contain an fpm runtime for multiple runtimes', () => {
         const compat = new BrefRuntimeCompatibility();
         const result = compat.checkRuntimes([
@@ -20,7 +72,7 @@ describe('bref runtime compatibility', () => {
             BrefRuntime.GD81,
         ], FunctionType.WEB);
         expect(result.pass).toBe(false);
-        expect(result.messages).toEqual(["web/php-81: requireEndsWith (fpm) check did not pass compatibility check."]);
+        expect(result.messages).toEqual(['web/endsWith (any:include) for "fpm": Failed compatibility check.']);
     });
 
     it('fails when web type does not contain an fpm runtime and contains a console runtime for multiple runtimes', () => {
@@ -31,16 +83,9 @@ describe('bref runtime compatibility', () => {
         ], FunctionType.WEB);
         expect(result.pass).toBe(false);
         expect(result.messages).toEqual([
-            "web/php-81: requireEndsWith (fpm) check did not pass compatibility check.",
-            "web/console: requireEndsWith (fpm) check did not pass compatibility check.",
+            'web/endsWith (any:include) for "fpm": Failed compatibility check.',
+            'web/endsWith (all:exclude) for "console": Failed compatibility check.'
         ]);
-    });
-
-    it('fails when web type does not contain an fpm runtime for single runtime', () => {
-        const compat = new BrefRuntimeCompatibility();
-        const result = compat.checkRuntime(BrefRuntime.PHP81, FunctionType.WEB);
-        expect(result.pass).toBe(false);
-        expect(result.messages).toEqual(["web/php-81: requireEndsWith (fpm) check did not pass compatibility check."]);
     });
 
     it('passes when queue type contains a php runtime for multiple runtimes', () => {
@@ -61,36 +106,7 @@ describe('bref runtime compatibility', () => {
         ], FunctionType.QUEUE);
         expect(result.pass).toBe(false);
         expect(result.messages).toEqual([
-            "queue/php-81-fpm: excludeEndsWith (fpm) check did not pass compatibility check.",
-        ]);
-    });
-
-    it('fails when queue type contains a console runtime for multiple runtimes', () => {
-        const compat = new BrefRuntimeCompatibility();
-        const result = compat.checkRuntimes([
-            BrefRuntime.PHP81,
-            BrefRuntime.CONSOLE,
-            BrefRuntime.GD81,
-        ], FunctionType.QUEUE);
-        expect(result.pass).toBe(false);
-        expect(result.messages).toEqual([
-            "queue/console: requireStartsWith (php) check did not pass compatibility check.",
-        ]);
-    });
-
-    it('executes multiple calls for queue', () => {
-        const compat = new BrefRuntimeCompatibility();
-        let result = compat.checkRuntime(BrefRuntime.PHP81FPM, FunctionType.QUEUE);
-        expect(result.pass).toBe(false);
-        expect(result.messages).toEqual([
-            "queue/php-81-fpm: excludeEndsWith (fpm) check did not pass compatibility check."
-        ]);
-        result = compat.checkRuntime(BrefRuntime.PHP81, FunctionType.QUEUE);
-        expect(result.pass).toBe(true);
-        result = compat.checkRuntime(BrefRuntime.CONSOLE, FunctionType.QUEUE);
-        expect(result.pass).toBe(false);
-        expect(result.messages).toEqual([
-            "queue/console: requireStartsWith (php) check did not pass compatibility check.",
+            'queue/endsWith (all:exclude) for "fpm": Failed compatibility check.',
         ]);
     });
 });

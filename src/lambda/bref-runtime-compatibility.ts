@@ -1,121 +1,167 @@
 import {FunctionType} from "./lambda-definitions";
-import {BrefRuntime, BrefRuntimeAccount, BrefRuntimes} from "./bref-definitions";
+import {BrefRuntime} from "./bref-definitions";
 
 export interface BrefRuntimeCompatibilityResults {
     readonly pass: boolean;
     readonly messages: string[];
 }
 
+export interface RuleProps {
+    readonly rule: string;
+    readonly value: string;
+    require?: RuleRequireType;
+    type?: RuleType;
+}
+
+export enum RuleRequireType {
+    ALL = 'all',
+    ANY = 'any'
+}
+
+export enum RuleType {
+    INCLUDE = 'include',
+    EXCLUDE = 'exclude',
+}
+
+export interface RuleResult {
+    pass: boolean;
+    message?: string;
+}
+
+export class Rules {
+
+    public apply(props: RuleProps, type: FunctionType, runtimes: BrefRuntime[]): RuleResult {
+        if (runtimes.length === 0) {
+            return {
+                pass: false,
+                message: this.composeErrorMessage(props, type, 'No runtimes found.')
+            }
+        }
+        props.require = props.require ?? RuleRequireType.ANY;
+        props.type = props.type ?? RuleType.INCLUDE;
+        return this.executeRuleForRuntimes(props, type, runtimes);
+    }
+
+    private executeRuleForRuntimes(props: RuleProps, type: FunctionType, runtimes: BrefRuntime[]): RuleResult {
+        const ruleMethod = props.rule;
+        const passes: boolean[] = [];
+        const errorMessage = this.composeErrorMessage(props, type);
+
+        for (const runtime of runtimes) {
+            // @ts-ignore - Use dynamic method call
+            const runtimePasses = this.modifyPassesForRuleType(props.type, this[ruleMethod](props.value, runtime));
+            if (props.require === RuleRequireType.ANY && runtimePasses) {
+                return {pass: true};
+            }
+            passes.push(runtimePasses);
+        }
+
+        if (this.anyRuntimesPass(props, passes)) {
+            return {pass: true};
+        }
+
+        if (this.allRuntimesPass(props, passes)) {
+            return {pass: true};
+        }
+
+        return {
+            pass: false,
+            message: errorMessage
+        }
+    }
+
+    private modifyPassesForRuleType(type: RuleType, passes: boolean): boolean {
+        if (type === RuleType.EXCLUDE) {
+            return !passes;
+        }
+
+        return passes;
+    }
+
+    private contains(ruleValue: string, runtime: BrefRuntime): boolean {
+        return runtime.includes(ruleValue);
+    }
+
+    private endsWith(ruleValue: string, runtime: BrefRuntime): boolean {
+        return runtime.endsWith(ruleValue);
+    }
+
+    private startsWith(ruleValue: string, runtime: BrefRuntime): boolean {
+        return runtime.startsWith(ruleValue);
+    }
+
+    private anyRuntimesPass(props: RuleProps, passes: boolean[]): boolean {
+        return props.require === RuleRequireType.ANY && passes.some(pass => pass);
+    }
+
+    private allRuntimesPass(props: RuleProps, passes: boolean[]): boolean {
+        return props.require === RuleRequireType.ALL && !passes.some(pass => !pass);
+    }
+
+    private composeErrorMessage(props: RuleProps, type: FunctionType, customMessage: string = 'Failed compatibility check.'): string {
+        return `${type}/${props.rule} (${props.require}:${props.type}) for "${props.value}": ${customMessage}`;
+    }
+}
+
 export class BrefRuntimeCompatibility {
 
-    map = {
-        [FunctionType.WEB]: {
-            requireEndsWith: 'fpm',
-        },
-        [FunctionType.QUEUE]: {
-            requireStartsWith: 'php',
-            excludeEndsWith: 'fpm',
-        },
-        [FunctionType.ARTISAN]: {
-            requireStartsWith: 'php',
-            excludeEndsWith: 'fpm',
-        },
-        [FunctionType.EVENT]: {},
-        [FunctionType.SCHEDULED]: {}
+    private rulesProps = {
+        [FunctionType.WEB]: [
+            {
+                rule: 'endsWith',
+                value: 'fpm'
+            },
+            {
+                rule: 'endsWith',
+                value: 'console',
+                require: RuleRequireType.ALL,
+                type: RuleType.EXCLUDE
+            }
+        ],
+        [FunctionType.QUEUE]: [
+            {
+                rule: 'startsWith',
+                value: 'php'
+            },
+            {
+                rule: 'endsWith',
+                value: 'fpm',
+                require: RuleRequireType.ALL,
+                type: RuleType.EXCLUDE
+            }
+        ],
+        [FunctionType.ARTISAN]: [
+            {
+                rule: 'startsWith',
+                value: 'php'
+            },
+            {
+                rule: 'endsWith',
+                value: 'fpm',
+                require: RuleRequireType.ALL,
+                type: RuleType.EXCLUDE
+            }
+        ],
+        [FunctionType.EVENT]: [],
+        [FunctionType.SCHEDULED]: []
     }
-
-    previous: Record<string, boolean> = {};
 
     public checkRuntimes(runtimes: BrefRuntime[], type: FunctionType): BrefRuntimeCompatibilityResults {
-        this.previous = {};
-        let passes = true;
+        const rules = new Rules();
+        let passed = true;
         const messages: string[] = [];
-        for (const runtime of runtimes) {
-            const m = this.checkRuntime(runtime, type);
-            if (!m.pass) {
-                passes = false;
-                messages.push(...m.messages);
-            }
-        }
-        return {
-            pass: passes,
-            messages: messages
-        }
-    }
-
-    public checkRuntime(runtime: BrefRuntime, type: FunctionType): BrefRuntimeCompatibilityResults {
-        if (!this.isCore(runtime)) {
-            return {pass: true, messages: []};
-        }
-        const mapped = this.map[type];
-        for (const [key, check] of Object.entries(mapped)) {
-            let p: boolean | undefined;
-            p = this.previousExecution(key);
-            if (p === undefined || p) {
-                p = this.executeCheck(key, runtime, check);
-            }
-            if (!p) {
-                return {
-                    pass: false,
-                    messages: [this.getErrorMessage(key, runtime, check, type)]
+        for (const ruleProp of this.rulesProps[type]) {
+            const ruleResult = rules.apply(ruleProp, type, runtimes);
+            if (!ruleResult.pass) {
+                passed = ruleResult.pass;
+                if (ruleResult.message) {
+                    messages.push(ruleResult.message);
                 }
             }
-            this.previous[key] = p;
         }
         return {
-            pass: true,
-            messages: []
+            pass: passed,
+            messages: messages
         }
-    }
-
-    protected getErrorMessage(key: string, runtime: BrefRuntime, check: string | BrefRuntime | BrefRuntime[], type: FunctionType): string {
-        return `${type}/${runtime}: ${key} (${this.checkToString(check)}) check did not pass compatibility check.`;
-    }
-
-    protected executeCheck(key: string, runtime: BrefRuntime, check: string | BrefRuntime | BrefRuntime[]): boolean {
-        const method = key + 'Passes';
-        // @ts-ignore
-        return this[method](runtime, check);
-    }
-
-    protected previousExecution(key: string): boolean|undefined {
-        return this.previous[key];
-    }
-
-    protected isCore(runtime: BrefRuntime): boolean {
-        const brefRuntimeAccount = BrefRuntimes.get(runtime);
-        return brefRuntimeAccount === BrefRuntimeAccount.CORE;
-    }
-
-    protected checkToString(check: string | BrefRuntime | BrefRuntime[]): string {
-        if (Array.isArray(check)) {
-            return check.join(' ');
-        }
-        return check;
-    }
-
-    protected requireEndsWithPasses(runtime: BrefRuntime, endsWith: string): boolean {
-        return runtime.endsWith(endsWith);
-    }
-
-    protected requireStartsWithPasses(runtime: BrefRuntime, startsWith: string): boolean {
-        return runtime.startsWith(startsWith);
-    }
-
-    protected excludeEndsWithPasses(runtime: BrefRuntime, endsWith: string): boolean {
-        return !runtime.endsWith(endsWith);
-    }
-
-    protected excludeAnyPasses(runtime: BrefRuntime, runtimes: BrefRuntime[]): boolean {
-        for (const r of runtimes) {
-            if (r === runtime) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    protected requirePasses(runtime: BrefRuntime, required: BrefRuntime): boolean {
-        return runtime === required;
     }
 }

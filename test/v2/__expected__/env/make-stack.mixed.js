@@ -504,6 +504,252 @@ module.exports = {
                     Version: '2012-10-17'
                 }
             }
+          },
+          pccsdlcmyappartisanfn0lgB0FC1686: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 30,
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          pccsdlcmyappartisanfn0ServiceRole71B468C8: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'lambda.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              ManagedPolicyArns: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                    ]
+                  ]
+                },
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+                    ]
+                  ]
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          pccsdlcmyappartisanfn0ServiceRoleDefaultPolicyC9211DD1: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'sqs:SendMessage',
+                      'sqs:GetQueueAttributes',
+                      'sqs:GetQueueUrl'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccsdlcmyappqueue069E607A', 'Arn' ]
+                    }
+                  },
+                  {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject',
+                      's3:PutObjectLegalHold',
+                      's3:PutObjectRetention',
+                      's3:PutObjectTagging',
+                      's3:PutObjectVersionTagging',
+                      's3:Abort*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      { 'Fn::GetAtt': [ 'pccsdlcmyapps352258330', 'Arn' ] },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [ 'pccsdlcmyapps352258330', 'Arn' ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [
+                      'dynamodb:BatchGetItem',
+                      'dynamodb:GetRecords',
+                      'dynamodb:GetShardIterator',
+                      'dynamodb:Query',
+                      'dynamodb:GetItem',
+                      'dynamodb:Scan',
+                      'dynamodb:ConditionCheckItem',
+                      'dynamodb:BatchWriteItem',
+                      'dynamodb:PutItem',
+                      'dynamodb:UpdateItem',
+                      'dynamodb:DeleteItem',
+                      'dynamodb:DescribeTable'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      },
+                      { Ref: 'AWS::NoValue' }
+                    ]
+                  },
+                  {
+                    Action: [
+                      'secretsmanager:GetSecretValue',
+                      'secretsmanager:DescribeSecret'
+                    ],
+                    Effect: 'Allow',
+                    Resource: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
+                  },
+                  {
+                    Action: [
+                      'secretsmanager:GetSecretValue',
+                      'secretsmanager:DescribeSecret'
+                    ],
+                    Effect: 'Allow',
+                    Resource: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456'
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccsdlcmyappartisanfn0ServiceRoleDefaultPolicyC9211DD1',
+              Roles: [ { Ref: 'pccsdlcmyappartisanfn0ServiceRole71B468C8' } ]
+            }
+          },
+          pccsdlcmyappartisanfn0SecurityGroup49481376: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+              GroupDescription: 'Automatic security group for Lambda Function pccsharedstackpccsdlcmyapppccsdlcmyappartisanfn021C137A6',
+              SecurityGroupEgress: [
+                {
+                  CidrIp: '0.0.0.0/0',
+                  Description: 'Allow all outbound traffic by default',
+                  IpProtocol: '-1'
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
+              VpcId: 'vpc-12345'
+            }
+          },
+          pccsdlcmyappartisanfn03CF1867A: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+              Code: {
+                S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
+                S3Key: 'f783265af338426734f8dd0676fbe351130e46ad3456447acf36651a1de9dad4.zip'
+              },
+              Environment: {
+                Variables: {
+                  AWS_APP_NAME: 'pcc-sdlc-myapp',
+                  MAIL_FROM_ADDRESS: 'no-reply@foo.sdlc.example.edu',
+                  IMPORTER_FROM: 'importer-no-reply@foo.sdlc.example.edu',
+                  DYNAMODB_CACHE_TABLE: { Ref: 'pccsdlcmyappcacheF6FEBBE3' },
+                  SQS_QUEUE: { Ref: 'pccsdlcmyappqueue069E607A' },
+                  AWS_BUCKET: { Ref: 'pccsdlcmyapps352258330' },
+                  AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
+                  AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                  APP_BASE_PATH: '/var/task',
+                  BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                  SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
+                  SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
+                }
+              },
+              FunctionName: 'pcc-sdlc-myapp-artisan-fn-0',
+              Handler: 'artisan',
+              Layers: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':lambda:us-west-2:534081306603:layer:php-82:48'
+                    ]
+                  ]
+                },
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':lambda:us-west-2:534081306603:layer:console:58'
+                    ]
+                  ]
+                }
+              ],
+              LoggingConfig: { LogGroup: { Ref: 'pccsdlcmyappartisanfn0lgB0FC1686' } },
+              MemorySize: 512,
+              Role: {
+                'Fn::GetAtt': [ 'pccsdlcmyappartisanfn0ServiceRole71B468C8', 'Arn' ]
+              },
+              Runtime: 'provided.al2',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
+              Timeout: 720,
+              VpcConfig: {
+                SecurityGroupIds: [
+                  {
+                    'Fn::GetAtt': [
+                      'pccsdlcmyappartisanfn0SecurityGroup49481376',
+                      'GroupId'
+                    ]
+                  }
+                ],
+                SubnetIds: [ 'p-12345', 'p-67890' ]
+              }
+            },
+            DependsOn: [
+              'pccsdlcmyappartisanfn0ServiceRoleDefaultPolicyC9211DD1',
+              'pccsdlcmyappartisanfn0ServiceRole71B468C8'
+            ]
         },
         pccsdlcmyappeventfn0lg4E9F168A: {
             Type: 'AWS::Logs::LogGroup',
