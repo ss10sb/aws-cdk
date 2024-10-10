@@ -10,6 +10,7 @@ export interface MakeCodePipelineSynthStepProps {
     buildType: EnvBuildType;
     source: CodePipelineCodestarSource;
     phpVersion?: PhpVersion;
+    buildStep?: boolean|string;
 }
 
 export class MakeSynthStep extends NonConstruct {
@@ -19,7 +20,7 @@ export class MakeSynthStep extends NonConstruct {
     }
 
     private createSynthStep(props: MakeCodePipelineSynthStepProps): CodePipelineSynthStep {
-        if (EnvBuildTypeHelper.isLambda(props.buildType)) {
+        if (EnvBuildTypeHelper.isLambda(props.buildType) && this.wantsBuildStep(props)) {
             const buildStep = this.createBuildStep(props);
             return new CodePipelineSynthStep(this.scope, this.scope.node.id, {
                 input: buildStep.step,
@@ -37,5 +38,9 @@ export class MakeSynthStep extends NonConstruct {
             input: props.source.source,
             phpVersion: props.phpVersion
         });
+    }
+
+    private wantsBuildStep(props: MakeCodePipelineSynthStepProps): boolean {
+        return (props.phpVersion !== undefined || props.buildStep !== false);
     }
 }

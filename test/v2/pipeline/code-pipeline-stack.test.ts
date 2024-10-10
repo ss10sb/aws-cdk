@@ -97,7 +97,7 @@ describe('code pipeline stack test', () => {
         }
     });
 
-    it('creates a lambda stack with a non-bref alb target', () => {
+    it('creates a lambda stack with a non-bref alb target and no build step', () => {
         const config = getConfig('defaults.lambda.nobref');
         const app = new App();
         const name = ConfigStackHelper.getMainStackName(config);

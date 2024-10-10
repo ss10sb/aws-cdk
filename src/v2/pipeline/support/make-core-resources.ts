@@ -84,7 +84,8 @@ export class MakeCoreResources extends NonConstruct {
         return maker.make({
             source: source,
             buildType: this.props.buildType,
-            phpVersion: this.config.Parameters?.phpVersion
+            phpVersion: this.config.Parameters?.phpVersion,
+            buildStep: this.config.Parameters?.buildStep
         });
     }
 }

@@ -35,6 +35,7 @@ export interface BaseParameters extends Record<string, any> {
     readonly vpcId?: string;
     readonly albArn?: string;
     readonly phpVersion?: PhpVersion;
+    readonly buildStep?: string | boolean;
 }
 
 export interface ConfigParameters extends BaseParameters {
