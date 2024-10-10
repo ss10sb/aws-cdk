@@ -18,10 +18,19 @@ export class FunctionFactory {
     }
 
     public static createFromProps(scope: Construct, id: string, factoryProps: CoreFunctionFactoryProps, props: Record<string, any>): IFunction {
+        FunctionFactory.ensureLambdaRuntime(props);
         if (FunctionFactory.wantsBref(props)) {
             return FunctionFactory.create<PhpBrefFunctionProps, PhpBrefFunction>(PhpBrefFunction, scope, id, factoryProps).create(<PhpBrefFunctionProps>props);
         }
         return FunctionFactory.create(CoreFunction, scope, id, factoryProps).create(<CoreFunctionProps>props);
+    }
+
+    public static ensureLambdaRuntime(props: Record<string, any>): void {
+        if (props.lambdaRuntime && typeof props.lambdaRuntime === 'string') {
+            const key= props.lambdaRuntime;
+            // @ts-ignore
+            props.lambdaRuntime = Runtime[key];
+        }
     }
 
     public static wantsBref(props: Record<string, any>): boolean {

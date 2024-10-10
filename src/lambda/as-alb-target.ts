@@ -33,6 +33,7 @@ export interface AsAlbTargetProps {
     phpVersion?: PhpVersion;
     enableLogging?: boolean;
     certificateProps?: DnsValidatedCertificateProps;
+    makeBucket?: boolean;
 }
 
 export interface AsAlbTargetResult {
@@ -50,11 +51,14 @@ export class AsAlbTarget extends NonConstruct {
     }
 
     create(props: AsAlbTargetProps): AsAlbTargetResult {
-        const bucket = this.createS3Bucket(props);
-        if (props.assetPathToCopy) {
-            this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), bucket);
+        let bucket: Bucket | undefined = undefined;
+        if (this.wantsBucket(props)) {
+            bucket = this.createS3Bucket(props);
+            if (props.assetPathToCopy) {
+                this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), bucket);
+            }
+            this.addBucketPathToEnvironment(bucket, <CoreFunctionProps>props.functionProps);
         }
-        this.addBucketPathToEnvironment(bucket, <CoreFunctionProps>props.functionProps);
         const func = this.createFunction(props.functionProps);
         this.addFunctionToTargetGroup(func);
 
@@ -124,5 +128,9 @@ export class AsAlbTarget extends NonConstruct {
             return assetPath;
         }
         return path.join(process.cwd(), assetPath);
+    }
+
+    protected wantsBucket(props: AsAlbTargetProps): boolean {
+        return (props.makeBucket === true || props.assetBucket !== undefined || props.assetPrefix !== undefined || props.assetPathToCopy !== undefined);
     }
 }

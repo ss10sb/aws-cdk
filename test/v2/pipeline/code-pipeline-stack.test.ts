@@ -82,19 +82,46 @@ describe('code pipeline stack test', () => {
         stack.setEcrRepositories(ecrRepositories);
         stack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.inspect();
-        // const expected = require('../__expected__/pipeline/code-pipeline-stack.mixed');
-        // templateHelper.template.templateMatches(expected);
-        // let count = 0;
-        // for (const stage of stack.envStages?.stages ?? []) {
-        //     const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.makeStage.stack));
-        //     // console.log(count);
-        //     // templateHelper.inspect();
-        //     const file = `code-pipeline-stack.mixed.stage${count}`;
-        //     const expected = require('../__expected__/pipeline/'+file);
-        //     templateHelper.template.templateMatches(expected);
-        //     count ++;
-        // }
+        // templateHelper.inspect();
+        const expected = require('../__expected__/pipeline/code-pipeline-stack.mixed');
+        templateHelper.template.templateMatches(expected);
+        let count = 0;
+        for (const stage of stack.envStages?.stages ?? []) {
+            const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.makeStage.stack));
+            // console.log(count);
+            // templateHelper.inspect();
+            const file = `code-pipeline-stack.mixed.stage${count}`;
+            const expected = require('../__expected__/pipeline/'+file);
+            templateHelper.template.templateMatches(expected);
+            count ++;
+        }
+    });
+
+    it('creates a lambda stack with a non-bref alb target', () => {
+        const config = getConfig('defaults.lambda.nobref');
+        const app = new App();
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new CodePipelineStack(app, name, config, {}, {
+            env: {
+                account: '12344',
+                region: 'us-west-2'
+            }
+        });
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = require('../__expected__/pipeline/code-pipeline-stack.lambda.nobref');
+        templateHelper.template.templateMatches(expected);
+        let count = 0;
+        for (const stage of stack.envStages?.stages ?? []) {
+            const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.makeStage.stack));
+            // console.log(count);
+            // templateHelper.inspect();
+            const file = `code-pipeline-stack.lambda.nobref.stage${count}`;
+            const expected = require('../__expected__/pipeline/'+file);
+            templateHelper.template.templateMatches(expected);
+            count ++;
+        }
     });
 
     function getConfig(name: string): Record<string, any> {
