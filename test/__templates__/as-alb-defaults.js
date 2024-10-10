@@ -7,11 +7,11 @@ module.exports = {
                 Name: 'target-group',
                 TargetType: 'lambda',
                 Targets: [
-                    { Id: { 'Fn::GetAtt': [ 'funcwebfn067A6530A', 'Arn' ] } }
+                { Id: { 'Fn::GetAtt': [ 'stackwebfn08880B307', 'Arn' ] } }
                 ]
             },
             DependsOn: [
-                'funcwebfn0Invoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HYA5F14DD0'
+              'stackwebfn0Invoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HYE5F3E067'
             ]
         },
         assetsfoobarcom0A6DB6C9: {
@@ -87,13 +87,13 @@ module.exports = {
                 }
             }
         },
-          funcwebfn0lg7D0BB952: {
+          stackwebfn0lg1862EC8E: {
             Type: 'AWS::Logs::LogGroup',
             Properties: { RetentionInDays: 30 },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
           },
-        funcwebfn0ServiceRoleA9004225: {
+          stackwebfn0ServiceRole75FD7552: {
             Type: 'AWS::IAM::Role',
             Properties: {
                 AssumeRolePolicyDocument: {
@@ -130,10 +130,10 @@ module.exports = {
                 ]
             }
         },
-        funcwebfn0SecurityGroup727361E5: {
+          stackwebfn0SecurityGroup6FF1F874: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
-                GroupDescription: 'Automatic security group for Lambda Function stackfuncwebfn0D79057EC',
+              GroupDescription: 'Automatic security group for Lambda Function stackstackwebfn089E2CE1B',
                 SecurityGroupEgress: [
                     {
                         CidrIp: '0.0.0.0/0',
@@ -144,7 +144,7 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
-        funcwebfn067A6530A: {
+          stackwebfn08880B307: {
             Type: 'AWS::Lambda::Function',
             Properties: {
                 Code: {
@@ -188,7 +188,7 @@ module.exports = {
                         }
                     }
                 },
-                FunctionName: 'func-web-fn-0',
+              FunctionName: 'stack-web-fn-0',
                 Handler: 'public/index.php',
                 Layers: [
                     {
@@ -202,27 +202,27 @@ module.exports = {
                         ]
                     }
                 ],
-              LoggingConfig: { LogGroup: { Ref: 'funcwebfn0lg7D0BB952' } },
+              LoggingConfig: { LogGroup: { Ref: 'stackwebfn0lg1862EC8E' } },
                 MemorySize: 512,
-                Role: { 'Fn::GetAtt': [ 'funcwebfn0ServiceRoleA9004225', 'Arn' ] },
+              Role: { 'Fn::GetAtt': [ 'stackwebfn0ServiceRole75FD7552', 'Arn' ] },
                 Runtime: 'provided.al2023',
                 Timeout: 120,
                 VpcConfig: {
                     SecurityGroupIds: [
                         {
-                            'Fn::GetAtt': [ 'funcwebfn0SecurityGroup727361E5', 'GroupId' ]
+                    'Fn::GetAtt': [ 'stackwebfn0SecurityGroup6FF1F874', 'GroupId' ]
                         }
                     ],
                     SubnetIds: [ 'p-12345', 'p-67890' ]
                 }
             },
-            DependsOn: [ 'funcwebfn0ServiceRoleA9004225' ]
+            DependsOn: [ 'stackwebfn0ServiceRole75FD7552' ]
         },
-        funcwebfn0Invoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HYA5F14DD0: {
+          stackwebfn0Invoke2UTWxhlfyqbT5FTn5jvgbLgjFfJwzswGk55DU1HYE5F3E067: {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: {'Fn::GetAtt': ['funcwebfn067A6530A', 'Arn']},
+              FunctionName: { 'Fn::GetAtt': [ 'stackwebfn08880B307', 'Arn' ] },
                 Principal: 'elasticloadbalancing.amazonaws.com'
             }
         }

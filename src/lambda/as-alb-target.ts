@@ -1,8 +1,9 @@
 import {NonConstruct} from "../core/non-construct";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "./php-bref-function";
+import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {IFunction} from "aws-cdk-lib/aws-lambda";
-import {Bucket, HttpMethods} from "aws-cdk-lib/aws-s3";
-import {S3Props} from "../s3/s3-bucket";
+import {Bucket, BucketEncryption, HttpMethods} from "aws-cdk-lib/aws-s3";
+import {S3Bucket, S3Props} from "../s3/s3-bucket";
 import {PhpVersion} from "../config/config-definitions";
 import {Construct} from "constructs";
 import {FunctionType} from "./lambda-definitions";
@@ -14,21 +15,18 @@ import {ApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {LambdaTarget} from "aws-cdk-lib/aws-elasticloadbalancingv2-targets";
 import {RemovalPolicy} from "aws-cdk-lib";
 import {S3BucketAssets} from "../s3/s3-bucket-assets";
-import {DnsValidatedCertificateProps} from "../acm/acm-certificate";
+import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certificate";
+import {CoreFunction, CoreFunctionFactoryProps, CoreFunctionProps} from "./core-function";
+import {FunctionFactory} from "./function-factory";
+import {LambdaTimeout} from "./lamda-timeout";
 
-/**
- * @deprecated
- */
-export interface BrefAsAlbTargetFactoryProps {
+export interface AsAlbTargetFactoryProps {
     readonly targetGroup: ApplicationTargetGroup;
-    readonly functionFactory: PhpBrefFunction;
+    readonly functionFactoryProps: CoreFunctionFactoryProps;
 }
 
-/**
- * @deprecated
- */
-export interface BrefAsAlbTargetProps {
-    functionProps: PhpBrefFunctionProps;
+export interface AsAlbTargetProps {
+    functionProps: Record<string, any>;
     assetPrefix?: string;
     assetPathToCopy?: string;
     assetBucket?: S3Props;
@@ -37,32 +35,26 @@ export interface BrefAsAlbTargetProps {
     certificateProps?: DnsValidatedCertificateProps;
 }
 
-/**
- * @deprecated
- */
-export interface BrefAsAlbTargetResult {
+export interface AsAlbTargetResult {
     readonly lambdaFunction: IFunction;
     readonly assetBucket?: Bucket;
 }
 
-/**
- * @deprecated
- */
-export class BrefAsAlbTarget extends NonConstruct {
+export class AsAlbTarget extends NonConstruct {
 
-    readonly props: BrefAsAlbTargetFactoryProps;
+    readonly props: AsAlbTargetFactoryProps;
 
-    constructor(scope: Construct, id: string, props: BrefAsAlbTargetFactoryProps) {
+    constructor(scope: Construct, id: string, props: AsAlbTargetFactoryProps) {
         super(scope, id);
         this.props = props;
     }
 
-    create(props: BrefAsAlbTargetProps): BrefAsAlbTargetResult {
+    create(props: AsAlbTargetProps): AsAlbTargetResult {
         const bucket = this.createS3Bucket(props);
         if (props.assetPathToCopy) {
             this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), bucket);
         }
-        this.addBucketPathToEnvironment(bucket, props.functionProps);
+        this.addBucketPathToEnvironment(bucket, <CoreFunctionProps>props.functionProps);
         const func = this.createFunction(props.functionProps);
         this.addFunctionToTargetGroup(func);
 
@@ -72,7 +64,7 @@ export class BrefAsAlbTarget extends NonConstruct {
         };
     }
 
-    protected addBucketPathToEnvironment(bucket: Bucket, props: PhpBrefFunctionProps): void {
+    protected addBucketPathToEnvironment(bucket: Bucket, props: CoreFunctionProps): void {
         if (props.environment === undefined) {
             props.environment = {};
         }
@@ -85,13 +77,13 @@ export class BrefAsAlbTarget extends NonConstruct {
         this.props.targetGroup.addTarget(new LambdaTarget(func));
     }
 
-    protected createFunction(props: PhpBrefFunctionProps): IFunction {
-        props.lambdaTimeout = props.lambdaTimeout ?? this.props.functionFactory.getDefaultTimeout(FunctionType.WEB, false);
+    protected createFunction(props: Record<string, any>): IFunction {
+        props.lambdaTimeout = props.lambdaTimeout ?? LambdaTimeout.timeout(FunctionType.WEB, false);
         props.type = props.type ?? FunctionType.WEB;
-        return this.props.functionFactory.create(props);
+        return FunctionFactory.createFromProps(this.scope, this.scope.node.id, this.props.functionFactoryProps, props);
     }
 
-    protected createS3Bucket(props: BrefAsAlbTargetProps): Bucket {
+    protected createS3Bucket(props: AsAlbTargetProps): Bucket {
         const bucketProps = props.assetBucket ?? {};
         bucketProps.bucketName = this.getS3AssetsBucketDomain(props).replaceAll('.', '-');
         bucketProps.cors = bucketProps.cors ?? [{
@@ -106,7 +98,7 @@ export class BrefAsAlbTarget extends NonConstruct {
         return s3Bucket.create('assets', bucketProps);
     }
 
-    protected getS3AssetsBucketDomain(props: BrefAsAlbTargetProps): string {
+    protected getS3AssetsBucketDomain(props: AsAlbTargetProps): string {
         return `${props.assetPrefix}.${props.certificateProps?.domainName}`;
     }
 

@@ -1,12 +1,12 @@
 const {MatchHelper} = require("../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
-          functionwebfn0lgD95A7CF9: {
+        functionwebfn0lgD95A7CF9: {
             Type: 'AWS::Logs::LogGroup',
-            Properties: { RetentionInDays: 30 },
+            Properties: {RetentionInDays: 30},
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
-          },
+        },
         functionwebfn0ServiceRole21C72759: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -67,19 +67,7 @@ module.exports = {
                 },
                 FunctionName: 'function-web-fn-0',
                 Handler: 'public/index.php',
-                Layers: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':lambda:us-east-1:534081306603:layer:php-81-fpm:59'
-                            ]
-                        ]
-                    }
-                ],
-              LoggingConfig: { LogGroup: { Ref: 'functionwebfn0lgD95A7CF9' } },
+                LoggingConfig: {LogGroup: {Ref: 'functionwebfn0lgD95A7CF9'}},
                 MemorySize: 512,
                 Role: {
                     'Fn::GetAtt': ['functionwebfn0ServiceRole21C72759', 'Arn']
@@ -96,32 +84,6 @@ module.exports = {
                 }
             },
             DependsOn: ['functionwebfn0ServiceRole21C72759']
-        },
-        functionwebfn0scheduledevent0F79BB987: {
-            Type: 'AWS::Events::Rule',
-            Properties: {
-                Name: 'function-web-fn-0-scheduled-event-0',
-                ScheduleExpression: 'rate(1 minute)',
-                State: 'ENABLED',
-                Targets: [
-                    {
-                        Arn: {'Fn::GetAtt': ['functionwebfn0DF20C809', 'Arn']},
-                        Id: 'Target0',
-                        Input: '{"cli":"schedule:run"}'
-                    }
-                ]
-            }
-        },
-        functionwebfn0scheduledevent0AllowEventRulestackfunctionwebfn0A4DC51CCA901EF07: {
-            Type: 'AWS::Lambda::Permission',
-            Properties: {
-                Action: 'lambda:InvokeFunction',
-                FunctionName: {'Fn::GetAtt': ['functionwebfn0DF20C809', 'Arn']},
-                Principal: 'events.amazonaws.com',
-                SourceArn: {
-                    'Fn::GetAtt': ['functionwebfn0scheduledevent0F79BB987', 'Arn']
-                }
-            }
         }
     }
 }

@@ -5,7 +5,6 @@ import {AlbTargetGroupProps} from "../../../alb/alb-target-group";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "../../../lambda/php-bref-function";
 import {FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "../../../lambda/lambda-definitions";
 import {DistributionConfigProps} from "../../../cloudfront/cloudfront-definitions";
-import {BrefAsAlbTarget, BrefAsAlbTargetProps, BrefAsAlbTargetResult} from "../../../lambda/bref-as-alb-target";
 import {AlbResources, MakeAlbResources} from "./make-alb-resources";
 import {Queue} from "aws-cdk-lib/aws-sqs";
 import {SqsEventSource} from "aws-cdk-lib/aws-lambda-event-sources";
@@ -15,6 +14,9 @@ import {PermissionsEnvLambdaStack} from "../../../permissions/permissions-env-la
 import {MakeParameters} from "../make-definitions";
 import {LaravelHandler} from "../../../lambda/bref-definitions";
 import {CoreMakeResources} from "./make-core-resources";
+import {AsAlbTarget, AsAlbTargetProps, AsAlbTargetResult} from "../../../lambda/as-alb-target";
+import {CoreFunctionFactoryProps, CoreFunctionProps} from "../../../lambda/core-function";
+import {FunctionFactory} from "../../../lambda/function-factory";
 
 export interface MakeLambdaParameters extends MakeParameters {
     lambda: LambdaParameters;
@@ -24,15 +26,15 @@ export interface LambdaParameters {
     readonly healthCheck?: HealthCheck;
     readonly listenerRule?: AlbListenerRuleProps;
     readonly targetGroup?: AlbTargetGroupProps;
-    readonly functions?: PhpBrefFunctionProps[];
+    readonly functions?: PhpBrefFunctionProps[]|CoreFunctionProps[];
     readonly queue?: LambdaQueueConfigProps;
     readonly distribution?: DistributionConfigProps;
-    readonly asAlbTarget?: BrefAsAlbTargetProps;
+    readonly asAlbTarget?: AsAlbTargetProps;
 }
 
 export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
 
-    functionFactory!: PhpBrefFunction;
+    functionFactoryProps!: CoreFunctionFactoryProps;
 
     make(services: CoreMakeResources) {
         const wrappers: FunctionWrapper[] = [];
@@ -46,13 +48,13 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             });
             albServices = makeAlbServices.make(true);
         }
-        this.functionFactory = new PhpBrefFunction(this.scope, this.scope.node.id, {
+        this.functionFactoryProps = {
             vpc: this.lookups.vpc,
             secret: this.lookups.secret,
             sharedSecret: this.lookups.sharedSecret,
             environment: this.getBaseEnvironmentFromCoreServices(services),
             secretKeys: this.parameters?.secretKeys ?? [],
-        });
+        }
         const functionWrappers = this.createFunctions();
         wrappers.push(...functionWrappers);
         const queueFunctionWrapper = this.createQueueFunction(services.queue);
@@ -60,7 +62,7 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             wrappers.push(queueFunctionWrapper);
         }
         if (this.parameters.lambda.asAlbTarget) {
-            const result = this.brefAsAlbTarget(albServices.targetGroup, this.parameters.lambda.asAlbTarget);
+            const result = this.asAlbTarget(albServices.targetGroup, this.parameters.lambda.asAlbTarget);
             wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
         }
         if (this.parameters.lambda.distribution) {
@@ -90,10 +92,10 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
         environment['APP_BASE_PATH'] = '/var/task';
     }
 
-    private brefAsAlbTarget(targetGroup: ApplicationTargetGroup, props: BrefAsAlbTargetProps): BrefAsAlbTargetResult {
-        const brefAsAlbTarget = new BrefAsAlbTarget(this.scope, this.scope.node.id, {
-            functionFactory: this.functionFactory,
-            targetGroup: targetGroup
+    private asAlbTarget(targetGroup: ApplicationTargetGroup, props: AsAlbTargetProps): AsAlbTargetResult {
+        const asAlbTarget = new AsAlbTarget(this.scope, this.scope.node.id, {
+            targetGroup: targetGroup,
+            functionFactoryProps: this.functionFactoryProps,
         });
         const domainName = this.getDefaultDomainName();
         if (domainName && this.parameters.hostedZoneDomain) {
@@ -102,12 +104,12 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
                 hostedZone: this.parameters.hostedZoneDomain
             }
         }
-        return brefAsAlbTarget.create(props);
+        return asAlbTarget.create(props);
     }
 
     private brefDistributionFactory(props: BrefDistributionProps): BrefDistributionResult {
         const brefFactory = new BrefDistribution(this.scope, this.scope.node.id, {
-            functionFactory: this.functionFactory,
+            functionFactory: FunctionFactory.createBref(this.scope, this.scope.node.id, this.functionFactoryProps),
             secret: this.lookups.secret
         });
         props.apiProps = props.apiProps ?? {};
@@ -130,9 +132,9 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
         return functions;
     }
 
-    private createFunction(config: PhpBrefFunctionProps): FunctionWrapper {
+    private createFunction(config: Record<string, any>): FunctionWrapper {
         config.type = config.type ?? FunctionType.EVENT;
-        const func = this.functionFactory.create(config);
+        const func = FunctionFactory.createFromProps(this.scope, this.scope.node.id, this.functionFactoryProps, config);
         return {
             lambdaFunction: func,
             type: config.type

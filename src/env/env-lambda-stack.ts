@@ -14,7 +14,9 @@ import {DistributionConfigProps} from "../cloudfront/cloudfront-definitions";
 import {ConfigStackProps} from "../config/config-stack";
 import {PermissionsEnvLambdaStack} from "../permissions/permissions-env-lamdba-stack";
 import {BrefDistribution, BrefDistributionProps, BrefDistributionResult} from "../lambda/bref-distribution";
-import {BrefAsAlbTarget, BrefAsAlbTargetProps, BrefAsAlbTargetResult} from "../lambda/bref-as-alb-target";
+import {CoreFunctionFactoryProps} from "../lambda/core-function";
+import {FunctionFactory} from "../lambda/function-factory";
+import {AsAlbTarget, AsAlbTargetProps, AsAlbTargetResult} from "../lambda/as-alb-target";
 
 export interface EnvLambdaStackServicesProps extends EnvStackServicesProps {
     readonly functions: Functions;
@@ -30,7 +32,7 @@ export interface EnvLambdaParameters extends EnvParameters {
     readonly queue?: LambdaQueueConfigProps;
     readonly secretArn?: string;
     readonly distribution?: DistributionConfigProps;
-    readonly asAlbTarget?: BrefAsAlbTargetProps;
+    readonly asAlbTarget?: AsAlbTargetProps;
 }
 
 export interface EnvLambdaProps extends EnvProps {
@@ -39,7 +41,7 @@ export interface EnvLambdaProps extends EnvProps {
 export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
 
     envProps: EnvLambdaProps;
-    functionFactory!: PhpBrefFunction;
+    functionFactoryProps!: CoreFunctionFactoryProps;
 
     constructor(scope: Construct, id: string, config: T, configStackProps: ConfigStackProps, stackProps: StackProps, envProps: EnvLambdaProps) {
         super(scope, id, config, configStackProps, stackProps);
@@ -55,7 +57,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
-        this.functionFactory = new PhpBrefFunction(this, this.node.id, {
+        this.functionFactoryProps = {
             vpc: this.lookups.vpc,
             secret: this.lookups.secret,
             sharedSecret: this.lookups.sharedSecret,
@@ -65,7 +67,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
                 s3: s3
             }),
             secretKeys: this.config.Parameters?.secretKeys ?? [],
-        })
+        };
         const functionWrappers = this.createFunctions();
         wrappers.push(...functionWrappers);
         const queueFunctionWrapper = this.createQueueFunction(queue);
@@ -86,7 +88,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             targetGroup = this.createTargetGroup();
             listenerRule = this.createListenerRule(targetGroup);
             this.configureTargetGroupHealthCheck(targetGroup);
-            const result = this.brefAsAlbTarget(targetGroup);
+            const result = this.asAlbTarget(targetGroup);
             wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
         }
         const aRecord = this.createARecord();
@@ -120,9 +122,9 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         return functions;
     }
 
-    private createFunction(config: PhpBrefFunctionProps): FunctionWrapper {
+    private createFunction(config: Record<string, any>): FunctionWrapper {
         config.type = config.type ?? FunctionType.EVENT;
-        const func = this.functionFactory.create(config);
+        const func = FunctionFactory.createFromProps(this, this.node.id, this.functionFactoryProps, config);
         return {
             lambdaFunction: func,
             type: config.type
@@ -138,10 +140,10 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         }
     }
 
-    private brefAsAlbTarget(targetGroup: ApplicationTargetGroup): BrefAsAlbTargetResult {
-        const brefAsAlbTarget = new BrefAsAlbTarget(this, this.node.id, {
-            functionFactory: this.functionFactory,
-            targetGroup: targetGroup
+    private asAlbTarget(targetGroup: ApplicationTargetGroup): AsAlbTargetResult {
+        const asAlbTarget = new AsAlbTarget(this, this.node.id, {
+            targetGroup: targetGroup,
+            functionFactoryProps: this.functionFactoryProps
         });
         const props = this.config.Parameters.asAlbTarget ?? {};
         const domainName = this.getDefaultDomainName();
@@ -151,12 +153,12 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
                 hostedZone: this.config.Parameters.hostedZoneDomain
             }
         }
-        return brefAsAlbTarget.create(props);
+        return asAlbTarget.create(props);
     }
 
     private brefDistributionFactory(): BrefDistributionResult {
         const brefFactory = new BrefDistribution(this, this.node.id, {
-            functionFactory: this.functionFactory,
+            functionFactory: FunctionFactory.createBref(this, this.node.id, this.functionFactoryProps),
             secret: this.lookups.secret
         });
         const distConfigProps = <BrefDistributionProps>this.config.Parameters.distribution;

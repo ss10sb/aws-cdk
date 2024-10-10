@@ -680,7 +680,7 @@ module.exports = {
             Properties: {
               Code: {
                 S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                S3Key: 'f783265af338426734f8dd0676fbe351130e46ad3456447acf36651a1de9dad4.zip'
+                S3Key: MatchHelper.endsWith('zip')
               },
               Environment: {
                 Variables: {
@@ -727,7 +727,7 @@ module.exports = {
               Role: {
                 'Fn::GetAtt': [ 'pccsdlcmyappartisanfn0ServiceRole71B468C8', 'Arn' ]
               },
-              Runtime: 'provided.al2',
+              Runtime: 'provided.al2023',
               Tags: [
                 { Key: 'App', Value: 'myapp' },
                 { Key: 'College', Value: 'PCC' },
@@ -973,7 +973,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappeventfn0ServiceRole01FF5957', 'Arn']
                 },
-                Runtime: 'provided.al2',
+                Runtime: 'provided.al2023',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},
@@ -1261,7 +1261,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappqueuefn0ServiceRole25D2EC47', 'Arn']
                 },
-                Runtime: 'provided.al2',
+                Runtime: 'provided.al2023',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},

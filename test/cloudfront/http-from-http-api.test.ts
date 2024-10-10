@@ -66,7 +66,7 @@ describe('http from http api', () => {
                     Properties: {
                         Code: {
                             S3Bucket: 'cdk-hnb659fds-assets-12344-us-west-2',
-                            S3Key: 'f783265af338426734f8dd0676fbe351130e46ad3456447acf36651a1de9dad4.zip'
+                            S3Key: MatchHelper.endsWith('zip')
                         },
                         FunctionName: 'function-event-fn-0',
                         Handler: 'artisan',
@@ -87,7 +87,7 @@ describe('http from http api', () => {
                         Role: {
                             'Fn::GetAtt': ['functioneventfn0ServiceRole30E080B7', 'Arn']
                         },
-                        Runtime: 'provided.al2',
+                        Runtime: 'provided.al2023',
                         Timeout: 120
                     },
                     DependsOn: ['functioneventfn0ServiceRole30E080B7']
