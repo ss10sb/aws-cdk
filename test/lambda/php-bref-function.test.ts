@@ -7,8 +7,13 @@ import {PhpBrefFunction} from "../../src/lambda/php-bref-function";
 import {BrefRuntime} from "../../src/lambda/bref-definitions";
 import {VpcHelper} from "../../src/utils/vpc-helper";
 import {MatchHelper} from "../../src/utils/testing/match-helper";
+import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('php bref function create', () => {
+
+    beforeEach(() => {
+        resetStaticProps();
+    });
 
     it('should create the default function', () => {
         const app = new App();

@@ -24,10 +24,10 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
     protected getLayers(funcName: string, props: PhpBrefFunctionProps): ILayerVersion[] {
         const runtimes = this.getRuntimes(props);
         const layers: ILayerVersion[] = [];
-        const baseName = NamingHelper.fromParts([funcName, 'layer']);
         const type = this.getType(props);
         this.checkRuntimesForCompatibility(runtimes, type);
         for (const runtime of runtimes) {
+            const baseName = NamingHelper.fromParts([funcName, runtime]);
             const name = this.nameIncrementer.next(baseName);
             layers.push(LayerVersion.fromLayerVersionArn(
                 this.scope,

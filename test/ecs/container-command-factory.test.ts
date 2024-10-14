@@ -1,7 +1,12 @@
 import {App, Stage} from "aws-cdk-lib";
 import {ContainerCommand, ContainerCommandFactory, ContainerEntryPoint} from "../../src/ecs/container-command-factory";
+import {NameIncrementer} from "../../src/utils/name-incrementer";
 
 describe('container command factory', () => {
+
+    beforeEach(() => {
+        NameIncrementer.reset();
+    });
 
     it('can create bash entrypoint', () => {
         const app = new App();

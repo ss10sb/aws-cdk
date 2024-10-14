@@ -7,8 +7,13 @@ import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {AcmCertificate} from "../../src/acm/acm-certificate";
 import {MatchHelper} from "../../src/utils/testing/match-helper";
+import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('php lambda rest api', () => {
+
+    beforeEach(() => {
+        resetStaticProps();
+    });
 
     it('should create default rest api', () => {
         const app = new App();

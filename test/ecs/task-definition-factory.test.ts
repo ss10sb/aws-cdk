@@ -9,12 +9,18 @@ import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {ContainerFactory} from "../../src/ecs/container-factory";
 import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
 import {ContainerCommandFactory} from "../../src/ecs/container-command-factory";
+import {NameIncrementer} from "../../src/utils/name-incrementer";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
 };
 
 describe('task definition factory', () => {
+
+    beforeEach(() => {
+        NameIncrementer.reset();
+    });
+
     it('should create web stack', () => {
         const app = new App();
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};

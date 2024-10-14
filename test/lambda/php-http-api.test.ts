@@ -6,8 +6,13 @@ import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {PhpBrefFunction} from "../../src/lambda/php-bref-function";
 import {BrefRuntime} from "../../src/lambda/bref-definitions";
 import {MatchHelper} from "../../src/utils/testing/match-helper";
+import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('php http api create', () => {
+
+    beforeEach(() => {
+        resetStaticProps();
+    });
 
     it('should create the default http api endpoint', () => {
         const app = new App();

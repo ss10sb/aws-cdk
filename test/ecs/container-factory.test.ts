@@ -10,12 +10,17 @@ import {ContainerType} from "../../src/ecs/container-definitions";
 import {ContainerFactory} from "../../src/ecs/container-factory";
 import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
 import {ContainerCommandFactory} from "../../src/ecs/container-command-factory";
+import {NameIncrementer} from "../../src/utils/name-incrementer";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
 };
 
 describe('container factory', () => {
+
+    beforeEach(() => {
+        NameIncrementer.reset();
+    });
 
     it('should create web service container with defaults', () => {
         const app = new App();

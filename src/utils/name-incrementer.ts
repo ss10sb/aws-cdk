@@ -2,14 +2,18 @@ import {NamingHelper} from "./naming-helper";
 
 export class NameIncrementer {
 
-    names: Record<string, number> = {};
+    static names: Record<string, number> = {};
 
     next(name: string): string {
-        if (this.names[name] === undefined) {
-            this.names[name] = 0;
+        if (NameIncrementer.names[name] === undefined) {
+            NameIncrementer.names[name] = 0;
         } else {
-            this.names[name]++;
+            NameIncrementer.names[name]++;
         }
-        return NamingHelper.fromParts([name, this.names[name].toString()]);
+        return NamingHelper.fromParts([name, NameIncrementer.names[name].toString()]);
+    }
+
+    static reset(): void {
+        NameIncrementer.names = {};
     }
 }

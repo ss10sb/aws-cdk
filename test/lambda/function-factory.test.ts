@@ -4,8 +4,13 @@ import {CoreFunction} from "../../src/lambda/core-function";
 import {FunctionFactory} from "../../src/lambda/function-factory";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "../../src/lambda/php-bref-function";
 import {Runtime} from "aws-cdk-lib/aws-lambda";
+import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('function factory create', () => {
+
+    beforeEach(() => {
+        resetStaticProps();
+    })
 
     it('should create the core function factory', () => {
         const app = new App();

@@ -6,8 +6,13 @@ import {Template} from "aws-cdk-lib/assertions";
 import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {CoreFunction} from "../../src/lambda/core-function";
 import {Runtime} from "aws-cdk-lib/aws-lambda";
+import {resetStaticProps} from "../../src/utils/reset-static-props";
 
 describe('core function create', () => {
+
+    beforeEach(() => {
+        resetStaticProps();
+    });
 
     it('should create the default function', () => {
         const app = new App();

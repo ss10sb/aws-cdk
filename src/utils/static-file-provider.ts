@@ -59,8 +59,11 @@ export class StaticFileProvider {
     }
 
     getFileName(name: string): string {
+        if (!name.endsWith('.json')) {
+            name = name + '.json';
+        }
         this.sanitize(name);
-        const fileName = path.resolve(this.baseDirectory, `${name}.json`);
+        const fileName = path.resolve(this.baseDirectory, name);
         if (fileName.indexOf(this.baseDirectory) !== 0) {
             throw new Error('Path traversal.');
         }
@@ -81,8 +84,9 @@ export class StaticFileProvider {
         if (name.indexOf('\0') !== -1) {
             throw new Error('Null bytes.');
         }
-        if (!/^[A-z0-9_-]+$/.test(name)) {
-            throw new Error('Invalid character. Allows "A-z 0-9 _ -".');
+        if (!/^[/A-z0-9_.-]+$/.test(name)) {
+            console.error('name', name);
+            throw new Error('Invalid character. Allows "/ A-z 0-9 _ . -".');
         }
     }
 }

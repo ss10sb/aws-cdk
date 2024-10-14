@@ -1,8 +1,6 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {App, Stack} from "aws-cdk-lib";
 import {Secrets} from "../../src/secret/secrets";
-import {BrefAsAlbTarget} from "../../src/lambda/bref-as-alb-target";
-import {PhpBrefFunction} from "../../src/lambda/php-bref-function";
 import {VpcHelper} from "../../src/utils/vpc-helper";
 import {AlbTargetGroup} from "../../src/alb/alb-target-group";
 import path from "path";
@@ -64,13 +62,13 @@ describe('bref as alb target', () => {
         const targetGroup = albTargetGroup.create({
             targetType: TargetType.LAMBDA
         });
-        const bref = new BrefAsAlbTarget(stack, 'my-app', {
-            functionFactory: new PhpBrefFunction(stack, 'func', {
+        const bref = new AsAlbTarget(stack, 'my-app', {
+            functionFactoryProps: {
                 environment: {},
-                secretKeys: secretKeys,
+                secretKeys: [],
                 vpc: vpc,
                 secret: secrets.fetch()
-            }),
+            },
             targetGroup: targetGroup
         });
         bref.create({
