@@ -10,7 +10,7 @@ import {
     LambdaIntegrationOptions,
     LambdaRestApi,
     LogGroupLogDestination,
-    MethodLoggingLevel,
+    MethodLoggingLevel, MethodOptions,
     StageOptions
 } from "aws-cdk-lib/aws-apigateway";
 import {RemovalPolicy} from "aws-cdk-lib";
@@ -62,7 +62,7 @@ export class PhpLambdaRestApi extends NonConstruct {
         return {};
     }
 
-    protected getDefaultMethodOptions(authorizer?: IAuthorizer): Record<string, any> {
+    protected getDefaultMethodOptions(authorizer?: IAuthorizer): MethodOptions {
         const options: Record<string, any> = {};
         if (authorizer) {
             options['authorizer'] = authorizer;
