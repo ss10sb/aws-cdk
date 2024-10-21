@@ -70,7 +70,7 @@ module.exports = {
                     }
                 ],
                 MemorySize: 512,
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Timeout: 120
             },
             DependsOn: ['functioneventfn0ServiceRole30E080B7']

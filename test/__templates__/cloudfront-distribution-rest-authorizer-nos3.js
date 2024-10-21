@@ -71,7 +71,7 @@ module.exports = {
               Role: {
                 'Fn::GetAtt': [ 'functioneventfn0ServiceRole30E080B7', 'Arn' ]
               },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Timeout: 120
             },
             DependsOn: ['functioneventfn0ServiceRole30E080B7']

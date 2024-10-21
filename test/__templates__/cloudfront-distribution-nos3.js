@@ -95,7 +95,7 @@ module.exports = {
                 ],
               LoggingConfig: { LogGroup: { Ref: 'functioneventfn0lgD47CFCEB' } },
                 MemorySize: 512,
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Timeout: 120,
                 VpcConfig: {
                     SecurityGroupIds: [

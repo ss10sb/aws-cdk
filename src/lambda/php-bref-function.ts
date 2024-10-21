@@ -1,5 +1,5 @@
 import {BrefRuntime} from "./bref-definitions";
-import {ILayerVersion, LayerVersion} from "aws-cdk-lib/aws-lambda";
+import {ILayerVersion, LayerVersion, Runtime} from "aws-cdk-lib/aws-lambda";
 import {BrefLayerArn} from "./bref-layer-arn";
 import {FunctionType} from "./lambda-definitions";
 import {Construct} from "constructs";
@@ -13,6 +13,12 @@ export interface PhpBrefFunctionProps extends CoreFunctionProps {
 }
 
 export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
+
+    readonly defaults: Record<string, any> = {
+        memorySize: 512,
+        version: 'latest',
+        lambdaRuntime: Runtime.PROVIDED_AL2
+    };
 
     readonly brefRuntimeCompatibility: BrefRuntimeCompatibility;
 

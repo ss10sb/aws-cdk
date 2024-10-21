@@ -86,7 +86,7 @@ module.exports = {
               LoggingConfig: { LogGroup: { Ref: 'funcwebfn0lg7D0BB952' } },
                 MemorySize: 512,
               Role: { 'Fn::GetAtt': [ 'funcwebfn0ServiceRoleA9004225', 'Arn' ] },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Timeout: 28
             },
             DependsOn: ['funcwebfn0ServiceRoleA9004225']

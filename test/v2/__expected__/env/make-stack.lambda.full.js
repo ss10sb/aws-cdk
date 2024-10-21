@@ -766,7 +766,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappeventfn0ServiceRole01FF5957', 'Arn']
                 },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},
@@ -1054,7 +1054,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappqueuefn0ServiceRole25D2EC47', 'Arn']
                 },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},
@@ -1591,7 +1591,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappwebfn0ServiceRole50B25A5F', 'Arn']
                 },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},

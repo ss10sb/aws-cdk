@@ -205,7 +205,7 @@ module.exports = {
               LoggingConfig: { LogGroup: { Ref: 'stackwebfn0lg1862EC8E' } },
                 MemorySize: 512,
               Role: { 'Fn::GetAtt': [ 'stackwebfn0ServiceRole75FD7552', 'Arn' ] },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Timeout: 120,
                 VpcConfig: {
                     SecurityGroupIds: [

@@ -84,7 +84,7 @@ module.exports = {
               Role: {
                 'Fn::GetAtt': [ 'functionwebfn0ServiceRole21C72759', 'Arn' ]
               },
-                Runtime: 'provided.al2023',
+                Runtime: 'provided.al2',
                 Timeout: 28,
                 VpcConfig: {
                     SecurityGroupIds: [
