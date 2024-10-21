@@ -38,4 +38,21 @@ export class PhpVersionHelper {
         }
         return LinuxBuildImage.STANDARD_7_0;
     }
+
+    static runtimeVersionFromProps(props: Record<string, any>): string {
+        return this.runtimeVersion(props.phpVersion);
+    }
+
+    static runtimeVersion(version?: PhpVersion): string {
+        const map = {
+            [PhpVersion.PHP81]: '8.1',
+            [PhpVersion.PHP82]: '8.2',
+            [PhpVersion.PHP83]: '8.3'
+        }
+        if (version) {
+            return map[version];
+        }
+
+        return map[PhpVersion.PHP83];
+    }
 }

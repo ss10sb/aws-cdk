@@ -864,7 +864,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
                                     },
-                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"00ba043a3905ece704681ea4a82f23c92ff6802d3f70649d0cde0207cdcd4ad1"}]'
+                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"74a4faf3083ee5f86b2f2a8bfffb418b887198b7a77d22af2b278ae24e3f6157"}]'
                                 },
                                 InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'pcc-shared-test-build-step',
@@ -1355,9 +1355,11 @@ module.exports = {
                 },
                 Source: {
                     BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
                         '  "phases": {\n' +
                         '    "install": {\n' +
+                        '      "runtime-versions": {\n' +
+                        '        "php": "8.3"\n' +
+                        '      },\n' +
                         '      "commands": [\n' +
                         '        "php -v",\n' +
                         `        "php -r \\"copy('https://getcomposer.org/installer', 'composer-setup.php');\\"",\n` +
@@ -1371,7 +1373,7 @@ module.exports = {
                         '        "cd codebase",\n' +
                         '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
                         '        "cp .env.example .env",\n' +
-                        '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-scripts --no-progress",\n' +
+                        '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress",\n' +
                         '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
@@ -1383,9 +1385,12 @@ module.exports = {
                         '      ]\n' +
                         '    }\n' +
                         '  },\n' +
+                        '  "version": "0.2",\n' +
                         '  "artifacts": {\n' +
                         '    "base-directory": "./",\n' +
-                        '    "files": "**/*"\n' +
+                        '    "files": [\n' +
+                        '      "**/*"\n' +
+                        '    ]\n' +
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
