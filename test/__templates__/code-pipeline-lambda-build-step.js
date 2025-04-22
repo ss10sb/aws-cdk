@@ -676,13 +676,9 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::123pipeline:root'
-                                        ]
+                        'Fn::GetAtt': [
+                          'pipelinecodepipelinePipelineRoleCE72FCDC',
+                          'Arn'
                                     ]
                                 }
                             }

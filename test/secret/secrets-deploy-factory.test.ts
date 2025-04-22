@@ -54,8 +54,7 @@ describe('secrets deploy factory', () => {
             'ADMIN_USER_ID',
             'APP_NAME',
             'APP_KEY',
-            'APP_URL',
-            'AUTHORIZER_TOKEN'
+            'APP_URL'
         ];
         expect(results[0].stackName).toEqual('pcc-prod-test-abc-secrets');
         expect(results[1].stackName).toEqual('pcc-prod-test-def-secrets');
@@ -86,8 +85,7 @@ describe('secrets deploy factory', () => {
             'ADMIN_USER_ID',
             'APP_NAME',
             'APP_KEY',
-            'APP_URL',
-            'AUTHORIZER_TOKEN'
+            'APP_URL'
         ];
         expect(results[0].keys).toEqual(expectedKeys);
         expect(results[1].keys).toEqual(expectedKeys);

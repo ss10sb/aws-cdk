@@ -8,7 +8,6 @@ import {HelperRunProps} from "../config/config-definitions";
 import {SecretConfigHelper} from "../utils/secret-config-helper";
 import {NamingHelper} from "../utils/naming-helper";
 import {randomString} from "../utils/random-string";
-import {AUTHORIZER_TOKEN} from "../lambda/authorizer-base";
 
 export interface SecretsDeployProps {
     outputFile: string;
@@ -70,9 +69,6 @@ export class SecretsDeployFactory {
     private addAuthorizerToken(config: Record<string, any>): void {
         if (config.Parameters.secrets === undefined) {
             config.Parameters.secrets = [];
-        }
-        if (!this.secretsHasKey(AUTHORIZER_TOKEN, config.Parameters.secrets)) {
-            config.Parameters.secrets.push({key: AUTHORIZER_TOKEN, value: randomString()});
         }
     }
 

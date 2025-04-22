@@ -4,7 +4,6 @@ import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "./php-bref-function";
 import {Bucket, BucketEncryption} from "aws-cdk-lib/aws-s3";
 import {BucketDeployment, Source} from "aws-cdk-lib/aws-s3-deployment";
-import {IDistribution, SecurityPolicyProtocol} from "aws-cdk-lib/aws-cloudfront";
 import {ApplicationListenerRule, ApplicationTargetGroup, HealthCheck} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {S3Bucket, S3Props} from "../s3/s3-bucket";
 import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certificate";
@@ -12,16 +11,12 @@ import {PreBuildLookups} from "../env/pre-build-lookups";
 import {AlbTargetGroupProps} from "../alb/alb-target-group";
 import {AlbListenerRuleProps} from "../alb/alb-listener-rule";
 import {NonConstruct} from "../core/non-construct";
-import {WebDistribution} from "../cloudfront/web-distribution";
 import fs from "fs";
 import path from "path";
 import {PhpVersion} from "../config/config-definitions";
-import {FunctionType, PhpApiProps, PhpApiResult} from "./lambda-definitions";
+import {FunctionType} from "./lambda-definitions";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
-import {Secrets} from "../secret/secrets";
-import {AUTHORIZER_TOKEN} from "./authorizer-base";
 import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
-import {PhpApiFactory} from "./php-api-factory";
 import {RemovalPolicy} from "aws-cdk-lib";
 
 interface BrefFactoryProps {
@@ -30,14 +25,6 @@ interface BrefFactoryProps {
     assetPathToCopy?: string;
     assetBucket?: S3Props;
     phpVersion?: PhpVersion;
-}
-
-export interface BrefFactoryDistributionProps extends BrefFactoryProps {
-    certificateProps: DnsValidatedCertificateProps;
-    apiProps: PhpApiProps;
-    minimumSslProtocol?: SecurityPolicyProtocol;
-    enableLogging?: boolean;
-    webAclId?: string;
 }
 
 /**
@@ -56,12 +43,6 @@ export interface BrefFactoryLoadBalancerProps extends BrefFactoryProps {
 interface BrefFactoryResult {
     lambdaFunction: IFunction;
     assetBucket?: Bucket;
-}
-
-export interface BrefFactoryDistributionResult extends BrefFactoryResult {
-    certificate: ICertificate;
-    apiResult: PhpApiResult;
-    distribution?: IDistribution;
 }
 
 /**
@@ -87,47 +68,6 @@ export class BrefFactory extends NonConstruct {
         this.secret = secret;
     }
 
-    forDistribution(props: BrefFactoryDistributionProps): BrefFactoryDistributionResult {
-        const token = this.getAuthorizerToken();
-        this.addTokenToAuthorizerProps(token, props);
-        const certificate = this.createCertificate(props.certificateProps);
-        const func = this.createFunction(props.functionProps);
-        const distribution = new WebDistribution(this.scope, this.id);
-        props.apiProps.domainNameOptions = {
-            domainName: props.certificateProps.domainName,
-            certificate: certificate
-        };
-        const apiResult = this.createApi(func, props);
-        const bucket = this.createS3Bucket(props.assetBucket);
-        if (bucket && props.assetPathToCopy) {
-            this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), bucket);
-        }
-        const dist = distribution.create({
-            api: apiResult.api,
-            certificate: certificate,
-            domainName: props.certificateProps.domainName,
-            minimumSslProtocol: props.minimumSslProtocol,
-            assetPath: props.assetPath,
-            s3AssetBucket: bucket,
-            webAclId: props.webAclId,
-            enableLogging: props.enableLogging,
-            token: token
-        });
-        return {
-            assetBucket: bucket,
-            certificate: certificate,
-            distribution: dist,
-            apiResult: apiResult,
-            lambdaFunction: func
-        }
-    }
-
-    protected addTokenToAuthorizerProps(token: string, props: BrefFactoryDistributionProps): void {
-        if (props.apiProps.authorizerProps === undefined) {
-            props.apiProps.authorizerProps = {token: token};
-        }
-    }
-
     protected createCertificate(props: DnsValidatedCertificateProps): ICertificate {
         const cert = new AcmCertificate(this.scope, this.id);
         return cert.create(props);
@@ -137,13 +77,6 @@ export class BrefFactory extends NonConstruct {
         props.lambdaTimeout = props.lambdaTimeout ?? this.funcFactory.getDefaultTimeout(FunctionType.WEB);
         props.type = props.type ?? FunctionType.WEB;
         return this.funcFactory.create(props);
-    }
-
-    protected createApi(func: IFunction, props: BrefFactoryDistributionProps): PhpApiResult {
-        props.apiProps.baseDomainName = props.certificateProps.domainName;
-        props.apiProps.hostedZone = props.certificateProps.hostedZone;
-        const apiCreator = new PhpApiFactory(this.scope, this.id);
-        return apiCreator.create(func, props.apiProps);
     }
 
     protected createS3Bucket(props?: S3Props): Bucket | undefined {
@@ -179,12 +112,5 @@ export class BrefFactory extends NonConstruct {
             return assetPath;
         }
         return path.join(process.cwd(), assetPath);
-    }
-
-    protected getAuthorizerToken(): string {
-        if (this.secret) {
-            return Secrets.getReferenceFromSecret(AUTHORIZER_TOKEN, <ISecret>this.secret);
-        }
-        return 'INVALID';
     }
 }

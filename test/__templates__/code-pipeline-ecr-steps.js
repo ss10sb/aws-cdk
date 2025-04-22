@@ -144,6 +144,12 @@ module.exports = {
         pipelinePipeline4163A4B1: {
             Type: 'AWS::CodePipeline::Pipeline',
             Properties: {
+              ArtifactStore: {
+                Location: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
+                Type: 'S3'
+              },
+              PipelineType: 'V1',
+              RestartExecutionOnUpdate: true,
                 RoleArn: { 'Fn::GetAtt': [ 'pipelinePipelineRole7016E5DF', 'Arn' ] },
                 Stages: [
                     {
@@ -158,7 +164,8 @@ module.exports = {
                                 Configuration: {
                                     ConnectionArn: 'arn:...',
                                     FullRepositoryId: 'repoOwner/repoName',
-                                    BranchName: 'main'
+                        BranchName: 'main',
+                        DetectChanges: true
                                 },
                                 Name: 'repoOwner_repoName',
                                 OutputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
@@ -263,12 +270,7 @@ module.exports = {
                         ],
                         Name: 'ecr'
                     }
-                ],
-                ArtifactStore: {
-                    Location: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
-                    Type: 'S3'
-                },
-                RestartExecutionOnUpdate: true
+              ]
             },
             DependsOn: [
                 'pipelinePipelineRoleDefaultPolicy16010F3E',
@@ -285,14 +287,7 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':iam::123pipeline:root'
-                                        ]
-                                    ]
+                        'Fn::GetAtt': [ 'pipelinePipelineRole7016E5DF', 'Arn' ]
                                 }
                             }
                         }
@@ -510,6 +505,9 @@ module.exports = {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step pcc-prod-test/Pipeline/Build/synth',
+              EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
@@ -539,16 +537,16 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-prod-test/Pipeline/Build/synth',
-                EncryptionKey: 'alias/aws/s3'
+              }
             }
         },
         pipelinePipelineecrnginxecrstep81BC1706: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step pcc-prod-test/Pipeline/ecr/nginx-ecr-step',
+              EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     EnvironmentVariables: [
@@ -632,16 +630,16 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-prod-test/Pipeline/ecr/nginx-ecr-step',
-                EncryptionKey: 'alias/aws/s3'
+              }
             }
         },
         pipelinePipelineecrphpfpmecrstepD697CA6A: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step pcc-prod-test/Pipeline/ecr/phpfpm-ecr-step',
+              EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     EnvironmentVariables: [
@@ -725,10 +723,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-prod-test/Pipeline/ecr/phpfpm-ecr-step',
-                EncryptionKey: 'alias/aws/s3'
+              }
             }
         },
         pipelineCodeBuildActionRole4D1FDB53: {
@@ -953,6 +948,9 @@ module.exports = {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step pcc-prod-test/Pipeline/UpdatePipeline/SelfMutate',
+              EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
@@ -980,10 +978,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-prod-test/Pipeline/UpdatePipeline/SelfMutate',
-                EncryptionKey: 'alias/aws/s3'
+              }
             }
         },
         nginxecrC430EE7B: {

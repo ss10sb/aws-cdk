@@ -4,12 +4,10 @@ import {AlbListenerRuleProps} from "../../../alb/alb-listener-rule";
 import {AlbTargetGroupProps} from "../../../alb/alb-target-group";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "../../../lambda/php-bref-function";
 import {FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "../../../lambda/lambda-definitions";
-import {DistributionConfigProps} from "../../../cloudfront/cloudfront-definitions";
 import {AlbResources, MakeAlbResources} from "./make-alb-resources";
 import {Queue} from "aws-cdk-lib/aws-sqs";
 import {SqsEventSource} from "aws-cdk-lib/aws-lambda-event-sources";
 import {EnvEndpointType, EnvEnvironmentProps} from "../../../env/env-definitions";
-import {BrefDistribution, BrefDistributionProps, BrefDistributionResult} from "../../../lambda/bref-distribution";
 import {PermissionsEnvLambdaStack} from "../../../permissions/permissions-env-lamdba-stack";
 import {MakeParameters} from "../make-definitions";
 import {LaravelHandler} from "../../../lambda/bref-definitions";
@@ -28,7 +26,6 @@ export interface LambdaParameters {
     readonly targetGroup?: AlbTargetGroupProps;
     readonly functions?: PhpBrefFunctionProps[]|CoreFunctionProps[];
     readonly queue?: LambdaQueueConfigProps;
-    readonly distribution?: DistributionConfigProps;
     readonly asAlbTarget?: AsAlbTargetProps;
 }
 
@@ -65,14 +62,6 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             const result = this.asAlbTarget(albServices.targetGroup, this.parameters.lambda.asAlbTarget);
             wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
         }
-        if (this.parameters.lambda.distribution) {
-            const result = this.brefDistributionFactory(<BrefDistributionProps>this.parameters.lambda.distribution);
-            this.lookups.distribution = result.distribution;
-            wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
-            if (result.apiResult.authorizer?.lambdaFunction) {
-                wrappers.push({lambdaFunction: result.apiResult.authorizer.lambdaFunction, type: FunctionType.EVENT});
-            }
-        }
         new PermissionsEnvLambdaStack(this.scope, this.scope.node.id, {
             functions: {
                 functions: wrappers,
@@ -105,23 +94,6 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             }
         }
         return asAlbTarget.create(props);
-    }
-
-    private brefDistributionFactory(props: BrefDistributionProps): BrefDistributionResult {
-        const brefFactory = new BrefDistribution(this.scope, this.scope.node.id, {
-            functionFactory: FunctionFactory.createBref(this.scope, this.scope.node.id, this.functionFactoryProps),
-            secret: this.lookups.secret
-        });
-        props.apiProps = props.apiProps ?? {};
-        props.apiProps.alarmEmails = this.parameters.alarmEmails ?? [];
-        const domainName = this.getDefaultDomainName();
-        if (domainName && this.parameters.hostedZoneDomain) {
-            props.certificateProps = {
-                domainName: domainName,
-                hostedZone: this.parameters.hostedZoneDomain
-            }
-        }
-        return brefFactory.create(props);
     }
 
     private createFunctions(): FunctionWrapper[] {

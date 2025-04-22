@@ -810,14 +810,7 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::123pipeline:root'
-                                        ]
-                                    ]
+                        'Fn::GetAtt': [ 'stackcodepipelinePipelineRoleABF819A4', 'Arn' ]
                                 }
                             }
                         }
@@ -1034,14 +1027,7 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':iam::123pipeline:root'
-                                        ]
-                                    ]
+                        'Fn::GetAtt': [ 'stackcodepipelinePipelineRoleABF819A4', 'Arn' ]
                                 }
                             }
                         }

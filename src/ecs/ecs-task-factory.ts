@@ -5,7 +5,7 @@ import {
     TaskServiceType,
     Wrapper
 } from "./task-definitions";
-import {Cluster, FargatePlatformVersion, TaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {Cluster, FargatePlatformVersion, FargateTaskDefinition, TaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
 import {CronOptions, Schedule} from "aws-cdk-lib/aws-events";
 import {ScheduledFargateTask} from "aws-cdk-lib/aws-ecs-patterns";
@@ -56,14 +56,14 @@ export class EcsTaskFactory extends AbstractFactory {
             return {
                 type: task.type,
                 taskDefinition: taskDefinition,
-                resource: this.createScheduledTask(task, taskDefinition)
+                resource: this.createScheduledTask(task, <FargateTaskDefinition>taskDefinition)
             };
         }
         if (task.type === TaskServiceType.UPDATE_RUN_ONCE_TASK) {
             return {
                 type: task.type,
                 taskDefinition: taskDefinition,
-                resource: this.createRunOnceOnUpdate(task, taskDefinition)
+                resource: this.createRunOnceOnUpdate(task, <FargateTaskDefinition>taskDefinition)
             };
         }
         if (task.type === TaskServiceType.RUN_ONCE_TASK) {
@@ -80,7 +80,7 @@ export class EcsTaskFactory extends AbstractFactory {
         }
     }
 
-    private createRunOnceOnCreate(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): EcsRunTask {
+    private createRunOnceOnCreate(task: EcsTaskConfigProps, taskDefinition: FargateTaskDefinition): EcsRunTask {
         return this.createRunOnce(task, {
             cluster: this.props.cluster,
             taskDefinition: taskDefinition,
@@ -90,7 +90,7 @@ export class EcsTaskFactory extends AbstractFactory {
         });
     }
 
-    private createRunOnceOnUpdate(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): EcsRunTask {
+    private createRunOnceOnUpdate(task: EcsTaskConfigProps, taskDefinition: FargateTaskDefinition): EcsRunTask {
         return this.createRunOnce(task, {
             cluster: this.props.cluster,
             taskDefinition: taskDefinition,
@@ -100,7 +100,7 @@ export class EcsTaskFactory extends AbstractFactory {
         });
     }
 
-    private createRunOnceOnCreateAndUpdate(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): EcsRunTask {
+    private createRunOnceOnCreateAndUpdate(task: EcsTaskConfigProps, taskDefinition: FargateTaskDefinition): EcsRunTask {
         return this.createRunOnce(task, {
             cluster: this.props.cluster,
             taskDefinition: taskDefinition,
@@ -115,7 +115,7 @@ export class EcsTaskFactory extends AbstractFactory {
         return new EcsRunTask(this.scope, name, runTaskProps);
     }
 
-    private createScheduledTask(task: EcsTaskConfigProps, taskDefinition: TaskDefinition): ScheduledFargateTask {
+    private createScheduledTask(task: EcsTaskConfigProps, taskDefinition: FargateTaskDefinition): ScheduledFargateTask {
         const name = this.getTaskName(task);
         return new ScheduledFargateTask(this.scope, name, {
             scheduledFargateTaskDefinitionOptions: {

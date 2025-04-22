@@ -44,18 +44,13 @@ module.exports = {
                 hostedZoneDomain: `sdlc.${common.domain}`,
                 dynamoDb: {},
                 subdomain: common.subdomain,
-                distribution: {
-                    assetBucket: {},
-                    assetPath: 'assets/*',
+                asAlbTarget: {
+                    assetPrefix: 'assets',
                     assetPathToCopy: path.resolve(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.resolve(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM
-                    },
-                    apiType: ApiType.HTTP,
-                    apiProps: {},
-                    webAclId: 'arn:aws:wafv2:us-east-1:12344:global/webacl/webacl-sdlc',
-                    geoRestrict: ['RU', 'BY', 'CN'],
+                        brefRuntime: BrefRuntime.PHP83FPM
+                    }
                 }
             }
         },
@@ -77,19 +72,13 @@ module.exports = {
                 steps: {
                     manualApproval: {}
                 },
-                distribution: {
-                    assetBucket: {},
-                    assetPath: 'assets/*',
+                asAlbTarget: {
+                    assetPrefix: 'assets',
                     assetPathToCopy: path.resolve(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.resolve(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM
-                    },
-                    apiType: ApiType.HTTP,
-                    apiProps: {
-                        logProps: {}
-                    },
-                    webAclId: 'arn:aws:wafv2:us-east-1:12344:global/webacl/webacl-prod'
+                        brefRuntime: BrefRuntime.PHP83FPM
+                    }
                 }
             }
         }

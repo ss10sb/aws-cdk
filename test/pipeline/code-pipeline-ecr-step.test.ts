@@ -38,6 +38,7 @@ describe('code pipeline ecr step', () => {
             post: [ecrStep.step]
         });
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
         templateHelper.template.templateMatches(getExpected());
     });
 

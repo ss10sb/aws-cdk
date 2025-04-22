@@ -16,21 +16,6 @@ describe('env lamdba stack', () => {
         resetStaticProps();
     });
 
-    it('should create env stack for distribution', () => {
-        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
-        const envStackProps = {env: {region: 'us-west-2', account: '2222'}};
-        const envConfig = getEnvConfigForDistribution();
-        const app = new App();
-        const stack = new Stack(app, 'pcc-shared-stack', stackProps);
-        const name = ConfigStackHelper.getMainStackName(envConfig);
-        const envStack = new EnvLambdaStack(stack, name, envConfig, {}, envStackProps, {});
-        envStack.build();
-        const templateHelper = new TemplateHelper(Template.fromStack(envStack));
-        // templateHelper.inspect();
-        const expected = require('../__templates__/env-lambda-stack-distribution');
-        templateHelper.template.templateMatches(expected);
-    });
-
     it('should create env stack for alb target', () => {
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const envStackProps = {env: {region: 'us-west-2', account: '2222'}};

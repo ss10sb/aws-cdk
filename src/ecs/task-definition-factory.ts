@@ -1,5 +1,5 @@
 import {TaskServiceType} from "./task-definitions";
-import {Compatibility, NetworkMode, TaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {Compatibility, FargateTaskDefinition, NetworkMode, TaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {Construct} from "constructs";
 import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {PhysicalName} from "aws-cdk-lib";
@@ -31,7 +31,7 @@ export class TaskDefinitionFactory extends AbstractFactory {
         this.props = props;
     }
 
-    create(type: TaskServiceType, props: TaskDefinitionProps): TaskDefinition {
+    create(type: TaskServiceType, props: TaskDefinitionProps): TaskDefinition|FargateTaskDefinition {
         const name = this.getIncrementedName(this.mixNameWithId(`task-def-${type}`));
         const td = new TaskDefinition(this.scope, name, {
             family: name,

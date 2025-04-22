@@ -947,7 +947,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                                Name: 'FileAsset1',
+                      Name: 'AWS679f53fac002430cb0da5b7982bd2287_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -969,7 +969,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                                Name: 'FileAsset2',
+                      Name: 'pcc-sdlc-test-artisan-fn-0_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -991,7 +991,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                                Name: 'FileAsset3',
+                      Name: 'pcc-sdlc-test-start-stop-fn_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -1223,13 +1223,9 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':iam::12344:root'
-                                        ]
+                        'Fn::GetAtt': [
+                          'pccsharedtestcodepipelinePipelineRole7DA95E27',
+                          'Arn'
                                     ]
                                 }
                             }
@@ -1715,13 +1711,9 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':iam::12344:root'
-                                        ]
+                        'Fn::GetAtt': [
+                          'pccsharedtestcodepipelinePipelineRole7DA95E27',
+                          'Arn'
                                     ]
                                 }
                             }
@@ -2375,7 +2367,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset1',
+              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/AWS679f53fac002430cb0da5b7982bd2287_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -2465,8 +2457,8 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"1b76a89c99861d4099552c5b48e16daafabc13fd66f42ccdcef246972442caf6:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"1b76a89c99861d4099552c5b48e16daafabc13fd66f42ccdcef246972442caf6:22222-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00:11111-us-west-2\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00:22222-us-west-2\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
@@ -2483,7 +2475,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset2',
+              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/pcc-sdlc-test-artisan-fn-0_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -2591,7 +2583,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/FileAsset3',
+              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/pcc-sdlc-test-start-stop-fn_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',

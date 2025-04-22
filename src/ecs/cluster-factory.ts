@@ -1,5 +1,5 @@
 import {Construct} from "constructs";
-import {Cluster} from "aws-cdk-lib/aws-ecs";
+import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs";
 import {Alarm} from "aws-cdk-lib/aws-cloudwatch";
 import {IVpc} from "aws-cdk-lib/aws-ec2";
 import {AbstractFactory} from "../core/abstract-factory";
@@ -25,7 +25,7 @@ export class ClusterFactory extends AbstractFactory {
         const clusterName = this.mixNameWithId(name);
         const cluster = new Cluster(this.scope, clusterName, {
             vpc: this.props.vpc,
-            containerInsights: this.props.containerInsights ?? false,
+            containerInsightsV2: this.props.containerInsights ? ContainerInsights.ENABLED : ContainerInsights.DISABLED,
             clusterName: clusterName
         });
         this.createAlarms(cluster);

@@ -10,10 +10,8 @@ import {Functions, FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "
 import {AlbListenerRuleProps} from "../alb/alb-listener-rule";
 import {AlbTargetGroupProps} from "../alb/alb-target-group";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "../lambda/php-bref-function";
-import {DistributionConfigProps} from "../cloudfront/cloudfront-definitions";
 import {ConfigStackProps} from "../config/config-stack";
 import {PermissionsEnvLambdaStack} from "../permissions/permissions-env-lamdba-stack";
-import {BrefDistribution, BrefDistributionProps, BrefDistributionResult} from "../lambda/bref-distribution";
 import {CoreFunctionFactoryProps} from "../lambda/core-function";
 import {FunctionFactory} from "../lambda/function-factory";
 import {AsAlbTarget, AsAlbTargetProps, AsAlbTargetResult} from "../lambda/as-alb-target";
@@ -31,7 +29,6 @@ export interface EnvLambdaParameters extends EnvParameters {
     readonly functions?: PhpBrefFunctionProps[];
     readonly queue?: LambdaQueueConfigProps;
     readonly secretArn?: string;
-    readonly distribution?: DistributionConfigProps;
     readonly asAlbTarget?: AsAlbTargetProps;
 }
 
@@ -73,15 +70,6 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const queueFunctionWrapper = this.createQueueFunction(queue);
         if (queueFunctionWrapper) {
             wrappers.push(queueFunctionWrapper);
-        }
-        if (this.endpointType === EnvEndpointType.CLOUDFRONT) {
-
-            const result = this.brefDistributionFactory();
-            this.lookups.distribution = result.distribution;
-            wrappers.push({lambdaFunction: result.lambdaFunction, type: FunctionType.WEB});
-            if (result.apiResult.authorizer?.lambdaFunction) {
-                wrappers.push({lambdaFunction: result.apiResult.authorizer.lambdaFunction, type: FunctionType.EVENT});
-            }
         }
 
         if (this.endpointType === EnvEndpointType.LOADBALANCER) {
@@ -154,23 +142,5 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             }
         }
         return asAlbTarget.create(props);
-    }
-
-    private brefDistributionFactory(): BrefDistributionResult {
-        const brefFactory = new BrefDistribution(this, this.node.id, {
-            functionFactory: FunctionFactory.createBref(this, this.node.id, this.functionFactoryProps),
-            secret: this.lookups.secret
-        });
-        const distConfigProps = <BrefDistributionProps>this.config.Parameters.distribution;
-        distConfigProps.apiProps = distConfigProps.apiProps ?? {};
-        distConfigProps.apiProps.alarmEmails = this.config.Parameters.alarmEmails ?? [];
-        const domainName = this.getDefaultDomainName();
-        if (domainName) {
-            distConfigProps.certificateProps = {
-                domainName: domainName,
-                hostedZone: this.config.Parameters.hostedZoneDomain
-            }
-        }
-        return brefFactory.create(distConfigProps);
     }
 }

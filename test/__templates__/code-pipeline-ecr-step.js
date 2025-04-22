@@ -14,7 +14,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'codebuild.amazonaws.com' }
+                            Principal: {Service: 'codebuild.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -39,7 +39,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
@@ -52,7 +52,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
@@ -77,7 +77,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':codebuild:us-pipeline:123pipeline:report-group/',
                                         {
                                             Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
@@ -88,7 +88,7 @@ module.exports = {
                             }
                         },
                         {
-                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
+                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
                             Effect: 'Allow',
                             Resource: [
                                 {
@@ -117,7 +117,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'stackecrsteproleDefaultPolicy6EC74578',
-                Roles: [ { Ref: 'stackecrsteproleA96EA46E' } ]
+                Roles: [{Ref: 'stackecrsteproleA96EA46E'}]
             }
         },
         pipelinePipelineArtifactsBucketC2CD5B5E: {
@@ -126,7 +126,7 @@ module.exports = {
                 BucketEncryption: {
                     ServerSideEncryptionConfiguration: [
                         {
-                            ServerSideEncryptionByDefault: { SSEAlgorithm: 'aws:kms' }
+                            ServerSideEncryptionByDefault: {SSEAlgorithm: 'aws:kms'}
                         }
                     ]
                 },
@@ -143,14 +143,14 @@ module.exports = {
         pipelinePipelineArtifactsBucketPolicy10A41055: {
             Type: 'AWS::S3::BucketPolicy',
             Properties: {
-                Bucket: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
+                Bucket: {Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E'},
                 PolicyDocument: {
                     Statement: [
                         {
                             Action: 's3:*',
-                            Condition: { Bool: { 'aws:SecureTransport': 'false' } },
+                            Condition: {Bool: {'aws:SecureTransport': 'false'}},
                             Effect: 'Deny',
-                            Principal: { AWS: '*' },
+                            Principal: {AWS: '*'},
                             Resource: [
                                 {
                                     'Fn::GetAtt': [
@@ -187,7 +187,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'codepipeline.amazonaws.com' }
+                            Principal: {Service: 'codepipeline.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -250,20 +250,26 @@ module.exports = {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
                             Resource: {
-                                'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
+                                'Fn::GetAtt': ['pipelineCodeBuildActionRole4D1FDB53', 'Arn']
                             }
                         }
                     ],
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pipelinePipelineRoleDefaultPolicy16010F3E',
-                Roles: [ { Ref: 'pipelinePipelineRole7016E5DF' } ]
+                Roles: [{Ref: 'pipelinePipelineRole7016E5DF'}]
             }
         },
         pipelinePipeline4163A4B1: {
             Type: 'AWS::CodePipeline::Pipeline',
             Properties: {
-                RoleArn: { 'Fn::GetAtt': [ 'pipelinePipelineRole7016E5DF', 'Arn' ] },
+                ArtifactStore: {
+                    Location: {Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E'},
+                    Type: 'S3'
+                },
+                PipelineType: 'V1',
+                RestartExecutionOnUpdate: true,
+                RoleArn: {'Fn::GetAtt': ['pipelinePipelineRole7016E5DF', 'Arn']},
                 Stages: [
                     {
                         Actions: [
@@ -277,10 +283,11 @@ module.exports = {
                                 Configuration: {
                                     ConnectionArn: 'arn:...',
                                     FullRepositoryId: 'repoOwner/repoName',
-                                    BranchName: 'main'
+                                    BranchName: 'main',
+                                    DetectChanges: true
                                 },
                                 Name: 'repoOwner_repoName',
-                                OutputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                                OutputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleFA3ACF67',
@@ -307,11 +314,11 @@ module.exports = {
                                     },
                                     EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
-                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'synth',
-                                OutputArtifacts: [ { Name: 'synth_Output' } ],
+                                OutputArtifacts: [{Name: 'synth_Output'}],
                                 RoleArn: {
-                                    'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
+                                    'Fn::GetAtt': ['pipelineCodeBuildActionRole4D1FDB53', 'Arn']
                                 },
                                 RunOrder: 1
                             }
@@ -333,10 +340,10 @@ module.exports = {
                                     },
                                     EnvironmentVariables: Match.stringLikeRegexp('\[\{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"[^"]*"\}\]')
                                 },
-                                InputArtifacts: [ { Name: 'synth_Output' } ],
+                                InputArtifacts: [{Name: 'synth_Output'}],
                                 Name: 'SelfMutate',
                                 RoleArn: {
-                                    'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
+                                    'Fn::GetAtt': ['pipelineCodeBuildActionRole4D1FDB53', 'Arn']
                                 },
                                 RunOrder: 1
                             }
@@ -357,22 +364,17 @@ module.exports = {
                                         Ref: 'pipelinePipelineecrbuildsomethingecrstepEA7F14E6'
                                     }
                                 },
-                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                                InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'build-something-ecr-step',
                                 RoleArn: {
-                                    'Fn::GetAtt': [ 'pipelineCodeBuildActionRole4D1FDB53', 'Arn' ]
+                                    'Fn::GetAtt': ['pipelineCodeBuildActionRole4D1FDB53', 'Arn']
                                 },
                                 RunOrder: 1
                             }
                         ],
                         Name: 'ecr'
                     }
-                ],
-                ArtifactStore: {
-                    Location: { Ref: 'pipelinePipelineArtifactsBucketC2CD5B5E' },
-                    Type: 'S3'
-                },
-                RestartExecutionOnUpdate: true
+                ]
             },
             DependsOn: [
                 'pipelinePipelineRoleDefaultPolicy16010F3E',
@@ -389,14 +391,7 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':iam::123pipeline:root'
-                                        ]
-                                    ]
+                                    'Fn::GetAtt': ['pipelinePipelineRole7016E5DF', 'Arn']
                                 }
                             }
                         }
@@ -453,7 +448,7 @@ module.exports = {
                             ]
                         },
                         {
-                            Action: [ 's3:PutObjectAcl', 's3:PutObjectVersionAcl' ],
+                            Action: ['s3:PutObjectAcl', 's3:PutObjectVersionAcl'],
                             Effect: 'Allow',
                             Resource: {
                                 'Fn::Join': [
@@ -489,7 +484,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'codebuild.amazonaws.com' }
+                            Principal: {Service: 'codebuild.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -514,7 +509,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
@@ -527,7 +522,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
@@ -552,7 +547,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':codebuild:us-pipeline:123pipeline:report-group/',
                                         {
                                             Ref: 'pipelinePipelineBuildsynthCdkBuildProject2CCFF688'
@@ -613,7 +608,10 @@ module.exports = {
         pipelinePipelineBuildsynthCdkBuildProject2CCFF688: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: { Type: 'CODEPIPELINE' },
+                Artifacts: {Type: 'CODEPIPELINE'},
+                Cache: {Type: 'NO_CACHE'},
+                Description: 'Pipeline step stack/Pipeline/Build/synth',
+                EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
@@ -643,16 +641,16 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step stack/Pipeline/Build/synth',
-                EncryptionKey: 'alias/aws/s3'
+                }
             }
         },
         pipelinePipelineecrbuildsomethingecrstepEA7F14E6: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: { Type: 'CODEPIPELINE' },
+                Artifacts: {Type: 'CODEPIPELINE'},
+                Cache: {Type: 'NO_CACHE'},
+                Description: 'Pipeline step stack/Pipeline/ecr/build-something-ecr-step',
+                EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     EnvironmentVariables: [
@@ -670,7 +668,7 @@ module.exports = {
                                                     'Fn::Split': [
                                                         ':',
                                                         {
-                                                            'Fn::GetAtt': [ 'repoBEC318EA', 'Arn' ]
+                                                            'Fn::GetAtt': ['repoBEC318EA', 'Arn']
                                                         }
                                                     ]
                                                 }
@@ -684,16 +682,16 @@ module.exports = {
                                                     'Fn::Split': [
                                                         ':',
                                                         {
-                                                            'Fn::GetAtt': [ 'repoBEC318EA', 'Arn' ]
+                                                            'Fn::GetAtt': ['repoBEC318EA', 'Arn']
                                                         }
                                                     ]
                                                 }
                                             ]
                                         },
                                         '.',
-                                        { Ref: 'AWS::URLSuffix' },
+                                        {Ref: 'AWS::URLSuffix'},
                                         '/',
-                                        { Ref: 'repoBEC318EA' }
+                                        {Ref: 'repoBEC318EA'}
                                     ]
                                 ]
                             }
@@ -703,7 +701,7 @@ module.exports = {
                             Type: 'PLAINTEXT',
                             Value: 'build-something'
                         },
-                        { Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1' },
+                        {Name: 'IMAGE_TAG', Type: 'PLAINTEXT', Value: '1'},
                         {
                             Name: 'ECR_REGION',
                             Type: 'PLAINTEXT',
@@ -715,7 +713,7 @@ module.exports = {
                     PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
-                ServiceRole: { 'Fn::GetAtt': [ 'stackecrsteproleA96EA46E', 'Arn' ] },
+                ServiceRole: {'Fn::GetAtt': ['stackecrsteproleA96EA46E', 'Arn']},
                 Source: {
                     BuildSpec: '{\n' +
                         '  "version": "0.2",\n' +
@@ -736,10 +734,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step stack/Pipeline/ecr/build-something-ecr-step',
-                EncryptionKey: 'alias/aws/s3'
+                }
             }
         },
         pipelineCodeBuildActionRole4D1FDB53: {
@@ -815,7 +810,7 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pipelineCodeBuildActionRoleDefaultPolicyE3C51929',
-                Roles: [ { Ref: 'pipelineCodeBuildActionRole4D1FDB53' } ]
+                Roles: [{Ref: 'pipelineCodeBuildActionRole4D1FDB53'}]
             }
         },
         pipelineUpdatePipelineSelfMutationRole91820177: {
@@ -826,7 +821,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: { Service: 'codebuild.amazonaws.com' }
+                            Principal: {Service: 'codebuild.amazonaws.com'}
                         }
                     ],
                     Version: '2012-10-17'
@@ -851,7 +846,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
@@ -864,7 +859,7 @@ module.exports = {
                                         '',
                                         [
                                             'arn:',
-                                            { Ref: 'AWS::Partition' },
+                                            {Ref: 'AWS::Partition'},
                                             ':logs:us-pipeline:123pipeline:log-group:/aws/codebuild/',
                                             {
                                                 Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
@@ -889,7 +884,7 @@ module.exports = {
                                     '',
                                     [
                                         'arn:',
-                                        { Ref: 'AWS::Partition' },
+                                        {Ref: 'AWS::Partition'},
                                         ':codebuild:us-pipeline:123pipeline:report-group/',
                                         {
                                             Ref: 'pipelineUpdatePipelineSelfMutation14A96D2F'
@@ -903,7 +898,7 @@ module.exports = {
                             Action: 'sts:AssumeRole',
                             Condition: {
                                 'ForAnyValue:StringEquals': {
-                                    'iam:ResourceTag/aws-cdk:bootstrap-role': [ 'image-publishing', 'file-publishing', 'deploy' ]
+                                    'iam:ResourceTag/aws-cdk:bootstrap-role': ['image-publishing', 'file-publishing', 'deploy']
                                 }
                             },
                             Effect: 'Allow',
@@ -920,7 +915,7 @@ module.exports = {
                             Resource: '*'
                         },
                         {
-                            Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
+                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
                             Effect: 'Allow',
                             Resource: [
                                 {
@@ -949,13 +944,16 @@ module.exports = {
                     Version: '2012-10-17'
                 },
                 PolicyName: 'pipelineUpdatePipelineSelfMutationRoleDefaultPolicy095404B8',
-                Roles: [ { Ref: 'pipelineUpdatePipelineSelfMutationRole91820177' } ]
+                Roles: [{Ref: 'pipelineUpdatePipelineSelfMutationRole91820177'}]
             }
         },
         pipelineUpdatePipelineSelfMutation14A96D2F: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
-                Artifacts: { Type: 'CODEPIPELINE' },
+                Artifacts: {Type: 'CODEPIPELINE'},
+                Cache: {Type: 'NO_CACHE'},
+                Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
+                EncryptionKey: 'alias/aws/s3',
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
@@ -964,7 +962,7 @@ module.exports = {
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
-                    'Fn::GetAtt': [ 'pipelineUpdatePipelineSelfMutationRole91820177', 'Arn' ]
+                    'Fn::GetAtt': ['pipelineUpdatePipelineSelfMutationRole91820177', 'Arn']
                 },
                 Source: {
                     BuildSpec: '{\n' +
@@ -983,11 +981,8 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step stack/Pipeline/UpdatePipeline/SelfMutate',
-                EncryptionKey: 'alias/aws/s3'
+                }
             }
         }
     }
-};
+}
