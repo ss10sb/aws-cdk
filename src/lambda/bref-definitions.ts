@@ -5,6 +5,9 @@ export enum BrefRuntimeAccount {
 }
 
 export enum BrefRuntime {
+    PHP84 = 'php-84',
+    PHP84FPM = 'php-84-fpm',
+
     PHP83 = 'php-83',
     PHP83FPM = 'php-83-fpm',
 
@@ -16,42 +19,52 @@ export enum BrefRuntime {
 
     CONSOLE = 'console',
 
+    GD84 = 'gd-php-84',
     GD83 = 'gd-php-83',
     GD82 = 'gd-php-82',
     GD81 = 'gd-php-81',
 
+    LDAP84 = 'ldap-php-84',
     LDAP83 = 'ldap-php-83',
     LDAP82 = 'ldap-php-82',
     LDAP81 = 'ldap-php-81',
 
+    MONGODB84 = 'mongodb-php-84',
     MONGODB83 = 'mongodb-php-83',
     MONGODB82 = 'mongodb-php-82',
     MONGODB81 = 'mongodb-php-81',
 
+    ORACLE84 = 'oci8-php-84',
     ORACLE83 = 'oci8-php-83',
     ORACLE82 = 'oci8-php-82',
     ORACLE81 = 'oci8-php-81',
 
+    PGSQL84 = 'pgsql-php-84',
     PGSQL83 = 'pgsql-php-83',
     PGSQL82 = 'pgsql-php-82',
     PGSQL81 = 'pgsql-php-81',
 
+    REDIS84 = 'redis-php-84',
     REDIS83 = 'redis-php-83',
     REDIS82 = 'redis-php-82',
     REDIS81 = 'redis-php-81',
 
+    SNOWFLAKE84 = 'odbc-snowflake-php-84',
     SNOWFLAKE83 = 'odbc-snowflake-php-83',
     SNOWFLAKE82 = 'odbc-snowflake-php-82',
     SNOWFLAKE81 = 'odbc-snowflake-php-81',
 
+    SQLSRV84 = 'sqlsrv-php-84',
     SQLSRV83 = 'sqlsrv-php-83',
     SQLSRV82 = 'sqlsrv-php-82',
     SQLSRV81 = 'sqlsrv-php-81',
 
+    UUID84 = 'uuid-php-84',
     UUID83 = 'uuid-php-83',
     UUID82 = 'uuid-php-82',
     UUID81 = 'uuid-php-81',
 
+    XDEBUG84 = 'xdebug-php-84',
     XDEBUG83 = 'xdebug-php-83',
     XDEBUG82 = 'xdebug-php-82',
     XDEBUG81 = 'xdebug-php-81'
@@ -62,6 +75,9 @@ interface ReadonlyMap<TKey, TValue> {
 }
 
 export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Map([
+    [BrefRuntime.PHP84, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP84FPM, BrefRuntimeAccount.CORE],
+
     [BrefRuntime.PHP83, BrefRuntimeAccount.CORE],
     [BrefRuntime.PHP83FPM, BrefRuntimeAccount.CORE],
 
@@ -73,42 +89,52 @@ export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Ma
 
     [BrefRuntime.CONSOLE, BrefRuntimeAccount.CORE],
 
+    [BrefRuntime.GD84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.LDAP84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.LDAP83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.LDAP82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.LDAP81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.MONGODB84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.MONGODB83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.MONGODB82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.MONGODB81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.ORACLE84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.PGSQL84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.PGSQL83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.PGSQL82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.PGSQL81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.REDIS84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.REDIS83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.REDIS82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.REDIS81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.SNOWFLAKE84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.SQLSRV84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SQLSRV83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SQLSRV82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SQLSRV81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.UUID84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.UUID83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.UUID82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.UUID81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.XDEBUG84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.XDEBUG83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.XDEBUG82, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.XDEBUG81, BrefRuntimeAccount.EXTRA],
