@@ -2,7 +2,7 @@ import {Construct} from "constructs";
 import {Connections, IConnectable, ISecurityGroup, IVpc, SecurityGroup, SubnetType} from "aws-cdk-lib/aws-ec2";
 import {AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId} from "aws-cdk-lib/custom-resources";
 import {FargatePlatformVersion, FargateTaskDefinition, ICluster, LaunchType} from "aws-cdk-lib/aws-ecs";
-import {RetentionDays} from "aws-cdk-lib/aws-logs";
+import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import {NamingHelper} from "../utils/naming-helper";
 
 export interface EcsRunTaskProps {
@@ -53,11 +53,14 @@ export class EcsRunTask extends Construct implements IConnectable {
             }
         }
         const name = this.getName(props);
+        const logGroup = new LogGroup(this, `${name}-log-group`, {
+            retention: RetentionDays.ONE_WEEK,
+        });
         this.resource = new AwsCustomResource(this, name, {
             onCreate: props.runOnCreate ? onEvent : undefined,
             onUpdate: props.runOnUpdate ? onEvent : undefined,
             policy: AwsCustomResourcePolicy.fromSdkCalls({resources: [this.taskDefinition.taskDefinitionArn]}),
-            logRetention: RetentionDays.ONE_WEEK,
+            logGroup: logGroup,
             functionName: name
         });
         this.taskDefinition.taskRole.grantPassRole(this.resource.grantPrincipal);

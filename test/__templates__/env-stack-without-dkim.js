@@ -968,6 +968,19 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
+          pccsdlcmyapptaskupdateruntask0updatefnloggroup429D1C01: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 7,
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+          },
         pccsdlcmyapptaskupdateruntask0updatefnCF58E13D: {
             Type: 'Custom::AWS',
             Properties: {
@@ -1122,6 +1135,11 @@ module.exports = {
               },
               FunctionName: 'update-fn',
               Handler: 'index.handler',
+              LoggingConfig: {
+                LogGroup: {
+                  Ref: 'pccsdlcmyapptaskupdateruntask0updatefnloggroup429D1C01'
+                }
+              },
               Role: {
                 'Fn::GetAtt': [
                   'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2',
@@ -1139,110 +1157,6 @@ module.exports = {
             DependsOn: [
               'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleDefaultPolicyD28E1A5E',
               'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
-            ]
-          },
-          AWS679f53fac002430cb0da5b7982bd2287LogRetentionCE72797A: {
-            Type: 'Custom::LogRetention',
-            Properties: {
-              ServiceToken: {
-                'Fn::GetAtt': [
-                  'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
-                  'Arn'
-                ]
-              },
-              LogGroupName: {
-                'Fn::Join': [
-                  '',
-                  [
-                    '/aws/lambda/',
-                    { Ref: 'AWS679f53fac002430cb0da5b7982bd22872D164C4C' }
-                  ]
-                ]
-              },
-              RetentionInDays: 7
-            }
-          },
-          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-              AssumeRolePolicyDocument: {
-                Statement: [
-                  {
-                    Action: 'sts:AssumeRole',
-                    Effect: 'Allow',
-                    Principal: { Service: 'lambda.amazonaws.com' }
-                  }
-                ],
-                Version: '2012-10-17'
-              },
-              ManagedPolicyArns: [
-                {
-                  'Fn::Join': [
-                    '',
-                    [
-                      'arn:',
-                      { Ref: 'AWS::Partition' },
-                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                    ]
-                  ]
-                }
-              ],
-              Tags: [
-                { Key: 'App', Value: 'myapp' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'sdlc' }
-              ]
-            }
-          },
-          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-              PolicyDocument: {
-                Statement: [
-                  {
-                    Action: [
-                      'logs:PutRetentionPolicy',
-                      'logs:DeleteRetentionPolicy'
-                    ],
-                    Effect: 'Allow',
-                    Resource: '*'
-                  }
-                ],
-                Version: '2012-10-17'
-              },
-              PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-              Roles: [
-                {
-                  Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
-                }
-              ]
-            }
-          },
-          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-              Handler: 'index.handler',
-              Runtime: MatchHelper.startsWith('nodejs'),
-              Timeout: 900,
-              Code: {
-                S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                S3Key: MatchHelper.endsWith('zip')
-              },
-              Role: {
-                'Fn::GetAtt': [
-                  'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
-                  'Arn'
-                ]
-              },
-              Tags: [
-                { Key: 'App', Value: 'myapp' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'sdlc' }
-              ]
-            },
-            DependsOn: [
-              'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
-              'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
             ]
           },
         pccsdlcmyapptaskdefscheduledtask0execrole253CB36D: {
@@ -1726,6 +1640,11 @@ module.exports = {
                 Name: 'pcc-sdlc-myapp-task-scheduledtask-0',
                 ScheduleExpression: 'cron(0 12 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -3086,6 +3005,11 @@ module.exports = {
             Properties: {
                 ScheduleExpression: 'cron(0 13 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -3126,6 +3050,11 @@ module.exports = {
             Properties: {
                 ScheduleExpression: 'cron(0 5 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
