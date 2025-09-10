@@ -1734,7 +1734,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"b8ab94266984268614c3fb2824a1c3a55395746c48b28c003b08bc1d08688f3e:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535:11111-us-west-2-5607d29f\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1779,7 +1779,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"9a1fcb4a7ecba81ad70e9d3fb241f6794497da945dae5f25924e4dd002b65f2d:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"9a1fcb4a7ecba81ad70e9d3fb241f6794497da945dae5f25924e4dd002b65f2d:11111-us-west-2-c7a27046\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1824,7 +1824,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"4dd7b3acb0d8c02094bb424ce803d0e3418f6db703e9524905cb0d32ff66b78b:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"4dd7b3acb0d8c02094bb424ce803d0e3418f6db703e9524905cb0d32ff66b78b:11111-us-west-2-29f4e159\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1869,7 +1869,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1:11111-us-west-2-7dc899d7\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1914,7 +1914,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00:11111-us-west-2\\""\n' +
+                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c099eb4e32cbf1c3da9c45a3b280efe2bed38d27d74aa72702b67d86d1b52354:11111-us-west-2-8ade420d\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +

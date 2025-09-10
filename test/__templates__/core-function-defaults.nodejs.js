@@ -63,7 +63,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
-                    S3Key: '069f9cad9bb99e307ac25e484fed42e132ea239d278f73d73c599b9965c7b12f.zip'
+                    S3Key: MatchHelper.endsWith('zip')
                 },
                 FunctionName: 'function-web-fn-0',
                 Handler: 'lambda/index.js',

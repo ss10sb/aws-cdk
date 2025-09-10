@@ -74,7 +74,7 @@ module.exports = {
                             [
                                 'arn:',
                                 {Ref: 'AWS::Partition'},
-                                ':lambda:us-east-1:534081306603:layer:php-81-fpm:59'
+                                ':lambda:us-east-1:534081306603:layer:php-81-fpm:112'
                             ]
                         ]
                     }

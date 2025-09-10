@@ -2163,8 +2163,8 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00:11111-us-west-2\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00:22222-us-west-2\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c099eb4e32cbf1c3da9c45a3b280efe2bed38d27d74aa72702b67d86d1b52354:11111-us-west-2-8ade420d\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"c099eb4e32cbf1c3da9c45a3b280efe2bed38d27d74aa72702b67d86d1b52354:22222-us-west-2-30d4317d\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
@@ -2271,7 +2271,7 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"52c9314b13b741507475c767efe12405a840f6378675be91df8d62589aa0f401:11111-us-west-2\\""\n' +
+                                '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"52c9314b13b741507475c767efe12405a840f6378675be91df8d62589aa0f401:11111-us-west-2-8a100768\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +
