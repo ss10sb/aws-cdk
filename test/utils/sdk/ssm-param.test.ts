@@ -13,7 +13,7 @@ describe('ssm param', () => {
     it('should fail on error', async () => {
         const ssmParam = new SsmParam({region: 'us-east-1'});
         mock.on(GetParameterCommand).rejects('error!');
-        await expect(ssmParam.fetch('foo')).rejects.toThrowError();
+        await expect(ssmParam.fetch('foo')).rejects.toThrow();
     });
 
     it('should be undefined if not found', async () => {

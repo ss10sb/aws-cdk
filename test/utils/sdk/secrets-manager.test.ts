@@ -13,7 +13,7 @@ describe('secrets manager', () => {
     it('should fail on error', async () => {
         const secretsManager = new SecretsManager('arn:abc123', {region: 'us-east-1'});
         mock.on(PutSecretValueCommand).rejectsOnce('error!');
-        await expect(secretsManager.put([])).rejects.toThrowError();
+        await expect(secretsManager.put([])).rejects.toThrow();
     });
 
     it('should resolve when created', async () => {

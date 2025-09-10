@@ -12,7 +12,7 @@ describe('secret test factory', () => {
         const stackFactory = new SecretStackFactory({
             configDir: configDir
         });
-        expect(() => stackFactory.buildStacks()).toThrowError('Not initialized.');
+        expect(() => stackFactory.buildStacks()).toThrow('Not initialized.');
     });
 
     it('should throw error if no live config loaded', () => {
@@ -20,7 +20,7 @@ describe('secret test factory', () => {
         const stackFactory = new SecretStackFactory({
             configDir: '/foo/bar'
         });
-        expect(() => stackFactory.initialize()).toThrowError('Missing config keys: College Name');
+        expect(() => stackFactory.initialize()).toThrow('Missing config keys: College Name');
     });
 
     it('should create secret for each environment', () => {

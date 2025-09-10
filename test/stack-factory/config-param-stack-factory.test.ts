@@ -13,7 +13,7 @@ describe('config param stack factory', () => {
         const stackFactory = new ConfigParamStackFactory({
             configDir: configDir
         });
-        expect(() => stackFactory.buildStack()).toThrowError('Not initialized.');
+        expect(() => stackFactory.buildStack()).toThrow('Not initialized.');
     });
 
     it('should throw error if no live config loaded', () => {
@@ -21,7 +21,7 @@ describe('config param stack factory', () => {
         const stackFactory = new ConfigParamStackFactory({
             configDir: '/foo/bar'
         });
-        expect(() => stackFactory.initialize()).toThrowError('Missing config keys: College Name');
+        expect(() => stackFactory.initialize()).toThrow('Missing config keys: College Name');
     });
 
     it('should create config param from local config', () => {

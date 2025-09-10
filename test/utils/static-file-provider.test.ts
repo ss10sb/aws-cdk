@@ -59,6 +59,6 @@ describe('static provider', () => {
         const staticProvider = new StaticFileProvider();
         expect(() => {
             staticProvider.getFileName('../../passwd');
-        }).toThrowError();
+        }).toThrow();
     });
 });

@@ -41,7 +41,7 @@ describe('code pipeline ecs stack factory', () => {
         const stackFactory = new CodePipelineEcsStackFactory({
             preSynthHelper: preSynthHelper
         });
-        expect(() => stackFactory.buildStack()).toThrowError('Not initialized.');
+        expect(() => stackFactory.buildStack()).toThrow('Not initialized.');
     });
 
     it('should throw error if no live config loaded', () => {
@@ -54,7 +54,7 @@ describe('code pipeline ecs stack factory', () => {
         const stackFactory = new CodePipelineEcsStackFactory({
             preSynthHelper: preSynthHelper
         });
-        return expect(stackFactory.initialize()).rejects.toThrowError('Missing config keys: College Name');
+        return expect(stackFactory.initialize()).rejects.toThrow('Missing config keys: College Name');
     });
 
     it('should create a pipeline stack', async () => {

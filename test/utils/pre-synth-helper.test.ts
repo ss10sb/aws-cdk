@@ -28,7 +28,7 @@ describe('pre synth helper', () => {
             clientConfig: clientConfig
         });
         mockSsm.rejects('error!');
-        await expect(preSynthHelper.run()).rejects.toThrowError('error!');
+        await expect(preSynthHelper.run()).rejects.toThrow('error!');
     });
 
     it('should provision config and ecr tags no existing repositories', async () => {
