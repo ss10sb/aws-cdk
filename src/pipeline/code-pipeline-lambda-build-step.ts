@@ -41,6 +41,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
                     install: {
                         "runtime-versions": {
                             php: PhpVersionHelper.runtimeVersionFromProps(this.props),
+                            nodejs: '22'
                         },
                         commands: this.getInstallCommands()
                     }
