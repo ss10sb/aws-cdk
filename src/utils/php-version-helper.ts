@@ -17,6 +17,10 @@ export class PhpVersionHelper {
             [PhpVersion.PHP83]: {
                 fpm: BrefRuntime.PHP83FPM,
                 base: BrefRuntime.PHP83,
+            },
+            [PhpVersion.PHP84]: {
+                fpm: BrefRuntime.PHP84FPM,
+                base: BrefRuntime.PHP84,
             }
         };
         const brefs = map[version] ?? {};
@@ -27,7 +31,8 @@ export class PhpVersionHelper {
         const map = {
             [PhpVersion.PHP81]: LinuxBuildImage.STANDARD_6_0,
             [PhpVersion.PHP82]: LinuxBuildImage.STANDARD_7_0,
-            [PhpVersion.PHP83]: LinuxBuildImage.STANDARD_7_0
+            [PhpVersion.PHP83]: LinuxBuildImage.STANDARD_7_0,
+            [PhpVersion.PHP84]: LinuxBuildImage.STANDARD_7_0 // does not currently have 8.4
         };
         return map[version];
     }
@@ -47,7 +52,8 @@ export class PhpVersionHelper {
         const map = {
             [PhpVersion.PHP81]: '8.1',
             [PhpVersion.PHP82]: '8.2',
-            [PhpVersion.PHP83]: '8.3'
+            [PhpVersion.PHP83]: '8.3',
+            [PhpVersion.PHP84]: '8.4',
         }
         if (version) {
             return map[version];
