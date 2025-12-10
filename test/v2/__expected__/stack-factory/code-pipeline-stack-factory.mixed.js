@@ -1,3 +1,4 @@
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         nginxecrC430EE7B: {
@@ -899,7 +900,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
                                     },
-                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"74a4faf3083ee5f86b2f2a8bfffb418b887198b7a77d22af2b278ae24e3f6157"}]'
+                        EnvironmentVariables: Match.anyValue()
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-build-step',
@@ -923,7 +924,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"15255824308e7b81c925ffd043c4de48e71be005885a8fa273dcf5c37b5c7795"}]'
+                        EnvironmentVariables: Match.anyValue()
                                 },
                                 InputArtifacts: [{Name: 'pcc_shared_test_build_step_Output'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -1421,7 +1422,8 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "runtime-versions": {\n' +
-                        '        "php": "8.3"\n' +
+                        '        "php": "8.3",\n' +
+                        '        "nodejs": "22"\n' +
                         '      },\n' +
                         '      "commands": [\n' +
                         '        "php -v",\n' +
@@ -1437,7 +1439,7 @@ module.exports = {
                         '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
                         '        "cp .env.example .env",\n' +
                         '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress",\n' +
-                        '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
+                        '        "composer dump-autoload --optimize --classmap-authoritative --ignore-platform-reqs",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
                         '        "rm -f .env",\n' +

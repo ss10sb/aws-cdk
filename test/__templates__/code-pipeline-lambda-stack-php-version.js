@@ -621,7 +621,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"ff5907e48eb9ee8e9d32bcbaa678054e7f88b3e247ffc679706375bb18792298"}]'
+                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"285c8811e4e973c4eba0b76ab9e3fa9a7bdaefcd2a0a02fc81d63b663db63a64"}]'
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-build-step',
@@ -837,7 +837,8 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "runtime-versions": {\n' +
-                        '        "php": "8.2"\n' +
+                        '        "php": "8.2",\n' +
+                        '        "nodejs": "22"\n' +
                         '      },\n' +
                         '      "commands": [\n' +
                         '        "php -v",\n' +
@@ -853,7 +854,7 @@ module.exports = {
                         '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
                         '        "cp .env.example .env",\n' +
                         '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress",\n' +
-                        '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
+                        '        "composer dump-autoload --optimize --classmap-authoritative --ignore-platform-reqs",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
                         '        "rm -f .env",\n' +

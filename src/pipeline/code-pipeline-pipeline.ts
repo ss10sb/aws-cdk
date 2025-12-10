@@ -8,6 +8,7 @@ import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
 import {NonConstruct} from "../core/non-construct";
 import {PhpVersion} from "../config/config-definitions";
 import {PhpVersionHelper} from "../utils/php-version-helper";
+import {BuildStepImage} from "../v2/utils/build-step-image";
 
 export interface CodePipelinePipelineProps {
     source: CodePipelineCodestarSource;
@@ -56,7 +57,7 @@ export class CodePipelinePipeline extends NonConstruct {
             crossAccountKeys: this.props.crossAccountKeys ?? this.defaults.crossAccountKeys,
             assetPublishingCodeBuildDefaults: {
                 buildEnvironment: {
-                    buildImage: PhpVersionHelper.awsImageFromProps(this.props),
+                    buildImage: BuildStepImage.fromProps(this.props),
                     privileged: true,
                     environmentVariables: {}
                 }

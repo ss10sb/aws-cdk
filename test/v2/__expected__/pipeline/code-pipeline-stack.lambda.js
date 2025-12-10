@@ -1253,7 +1253,8 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "runtime-versions": {\n' +
-                        '        "php": "8.3"\n' +
+                        '        "php": "8.3",\n' +
+                        '        "nodejs": "22"\n' +
                         '      },\n' +
                         '      "commands": [\n' +
                         '        "php -v",\n' +
@@ -1269,7 +1270,7 @@ module.exports = {
                         '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
                         '        "cp .env.example .env",\n' +
                         '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress",\n' +
-                        '        "composer dump-autoload --optimize --classmap-authoritative",\n' +
+                        '        "composer dump-autoload --optimize --classmap-authoritative --ignore-platform-reqs",\n' +
                         '        "php artisan route:cache",\n' +
                         '        "rm -rf vendor/bin",\n' +
                         '        "rm -f .env",\n' +

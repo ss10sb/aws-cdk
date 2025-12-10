@@ -1,6 +1,7 @@
 import {StackProps} from "aws-cdk-lib";
 import {EnvConfig} from "../env/env-base-stack";
 import {EcrRepositoriesProps} from "../ecr/ecr-repositories";
+import {IBuildImage} from "aws-cdk-lib/aws-codebuild";
 
 export enum PhpVersion {
     PHP81 = 'php81',
@@ -37,6 +38,7 @@ export interface BaseParameters extends Record<string, any> {
     readonly albArn?: string;
     readonly phpVersion?: PhpVersion;
     readonly buildStep?: string | boolean;
+    readonly buildStepImage?: IBuildImage;
 }
 
 export interface ConfigParameters extends BaseParameters {

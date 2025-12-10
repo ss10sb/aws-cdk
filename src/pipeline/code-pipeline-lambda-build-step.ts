@@ -5,6 +5,7 @@ import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {PhpVersion} from "../config/config-definitions";
 import {PhpVersionHelper} from "../utils/php-version-helper";
 import {BuildSpec} from "aws-cdk-lib/aws-codebuild";
+import {BuildStepImage} from "../v2/utils/build-step-image";
 
 export interface CodePipelineLambdaBuildStepProps {
     input: CodeBuildStep | CodePipelineSource;
@@ -32,21 +33,28 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
             commands: this.getCommands(),
             role: this.role,
             buildEnvironment: {
-                buildImage: PhpVersionHelper.awsImageFromProps(this.props),
+                buildImage: BuildStepImage.fromProps(this.props),
                 privileged: true
             },
             primaryOutputDirectory: "./",
-            partialBuildSpec: BuildSpec.fromObject({
-                phases: {
-                    install: {
-                        "runtime-versions": {
-                            php: PhpVersionHelper.runtimeVersionFromProps(this.props),
-                            nodejs: '22'
-                        },
-                        commands: this.getInstallCommands()
-                    }
+            partialBuildSpec: this.getPartialBuildSpec(),
+        });
+    }
+
+    protected getPartialBuildSpec(): BuildSpec {
+        if (BuildStepImage.isCustom) {
+            return BuildSpec.fromObject({});
+        }
+        return BuildSpec.fromObject({
+            phases: {
+                install: {
+                    "runtime-versions": {
+                        php: PhpVersionHelper.runtimeVersionFromProps(this.props),
+                        nodejs: '22'
+                    },
+                    commands: this.getInstallCommands()
                 }
-            })
+            }
         });
     }
 
