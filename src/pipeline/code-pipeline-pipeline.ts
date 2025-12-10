@@ -7,8 +7,7 @@ import {CodePipelineSynthStep} from "./code-pipeline-synth-step";
 import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
 import {NonConstruct} from "../core/non-construct";
 import {PhpVersion} from "../config/config-definitions";
-import {PhpVersionHelper} from "../utils/php-version-helper";
-import {BuildStepImage} from "../v2/utils/build-step-image";
+import {BuildStepImage, BuildStepImageProps} from "../v2/utils/build-step-image";
 
 export interface CodePipelinePipelineProps {
     source: CodePipelineCodestarSource;
@@ -16,6 +15,7 @@ export interface CodePipelinePipelineProps {
     repositoryFactory?: EcrRepositoryFactory;
     crossAccountKeys?: boolean;
     phpVersion?: PhpVersion;
+    buildStepImage?: BuildStepImageProps;
 }
 
 export class CodePipelinePipeline extends NonConstruct {
@@ -57,7 +57,7 @@ export class CodePipelinePipeline extends NonConstruct {
             crossAccountKeys: this.props.crossAccountKeys ?? this.defaults.crossAccountKeys,
             assetPublishingCodeBuildDefaults: {
                 buildEnvironment: {
-                    buildImage: BuildStepImage.fromProps(this.props),
+                    buildImage: BuildStepImage.fromProps(this.scope, this.id, this.props),
                     privileged: true,
                     environmentVariables: {}
                 }

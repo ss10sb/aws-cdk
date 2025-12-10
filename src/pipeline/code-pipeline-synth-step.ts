@@ -4,12 +4,13 @@ import {Construct} from "constructs";
 import {EnvBuildType} from "../env/env-definitions";
 import {NonConstruct} from "../core/non-construct";
 import {PhpVersion} from "../config/config-definitions";
-import {PhpVersionHelper} from "../utils/php-version-helper";
+import {BuildStepImage, BuildStepImageProps} from "../v2/utils/build-step-image";
 
 export interface CodePipelineSynthStepProps {
     input: CodePipelineSource | CodeBuildStep;
     type?: EnvBuildType;
     phpVersion?: PhpVersion;
+    buildStepImage?: BuildStepImageProps;
 }
 
 export class CodePipelineSynthStep extends NonConstruct {
@@ -34,7 +35,7 @@ export class CodePipelineSynthStep extends NonConstruct {
             commands: this.getCommands(),
             role: this.role,
             buildEnvironment: {
-                buildImage: PhpVersionHelper.awsImageFromProps(this.props)
+                buildImage: BuildStepImage.fromProps(this.scope, this.id, this.props),
             }
         });
     }

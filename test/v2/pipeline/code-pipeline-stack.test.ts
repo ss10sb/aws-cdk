@@ -124,6 +124,23 @@ describe('code pipeline stack test', () => {
         }
     });
 
+    it('creates a lambda stack with custom build image', () => {
+        const config = getConfig('defaults.lambda.customimage');
+        const app = new App();
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new CodePipelineStack(app, name, config, {}, {
+            env: {
+                account: '12344',
+                region: 'us-west-2'
+            }
+        });
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = require('../__expected__/pipeline/code-pipeline-stack.lambda.customimage');
+        templateHelper.template.templateMatches(expected);
+    });
+
     function getConfig(name: string): Record<string, any> {
         return require('../__config__/live/'+name);
     }

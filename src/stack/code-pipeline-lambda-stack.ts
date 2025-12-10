@@ -18,7 +18,9 @@ export class CodePipelineLambdaStack extends CodePipelineBaseStack {
         const synthStep = this.createSynthStepForLambdaBuild(buildStep);
         const codePipelineProps: CodePipelinePipelineProps = {
             source: pipelineSource,
-            synth: synthStep
+            synth: synthStep,
+            phpVersion: this.config.Parameters?.phpVersion,
+            buildStepImage: this.config.Parameters?.buildStepImage
         };
         const pipeline = this.createPipeline(codePipelineProps);
         const envStages = this.createEnvironmentStages({
@@ -44,14 +46,17 @@ export class CodePipelineLambdaStack extends CodePipelineBaseStack {
     private createBuildStep(pipelineSource: CodePipelineCodestarSource): CodePipelineLambdaBuildStep {
         return new CodePipelineLambdaBuildStep(this, this.node.id, {
             input: pipelineSource.source,
-            phpVersion: this.config.Parameters?.phpVersion
+            phpVersion: this.config.Parameters?.phpVersion,
+            buildStepImage: this.config.Parameters?.buildStepImage
         });
     }
 
     private createSynthStepForLambdaBuild(buildStep: CodePipelineLambdaBuildStep): CodePipelineSynthStep {
         return new CodePipelineSynthStep(this, this.node.id, {
             input: buildStep.step,
-            type: EnvBuildType.LAMBDA
+            type: EnvBuildType.LAMBDA,
+            phpVersion: this.config.Parameters?.phpVersion,
+            buildStepImage: this.config.Parameters?.buildStepImage
         });
     }
 }

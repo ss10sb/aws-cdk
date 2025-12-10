@@ -10,6 +10,7 @@ import {BuildStepImage} from "../v2/utils/build-step-image";
 export interface CodePipelineLambdaBuildStepProps {
     input: CodeBuildStep | CodePipelineSource;
     phpVersion?: PhpVersion;
+    buildStepImage?: BuildStepImage;
 }
 
 export class CodePipelineLambdaBuildStep extends NonConstruct {
@@ -33,7 +34,7 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
             commands: this.getCommands(),
             role: this.role,
             buildEnvironment: {
-                buildImage: BuildStepImage.fromProps(this.props),
+                buildImage: BuildStepImage.fromProps(this.scope, this.id, this.props),
                 privileged: true
             },
             primaryOutputDirectory: "./",
