@@ -63,7 +63,9 @@ export abstract class CodePipelineBaseStack extends ConfigStack {
     protected createSynthStep(pipelineSource: CodePipelineCodestarSource, type: EnvBuildType): CodePipelineSynthStep {
         return new CodePipelineSynthStep(this, this.node.id, {
             input: pipelineSource.source,
-            type: type
+            type: type,
+            phpVersion: this.config.Parameters?.phpVersion,
+            buildStepImage: this.config.Parameters?.buildStepImage
         });
     }
 }

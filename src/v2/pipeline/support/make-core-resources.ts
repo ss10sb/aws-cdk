@@ -15,7 +15,6 @@ export interface CoreCodePipelineResources {
     pipeline: CodePipelinePipeline;
     synthStep: CodePipelineSynthStep;
     repositoryFactory?: EcrRepositoryFactory;
-
 }
 
 export interface MakeCodePipelineCoreResourcesProps {
@@ -41,7 +40,9 @@ export class MakeCoreResources extends NonConstruct {
         const pipeline = this.createPipeline({
             source: source,
             repositoryFactory: ecrRepositoryFactory,
-            synth: synthStep
+            synth: synthStep,
+            buildStepImage: this.config.Parameters?.buildStepImage,
+            phpVersion: this.config.Parameters?.phpVersion
         });
         return {
             source: source,
