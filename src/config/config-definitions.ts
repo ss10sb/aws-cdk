@@ -2,6 +2,8 @@ import {StackProps} from "aws-cdk-lib";
 import {EnvConfig} from "../env/env-base-stack";
 import {EcrRepositoriesProps} from "../ecr/ecr-repositories";
 import {IBuildImage} from "aws-cdk-lib/aws-codebuild";
+import {BuildEnvironmentProps, BuildImageProps} from "../v2/build/build-step-environment";
+import {BuildStepProps} from "../v2/build/build-step";
 
 export enum PhpVersion {
     PHP81 = 'php81',
@@ -37,8 +39,7 @@ export interface BaseParameters extends Record<string, any> {
     readonly vpcId?: string;
     readonly albArn?: string;
     readonly phpVersion?: PhpVersion;
-    readonly buildStep?: string | boolean;
-    readonly buildStepImage?: IBuildImage;
+    readonly buildStep?: BuildStepProps;
 }
 
 export interface ConfigParameters extends BaseParameters {

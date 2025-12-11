@@ -25,8 +25,7 @@ module.exports = {
                 PipelineNotificationEvents.MANUAL_APPROVAL_NEEDED
             ],
             emails: ['admin@example.edu']
-        },
-        buildStep: false
+        }
     },
     Environments: [
         {

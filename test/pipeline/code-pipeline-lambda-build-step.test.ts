@@ -6,8 +6,9 @@ import {Match, Template} from "aws-cdk-lib/assertions";
 import {CodePipelineSynthStep} from "../../src/pipeline/code-pipeline-synth-step";
 import {EnvBuildType} from "../../src/env/env-definitions";
 import {CodePipelinePipeline, CodePipelinePipelineProps} from "../../src/pipeline/code-pipeline-pipeline";
+import {BuildStep} from "../../src/v2/build/build-step";
 
-describe('code pipeline lambda buid step', () => {
+describe('code pipeline lambda build step', () => {
 
     it('should create lambda build step', () => {
         const app = new App();
@@ -20,7 +21,8 @@ describe('code pipeline lambda buid step', () => {
             branch: 'foo'
         });
         const buildStep = new CodePipelineLambdaBuildStep(stack, 'build', {
-            input: codeStarSource.source
+            input: codeStarSource.source,
+            buildStep: BuildStep.makePropsFromParameters({})
         });
         const synthStep = new CodePipelineSynthStep(stack, 'synth', {
             input: buildStep.step,

@@ -1366,7 +1366,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2416,7 +2416,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2524,7 +2524,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2632,7 +2632,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2740,7 +2740,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {

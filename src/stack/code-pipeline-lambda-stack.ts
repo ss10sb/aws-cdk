@@ -7,6 +7,7 @@ import {CodePipelineLambdaStackServicesProps} from "../pipeline/code-pipeline-de
 import {PermissionsCodePipelineLambdaStack} from "../permissions/permissions-code-pipeline-lambda-stack";
 import {CodePipelineSynthStep} from "../pipeline/code-pipeline-synth-step";
 import {CodePipelineLambdaBuildStep} from "../pipeline/code-pipeline-lambda-build-step";
+import {BuildStep} from "../v2/build/build-step";
 
 export class CodePipelineLambdaStack extends CodePipelineBaseStack {
 
@@ -44,7 +45,7 @@ export class CodePipelineLambdaStack extends CodePipelineBaseStack {
     private createBuildStep(pipelineSource: CodePipelineCodestarSource): CodePipelineLambdaBuildStep {
         return new CodePipelineLambdaBuildStep(this, this.node.id, {
             input: pipelineSource.source,
-            phpVersion: this.config.Parameters?.phpVersion
+            buildStep: BuildStep.makePropsFromParameters(this.config.Parameters ?? {})
         });
     }
 

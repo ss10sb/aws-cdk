@@ -2,14 +2,11 @@ import {NonConstruct} from "../core/non-construct";
 import {CodeBuildStep, CodePipelineSource} from "aws-cdk-lib/pipelines";
 import {Construct} from "constructs";
 import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
-import {PhpVersion} from "../config/config-definitions";
-import {PhpVersionHelper} from "../utils/php-version-helper";
-import {BuildSpec} from "aws-cdk-lib/aws-codebuild";
-import {BuildStepImage} from "../v2/utils/build-step-image";
+import {BuildStep, BuildStepProps} from "../v2/build/build-step";
 
 export interface CodePipelineLambdaBuildStepProps {
     input: CodeBuildStep | CodePipelineSource;
-    phpVersion?: PhpVersion;
+    buildStep: BuildStepProps;
 }
 
 export class CodePipelineLambdaBuildStep extends NonConstruct {
@@ -28,60 +25,11 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
     }
 
     protected create(): CodeBuildStep {
+        const buildStepHelper = new BuildStep(this.scope, this.id, this.props.buildStep);
         return new CodeBuildStep(this.mixNameWithId('build-step'), {
             input: this.props.input,
-            commands: this.getCommands(),
             role: this.role,
-            buildEnvironment: {
-                buildImage: BuildStepImage.fromProps(this.props),
-                privileged: true
-            },
-            primaryOutputDirectory: "./",
-            partialBuildSpec: this.getPartialBuildSpec(),
+            ...buildStepHelper.makeCodeBuildStepProps(),
         });
-    }
-
-    protected getPartialBuildSpec(): BuildSpec {
-        if (BuildStepImage.isCustom) {
-            return BuildSpec.fromObject({});
-        }
-        return BuildSpec.fromObject({
-            phases: {
-                install: {
-                    "runtime-versions": {
-                        php: PhpVersionHelper.runtimeVersionFromProps(this.props),
-                        nodejs: '22'
-                    },
-                    commands: this.getInstallCommands()
-                }
-            }
-        });
-    }
-
-    protected getInstallCommands(): string[] {
-        return [
-            'php -v',
-            'php -r "copy(\'https://getcomposer.org/installer\', \'composer-setup.php\');"',
-            'php composer-setup.php',
-            'php -r "unlink(\'composer-setup.php\');"',
-            'mv composer.phar /usr/local/bin/composer'
-        ];
-    }
-
-    protected getCommands(): string[] {
-        return [
-            'cd codebase',
-            'mv resources.copy resources && mv config.copy config && mv public.copy public',
-            'cp .env.example .env',
-            'composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress',
-            'composer dump-autoload --optimize --classmap-authoritative --ignore-platform-reqs',
-            'php artisan route:cache',
-            'rm -rf vendor/bin',
-            'rm -f .env',
-            'npm ci',
-            'npm run prod',
-            'rm -rf node_modules tests',
-            'cd ..',
-        ]
     }
 }

@@ -34,7 +34,8 @@ module.exports = {
             ],
             emails: ['admin@example.edu']
         },
-        runPipelineSchedule: 'cron(0 8 ? * 2#1 *)'
+        runPipelineSchedule: 'cron(0 8 ? * 2#1 *)',
+        buildStep: {}
     },
     Environments: [
         {

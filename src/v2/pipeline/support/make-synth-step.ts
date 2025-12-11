@@ -5,12 +5,13 @@ import {EnvBuildType} from "../../../env/env-definitions";
 import {EnvBuildTypeHelper} from "../../utils/env-build-type-helper";
 import {CodePipelineLambdaBuildStep} from "../../../pipeline/code-pipeline-lambda-build-step";
 import {PhpVersion} from "../../../config/config-definitions";
+import {BuildStep, BuildStepProps} from "../../build/build-step";
 
 export interface MakeCodePipelineSynthStepProps {
     buildType: EnvBuildType;
     source: CodePipelineCodestarSource;
     phpVersion?: PhpVersion;
-    buildStep?: boolean|string;
+    buildStep?: BuildStepProps;
 }
 
 export class MakeSynthStep extends NonConstruct {
@@ -36,11 +37,11 @@ export class MakeSynthStep extends NonConstruct {
     private createBuildStep(props: MakeCodePipelineSynthStepProps): CodePipelineLambdaBuildStep {
         return new CodePipelineLambdaBuildStep(this.scope, this.scope.node.id, {
             input: props.source.source,
-            phpVersion: props.phpVersion
+            buildStep: BuildStep.makeProps(props),
         });
     }
 
     private wantsBuildStep(props: MakeCodePipelineSynthStepProps): boolean {
-        return (props.phpVersion !== undefined || props.buildStep !== false);
+        return (props.phpVersion !== undefined || props.buildStep !== undefined);
     }
 }

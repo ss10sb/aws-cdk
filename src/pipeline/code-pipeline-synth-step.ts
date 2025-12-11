@@ -3,13 +3,11 @@ import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {Construct} from "constructs";
 import {EnvBuildType} from "../env/env-definitions";
 import {NonConstruct} from "../core/non-construct";
-import {PhpVersion} from "../config/config-definitions";
-import {PhpVersionHelper} from "../utils/php-version-helper";
+import {BuildStepEnvironment} from "../v2/build/build-step-environment";
 
 export interface CodePipelineSynthStepProps {
     input: CodePipelineSource | CodeBuildStep;
     type?: EnvBuildType;
-    phpVersion?: PhpVersion;
 }
 
 export class CodePipelineSynthStep extends NonConstruct {
@@ -34,7 +32,7 @@ export class CodePipelineSynthStep extends NonConstruct {
             commands: this.getCommands(),
             role: this.role,
             buildEnvironment: {
-                buildImage: PhpVersionHelper.awsImageFromProps(this.props)
+                buildImage: BuildStepEnvironment.defaultBuildImage()
             }
         });
     }
