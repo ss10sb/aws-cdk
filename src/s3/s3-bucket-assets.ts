@@ -1,5 +1,5 @@
 import {S3Bucket, S3Props} from "./s3-bucket";
-import {BlockPublicAccess, BucketProps, HttpMethods} from "aws-cdk-lib/aws-s3";
+import {BucketProps, HttpMethods} from "aws-cdk-lib/aws-s3";
 
 export class S3BucketAssets extends S3Bucket {
 
@@ -20,7 +20,7 @@ export class S3BucketAssets extends S3Bucket {
                 allowedOrigins: [
                     '*',
                 ],
-                allowedMethods: [HttpMethods.GET],
+                allowedMethods: [HttpMethods.GET, HttpMethods.HEAD],
                 allowedHeaders: ['*'],
                 maxAge: 3000
             }]
