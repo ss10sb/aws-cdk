@@ -85,6 +85,59 @@ describe('code pipeline stack factory test', () => {
         templateHelper.template.templateMatches(expected);
     });
 
+    it('should create a pipeline stack with a custom image', async () => {
+        mockSsm.on(GetParameterCommand, {
+            Name: '/pcc-shared-test/config'
+        }).resolves({
+            Parameter: {
+                Value: JSON.stringify(getConfig('defaults.mixed.customimage')),
+                Name: '/pcc-shared-test/config'
+            }
+        });
+        mockEcr.on(DescribeImagesCommand, {
+            filter: {
+                tagStatus: TagStatus.TAGGED
+            },
+            repositoryName: 'pcc-test/nginx'
+        }).rejects('error!');
+        mockEcr.on(DescribeImagesCommand, {
+            filter: {
+                tagStatus: TagStatus.TAGGED
+            },
+            repositoryName: 'pcc-test/phpfpm'
+        }).resolves({
+            imageDetails: [
+                {
+                    registryId: "abc123",
+                    repositoryName: "pcc-test/phpfpm",
+                    imageTags: ['5', '3', 'foo'],
+                }
+            ]
+        });
+        const preSynthHelper = new PreSynthHelper({
+            configDir: configDir,
+            clientConfig: {}
+        });
+        const stackFactory = new CodePipelineStackFactory({
+            preSynthHelper: preSynthHelper
+        });
+        await stackFactory.initialize();
+        // console.log(mockSsm.call(0));
+        const stack = stackFactory.buildStack({
+            stackProps: {
+                env: {
+                    account: '12344',
+                    region: 'us-west-2'
+                }
+            }
+        });
+
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = require('../__expected__/stack-factory/code-pipeline-stack-factory.mixed.customimage')
+        templateHelper.template.templateMatches(expected);
+    });
+
     it('should create a pipeline stack from helper function', async () => {
         mockSsm.on(GetParameterCommand, {
             Name: '/pcc-shared-test/config'
@@ -134,7 +187,7 @@ describe('code pipeline stack factory test', () => {
         templateHelper.template.templateMatches(expected);
     });
 
-    function getConfig(): Record<string, any> {
-        return require('../__config__/live/defaults.mixed');
+    function getConfig(name: string = 'defaults.mixed'): Record<string, any> {
+        return require(`../__config__/live/${name}`);
     }
 })

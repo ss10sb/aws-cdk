@@ -27,9 +27,13 @@ module.exports = {
             emails: ['admin@example.edu']
         },
         runPipelineSchedule: 'cron(0 8 ? * 2#1 *)',
-        buildStepImage: {
-            ecrImage: 'test/my-image',
-            tag: '2.0'
+        buildStep: {
+            buildEnvironment: {
+                buildImage: {
+                    ecrName: 'test/my-image',
+                    tag: '2.0'
+                },
+            }
         }
     },
     Environments: [

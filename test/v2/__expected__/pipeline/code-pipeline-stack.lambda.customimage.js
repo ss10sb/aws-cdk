@@ -1,6 +1,185 @@
 const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
+          pccsharedtestlambdabuildsteprole7A9F1DFC: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'codebuild.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              }
+            }
+          },
+          pccsharedtestlambdabuildsteproleDefaultPolicyFE9A5EAB: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'ecr:BatchCheckLayerAvailability',
+                      'ecr:GetDownloadUrlForLayer',
+                      'ecr:BatchGetImage'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':ecr:us-west-2:12344:repository/test/my-image'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: 'ecr:GetAuthorizationToken',
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [
+                      'logs:CreateLogGroup',
+                      'logs:CreateLogStream',
+                      'logs:PutLogEvents'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
+                            {
+                              Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
+                            }
+                          ]
+                        ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            'arn:',
+                            { Ref: 'AWS::Partition' },
+                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
+                            {
+                              Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
+                            },
+                            ':*'
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    Action: [
+                      'codebuild:CreateReportGroup',
+                      'codebuild:CreateReport',
+                      'codebuild:UpdateReport',
+                      'codebuild:BatchPutTestCases',
+                      'codebuild:BatchPutCodeCoverages'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':codebuild:us-west-2:12344:report-group/',
+                          {
+                            Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
+                          },
+                          '-*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject',
+                      's3:PutObjectLegalHold',
+                      's3:PutObjectRetention',
+                      's3:PutObjectTagging',
+                      's3:PutObjectVersionTagging',
+                      's3:Abort*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [
+                          'pccsharedtestcodepipelinePipelineArtifactsBucket1DB2956C',
+                          'Arn'
+                        ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [
+                                'pccsharedtestcodepipelinePipelineArtifactsBucket1DB2956C',
+                                'Arn'
+                              ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    Action: [
+                      'kms:Decrypt',
+                      'kms:DescribeKey',
+                      'kms:Encrypt',
+                      'kms:ReEncrypt*',
+                      'kms:GenerateDataKey*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                        'Arn'
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      'kms:Decrypt',
+                      'kms:Encrypt',
+                      'kms:ReEncrypt*',
+                      'kms:GenerateDataKey*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                        'Arn'
+                      ]
+                    }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccsharedtestlambdabuildsteproleDefaultPolicyFE9A5EAB',
+              Roles: [ { Ref: 'pccsharedtestlambdabuildsteprole7A9F1DFC' } ]
+            }
+          },
         pccsharedtestsynthsteprole88CEA341: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -614,7 +793,7 @@ module.exports = {
                                     },
                                     EnvironmentVariables: Match.anyValue()
                                 },
-                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
+                      InputArtifacts: [ { Name: 'pcc_shared_test_build_step_Output' } ],
                                 Name: 'pcc-shared-test-synth-step',
                                 OutputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 RoleArn: {
@@ -623,7 +802,7 @@ module.exports = {
                                         'Arn'
                                     ]
                                 },
-                                RunOrder: 1
+                      RunOrder: 2
                             }
                         ],
                         Name: 'Build'
@@ -1046,6 +1225,69 @@ module.exports = {
                 ]
             }
         },
+          pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28: {
+            Type: 'AWS::CodeBuild::Project',
+            Properties: {
+              Artifacts: { Type: 'CODEPIPELINE' },
+              Cache: { Type: 'NO_CACHE' },
+              Description: 'Pipeline step pcc-shared-test/Pipeline/Build/pcc-shared-test-build-step',
+              EncryptionKey: {
+                'Fn::GetAtt': [
+                  'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
+                  'Arn'
+                ]
+              },
+              Environment: {
+                ComputeType: 'BUILD_GENERAL1_SMALL',
+                Image: {
+                  'Fn::Join': [
+                    '',
+                    [
+                      '12344.dkr.ecr.us-west-2.',
+                      { Ref: 'AWS::URLSuffix' },
+                      '/test/my-image:2.0'
+                    ]
+                  ]
+                },
+                ImagePullCredentialsType: 'SERVICE_ROLE',
+                PrivilegedMode: true,
+                Type: 'LINUX_CONTAINER'
+              },
+              ServiceRole: {
+                'Fn::GetAtt': [ 'pccsharedtestlambdabuildsteprole7A9F1DFC', 'Arn' ]
+              },
+              Source: {
+                BuildSpec: '{\n' +
+                  '  "version": "0.2",\n' +
+                  '  "phases": {\n' +
+                  '    "build": {\n' +
+                  '      "commands": [\n' +
+                  '        "cd codebase",\n' +
+                  '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
+                  '        "cp .env.example .env",\n' +
+                  '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress",\n' +
+                  '        "composer dump-autoload --optimize --classmap-authoritative --ignore-platform-reqs",\n' +
+                  '        "php artisan route:cache",\n' +
+                  '        "rm -rf vendor/bin",\n' +
+                  '        "rm -f .env",\n' +
+                  '        "npm ci",\n' +
+                  '        "npm run prod",\n' +
+                  '        "rm -rf node_modules tests",\n' +
+                  '        "cd .."\n' +
+                  '      ]\n' +
+                  '    }\n' +
+                  '  },\n' +
+                  '  "artifacts": {\n' +
+                  '    "base-directory": "./",\n' +
+                  '    "files": [\n' +
+                  '      "**/*"\n' +
+                  '    ]\n' +
+                  '  }\n' +
+                  '}',
+                Type: 'CODEPIPELINE'
+              }
+            }
+          },
         pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
@@ -1188,6 +1430,20 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
+                    Action: [
+                      'codebuild:BatchGetBuilds',
+                      'codebuild:StartBuild',
+                      'codebuild:StopBuild'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28',
+                        'Arn'
+                      ]
+                    }
+                  },
+                  {
                             Action: [
                                 'codebuild:BatchGetBuilds',
                                 'codebuild:StartBuild',
