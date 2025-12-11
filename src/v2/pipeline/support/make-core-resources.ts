@@ -41,8 +41,6 @@ export class MakeCoreResources extends NonConstruct {
             source: source,
             repositoryFactory: ecrRepositoryFactory,
             synth: synthStep,
-            buildStepImage: this.config.Parameters?.buildStepImage,
-            phpVersion: this.config.Parameters?.phpVersion
         });
         return {
             source: source,

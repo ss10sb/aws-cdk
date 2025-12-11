@@ -202,29 +202,6 @@ module.exports = {
                     Statement: [
                         {
                             Action: [
-                                'ecr:BatchCheckLayerAvailability',
-                                'ecr:GetDownloadUrlForLayer',
-                                'ecr:BatchGetImage'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':ecr:us-pipeline:123pipeline:repository/my-custom-image'
-                                    ]
-                                ]
-                            }
-                        },
-                        {
-                            Action: 'ecr:GetAuthorizationToken',
-                            Effect: 'Allow',
-                            Resource: '*'
-                        },
-                        {
-                            Action: [
                                 'logs:CreateLogGroup',
                                 'logs:CreateLogStream',
                                 'logs:PutLogEvents'
@@ -690,7 +667,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pipelinecodepipelineUpdatePipelineSelfMutation85999C79'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"01abdb4a3407e777da9ae866dbcfe6992c807fd57a0209066fcbb6efe65dd9cd"}]'
+                                    EnvironmentVariables: Match.anyValue()
                                 },
                                 InputArtifacts: [ { Name: 'synth_synth_step_Output' } ],
                                 Name: 'SelfMutate',
@@ -903,17 +880,8 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: {
-                        'Fn::Join': [
-                            '',
-                            [
-                                '123pipeline.dkr.ecr.us-pipeline.',
-                                { Ref: 'AWS::URLSuffix' },
-                                '/my-custom-image:latest'
-                            ]
-                        ]
-                    },
-                    ImagePullCredentialsType: 'SERVICE_ROLE',
+                    Image: 'aws/codebuild/standard:7.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
                     PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },

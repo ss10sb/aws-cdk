@@ -45,42 +45,4 @@ describe('code pipeline pipeline', () => {
         const expected = require('../__templates__/code-pipeline-pipeline');
         templateHelper.template.templateMatches(expected);
     });
-
-    it('should create a code pipeline with a custom ecr image build step', () => {
-        const baseBuildConfig = {
-            Name: 'test',
-            College: 'PCC',
-            Environment: ConfigEnvironments.PROD,
-            Parameters: {
-                repositories: {
-                    repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
-                }
-            }
-        }
-        const app = new App();
-        const stackProps = {env: {region: 'us-pipeline', account: '123pipeline'}};
-        const stack = new Stack(app, 'stack', stackProps);
-        const codeStarSource = new CodePipelineCodestarSource(stack, 'source', {
-            connectionArn: "arn:...",
-            owner: "repoOwner",
-            repo: "repoName"
-        });
-        const synthStep = new CodePipelineSynthStep(stack, stack.node.id, {
-            input: codeStarSource.source
-        });
-        const repositories = new EcrRepositories(stack.node.id, baseBuildConfig.Parameters.repositories);
-        new CodePipelinePipeline(stack, stack.node.id, {
-            source: codeStarSource,
-            synth: synthStep,
-            repositoryFactory: new EcrRepositoryFactory(stack, stack.node.id, repositories),
-            buildStepImage: {
-                ecrImage: 'my-custom-image',
-                tag: 'latest',
-            }
-        });
-        const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.inspect();
-        // const expected = require('../__templates__/code-pipeline-pipeline');
-        // templateHelper.template.templateMatches(expected);
-    });
 });

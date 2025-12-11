@@ -1411,7 +1411,7 @@ module.exports = {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
                     Image: 'aws/codebuild/standard:7.0',
                     ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: false,
+                    PrivilegedMode: true,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {

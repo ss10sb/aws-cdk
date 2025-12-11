@@ -1,162 +1,6 @@
 const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
-        pccsharedtestlambdabuildsteprole7A9F1DFC: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: { Service: 'codebuild.amazonaws.com' }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                }
-            }
-        },
-        pccsharedtestlambdabuildsteproleDefaultPolicyFE9A5EAB: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: [
-                                'logs:CreateLogGroup',
-                                'logs:CreateLogStream',
-                                'logs:PutLogEvents'
-                            ],
-                            Effect: 'Allow',
-                            Resource: [
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
-                                            {
-                                                Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
-                                            }
-                                        ]
-                                    ]
-                                },
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            { Ref: 'AWS::Partition' },
-                                            ':logs:us-west-2:12344:log-group:/aws/codebuild/',
-                                            {
-                                                Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
-                                            },
-                                            ':*'
-                                        ]
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            Action: [
-                                'codebuild:CreateReportGroup',
-                                'codebuild:CreateReport',
-                                'codebuild:UpdateReport',
-                                'codebuild:BatchPutTestCases',
-                                'codebuild:BatchPutCodeCoverages'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        'arn:',
-                                        { Ref: 'AWS::Partition' },
-                                        ':codebuild:us-west-2:12344:report-group/',
-                                        {
-                                            Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
-                                        },
-                                        '-*'
-                                    ]
-                                ]
-                            }
-                        },
-                        {
-                            Action: [
-                                's3:GetObject*',
-                                's3:GetBucket*',
-                                's3:List*',
-                                's3:DeleteObject*',
-                                's3:PutObject',
-                                's3:PutObjectLegalHold',
-                                's3:PutObjectRetention',
-                                's3:PutObjectTagging',
-                                's3:PutObjectVersionTagging',
-                                's3:Abort*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: [
-                                {
-                                    'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelinePipelineArtifactsBucket1DB2956C',
-                                        'Arn'
-                                    ]
-                                },
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            {
-                                                'Fn::GetAtt': [
-                                                    'pccsharedtestcodepipelinePipelineArtifactsBucket1DB2956C',
-                                                    'Arn'
-                                                ]
-                                            },
-                                            '/*'
-                                        ]
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:DescribeKey',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
-                                    'Arn'
-                                ]
-                            }
-                        },
-                        {
-                            Action: [
-                                'kms:Decrypt',
-                                'kms:Encrypt',
-                                'kms:ReEncrypt*',
-                                'kms:GenerateDataKey*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
-                                    'Arn'
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'pccsharedtestlambdabuildsteproleDefaultPolicyFE9A5EAB',
-                Roles: [ { Ref: 'pccsharedtestlambdabuildsteprole7A9F1DFC' } ]
-            }
-        },
         pccsharedtestsynthsteprole88CEA341: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -766,35 +610,11 @@ module.exports = {
                                 },
                                 Configuration: {
                                     ProjectName: {
-                                        Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28'
-                                    },
-                                    EnvironmentVariables: Match.anyValue()
-                                },
-                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
-                                Name: 'pcc-shared-test-build-step',
-                                OutputArtifacts: [ { Name: 'pcc_shared_test_build_step_Output' } ],
-                                RoleArn: {
-                                    'Fn::GetAtt': [
-                                        'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
-                                        'Arn'
-                                    ]
-                                },
-                                RunOrder: 1
-                            },
-                            {
-                                ActionTypeId: {
-                                    Category: 'Build',
-                                    Owner: 'AWS',
-                                    Provider: 'CodeBuild',
-                                    Version: '1'
-                                },
-                                Configuration: {
-                                    ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
                                     EnvironmentVariables: Match.anyValue()
                                 },
-                                InputArtifacts: [ { Name: 'pcc_shared_test_build_step_Output' } ],
+                                InputArtifacts: [ { Name: 'repoOwner_repoName_Source' } ],
                                 Name: 'pcc-shared-test-synth-step',
                                 OutputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
                                 RoleArn: {
@@ -803,7 +623,7 @@ module.exports = {
                                         'Arn'
                                     ]
                                 },
-                                RunOrder: 2
+                                RunOrder: 1
                             }
                         ],
                         Name: 'Build'
@@ -851,7 +671,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                      Name: 'AWS679f53fac002430cb0da5b7982bd2287_Code',
+                                Name: 'AWS679f53fac002430cb0da5b7982bd2287_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -873,7 +693,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                      Name: 'pcc-sdlc-test-event-fn-0_Code',
+                                Name: 'pcc-sdlc-test-event-fn-0_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -895,7 +715,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                      Name: 's3-assets-copy_AwsCliLayer_Code',
+                                Name: 's3-assets-copy_AwsCliLayer_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -917,7 +737,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                      Name: 'Custom_CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C_Code',
+                                Name: 'Custom_CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C_Code',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -939,7 +759,7 @@ module.exports = {
                                     }
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_synth_step_Output' } ],
-                      Name: 's3-assets-copy_Asset1',
+                                Name: 's3-assets-copy_Asset1',
                                 RoleArn: {
                                     'Fn::GetAtt': [
                                         'pccsharedtestcodepipelineCodeBuildActionRole574D2B54',
@@ -1122,9 +942,9 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                        'Fn::GetAtt': [
-                          'pccsharedtestcodepipelinePipelineRole7DA95E27',
-                          'Arn'
+                                    'Fn::GetAtt': [
+                                        'pccsharedtestcodepipelinePipelineRole7DA95E27',
+                                        'Arn'
                                     ]
                                 }
                             }
@@ -1226,73 +1046,6 @@ module.exports = {
                 ]
             }
         },
-        pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28: {
-            Type: 'AWS::CodeBuild::Project',
-            Properties: {
-                Artifacts: { Type: 'CODEPIPELINE' },
-                Cache: { Type: 'NO_CACHE' },
-                Description: 'Pipeline step pcc-shared-test/Pipeline/Build/pcc-shared-test-build-step',
-                EncryptionKey: {
-                    'Fn::GetAtt': [
-                        'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
-                        'Arn'
-                    ]
-                },
-                Environment: {
-                    ComputeType: 'BUILD_GENERAL1_SMALL',
-                    Image: 'aws/codebuild/standard:7.0',
-                    ImagePullCredentialsType: 'CODEBUILD',
-                    PrivilegedMode: true,
-                    Type: 'LINUX_CONTAINER'
-                },
-                ServiceRole: {
-                    'Fn::GetAtt': [ 'pccsharedtestlambdabuildsteprole7A9F1DFC', 'Arn' ]
-                },
-                Source: {
-                    BuildSpec: '{\n' +
-                        '  "phases": {\n' +
-                        '    "install": {\n' +
-                        '      "runtime-versions": {\n' +
-                        '        "php": "8.3",\n' +
-                        '        "nodejs": "22"\n' +
-                        '      },\n' +
-                        '      "commands": [\n' +
-                        '        "php -v",\n' +
-                        `        "php -r \\"copy('https://getcomposer.org/installer', 'composer-setup.php');\\"",\n` +
-                        '        "php composer-setup.php",\n' +
-                        `        "php -r \\"unlink('composer-setup.php');\\"",\n` +
-                        '        "mv composer.phar /usr/local/bin/composer"\n' +
-                        '      ]\n' +
-                        '    },\n' +
-                        '    "build": {\n' +
-                        '      "commands": [\n' +
-                        '        "cd codebase",\n' +
-                        '        "mv resources.copy resources && mv config.copy config && mv public.copy public",\n' +
-                        '        "cp .env.example .env",\n' +
-                        '        "composer install --ignore-platform-reqs --no-ansi --no-autoloader --no-dev --no-interaction --no-progress",\n' +
-                        '        "composer dump-autoload --optimize --classmap-authoritative --ignore-platform-reqs",\n' +
-                        '        "php artisan route:cache",\n' +
-                        '        "rm -rf vendor/bin",\n' +
-                        '        "rm -f .env",\n' +
-                        '        "npm ci",\n' +
-                        '        "npm run prod",\n' +
-                        '        "rm -rf node_modules tests",\n' +
-                        '        "cd .."\n' +
-                        '      ]\n' +
-                        '    }\n' +
-                        '  },\n' +
-                        '  "version": "0.2",\n' +
-                        '  "artifacts": {\n' +
-                        '    "base-directory": "./",\n' +
-                        '    "files": [\n' +
-                        '      "**/*"\n' +
-                        '    ]\n' +
-                        '  }\n' +
-                        '}',
-                    Type: 'CODEPIPELINE'
-                }
-            }
-        },
         pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3: {
             Type: 'AWS::CodeBuild::Project',
             Properties: {
@@ -1347,9 +1100,9 @@ module.exports = {
                             Effect: 'Allow',
                             Principal: {
                                 AWS: {
-                        'Fn::GetAtt': [
-                          'pccsharedtestcodepipelinePipelineRole7DA95E27',
-                          'Arn'
+                                    'Fn::GetAtt': [
+                                        'pccsharedtestcodepipelinePipelineRole7DA95E27',
+                                        'Arn'
                                     ]
                                 }
                             }
@@ -1434,20 +1187,6 @@ module.exports = {
             Properties: {
                 PolicyDocument: {
                     Statement: [
-                        {
-                            Action: [
-                                'codebuild:BatchGetBuilds',
-                                'codebuild:StartBuild',
-                                'codebuild:StopBuild'
-                            ],
-                            Effect: 'Allow',
-                            Resource: {
-                                'Fn::GetAtt': [
-                                    'pccsharedtestcodepipelinePipelineBuildpccsharedtestbuildstep7E390D28',
-                                    'Arn'
-                                ]
-                            }
-                        },
                         {
                             Action: [
                                 'codebuild:BatchGetBuilds',
@@ -1846,29 +1585,6 @@ module.exports = {
                             ]
                         },
                         {
-                    Action: [
-                      'ecr:BatchCheckLayerAvailability',
-                      'ecr:GetDownloadUrlForLayer',
-                      'ecr:BatchGetImage'
-                    ],
-                    Effect: 'Allow',
-                    Resource: {
-                      'Fn::Join': [
-                        '',
-                        [
-                          'arn:',
-                          { Ref: 'AWS::Partition' },
-                          ':ecr:us-west-2:12344:repository/test/my-image'
-                        ]
-                      ]
-                    }
-                  },
-                  {
-                    Action: 'ecr:GetAuthorizationToken',
-                    Effect: 'Allow',
-                    Resource: '*'
-                  },
-                  {
                             Action: [ 's3:GetObject*', 's3:GetBucket*', 's3:List*' ],
                             Effect: 'Allow',
                             Resource: [
@@ -1918,7 +1634,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/AWS679f53fac002430cb0da5b7982bd2287_Code',
+                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/AWS679f53fac002430cb0da5b7982bd2287_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -1927,18 +1643,9 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                Image: {
-                  'Fn::Join': [
-                    '',
-                    [
-                      '12344.dkr.ecr.us-west-2.',
-                      { Ref: 'AWS::URLSuffix' },
-                      '/test/my-image:2.0'
-                    ]
-                  ]
-                },
-                ImagePullCredentialsType: 'SERVICE_ROLE',
-                    PrivilegedMode: true,
+                    Image: 'aws/codebuild/standard:7.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -1953,13 +1660,13 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "commands": [\n' +
-                  '        "npm install -g cdk-assets@latest"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                         '      ]\n' +
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034:11111-us-west-2-8f0e137f\\"",\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034:22222-us-west-2-72189ee5\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034:11111-us-west-2-8f0e137f\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034:22222-us-west-2-72189ee5\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -1973,7 +1680,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/pcc-sdlc-test-event-fn-0_Code',
+                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/pcc-sdlc-test-event-fn-0_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -1982,18 +1689,9 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                Image: {
-                  'Fn::Join': [
-                    '',
-                    [
-                      '12344.dkr.ecr.us-west-2.',
-                      { Ref: 'AWS::URLSuffix' },
-                      '/test/my-image:2.0'
-                    ]
-                  ]
-                },
-                ImagePullCredentialsType: 'SERVICE_ROLE',
-                    PrivilegedMode: true,
+                    Image: 'aws/codebuild/standard:7.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2008,13 +1706,13 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "commands": [\n' +
-                  '        "npm install -g cdk-assets@latest"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                         '      ]\n' +
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1:11111-us-west-2-7dc899d7\\"",\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1:22222-us-west-2-36ac4ab6\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1:11111-us-west-2-7dc899d7\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1:22222-us-west-2-36ac4ab6\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -2028,7 +1726,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/s3-assets-copy_AwsCliLayer_Code',
+                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/s3-assets-copy_AwsCliLayer_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -2037,18 +1735,9 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                Image: {
-                  'Fn::Join': [
-                    '',
-                    [
-                      '12344.dkr.ecr.us-west-2.',
-                      { Ref: 'AWS::URLSuffix' },
-                      '/test/my-image:2.0'
-                    ]
-                  ]
-                },
-                ImagePullCredentialsType: 'SERVICE_ROLE',
-                    PrivilegedMode: true,
+                    Image: 'aws/codebuild/standard:7.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2063,13 +1752,13 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "commands": [\n' +
-                  '        "npm install -g cdk-assets@latest"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                         '      ]\n' +
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535:11111-us-west-2-5607d29f\\"",\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535:22222-us-west-2-82966a90\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535:11111-us-west-2-5607d29f\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"c49d356cac773d491c5f7ac148995a1181498a8e289429f8612a7f7e3814f535:22222-us-west-2-82966a90\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -2083,7 +1772,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/Custom_CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C_Code',
+                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/Custom_CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C_Code',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -2092,18 +1781,9 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                Image: {
-                  'Fn::Join': [
-                    '',
-                    [
-                      '12344.dkr.ecr.us-west-2.',
-                      { Ref: 'AWS::URLSuffix' },
-                      '/test/my-image:2.0'
-                    ]
-                  ]
-                },
-                ImagePullCredentialsType: 'SERVICE_ROLE',
-                    PrivilegedMode: true,
+                    Image: 'aws/codebuild/standard:7.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2118,13 +1798,13 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "commands": [\n' +
-                  '        "npm install -g cdk-assets@latest"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                         '      ]\n' +
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"3423a042b818e31c1e34a19d6689ab2e5f9b70fcbe9e71df66f241b20a200bd9:11111-us-west-2-870de11a\\"",\n' +
-                  '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"3423a042b818e31c1e34a19d6689ab2e5f9b70fcbe9e71df66f241b20a200bd9:22222-us-west-2-22ec9479\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"3423a042b818e31c1e34a19d6689ab2e5f9b70fcbe9e71df66f241b20a200bd9:11111-us-west-2-870de11a\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-stage/pccsharedtestpccprodteststagepccprodtest180889E6.assets.json\\" --verbose publish \\"3423a042b818e31c1e34a19d6689ab2e5f9b70fcbe9e71df66f241b20a200bd9:22222-us-west-2-22ec9479\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +
@@ -2138,7 +1818,7 @@ module.exports = {
             Properties: {
                 Artifacts: { Type: 'CODEPIPELINE' },
                 Cache: { Type: 'NO_CACHE' },
-              Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/s3-assets-copy_Asset1',
+                Description: 'Pipeline step pcc-shared-test/Pipeline/Assets/s3-assets-copy_Asset1',
                 EncryptionKey: {
                     'Fn::GetAtt': [
                         'pccsharedtestcodepipelinePipelineArtifactsBucketEncryptionKey3CA0A728',
@@ -2147,18 +1827,9 @@ module.exports = {
                 },
                 Environment: {
                     ComputeType: 'BUILD_GENERAL1_SMALL',
-                Image: {
-                  'Fn::Join': [
-                    '',
-                    [
-                      '12344.dkr.ecr.us-west-2.',
-                      { Ref: 'AWS::URLSuffix' },
-                      '/test/my-image:2.0'
-                    ]
-                  ]
-                },
-                ImagePullCredentialsType: 'SERVICE_ROLE',
-                    PrivilegedMode: true,
+                    Image: 'aws/codebuild/standard:7.0',
+                    ImagePullCredentialsType: 'CODEBUILD',
+                    PrivilegedMode: false,
                     Type: 'LINUX_CONTAINER'
                 },
                 ServiceRole: {
@@ -2173,7 +1844,7 @@ module.exports = {
                         '  "phases": {\n' +
                         '    "install": {\n' +
                         '      "commands": [\n' +
-                  '        "npm install -g cdk-assets@latest"\n' +
+                        '        "npm install -g cdk-assets@latest"\n' +
                         '      ]\n' +
                         '    },\n' +
                         '    "build": {\n' +

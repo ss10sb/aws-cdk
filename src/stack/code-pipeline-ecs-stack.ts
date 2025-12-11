@@ -27,8 +27,6 @@ export class CodePipelineEcsStack extends CodePipelineBaseStack {
             source: pipelineSource,
             repositoryFactory: ecrRepositoryFactory,
             synth: synthStep,
-            buildStepImage: this.config.Parameters?.buildStepImage,
-            phpVersion: this.config.Parameters?.phpVersion
         };
         const pipeline = this.createPipeline(codePipelineProps);
         const ecrSteps = this.createEcrSteps({

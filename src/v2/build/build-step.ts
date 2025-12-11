@@ -14,10 +14,12 @@ export interface BuildStepProps {
 
 export class BuildStep extends NonConstruct {
     protected props: BuildStepProps;
+    protected buildStepEnvHelper: BuildStepEnvironment;
 
     constructor(scope: Construct, id: string, props: BuildStepProps) {
         super(scope, id);
         this.props = props;
+        this.buildStepEnvHelper = new BuildStepEnvironment(this.scope, 'build-step-env', this.props.buildEnvironment);
     }
 
     static makeProps(config: Record<string, any>): BuildStepProps {
@@ -41,10 +43,9 @@ export class BuildStep extends NonConstruct {
     }
 
     makeCodeBuildStepProps(): CodeBuildStepProps {
-        const builderStepEnv = new BuildStepEnvironment(this.scope, 'build-step-env', this.props.buildEnvironment);
         return {
             commands: this.getCommands(),
-            buildEnvironment: builderStepEnv.buildEnvironment(),
+            buildEnvironment: this.buildStepEnvHelper.buildEnvironment(),
             primaryOutputDirectory: "./",
             partialBuildSpec: this.getPartialBuildSpec()
         }
@@ -53,6 +54,9 @@ export class BuildStep extends NonConstruct {
     protected getPartialBuildSpec(): BuildSpec {
         if (this.props.buildSpec) {
             return BuildSpec.fromObject(this.props.buildSpec);
+        }
+        if (this.buildStepEnvHelper.isCustom) {
+            return BuildSpec.fromObject({});
         }
         return BuildSpec.fromObject({
             phases: {

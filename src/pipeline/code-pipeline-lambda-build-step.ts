@@ -26,10 +26,11 @@ export class CodePipelineLambdaBuildStep extends NonConstruct {
 
     protected create(): CodeBuildStep {
         const buildStepHelper = new BuildStep(this.scope, this.id, this.props.buildStep);
-        return new CodeBuildStep(this.mixNameWithId('build-step'), {
+        const props = {
             input: this.props.input,
             role: this.role,
             ...buildStepHelper.makeCodeBuildStepProps(),
-        });
+        }
+        return new CodeBuildStep(this.mixNameWithId('build-step'), props);
     }
 }

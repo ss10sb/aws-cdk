@@ -17,11 +17,12 @@ export interface BuildEnvironmentProps {
     phpVersion?: PhpVersion;
     computeType?: ComputeType;
     environment?: Record<string, any>;
+    privileged?: boolean;
 }
 
 export class BuildStepEnvironment extends NonConstruct {
     props: BuildEnvironmentProps;
-    isCustom = false;
+    isCustom: boolean = false;
 
     constructor(scope: any, id: string, props: BuildEnvironmentProps) {
         super(scope, id);
@@ -33,7 +34,7 @@ export class BuildStepEnvironment extends NonConstruct {
         return {
             buildImage: buildImage,
             computeType: this.props.computeType,
-            privileged: this.isCustom,
+            privileged: this.props.privileged ?? true,
             environmentVariables: this.props.environment
         }
     }
@@ -53,17 +54,18 @@ export class BuildStepEnvironment extends NonConstruct {
     }
 
     protected buildImageFromBuildImageProps(props: BuildImageProps): IBuildImage {
+        const name = this.mixNameWithId('build-step-image');
         if (props.ecrArn) {
             this.isCustom = true;
             return LinuxBuildImage.fromEcrRepository(
-                Repository.fromRepositoryArn(this.scope, 'build-image', props.ecrArn),
+                Repository.fromRepositoryArn(this.scope, name, props.ecrArn),
                 props.tag
             );
         }
         if (props.ecrName) {
             this.isCustom = true;
             return LinuxBuildImage.fromEcrRepository(
-                Repository.fromRepositoryName(this.scope, 'build-image', props.ecrName),
+                Repository.fromRepositoryName(this.scope, name, props.ecrName),
                 props.tag
             );
         }
