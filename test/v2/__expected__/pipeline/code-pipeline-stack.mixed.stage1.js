@@ -674,7 +674,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccprodtesteventfn0ServiceRoleF3F26E3C', 'Arn']
                 },
-                Runtime: 'provided.al2',
+                Runtime: 'provided.al2023',
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
@@ -943,7 +943,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccprodtestqueuefn0ServiceRole654705B9', 'Arn']
                 },
-                Runtime: 'provided.al2',
+                Runtime: 'provided.al2023',
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},

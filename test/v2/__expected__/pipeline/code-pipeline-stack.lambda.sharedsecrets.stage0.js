@@ -1,4 +1,4 @@
-const {MatchHelper} = require("../../../../src/utils/testing/match-helper");
+const {Match} = require("aws-cdk-lib/assertions");
 module.exports = {
     Resources: {
         pccsdlctesttestsdlcexampleeduarecord40417570: {
@@ -20,9 +20,9 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-              Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-              Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
-              Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.sdlc.example.edu"}}',
+                Create: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+                Update: '{"service":"SES","action":"verifyDomainIdentity","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"responsePath":"VerificationToken"}}',
+                Delete: '{"service":"SES","action":"deleteIdentity","parameters":{"Identity":"test.sdlc.example.edu"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -177,8 +177,8 @@ module.exports = {
                 ServiceToken: {
                     'Fn::GetAtt': ['AWS679f53fac002430cb0da5b7982bd22872D164C4C', 'Arn']
                 },
-              Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
-              Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
+                Create: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
+                Update: '{"service":"SES","action":"verifyDomainDkim","parameters":{"Domain":"test.sdlc.example.edu"},"physicalResourceId":{"id":"test.sdlc.example.edu-verify-domain-dkim"}}',
                 InstallLatestAwsSdk: true
             },
             DependsOn: [
@@ -377,7 +377,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
+                    S3Key: '34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034.zip'
                 },
                 Handler: 'index.handler',
                 Role: {
@@ -386,7 +386,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: MatchHelper.startsWith('nodejs'),
+                Runtime: 'nodejs22.x',
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
@@ -580,6 +580,14 @@ module.exports = {
                                     ]
                                 ]
                             }
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123'
                         }
                     ],
                     Version: '2012-10-17'
@@ -612,7 +620,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
+                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
                 },
                 Environment: {
                     Variables: {
@@ -631,8 +639,10 @@ module.exports = {
                                 ]
                             ]
                         },
+                        AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                        SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
                                 '',
@@ -698,16 +708,262 @@ module.exports = {
                 'pccsdlctesteventfn0ServiceRole5B8A432E'
             ]
         },
-        pccsdlctesteventfn0scheduledevent091D241D0: {
+        pccsdlctesteventfn1lg4C026A74: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+                RetentionInDays: 30,
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        pccsdlctesteventfn1ServiceRole24354BBB: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'lambda.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    },
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+                            ]
+                        ]
+                    }
+                ],
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ]
+            }
+        },
+        pccsdlctesteventfn1ServiceRoleDefaultPolicy6B60B944: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                'sqs:SendMessage',
+                                'sqs:GetQueueAttributes',
+                                'sqs:GetQueueUrl'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {'Fn::GetAtt': ['pccsdlctestqueue3EA5766D', 'Arn']}
+                        },
+                        {
+                            Action: ['ses:SendEmail', 'ses:SendRawEmail'],
+                            Effect: 'Allow',
+                            Resource: '*'
+                        },
+                        {
+                            Action: [
+                                'dynamodb:BatchGetItem',
+                                'dynamodb:GetRecords',
+                                'dynamodb:GetShardIterator',
+                                'dynamodb:Query',
+                                'dynamodb:GetItem',
+                                'dynamodb:Scan',
+                                'dynamodb:ConditionCheckItem',
+                                'dynamodb:BatchWriteItem',
+                                'dynamodb:PutItem',
+                                'dynamodb:UpdateItem',
+                                'dynamodb:DeleteItem',
+                                'dynamodb:DescribeTable'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
+                                },
+                                {Ref: 'AWS::NoValue'}
+                            ]
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: {
+                                'Fn::Join': [
+                                    '',
+                                    [
+                                        'arn:',
+                                        {Ref: 'AWS::Partition'},
+                                        ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment-??????'
+                                    ]
+                                ]
+                            }
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123'
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'pccsdlctesteventfn1ServiceRoleDefaultPolicy6B60B944',
+                Roles: [{Ref: 'pccsdlctesteventfn1ServiceRole24354BBB'}]
+            }
+        },
+        pccsdlctesteventfn1SecurityGroup9EB89AC0: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+                GroupDescription: 'Automatic security group for Lambda Function pccsharedtestpccsdlcteststagepccsdlctestpccsdlctesteventfn1E928F226',
+                SecurityGroupEgress: [
+                    {
+                        CidrIp: '0.0.0.0/0',
+                        Description: 'Allow all outbound traffic by default',
+                        IpProtocol: '-1'
+                    }
+                ],
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
+                VpcId: 'vpc-12345'
+            }
+        },
+        pccsdlctesteventfn1CD989762: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
+                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
+                },
+                Environment: {
+                    Variables: {
+                        AWS_APP_NAME: 'pcc-sdlc-test',
+                        MAIL_FROM_ADDRESS: 'no-reply@test.sdlc.example.edu',
+                        IMPORTER_FROM: 'importer-no-reply@test.sdlc.example.edu',
+                        DYNAMODB_CACHE_TABLE: {Ref: 'pccsdlctestcacheFE02D1F3'},
+                        SQS_QUEUE: {Ref: 'pccsdlctestqueue3EA5766D'},
+                        AWS_SECRET_ARN: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    'arn:',
+                                    {Ref: 'AWS::Partition'},
+                                    ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment'
+                                ]
+                            ]
+                        },
+                        AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
+                        APP_BASE_PATH: '/var/task',
+                        BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                        SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
+                        SECRETS_LOOKUP: {
+                            'Fn::Join': [
+                                '',
+                                [
+                                    'bref-secretsmanager:arn:',
+                                    {Ref: 'AWS::Partition'},
+                                    ':secretsmanager:us-west-2:11111:secret:pcc-sdlc-test-secrets/environment'
+                                ]
+                            ]
+                        }
+                    }
+                },
+                FunctionName: 'pcc-sdlc-test-event-fn-1',
+                Handler: 'artisan',
+                Layers: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':lambda:us-west-2:534081306603:layer:php-82:101'
+                            ]
+                        ]
+                    },
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':lambda:us-west-2:534081306603:layer:console:110'
+                            ]
+                        ]
+                    }
+                ],
+                LoggingConfig: {LogGroup: {Ref: 'pccsdlctesteventfn1lg4C026A74'}},
+                MemorySize: 512,
+                Role: {
+                    'Fn::GetAtt': ['pccsdlctesteventfn1ServiceRole24354BBB', 'Arn']
+                },
+                Runtime: 'provided.al2023',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
+                Timeout: 120,
+                VpcConfig: {
+                    SecurityGroupIds: [
+                        {
+                            'Fn::GetAtt': [
+                                'pccsdlctesteventfn1SecurityGroup9EB89AC0',
+                                'GroupId'
+                            ]
+                        }
+                    ],
+                    SubnetIds: ['p-12345', 'p-67890']
+                }
+            },
+            DependsOn: [
+                'pccsdlctesteventfn1ServiceRoleDefaultPolicy6B60B944',
+                'pccsdlctesteventfn1ServiceRole24354BBB'
+            ]
+        },
+        pccsdlctesteventfn1scheduledevent09E40751E: {
             Type: 'AWS::Events::Rule',
             Properties: {
-                Name: 'pcc-sdlc-test-event-fn-0-scheduled-event-0',
+                Name: 'pcc-sdlc-test-event-fn-1-scheduled-event-0',
                 ScheduleExpression: 'rate(5 minutes)',
                 State: 'ENABLED',
+                Tags: [
+                    {Key: 'App', Value: 'test'},
+                    {Key: 'College', Value: 'PCC'},
+                    {Key: 'Environment', Value: 'sdlc'}
+                ],
                 Targets: [
                     {
                         Arn: {
-                            'Fn::GetAtt': ['pccsdlctesteventfn00E8A306A', 'Arn']
+                            'Fn::GetAtt': ['pccsdlctesteventfn1CD989762', 'Arn']
                         },
                         Id: 'Target0',
                         Input: '{"cli":"schedule:run"}'
@@ -715,14 +971,14 @@ module.exports = {
                 ]
             }
         },
-        pccsdlctesteventfn0scheduledevent0AllowEventRulepccsharedtestpccsdlcteststagepccsdlctestpccsdlctesteventfn0C9D0622B3F02DB56: {
+        pccsdlctesteventfn1scheduledevent0AllowEventRulepccsharedtestpccsdlcteststagepccsdlctestpccsdlctesteventfn1E928F226D9DD5811: {
             Type: 'AWS::Lambda::Permission',
             Properties: {
                 Action: 'lambda:InvokeFunction',
-                FunctionName: {'Fn::GetAtt': ['pccsdlctesteventfn00E8A306A', 'Arn']},
+                FunctionName: {'Fn::GetAtt': ['pccsdlctesteventfn1CD989762', 'Arn']},
                 Principal: 'events.amazonaws.com',
                 SourceArn: {
-                    'Fn::GetAtt': ['pccsdlctesteventfn0scheduledevent091D241D0', 'Arn']
+                    'Fn::GetAtt': ['pccsdlctesteventfn1scheduledevent09E40751E', 'Arn']
                 }
             }
         },
@@ -859,6 +1115,14 @@ module.exports = {
                                     ]
                                 ]
                             }
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123'
                         }
                     ],
                     Version: '2012-10-17'
@@ -891,7 +1155,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
+                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
                 },
                 Environment: {
                     Variables: {
@@ -910,8 +1174,10 @@ module.exports = {
                                 ]
                             ]
                         },
+                        AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                        SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
                                 '',
@@ -971,274 +1237,13 @@ module.exports = {
             Type: 'AWS::Lambda::EventSourceMapping',
             Properties: {
                 EventSourceArn: {'Fn::GetAtt': ['pccsdlctestqueue3EA5766D', 'Arn']},
-              FunctionName: { Ref: 'pccsdlctestqueuefn0B6C6E75C' },
-              Tags: [
-                { Key: 'App', Value: 'test' },
-                { Key: 'College', Value: 'PCC' },
-                { Key: 'Environment', Value: 'sdlc' }
-              ]
-            }
-        },
-        assetstestsdlcexampleeduE2381F38: {
-            Type: 'AWS::S3::Bucket',
-            Properties: {
-                BucketName: 'assets-test-sdlc-example-edu',
-                CorsConfiguration: {
-                    CorsRules: [
-                        {
-                            AllowedHeaders: ['*'],
-                            AllowedMethods: ['GET'],
-                            AllowedOrigins: ['https://test.sdlc.example.edu'],
-                            MaxAge: 3000
-                        }
-                    ]
-                },
-                PublicAccessBlockConfiguration: {
-                    BlockPublicAcls: false,
-                    BlockPublicPolicy: false,
-                    IgnorePublicAcls: false,
-                    RestrictPublicBuckets: false
-                },
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'aws-cdk:cr-owned:50d04f65', Value: 'true'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            },
-            UpdateReplacePolicy: 'Retain',
-            DeletionPolicy: 'Retain'
-        },
-        assetstestsdlcexampleeduPolicy342045C8: {
-            Type: 'AWS::S3::BucketPolicy',
-            Properties: {
-                Bucket: {Ref: 'assetstestsdlcexampleeduE2381F38'},
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 's3:*',
-                            Condition: {Bool: {'aws:SecureTransport': 'false'}},
-                            Effect: 'Deny',
-                            Principal: {AWS: '*'},
-                            Resource: [
-                                {
-                                    'Fn::GetAtt': ['assetstestsdlcexampleeduE2381F38', 'Arn']
-                                },
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            {
-                                                'Fn::GetAtt': ['assetstestsdlcexampleeduE2381F38', 'Arn']
-                                            },
-                                            '/*'
-                                        ]
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            Action: 's3:GetObject',
-                            Effect: 'Allow',
-                            Principal: {AWS: '*'},
-                            Resource: {
-                                'Fn::Join': [
-                                    '',
-                                    [
-                                        {
-                                            'Fn::GetAtt': ['assetstestsdlcexampleeduE2381F38', 'Arn']
-                                        },
-                                        '/*'
-                                    ]
-                                ]
-                            }
-                        }
-                    ],
-                    Version: '2012-10-17'
-                }
-            }
-        },
-        s3assetscopylg083B90F8: {
-            Type: 'AWS::Logs::LogGroup',
-            Properties: {
-                RetentionInDays: 1,
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ]
-            },
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        s3assetscopyAwsCliLayerA9EB8F42: {
-            Type: 'AWS::Lambda::LayerVersion',
-            Properties: {
-                Content: {
-                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Description: '/opt/awscli/aws'
-            }
-        },
-        s3assetscopyCustomResourceB5844E7B: {
-            Type: 'Custom::CDKBucketDeployment',
-            Properties: {
-                ServiceToken: {
-                    'Fn::GetAtt': [
-                        'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536',
-                        'Arn'
-                    ]
-                },
-                SourceBucketNames: ['cdk-hnb659fds-assets-11111-us-west-2'],
-                SourceObjectKeys: [
-                    MatchHelper.endsWith('zip')
-                ],
-                DestinationBucketName: {Ref: 'assetstestsdlcexampleeduE2381F38'},
-              Prune: true,
-              OutputObjectKeys: true
-            },
-            UpdateReplacePolicy: 'Delete',
-            DeletionPolicy: 'Delete'
-        },
-        CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265: {
-            Type: 'AWS::IAM::Role',
-            Properties: {
-                AssumeRolePolicyDocument: {
-                    Statement: [
-                        {
-                            Action: 'sts:AssumeRole',
-                            Effect: 'Allow',
-                            Principal: {Service: 'lambda.amazonaws.com'}
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                ManagedPolicyArns: [
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-                            ]
-                        ]
-                    }
-                ],
+                FunctionName: {Ref: 'pccsdlctestqueuefn0B6C6E75C'},
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
                     {Key: 'Environment', Value: 'sdlc'}
                 ]
             }
-        },
-        CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF: {
-            Type: 'AWS::IAM::Policy',
-            Properties: {
-                PolicyDocument: {
-                    Statement: [
-                        {
-                            Action: ['s3:GetObject*', 's3:GetBucket*', 's3:List*'],
-                            Effect: 'Allow',
-                            Resource: [
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':s3:::cdk-hnb659fds-assets-11111-us-west-2'
-                                        ]
-                                    ]
-                                },
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            'arn:',
-                                            {Ref: 'AWS::Partition'},
-                                            ':s3:::cdk-hnb659fds-assets-11111-us-west-2/*'
-                                        ]
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            Action: [
-                                's3:GetObject*',
-                                's3:GetBucket*',
-                                's3:List*',
-                                's3:DeleteObject*',
-                                's3:PutObject',
-                                's3:PutObjectLegalHold',
-                                's3:PutObjectRetention',
-                                's3:PutObjectTagging',
-                                's3:PutObjectVersionTagging',
-                                's3:Abort*'
-                            ],
-                            Effect: 'Allow',
-                            Resource: [
-                                {
-                                    'Fn::GetAtt': ['assetstestsdlcexampleeduE2381F38', 'Arn']
-                                },
-                                {
-                                    'Fn::Join': [
-                                        '',
-                                        [
-                                            {
-                                                'Fn::GetAtt': ['assetstestsdlcexampleeduE2381F38', 'Arn']
-                                            },
-                                            '/*'
-                                        ]
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    Version: '2012-10-17'
-                },
-                PolicyName: 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF',
-                Roles: [
-                    {
-                        Ref: 'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265'
-                    }
-                ]
-            }
-        },
-        CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536: {
-            Type: 'AWS::Lambda::Function',
-            Properties: {
-                Code: {
-                    S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
-                },
-                Environment: {
-                    Variables: {
-                        AWS_CA_BUNDLE: '/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem'
-                    }
-                },
-                Handler: 'index.handler',
-                Layers: [{Ref: 's3assetscopyAwsCliLayerA9EB8F42'}],
-                LoggingConfig: {LogGroup: {Ref: 's3assetscopylg083B90F8'}},
-                Role: {
-                    'Fn::GetAtt': [
-                        'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265',
-                        'Arn'
-                    ]
-                },
-                Runtime: MatchHelper.startsWith('python3'),
-                Tags: [
-                    {Key: 'App', Value: 'test'},
-                    {Key: 'College', Value: 'PCC'},
-                    {Key: 'Environment', Value: 'sdlc'}
-                ],
-                Timeout: 900
-            },
-            DependsOn: [
-                'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF',
-                'CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265'
-            ]
         },
         pccsdlctestwebfn0lg4B926758: {
             Type: 'AWS::Logs::LogGroup',
@@ -1353,6 +1358,14 @@ module.exports = {
                                     ]
                                 ]
                             }
+                        },
+                        {
+                            Action: [
+                                'secretsmanager:GetSecretValue',
+                                'secretsmanager:DescribeSecret'
+                            ],
+                            Effect: 'Allow',
+                            Resource: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123'
                         }
                     ],
                     Version: '2012-10-17'
@@ -1385,7 +1398,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: MatchHelper.endsWith('zip')
+                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
                 },
                 Environment: {
                     Variables: {
@@ -1404,36 +1417,10 @@ module.exports = {
                                 ]
                             ]
                         },
+                        AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
-                        S3_ASSET_URL: {
-                            'Fn::Join': [
-                                '',
-                                [
-                                    'https://',
-                                    {
-                                        'Fn::GetAtt': [
-                                            'assetstestsdlcexampleeduE2381F38',
-                                            'DomainName'
-                                        ]
-                                    }
-                                ]
-                            ]
-                        },
-                        ASSET_URL: {
-                            'Fn::Join': [
-                                '',
-                                [
-                                    'https://',
-                                    {
-                                        'Fn::GetAtt': [
-                                            'assetstestsdlcexampleeduE2381F38',
-                                            'DomainName'
-                                        ]
-                                    }
-                                ]
-                            ]
-                        },
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                        SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
                                 '',
@@ -1493,12 +1480,6 @@ module.exports = {
                 FunctionName: {'Fn::GetAtt': ['pccsdlctestwebfn051C9C4DD', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
             }
-        }
-    },
-    Outputs: {
-        pccsdlctestsesverifytesttestsdlcexampleeduSesNotificationTopic707B824F: {
-            Description: 'SES notification topic for test.sdlc.example.edu',
-            Value: {Ref: 'pccsdlctestsesverifytestSesNotificationTopicF2D450E7'}
         }
     }
 }

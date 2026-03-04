@@ -17,7 +17,7 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
     readonly defaults: Record<string, any> = {
         memorySize: 512,
         version: 'latest',
-        lambdaRuntime: Runtime.PROVIDED_AL2
+        lambdaRuntime: Runtime.PROVIDED_AL2023
     };
 
     readonly brefRuntimeCompatibility: BrefRuntimeCompatibility;

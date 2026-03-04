@@ -13,7 +13,7 @@ describe('s3 assets', () => {
         s3.create('foo', {});
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        // templateHelper.inspect();
+        templateHelper.inspect();
         const expected = {
             Resources: {
                 stackbucketfoo69FBD112: {
@@ -23,12 +23,18 @@ describe('s3 assets', () => {
                         CorsConfiguration: {
                             CorsRules: [
                                 {
-                                    AllowedHeaders: [ '*' ],
-                                    AllowedMethods: [ 'GET' ],
-                                    AllowedOrigins: [ '*' ],
+                                    AllowedHeaders: ['*'],
+                                    AllowedMethods: ['GET', 'HEAD'],
+                                    AllowedOrigins: ['*'],
                                     MaxAge: 3000
                                 }
                             ]
+                        },
+                        PublicAccessBlockConfiguration: {
+                            BlockPublicAcls: false,
+                            BlockPublicPolicy: false,
+                            IgnorePublicAcls: false,
+                            RestrictPublicBuckets: false
                         }
                     },
                     UpdateReplacePolicy: 'Retain',
@@ -37,22 +43,22 @@ describe('s3 assets', () => {
                 stackbucketfooPolicy2C77779B: {
                     Type: 'AWS::S3::BucketPolicy',
                     Properties: {
-                        Bucket: { Ref: 'stackbucketfoo69FBD112' },
+                        Bucket: {Ref: 'stackbucketfoo69FBD112'},
                         PolicyDocument: {
                             Statement: [
                                 {
                                     Action: 's3:*',
-                                    Condition: { Bool: { 'aws:SecureTransport': 'false' } },
+                                    Condition: {Bool: {'aws:SecureTransport': 'false'}},
                                     Effect: 'Deny',
-                                    Principal: { AWS: '*' },
+                                    Principal: {AWS: '*'},
                                     Resource: [
-                                        { 'Fn::GetAtt': [ 'stackbucketfoo69FBD112', 'Arn' ] },
+                                        {'Fn::GetAtt': ['stackbucketfoo69FBD112', 'Arn']},
                                         {
                                             'Fn::Join': [
                                                 '',
                                                 [
                                                     {
-                                                        'Fn::GetAtt': [ 'stackbucketfoo69FBD112', 'Arn' ]
+                                                        'Fn::GetAtt': ['stackbucketfoo69FBD112', 'Arn']
                                                     },
                                                     '/*'
                                                 ]
@@ -63,13 +69,13 @@ describe('s3 assets', () => {
                                 {
                                     Action: 's3:GetObject',
                                     Effect: 'Allow',
-                                    Principal: { AWS: '*' },
+                                    Principal: {AWS: '*'},
                                     Resource: {
                                         'Fn::Join': [
                                             '',
                                             [
                                                 {
-                                                    'Fn::GetAtt': [ 'stackbucketfoo69FBD112', 'Arn' ]
+                                                    'Fn::GetAtt': ['stackbucketfoo69FBD112', 'Arn']
                                                 },
                                                 '/*'
                                             ]

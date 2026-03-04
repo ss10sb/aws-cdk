@@ -136,9 +136,36 @@ describe('code pipeline stack test', () => {
         });
         stack.build();
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.inspect();
-        // const expected = require('../__expected__/pipeline/code-pipeline-stack.lambda.customimage');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__expected__/pipeline/code-pipeline-stack.lambda.customimage');
+        templateHelper.template.templateMatches(expected);
+    });
+
+    it('creates a lambda stack with shared secrets', () => {
+        const config = getConfig('defaults.lambda.sharedSecrets');
+        const app = new App();
+        const name = ConfigStackHelper.getMainStackName(config);
+        const stack = new CodePipelineStack(app, name, config, {}, {
+            env: {
+                account: '12344',
+                region: 'us-west-2'
+            }
+        });
+        stack.build();
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = require('../__expected__/pipeline/code-pipeline-stack.lambda.sharedsecrets');
+        templateHelper.template.templateMatches(expected);
+        let count = 0;
+        for (const stage of stack.envStages?.stages ?? []) {
+            const templateHelper = new TemplateHelper(Template.fromStack(<Stack>stage.makeStage.stack));
+            // console.log(count);
+            // templateHelper.inspect();
+            const file = `code-pipeline-stack.lambda.sharedsecrets.stage${count}`;
+            const expected = require('../__expected__/pipeline/'+file);
+            templateHelper.template.templateMatches(expected);
+            count ++;
+        }
     });
 
     function getConfig(name: string): Record<string, any> {
