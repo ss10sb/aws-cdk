@@ -1,6 +1,6 @@
 // @ts-nocheck
 export enum BrefRuntimeAccount {
-    CORE = '873528684822',
+    CORE = '534081306603', // Bref 3: 873528684822
     EXTRA = '403367587399'
 }
 
