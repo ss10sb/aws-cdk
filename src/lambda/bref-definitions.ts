@@ -1,10 +1,13 @@
 // @ts-nocheck
 export enum BrefRuntimeAccount {
-    CORE = '534081306603',
+    CORE = '873528684822',
     EXTRA = '403367587399'
 }
 
 export enum BrefRuntime {
+    PHP85 = 'php-85',
+    PHP85FPM = 'php-85-fpm',
+
     PHP84 = 'php-84',
     PHP84FPM = 'php-84-fpm',
 
@@ -14,60 +17,47 @@ export enum BrefRuntime {
     PHP82 = 'php-82',
     PHP82FPM = 'php-82-fpm',
 
-    PHP81 = 'php-81',
-    PHP81FPM = 'php-81-fpm',
-
     CONSOLE = 'console',
 
+    GD85 = 'gd-php-85',
     GD84 = 'gd-php-84',
     GD83 = 'gd-php-83',
     GD82 = 'gd-php-82',
-    GD81 = 'gd-php-81',
 
+    LDAP85 = 'ldap-php-85',
     LDAP84 = 'ldap-php-84',
     LDAP83 = 'ldap-php-83',
     LDAP82 = 'ldap-php-82',
-    LDAP81 = 'ldap-php-81',
 
+    MONGODB85 = 'mongodb-php-85',
     MONGODB84 = 'mongodb-php-84',
     MONGODB83 = 'mongodb-php-83',
     MONGODB82 = 'mongodb-php-82',
-    MONGODB81 = 'mongodb-php-81',
 
+    ORACLE85 = 'oci8-php-85',
     ORACLE84 = 'oci8-php-84',
     ORACLE83 = 'oci8-php-83',
     ORACLE82 = 'oci8-php-82',
-    ORACLE81 = 'oci8-php-81',
 
-    PGSQL84 = 'pgsql-php-84',
-    PGSQL83 = 'pgsql-php-83',
-    PGSQL82 = 'pgsql-php-82',
-    PGSQL81 = 'pgsql-php-81',
-
-    REDIS84 = 'redis-php-84',
-    REDIS83 = 'redis-php-83',
-    REDIS82 = 'redis-php-82',
-    REDIS81 = 'redis-php-81',
-
+    SNOWFLAKE85 = 'odbc-snowflake-php-85',
     SNOWFLAKE84 = 'odbc-snowflake-php-84',
     SNOWFLAKE83 = 'odbc-snowflake-php-83',
     SNOWFLAKE82 = 'odbc-snowflake-php-82',
-    SNOWFLAKE81 = 'odbc-snowflake-php-81',
 
+    SQLSRV85 = 'sqlsrv-php-85',
     SQLSRV84 = 'sqlsrv-php-84',
     SQLSRV83 = 'sqlsrv-php-83',
     SQLSRV82 = 'sqlsrv-php-82',
-    SQLSRV81 = 'sqlsrv-php-81',
 
+    UUID85 = 'uuid-php-85',
     UUID84 = 'uuid-php-84',
     UUID83 = 'uuid-php-83',
     UUID82 = 'uuid-php-82',
-    UUID81 = 'uuid-php-81',
 
+    XDEBUG85 = 'xdebug-php-85',
     XDEBUG84 = 'xdebug-php-84',
     XDEBUG83 = 'xdebug-php-83',
     XDEBUG82 = 'xdebug-php-82',
-    XDEBUG81 = 'xdebug-php-81'
 }
 
 interface ReadonlyMap<TKey, TValue> {
@@ -75,6 +65,9 @@ interface ReadonlyMap<TKey, TValue> {
 }
 
 export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Map([
+    [BrefRuntime.PHP85, BrefRuntimeAccount.CORE],
+    [BrefRuntime.PHP85FPM, BrefRuntimeAccount.CORE],
+
     [BrefRuntime.PHP84, BrefRuntimeAccount.CORE],
     [BrefRuntime.PHP84FPM, BrefRuntimeAccount.CORE],
 
@@ -84,60 +77,47 @@ export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Ma
     [BrefRuntime.PHP82, BrefRuntimeAccount.CORE],
     [BrefRuntime.PHP82FPM, BrefRuntimeAccount.CORE],
 
-    [BrefRuntime.PHP81, BrefRuntimeAccount.CORE],
-    [BrefRuntime.PHP81FPM, BrefRuntimeAccount.CORE],
-
     [BrefRuntime.CONSOLE, BrefRuntimeAccount.CORE],
 
+    [BrefRuntime.GD85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.GD81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.LDAP85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.LDAP84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.LDAP83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.LDAP82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.LDAP81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.MONGODB85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.MONGODB84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.MONGODB83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.MONGODB82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.MONGODB81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.ORACLE85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.ORACLE81, BrefRuntimeAccount.EXTRA],
 
-    [BrefRuntime.PGSQL84, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.PGSQL83, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.PGSQL82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.PGSQL81, BrefRuntimeAccount.EXTRA],
-
-    [BrefRuntime.REDIS84, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.REDIS83, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.REDIS82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.REDIS81, BrefRuntimeAccount.EXTRA],
-
+    [BrefRuntime.SNOWFLAKE85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.SNOWFLAKE81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.SQLSRV85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SQLSRV84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SQLSRV83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SQLSRV82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.SQLSRV81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.UUID85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.UUID84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.UUID83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.UUID82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.UUID81, BrefRuntimeAccount.EXTRA],
 
+    [BrefRuntime.XDEBUG85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.XDEBUG84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.XDEBUG83, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.XDEBUG82, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.XDEBUG81, BrefRuntimeAccount.EXTRA],
 ]);
 
 export enum LaravelHandler {
