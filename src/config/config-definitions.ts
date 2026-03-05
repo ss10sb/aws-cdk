@@ -6,10 +6,10 @@ import {BuildEnvironmentProps, BuildImageProps} from "../v2/build/build-step-env
 import {BuildStepProps} from "../v2/build/build-step";
 
 export enum PhpVersion {
-    PHP81 = 'php81',
     PHP82 = 'php82',
     PHP83 = 'php83',
-    PHP84 = 'php84'
+    PHP84 = 'php84',
+    PHP85 = 'php85'
 }
 
 export enum ConfigEnvironments {

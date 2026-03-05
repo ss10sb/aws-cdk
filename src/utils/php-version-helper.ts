@@ -6,10 +6,6 @@ export class PhpVersionHelper {
 
     static forBrefRuntime(version: PhpVersion, fpm: boolean = true): BrefRuntime {
         const map = {
-            [PhpVersion.PHP81]: {
-                fpm: BrefRuntime.PHP81FPM,
-                base: BrefRuntime.PHP81,
-            },
             [PhpVersion.PHP82]: {
                 fpm: BrefRuntime.PHP82FPM,
                 base: BrefRuntime.PHP82,
@@ -21,6 +17,10 @@ export class PhpVersionHelper {
             [PhpVersion.PHP84]: {
                 fpm: BrefRuntime.PHP84FPM,
                 base: BrefRuntime.PHP84,
+            },
+            [PhpVersion.PHP85]: {
+                fpm: BrefRuntime.PHP85FPM,
+                base: BrefRuntime.PHP85,
             }
         };
         const brefs = map[version] ?? {};
@@ -29,10 +29,10 @@ export class PhpVersionHelper {
 
     static forAwsImage(version: PhpVersion): IBuildImage {
         const map = {
-            [PhpVersion.PHP81]: LinuxBuildImage.STANDARD_6_0,
             [PhpVersion.PHP82]: LinuxBuildImage.STANDARD_7_0,
             [PhpVersion.PHP83]: LinuxBuildImage.STANDARD_7_0,
-            [PhpVersion.PHP84]: LinuxBuildImage.STANDARD_7_0 // does not currently have 8.4
+            [PhpVersion.PHP84]: LinuxBuildImage.STANDARD_7_0, // does not currently have 8.4
+            [PhpVersion.PHP85]: LinuxBuildImage.STANDARD_7_0 // does not currently have 8.5
         };
         return map[version];
     }
@@ -50,10 +50,10 @@ export class PhpVersionHelper {
 
     static runtimeVersion(version?: PhpVersion): string {
         const map = {
-            [PhpVersion.PHP81]: '8.1',
             [PhpVersion.PHP82]: '8.2',
             [PhpVersion.PHP83]: '8.3',
             [PhpVersion.PHP84]: '8.4',
+            [PhpVersion.PHP85]: '8.5',
         }
         if (version) {
             return map[version];
