@@ -7,24 +7,20 @@ export class PhpVersionHelper {
     static forBrefRuntime(version: PhpVersion, fpm: boolean = true): BrefRuntime {
         const map = {
             [PhpVersion.PHP82]: {
-                fpm: BrefRuntime.PHP82FPM,
                 base: BrefRuntime.PHP82,
             },
             [PhpVersion.PHP83]: {
-                fpm: BrefRuntime.PHP83FPM,
                 base: BrefRuntime.PHP83,
             },
             [PhpVersion.PHP84]: {
-                fpm: BrefRuntime.PHP84FPM,
                 base: BrefRuntime.PHP84,
             },
             [PhpVersion.PHP85]: {
-                fpm: BrefRuntime.PHP85FPM,
                 base: BrefRuntime.PHP85,
             }
         };
         const brefs = map[version] ?? {};
-        return fpm ? brefs.fpm : brefs.base;
+        return brefs.base;
     }
 
     static forAwsImage(version: PhpVersion): IBuildImage {
