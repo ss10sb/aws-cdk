@@ -110,12 +110,6 @@ export class BrefRuntimeCompatibility {
             {
                 rule: 'endsWith',
                 value: 'fpm'
-            },
-            {
-                rule: 'endsWith',
-                value: 'console',
-                require: RuleRequireType.ALL,
-                type: RuleType.EXCLUDE
             }
         ],
         [FunctionType.QUEUE]: [

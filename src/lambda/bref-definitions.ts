@@ -1,6 +1,6 @@
 // @ts-nocheck
 export enum BrefRuntimeAccount {
-    CORE = '534081306603', // Bref 3: 873528684822
+    CORE = '873528684822', // Bref 3: 873528684822
     EXTRA = '403367587399'
 }
 
@@ -16,8 +16,6 @@ export enum BrefRuntime {
 
     PHP82 = 'php-82',
     PHP82FPM = 'php-82-fpm',
-
-    CONSOLE = 'console',
 
     GD85 = 'gd-php-85',
     GD84 = 'gd-php-84',
@@ -37,7 +35,6 @@ export enum BrefRuntime {
     ORACLE85 = 'oci8-php-85',
     ORACLE84 = 'oci8-php-84',
     ORACLE83 = 'oci8-php-83',
-    ORACLE82 = 'oci8-php-82',
 
     SNOWFLAKE85 = 'odbc-snowflake-php-85',
     SNOWFLAKE84 = 'odbc-snowflake-php-84',
@@ -77,8 +74,6 @@ export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Ma
     [BrefRuntime.PHP82, BrefRuntimeAccount.CORE],
     [BrefRuntime.PHP82FPM, BrefRuntimeAccount.CORE],
 
-    [BrefRuntime.CONSOLE, BrefRuntimeAccount.CORE],
-
     [BrefRuntime.GD85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD83, BrefRuntimeAccount.EXTRA],
@@ -97,7 +92,6 @@ export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Ma
     [BrefRuntime.ORACLE85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE84, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.ORACLE83, BrefRuntimeAccount.EXTRA],
-    [BrefRuntime.ORACLE82, BrefRuntimeAccount.EXTRA],
 
     [BrefRuntime.SNOWFLAKE85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.SNOWFLAKE84, BrefRuntimeAccount.EXTRA],

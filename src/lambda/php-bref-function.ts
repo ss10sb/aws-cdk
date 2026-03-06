@@ -31,7 +31,7 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
         const runtimes = this.getRuntimes(props);
         const layers: ILayerVersion[] = [];
         const type = this.getType(props);
-        this.checkRuntimesForCompatibility(runtimes, type);
+        //this.checkRuntimesForCompatibility(runtimes, type);
         for (const runtime of runtimes) {
             const baseName = NamingHelper.fromParts([funcName, runtime]);
             const name = this.nameIncrementer.next(baseName);
