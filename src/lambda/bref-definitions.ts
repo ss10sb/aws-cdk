@@ -6,16 +6,12 @@ export enum BrefRuntimeAccount {
 
 export enum BrefRuntime {
     PHP85 = 'php-85',
-    PHP85FPM = 'php-85-fpm',
 
     PHP84 = 'php-84',
-    PHP84FPM = 'php-84-fpm',
 
     PHP83 = 'php-83',
-    PHP83FPM = 'php-83-fpm',
 
     PHP82 = 'php-82',
-    PHP82FPM = 'php-82-fpm',
 
     GD85 = 'gd-php-85',
     GD84 = 'gd-php-84',
@@ -63,16 +59,12 @@ interface ReadonlyMap<TKey, TValue> {
 
 export const BrefRuntimes: ReadonlyMap<BrefRuntime, BrefRuntimeAccount> = new Map([
     [BrefRuntime.PHP85, BrefRuntimeAccount.CORE],
-    [BrefRuntime.PHP85FPM, BrefRuntimeAccount.CORE],
 
     [BrefRuntime.PHP84, BrefRuntimeAccount.CORE],
-    [BrefRuntime.PHP84FPM, BrefRuntimeAccount.CORE],
 
     [BrefRuntime.PHP83, BrefRuntimeAccount.CORE],
-    [BrefRuntime.PHP83FPM, BrefRuntimeAccount.CORE],
 
     [BrefRuntime.PHP82, BrefRuntimeAccount.CORE],
-    [BrefRuntime.PHP82FPM, BrefRuntimeAccount.CORE],
 
     [BrefRuntime.GD85, BrefRuntimeAccount.EXTRA],
     [BrefRuntime.GD84, BrefRuntimeAccount.EXTRA],

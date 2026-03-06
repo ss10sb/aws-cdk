@@ -1,7 +1,6 @@
 import {BrefRuntime} from "./bref-definitions";
 import {ILayerVersion, LayerVersion, Runtime} from "aws-cdk-lib/aws-lambda";
 import {BrefLayerArn} from "./bref-layer-arn";
-import {FunctionType} from "./lambda-definitions";
 import {Construct} from "constructs";
 import {NamingHelper} from "../utils/naming-helper";
 import {BrefRuntimeCompatibility} from "./bref-runtime-compatibility";
@@ -28,10 +27,10 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
     }
 
     protected getLayers(funcName: string, props: PhpBrefFunctionProps): ILayerVersion[] {
+        this.ensureBrefRuntimeEnvSet(props);
         const runtimes = this.getRuntimes(props);
         const layers: ILayerVersion[] = [];
         const type = this.getType(props);
-        //this.checkRuntimesForCompatibility(runtimes, type);
         for (const runtime of runtimes) {
             const baseName = NamingHelper.fromParts([funcName, runtime]);
             const name = this.nameIncrementer.next(baseName);
@@ -44,10 +43,9 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
         return layers;
     }
 
-    protected checkRuntimesForCompatibility(runtimes: BrefRuntime[], type: FunctionType): void {
-        const result = this.brefRuntimeCompatibility.checkRuntimes(runtimes, type);
-        if (!result.pass) {
-            console.error('Runtime compatibility issues', result.messages);
+    ensureBrefRuntimeEnvSet(props: PhpBrefFunctionProps): void {
+        if (!(props?.environment) || !props.environment['BREF_RUNTIME']) {
+            console.error('BREF_RUNTIME environment variable not set. Please set it to: fpm, console or function.');
         }
     }
 
