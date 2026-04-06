@@ -739,7 +739,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"15255824308e7b81c925ffd043c4de48e71be005885a8fa273dcf5c37b5c7795"}]'
+                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"02d55607e5677dda315b3b898d815b2dc720972ca287b8533f65998134087c4e"}]'
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -1272,6 +1272,11 @@ module.exports = {
                                 },
                                 `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
                                 '      ]\n' +
+                        '    },\n' +
+                        '    "install": {\n' +
+                        '      "runtime-versions": {\n' +
+                        '        "nodejs": "22"\n' +
+                        '      }\n' +
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +

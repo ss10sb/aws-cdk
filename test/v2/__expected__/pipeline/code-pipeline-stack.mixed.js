@@ -1501,6 +1501,11 @@ module.exports = {
                                 },
                                 `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
                                 '      ]\n' +
+                        '    },\n' +
+                        '    "install": {\n' +
+                        '      "runtime-versions": {\n' +
+                        '        "nodejs": "22"\n' +
+                        '      }\n' +
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +

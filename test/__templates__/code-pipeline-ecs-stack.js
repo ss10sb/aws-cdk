@@ -28,7 +28,7 @@ module.exports = {
                             ]
                         }
                     ]
-                }
+              }
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -60,7 +60,7 @@ module.exports = {
                             ]
                         }
                     ]
-                }
+              }
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -77,7 +77,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestsynthsteproleDefaultPolicyCA85F73E: {
@@ -341,7 +341,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -383,7 +383,7 @@ module.exports = {
                     BlockPublicPolicy: true,
                     IgnorePublicAcls: true,
                     RestrictPublicBuckets: true
-                }
+              }
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -517,7 +517,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelineRoleDefaultPolicy44AD6A4A: {
@@ -709,7 +709,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"15255824308e7b81c925ffd043c4de48e71be005885a8fa273dcf5c37b5c7795"}]'
+                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"02d55607e5677dda315b3b898d815b2dc720972ca287b8533f65998134087c4e"}]'
                                 },
                                 InputArtifacts: [{Name: 'repoOwner_repoName_Source'}],
                                 Name: 'pcc-shared-test-synth-step',
@@ -1053,7 +1053,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicyEB25EB7D: {
@@ -1232,6 +1232,11 @@ module.exports = {
                                 },
                                 `\\":{\\"ecrRepository\\":true}}}' > $HOME/.cdk/cdk-docker-creds.json"\n` +
                                 '      ]\n' +
+                        '    },\n' +
+                        '    "install": {\n' +
+                        '      "runtime-versions": {\n' +
+                        '        "nodejs": "22"\n' +
+                        '      }\n' +
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
@@ -1253,7 +1258,7 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA: {
@@ -1353,7 +1358,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85: {
@@ -1453,7 +1458,7 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelinepccprodteststagemanualApprovalstepCodePipelineActionRole24035FD1: {
@@ -1475,7 +1480,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelineEventsRoleD1B4EBBF: {
@@ -1490,7 +1495,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelinePipelineEventsRoleDefaultPolicyB7DAF9BB: {
@@ -1545,7 +1550,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelineCodeBuildActionRoleDefaultPolicy1CB8FCEC: {
@@ -1674,7 +1679,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyB7B41B80: {
@@ -1953,7 +1958,7 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-                }
+              }
             }
         },
         pccsharedtestcodepipelineAssetsFileRole8E4F3120: {
@@ -1968,7 +1973,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestcodepipelineAssetsFileRoleDefaultPolicy628F3D15: {
@@ -2208,7 +2213,7 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-                }
+              }
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7: {
@@ -2423,7 +2428,7 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-                }
+              }
             }
         },
         pccsharedtestecrsteproleF733193B: {
@@ -2438,7 +2443,7 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-                }
+              }
             }
         },
         pccsharedtestecrsteproleDefaultPolicy2494C479: {
@@ -2657,7 +2662,7 @@ module.exports = {
                 Roles: [{Ref: 'pccsharedtestecrsteproleF733193B'}]
             }
         },
-        pccsharedtestnotificationruletopic0AF49361: {Type: 'AWS::SNS::Topic'},
+          pccsharedtestnotificationruletopic0AF49361: { Type: 'AWS::SNS::Topic' },
         pccsharedtestnotificationruletopicadminexampleeduBB0C5B11: {
             Type: 'AWS::SNS::Subscription',
             Properties: {

@@ -615,8 +615,12 @@ module.exports = {
                 ServiceRole: {'Fn::GetAtt': ['stacksynthsteproleE441D089', 'Arn']},
                 Source: {
                     BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
                         '  "phases": {\n' +
+                  '    "install": {\n' +
+                  '      "runtime-versions": {\n' +
+                  '        "nodejs": "22"\n' +
+                  '      }\n' +
+                  '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
                   '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
@@ -626,9 +630,12 @@ module.exports = {
                         '      ]\n' +
                         '    }\n' +
                         '  },\n' +
+                  '  "version": "0.2",\n' +
                         '  "artifacts": {\n' +
                         '    "base-directory": "cdk.out",\n' +
-                        '    "files": "**/*"\n' +
+                  '    "files": [\n' +
+                  '      "**/*"\n' +
+                  '    ]\n' +
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'

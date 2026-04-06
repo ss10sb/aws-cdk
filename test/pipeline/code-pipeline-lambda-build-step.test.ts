@@ -70,8 +70,8 @@ describe('code pipeline lambda build step', () => {
         };
         new CodePipelinePipeline(stack, 'pipeline', codePipelineProps);
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        templateHelper.inspect();
-        // const expected = require('../__templates__/code-pipeline-lambda-build-step.custom-image');
-        // templateHelper.template.templateMatches(expected);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/code-pipeline-lambda-build-step.custom-image');
+        templateHelper.template.templateMatches(expected);
     });
 });

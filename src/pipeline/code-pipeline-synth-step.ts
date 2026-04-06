@@ -4,6 +4,7 @@ import {Construct} from "constructs";
 import {EnvBuildType} from "../env/env-definitions";
 import {NonConstruct} from "../core/non-construct";
 import {BuildStepEnvironment} from "../v2/build/build-step-environment";
+import {BuildSpec} from "aws-cdk-lib/aws-codebuild";
 
 export interface CodePipelineSynthStepProps {
     input: CodePipelineSource | CodeBuildStep;
@@ -33,7 +34,16 @@ export class CodePipelineSynthStep extends NonConstruct {
             role: this.role,
             buildEnvironment: {
                 buildImage: BuildStepEnvironment.defaultBuildImage()
-            }
+            },
+            partialBuildSpec: BuildSpec.fromObject({
+                phases: {
+                    install: {
+                        'runtime-versions': {
+                            nodejs: '22'
+                        }
+                    }
+                }
+            })
         });
     }
 

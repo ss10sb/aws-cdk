@@ -713,7 +713,7 @@ module.exports = {
                                     ProjectName: {
                                         Ref: 'pccsharedtestcodepipelinePipelineBuildpccsharedtestsynthstepCdkBuildProjectC0F0B7F3'
                                     },
-                                    EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"768c20d761f32ba5122c2d9bdff138e58691d1a4860c7c74a163cc1fbe536894"}]'
+                        EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"79bc64859fd0909f533e206952190f4ebf58655580a83243db78663be97c36be"}]'
                                 },
                                 InputArtifacts: [ { Name: 'pcc_shared_test_build_step_Output' } ],
                                 Name: 'pcc-shared-test-synth-step',
@@ -1087,8 +1087,12 @@ module.exports = {
                 },
                 Source: {
                     BuildSpec: '{\n' +
-                        '  "version": "0.2",\n' +
                         '  "phases": {\n' +
+                  '    "install": {\n' +
+                  '      "runtime-versions": {\n' +
+                  '        "nodejs": "22"\n' +
+                  '      }\n' +
+                  '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
                         '        "cp config/_common.js.copy config/_common.js && cp config/defaults.js.copy config/defaults.js",\n' +
@@ -1098,9 +1102,12 @@ module.exports = {
                         '      ]\n' +
                         '    }\n' +
                         '  },\n' +
+                  '  "version": "0.2",\n' +
                         '  "artifacts": {\n' +
                         '    "base-directory": "cdk.out",\n' +
-                        '    "files": "**/*"\n' +
+                  '    "files": [\n' +
+                  '      "**/*"\n' +
+                  '    ]\n' +
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
