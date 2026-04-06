@@ -10,10 +10,11 @@
     ],
     "listEmittedFiles": false,
     "listFiles": false,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "noFallthroughCasesInSwitch": true,
     "pretty": true,
     "resolveJsonModule": true,
+    "rootDir": "./src",
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
@@ -22,7 +23,7 @@
       "node",
       "jest"
     ],
-    "module": "CommonJS",
+    "module": "Node16",
     "outDir": "./dist"
   },
   "exclude": [

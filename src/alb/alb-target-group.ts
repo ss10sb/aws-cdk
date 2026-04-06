@@ -1,8 +1,12 @@
 import {IVpc} from "aws-cdk-lib/aws-ec2";
 import {Construct} from "constructs";
-import {ApplicationProtocol, ApplicationTargetGroup, TargetType} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {
+    ApplicationProtocol,
+    ApplicationTargetGroup,
+    ApplicationTargetGroupProps,
+    TargetType
+} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {NonConstruct} from "../core/non-construct";
-import {ApplicationTargetGroupProps} from "aws-cdk-lib/aws-elasticloadbalancingv2/lib/alb/application-target-group";
 import {Duration} from "aws-cdk-lib";
 
 export interface AlbTargetGroupProps {
