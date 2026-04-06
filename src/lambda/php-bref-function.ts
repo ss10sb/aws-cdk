@@ -5,6 +5,7 @@ import {Construct} from "constructs";
 import {NamingHelper} from "../utils/naming-helper";
 import {BrefRuntimeCompatibility} from "./bref-runtime-compatibility";
 import {CoreFunction, CoreFunctionFactoryProps, CoreFunctionProps} from "./core-function";
+import {FunctionType} from "./lambda-definitions";
 
 export interface PhpBrefFunctionProps extends CoreFunctionProps {
     readonly brefRuntime: BrefRuntime | BrefRuntime[];
@@ -43,11 +44,30 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
         return layers;
     }
 
-    ensureBrefRuntimeEnvSet(props: PhpBrefFunctionProps): void {
+    protected ensureBrefRuntimeEnvSet(props: PhpBrefFunctionProps): void {
         if (!(props?.environment) || !props.environment['BREF_RUNTIME']) {
             props.environment = props.environment ?? {};
-            props.environment['BREF_RUNTIME'] = 'fpm';
+            props.environment['BREF_RUNTIME'] = this.getWantedBrefRuntimeEnv(props);
         }
+    }
+
+    /**
+     * console, function or fpm
+     * @param props
+     * @protected
+     */
+    protected getWantedBrefRuntimeEnv(props: PhpBrefFunctionProps): string {
+        if (props.type) {
+            if (props.type === FunctionType.ARTISAN) {
+                return 'console';
+            }
+            const functionTypes = [FunctionType.SCHEDULED, FunctionType.EVENT, FunctionType.QUEUE];
+            if (functionTypes.includes(props.type)) {
+                return 'function';
+            }
+
+        }
+        return 'fpm';
     }
 
     protected getRuntimes(props: PhpBrefFunctionProps): BrefRuntime[] {

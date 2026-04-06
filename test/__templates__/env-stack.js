@@ -82,6 +82,19 @@ module.exports = {
                 'pccsdlcmyappsesverifytestVerifyDomainIdentityE052339E'
             ]
         },
+          pccsdlcmyappsesverifytestDkimVerificationLogGroup58AA5A19: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 7,
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+          },
         pccsdlcmyappsesverifytestVerifyDomainDkim21798902: {
             Type: 'Custom::AWS',
             Properties: {
@@ -346,6 +359,109 @@ module.exports = {
                 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
             ]
         },
+          AWS679f53fac002430cb0da5b7982bd2287LogRetentionCE72797A: {
+            Type: 'Custom::LogRetention',
+            Properties: {
+              ServiceToken: {
+                'Fn::GetAtt': [
+                  'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
+                  'Arn'
+                ]
+              },
+              LogGroupName: {
+                'Fn::Join': [
+                  '',
+                  [
+                    '/aws/lambda/',
+                    { Ref: 'AWS679f53fac002430cb0da5b7982bd22872D164C4C' }
+                  ]
+                ]
+              }
+            }
+          },
+          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'lambda.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              ManagedPolicyArns: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                    ]
+                  ]
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'logs:PutRetentionPolicy',
+                      'logs:DeleteRetentionPolicy'
+                    ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
+              Roles: [
+                {
+                  Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
+                }
+              ]
+            }
+          },
+          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+              Handler: 'index.handler',
+              Runtime: 'nodejs22.x',
+              Timeout: 900,
+              Code: {
+                S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
+                S3Key: '2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip'
+              },
+              Role: {
+                'Fn::GetAtt': [
+                  'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
+                  'Arn'
+                ]
+              },
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            DependsOn: [
+              'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
+              'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
+            ]
+          },
         pccsdlcmyapptg1E18EDE5: {
             Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
             Properties: {
@@ -1072,8 +1188,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1088,8 +1202,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -1300,6 +1422,19 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
+          pccsdlcmyapptaskupdateruntask0updatefnloggroup429D1C01: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 7,
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+          },
         pccsdlcmyapptaskupdateruntask0updatefnCF58E13D: {
             Type: 'Custom::AWS',
             Properties: {
@@ -1540,8 +1675,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1556,8 +1689,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -1858,6 +1999,11 @@ module.exports = {
                 Name: 'pcc-sdlc-myapp-task-scheduledtask-0',
                 ScheduleExpression: 'cron(0 12 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -2106,8 +2252,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -2122,8 +2266,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -2661,8 +2813,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -2677,8 +2827,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -3218,6 +3376,11 @@ module.exports = {
             Properties: {
                 ScheduleExpression: 'cron(0 13 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -3258,6 +3421,11 @@ module.exports = {
             Properties: {
                 ScheduleExpression: 'cron(0 5 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {

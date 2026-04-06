@@ -663,8 +663,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -679,8 +677,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         }
                     ],

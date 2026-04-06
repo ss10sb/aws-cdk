@@ -435,6 +435,26 @@ module.exports = {
                 'AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2'
             ]
         },
+          AWS679f53fac002430cb0da5b7982bd2287LogRetentionCE72797A: {
+            Type: 'Custom::LogRetention',
+            Properties: {
+              ServiceToken: {
+                'Fn::GetAtt': [
+                  'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A',
+                  'Arn'
+                ]
+              },
+              LogGroupName: {
+                'Fn::Join': [
+                  '',
+                  [
+                    '/aws/lambda/',
+                    { Ref: 'AWS679f53fac002430cb0da5b7982bd22872D164C4C' }
+                  ]
+                ]
+              }
+            }
+          },
         pccprodtestcache90B0E581: {
             Type: 'AWS::DynamoDB::Table',
             Properties: {
@@ -467,6 +487,234 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
+          pccprodtestartisanfn0lgF855AF50: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 30,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            },
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+          },
+          pccprodtestartisanfn0ServiceRoleD98E80B8: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'lambda.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              ManagedPolicyArns: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                    ]
+                  ]
+                },
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+                    ]
+                  ]
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            }
+          },
+          pccprodtestartisanfn0ServiceRoleDefaultPolicyD1FB3659: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'sqs:SendMessage',
+                      'sqs:GetQueueAttributes',
+                      'sqs:GetQueueUrl'
+                    ],
+                    Effect: 'Allow',
+                    Resource: { 'Fn::GetAtt': [ 'pccprodtestqueue7472DA6D', 'Arn' ] }
+                  },
+                  {
+                    Action: [ 'ses:SendEmail', 'ses:SendRawEmail' ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  },
+                  {
+                    Action: [
+                      'dynamodb:BatchGetItem',
+                      'dynamodb:Query',
+                      'dynamodb:GetItem',
+                      'dynamodb:Scan',
+                      'dynamodb:ConditionCheckItem',
+                      'dynamodb:BatchWriteItem',
+                      'dynamodb:PutItem',
+                      'dynamodb:UpdateItem',
+                      'dynamodb:DeleteItem',
+                      'dynamodb:DescribeTable'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
+                    ]
+                  },
+                  {
+                    Action: [
+                      'secretsmanager:GetSecretValue',
+                      'secretsmanager:DescribeSecret'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment-??????'
+                        ]
+                      ]
+                    }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccprodtestartisanfn0ServiceRoleDefaultPolicyD1FB3659',
+              Roles: [ { Ref: 'pccprodtestartisanfn0ServiceRoleD98E80B8' } ]
+            }
+          },
+          pccprodtestartisanfn0SecurityGroup38C48FA1: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+              GroupDescription: 'Automatic security group for Lambda Function pccsharedtestpccprodteststagepccprodtestpccprodtestartisanfn09CB0ECFE',
+              SecurityGroupEgress: [
+                {
+                  CidrIp: '0.0.0.0/0',
+                  Description: 'Allow all outbound traffic by default',
+                  IpProtocol: '-1'
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ],
+              VpcId: 'vpc-12345'
+            }
+          },
+          pccprodtestartisanfn0E5AC057C: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+              Code: {
+                S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
+                S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
+              },
+              Environment: {
+                Variables: {
+                  AWS_APP_NAME: 'pcc-prod-test',
+                  MAIL_FROM_ADDRESS: 'no-reply@test.example.edu',
+                  IMPORTER_FROM: 'importer-no-reply@test.example.edu',
+                  DYNAMODB_CACHE_TABLE: { Ref: 'pccprodtestcache90B0E581' },
+                  SQS_QUEUE: { Ref: 'pccprodtestqueue7472DA6D' },
+                  AWS_SECRET_ARN: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        'arn:',
+                        { Ref: 'AWS::Partition' },
+                        ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
+                      ]
+                    ]
+                  },
+                  APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'console',
+                  BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
+                  SECRETS_LOOKUP: {
+                    'Fn::Join': [
+                      '',
+                      [
+                        'bref-secretsmanager:arn:',
+                        { Ref: 'AWS::Partition' },
+                        ':secretsmanager:us-west-2:22222:secret:pcc-prod-test-secrets/environment'
+                      ]
+                    ]
+                  }
+                }
+              },
+              FunctionName: 'pcc-prod-test-artisan-fn-0',
+              Handler: 'artisan',
+              Layers: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':lambda:us-west-2:873528684822:layer:php-84:29'
+                    ]
+                  ]
+                }
+              ],
+              LoggingConfig: { LogGroup: { Ref: 'pccprodtestartisanfn0lgF855AF50' } },
+              MemorySize: 512,
+              Role: {
+                'Fn::GetAtt': [ 'pccprodtestartisanfn0ServiceRoleD98E80B8', 'Arn' ]
+              },
+              Runtime: 'provided.al2023',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ],
+              Timeout: 720,
+              VpcConfig: {
+                SecurityGroupIds: [
+                  {
+                    'Fn::GetAtt': [
+                      'pccprodtestartisanfn0SecurityGroup38C48FA1',
+                      'GroupId'
+                    ]
+                  }
+                ],
+                SubnetIds: [ 'p-12345', 'p-67890' ]
+              }
+            },
+            DependsOn: [
+              'pccprodtestartisanfn0ServiceRoleDefaultPolicyD1FB3659',
+              'pccprodtestartisanfn0ServiceRoleD98E80B8'
+            ]
+          },
         pccprodtesteventfn0lg49C9809B: {
             Type: 'AWS::Logs::LogGroup',
             Properties: {
@@ -544,8 +792,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -560,8 +806,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -632,6 +886,7 @@ module.exports = {
                             ]
                         },
                         APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
@@ -694,6 +949,11 @@ module.exports = {
                 Name: 'pcc-prod-test-event-fn-0-scheduled-event-0',
                 ScheduleExpression: 'rate(5 minutes)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -813,8 +1073,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -829,8 +1087,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -901,6 +1167,7 @@ module.exports = {
                             ]
                         },
                         APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
@@ -1263,8 +1530,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1279,8 +1544,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -1543,8 +1816,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1559,8 +1830,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -1737,6 +2016,19 @@ module.exports = {
                 VpcId: 'vpc-12345'
             }
         },
+          pccprodtesttaskupdateruntask0updatefnloggroupFDF85725: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {
+              RetentionInDays: 7,
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+          },
         pccprodtesttaskupdateruntask0updatefn3E0B5B81: {
             Type: 'Custom::AWS',
             Properties: {
@@ -1814,6 +2106,89 @@ module.exports = {
                 ]
             }
         },
+          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'lambda.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              ManagedPolicyArns: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      { Ref: 'AWS::Partition' },
+                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                    ]
+                  ]
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            }
+          },
+          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      'logs:PutRetentionPolicy',
+                      'logs:DeleteRetentionPolicy'
+                    ],
+                    Effect: 'Allow',
+                    Resource: '*'
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
+              Roles: [
+                {
+                  Ref: 'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
+                }
+              ]
+            }
+          },
+          LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+              Handler: 'index.handler',
+              Runtime: 'nodejs22.x',
+              Timeout: 900,
+              Code: {
+                S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
+                S3Key: '2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip'
+              },
+              Role: {
+                'Fn::GetAtt': [
+                  'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB',
+                  'Arn'
+                ]
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            },
+            DependsOn: [
+              'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB',
+              'LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB'
+            ]
+          },
         pccprodtesttaskdefscheduledtask0execroleAB6CBFED: {
             Type: 'AWS::IAM::Role',
             Properties: {
@@ -1927,8 +2302,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1943,8 +2316,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
                             ]
                         }
                     ],
@@ -2211,6 +2592,11 @@ module.exports = {
                 Name: 'pcc-prod-test-task-scheduledtask-0',
                 ScheduleExpression: 'cron(0 12 * * ? *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ],
                 Targets: [
                     {
                         Arn: {'Fn::GetAtt': ['pccprodtestclusterB438B945', 'Arn']},
@@ -2409,8 +2795,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -2425,8 +2809,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccprodtestcache90B0E581', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtestcache90B0E581', 'Arn' ]
+                      }
                             ]
                         }
                     ],

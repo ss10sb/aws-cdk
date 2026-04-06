@@ -1,9 +1,7 @@
 import {NonConstruct} from "../core/non-construct";
-import {PhpBrefFunction, PhpBrefFunctionProps} from "./php-bref-function";
-import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {IFunction} from "aws-cdk-lib/aws-lambda";
-import {Bucket, BucketEncryption, HttpMethods} from "aws-cdk-lib/aws-s3";
-import {S3Bucket, S3Props} from "../s3/s3-bucket";
+import {Bucket, HttpMethods} from "aws-cdk-lib/aws-s3";
+import {S3Props} from "../s3/s3-bucket";
 import {PhpVersion} from "../config/config-definitions";
 import {Construct} from "constructs";
 import {FunctionType} from "./lambda-definitions";
@@ -15,8 +13,8 @@ import {ApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {LambdaTarget} from "aws-cdk-lib/aws-elasticloadbalancingv2-targets";
 import {RemovalPolicy} from "aws-cdk-lib";
 import {S3BucketAssets} from "../s3/s3-bucket-assets";
-import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certificate";
-import {CoreFunction, CoreFunctionFactoryProps, CoreFunctionProps} from "./core-function";
+import {DnsValidatedCertificateProps} from "../acm/acm-certificate";
+import {CoreFunctionFactoryProps, CoreFunctionProps} from "./core-function";
 import {FunctionFactory} from "./function-factory";
 import {LambdaTimeout} from "./lamda-timeout";
 

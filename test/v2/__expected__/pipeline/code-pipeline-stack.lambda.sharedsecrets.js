@@ -1579,7 +1579,7 @@ module.exports = {
                         '    },\n' +
                         '    "build": {\n' +
                         '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034:11111-us-west-2-8f0e137f\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-sdlc-test-stage/pccsharedtestpccsdlcteststagepccsdlctest0A9A7A91.assets.json\\" --verbose publish \\"56f7467bbde8a5efebcf57ae9e460027607099bab9f844669dcf5d800172ee5a:11111-us-west-2-b00ae788\\""\n' +
                         '      ]\n' +
                         '    }\n' +
                         '  }\n' +

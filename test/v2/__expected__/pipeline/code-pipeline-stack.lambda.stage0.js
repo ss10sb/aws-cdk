@@ -544,8 +544,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -560,8 +558,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlctestcacheFE02D1F3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -632,6 +638,7 @@ module.exports = {
                             ]
                         },
                         APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
@@ -694,6 +701,11 @@ module.exports = {
                 Name: 'pcc-sdlc-test-event-fn-0-scheduled-event-0',
                 ScheduleExpression: 'rate(5 minutes)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -813,8 +825,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -829,8 +839,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlctestcacheFE02D1F3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -901,6 +919,7 @@ module.exports = {
                             ]
                         },
                         APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [
@@ -1085,6 +1104,7 @@ module.exports = {
                     MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'assetstestsdlcexampleeduE2381F38'},
+              WaitForDistributionInvalidation: true,
               Prune: true,
               OutputObjectKeys: true
             },
@@ -1307,8 +1327,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1323,8 +1341,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlctestcacheFE02D1F3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -1423,6 +1449,7 @@ module.exports = {
                                 ]
                             ]
                         },
+                  BREF_RUNTIME: 'fpm',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: {
                             'Fn::Join': [

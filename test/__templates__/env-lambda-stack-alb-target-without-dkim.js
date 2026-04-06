@@ -155,8 +155,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -171,8 +169,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -225,6 +231,7 @@ module.exports = {
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_APP_NAME: 'pcc-sdlc-myapp',
                         CAN_RUN_CREATE: '0',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
                     }
@@ -439,6 +446,7 @@ module.exports = {
                     MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'assetstestdevexampleeduE0289650'},
+              WaitForDistributionInvalidation: true,
               Prune: true,
               OutputObjectKeys: true
             },
@@ -663,8 +671,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -679,8 +685,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -761,6 +775,7 @@ module.exports = {
                                 ]
                             ]
                         },
+                  BREF_RUNTIME: 'fpm',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
                     }

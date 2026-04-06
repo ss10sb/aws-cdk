@@ -652,8 +652,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -668,8 +666,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -732,6 +738,7 @@ module.exports = {
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
@@ -786,6 +793,11 @@ module.exports = {
                 Name: 'pcc-sdlc-myapp-event-fn-0-scheduled-event-0',
                 ScheduleExpression: 'rate(5 minutes)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'myapp' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ],
                 Targets: [
                     {
                         Arn: {
@@ -940,8 +952,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -956,8 +966,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
+                      }
+                    ]
                                 },
-                                {Ref: 'AWS::NoValue'}
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -1020,6 +1038,7 @@ module.exports = {
                         AWS_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123',
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         APP_BASE_PATH: '/var/task',
+                  BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'
@@ -1196,6 +1215,7 @@ module.exports = {
                     MatchHelper.endsWith('zip')
                 ],
                 DestinationBucketName: {Ref: 'assetsfoosdlcexampleedu8BFEBC0B'},
+              WaitForDistributionInvalidation: true,
               Prune: true,
               OutputObjectKeys: true
             },
@@ -1449,8 +1469,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1465,8 +1483,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlcmyappcacheF6FEBBE3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                      }
+                    ]
+                  },
+                  {
+                    Action: [ 'dynamodb:GetRecords', 'dynamodb:GetShardIterator' ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccsdlcmyappcacheF6FEBBE3', 'Arn' ]
+                      }
                             ]
                         },
                         {
@@ -1557,6 +1583,7 @@ module.exports = {
                                 ]
                             ]
                         },
+                  BREF_RUNTIME: 'fpm',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-shared-secrets/environment-DEF456',
                         SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-west-2:33333:secret:pcc-sdlc-test-secrets/environment-ABC123'

@@ -377,7 +377,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034.zip'
+                    S3Key: '56f7467bbde8a5efebcf57ae9e460027607099bab9f844669dcf5d800172ee5a.zip'
                 },
                 Handler: 'index.handler',
                 Role: {
@@ -544,8 +544,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -560,8 +558,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                                }
+                            ]
+                        },
+                        {
+                            Action: ['dynamodb:GetRecords', 'dynamodb:GetShardIterator'],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
+                                }
                             ]
                         },
                         {
@@ -641,6 +647,7 @@ module.exports = {
                         },
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
+                        BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
@@ -775,8 +782,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -791,8 +796,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                                }
+                            ]
+                        },
+                        {
+                            Action: ['dynamodb:GetRecords', 'dynamodb:GetShardIterator'],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
+                                }
                             ]
                         },
                         {
@@ -872,6 +885,7 @@ module.exports = {
                         },
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
+                        BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
@@ -1059,8 +1073,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1075,8 +1087,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                                }
+                            ]
+                        },
+                        {
+                            Action: ['dynamodb:GetRecords', 'dynamodb:GetShardIterator'],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
+                                }
                             ]
                         },
                         {
@@ -1156,6 +1176,7 @@ module.exports = {
                         },
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
+                        BREF_RUNTIME: 'function',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
@@ -1302,8 +1323,6 @@ module.exports = {
                         {
                             Action: [
                                 'dynamodb:BatchGetItem',
-                                'dynamodb:GetRecords',
-                                'dynamodb:GetShardIterator',
                                 'dynamodb:Query',
                                 'dynamodb:GetItem',
                                 'dynamodb:Scan',
@@ -1318,8 +1337,16 @@ module.exports = {
                             Resource: [
                                 {
                                     'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
-                                },
-                                {Ref: 'AWS::NoValue'}
+                                }
+                            ]
+                        },
+                        {
+                            Action: ['dynamodb:GetRecords', 'dynamodb:GetShardIterator'],
+                            Effect: 'Allow',
+                            Resource: [
+                                {
+                                    'Fn::GetAtt': ['pccsdlctestcacheFE02D1F3', 'Arn']
+                                }
                             ]
                         },
                         {
@@ -1399,6 +1426,7 @@ module.exports = {
                         },
                         AWS_SHARED_SECRET_ARN: 'arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         APP_BASE_PATH: '/var/task',
+                        BREF_RUNTIME: 'fpm',
                         BREF_LOAD_SECRETS: 'bref-ssm:loadOnly',
                         SHARED_SECRETS_LOOKUP: 'bref-secretsmanager:arn:aws:secretsmanager:us-east-1:12345:secret:shared-secrets/environment-abc123',
                         SECRETS_LOOKUP: {
@@ -1460,6 +1488,12 @@ module.exports = {
                 FunctionName: {'Fn::GetAtt': ['pccsdlctestwebfn051C9C4DD', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
             }
+        }
+    },
+    Outputs: {
+        pccsdlctestsesverifytesttestsdlcexampleeduSesNotificationTopic707B824F: {
+            Description: 'SES notification topic for test.sdlc.example.edu',
+            Value: {Ref: 'pccsdlctestsesverifytestSesNotificationTopicF2D450E7'}
         }
     }
 }
