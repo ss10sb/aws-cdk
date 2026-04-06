@@ -5,7 +5,7 @@
   "author": "Scott Morken <scott.morken@phoenixcollege.edu>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ss10sb/aws-cdk.git"
+    "url": "git+https://github.com/ss10sb/aws-cdk.git"
   },
   "scripts": {
     "compile": "tsc",
