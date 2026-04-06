@@ -89,13 +89,13 @@ describe('env lamdba stack', () => {
                     assetPathToCopy: path.join(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.join(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM,
+                        brefRuntime: BrefRuntime.PHP84,
                     }
                 },
                 queue: {
                     hasDeadLetterQueue: true,
                     functionProps: {
-                        brefRuntime: BrefRuntime.PHP81,
+                        brefRuntime: BrefRuntime.PHP84,
                         type: FunctionType.QUEUE,
                         appPath: path.join(__dirname, '..', '__codebase__'),
                         lambdaTimeout: 120,
@@ -136,13 +136,13 @@ describe('env lamdba stack', () => {
                     assetPathToCopy: path.join(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.join(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM,
+                        brefRuntime: BrefRuntime.PHP84,
                     }
                 },
                 queue: {
                     hasDeadLetterQueue: true,
                     functionProps: {
-                        brefRuntime: BrefRuntime.PHP81,
+                        brefRuntime: BrefRuntime.PHP84,
                         type: FunctionType.QUEUE,
                         appPath: path.join(__dirname, '..', '__codebase__'),
                         lambdaTimeout: 120,
@@ -184,13 +184,13 @@ describe('env lamdba stack', () => {
                     assetPathToCopy: path.join(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.join(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM,
+                        brefRuntime: BrefRuntime.PHP84,
                     }
                 },
                 queue: {
                     hasDeadLetterQueue: true,
                     functionProps: {
-                        brefRuntime: BrefRuntime.PHP81,
+                        brefRuntime: BrefRuntime.PHP84,
                         type: FunctionType.QUEUE,
                         appPath: path.join(__dirname, '..', '__codebase__'),
                         lambdaTimeout: 120,
@@ -224,7 +224,7 @@ describe('env lamdba stack', () => {
                     assetPathToCopy: path.join(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.join(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM,
+                        brefRuntime: BrefRuntime.PHP84,
                     },
                     apiProps: {},
                     webAclId: 'arn:aws:wafv2:us-east-1:123456789012:global/webacl/pccprodwafcf-arn-random-characters',
@@ -232,7 +232,7 @@ describe('env lamdba stack', () => {
                 queue: {
                     hasDeadLetterQueue: true,
                     functionProps: {
-                        brefRuntime: BrefRuntime.PHP81,
+                        brefRuntime: BrefRuntime.PHP84,
                         type: FunctionType.QUEUE,
                         appPath: path.join(__dirname, '..', '__codebase__'),
                         lambdaTimeout: 120,

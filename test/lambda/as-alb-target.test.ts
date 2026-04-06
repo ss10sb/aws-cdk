@@ -42,7 +42,7 @@ describe('bref as alb target', () => {
             assetBucket: {},
             functionProps: {
                 appPath: path.join(__dirname, '..', '__codebase__'),
-                brefRuntime: BrefRuntime.PHP81FPM
+                brefRuntime: BrefRuntime.PHP84
             }
         });
         const template = Template.fromStack(stack);
@@ -79,7 +79,7 @@ describe('bref as alb target', () => {
             assetBucket: {},
             functionProps: {
                 appPath: path.join(__dirname, '..', '__codebase__'),
-                brefRuntime: BrefRuntime.PHP81FPM
+                brefRuntime: BrefRuntime.PHP84
             }
         });
         const template = Template.fromStack(stack);

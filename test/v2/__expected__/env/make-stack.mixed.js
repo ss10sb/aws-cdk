@@ -707,17 +707,7 @@ module.exports = {
                     [
                       'arn:',
                       { Ref: 'AWS::Partition' },
-                      ':lambda:us-west-2:534081306603:layer:php-82:101'
-                    ]
-                  ]
-                },
-                {
-                  'Fn::Join': [
-                    '',
-                    [
-                      'arn:',
-                      { Ref: 'AWS::Partition' },
-                      ':lambda:us-west-2:534081306603:layer:console:110'
+                      ':lambda:us-west-2:873528684822:layer:php-84:29'
                     ]
                   ]
                 }
@@ -953,17 +943,7 @@ module.exports = {
                             [
                                 'arn:',
                                 {Ref: 'AWS::Partition'},
-                                ':lambda:us-west-2:534081306603:layer:php-82:101'
-                            ]
-                        ]
-                    },
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':lambda:us-west-2:534081306603:layer:console:110'
+                                ':lambda:us-west-2:873528684822:layer:php-84:29'
                             ]
                         ]
                     }
@@ -1251,7 +1231,7 @@ module.exports = {
                             [
                                 'arn:',
                                 {Ref: 'AWS::Partition'},
-                                ':lambda:us-west-2:534081306603:layer:php-82:101'
+                                ':lambda:us-west-2:873528684822:layer:php-84:29'
                             ]
                         ]
                     }

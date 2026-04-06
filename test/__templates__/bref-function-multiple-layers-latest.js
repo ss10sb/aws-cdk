@@ -74,17 +74,7 @@ module.exports = {
                             [
                                 'arn:',
                                 {Ref: 'AWS::Partition'},
-                                ':lambda:us-east-1:534081306603:layer:php-81-fpm:112'
-                            ]
-                        ]
-                    },
-                    {
-                        'Fn::Join': [
-                            '',
-                            [
-                                'arn:',
-                                {Ref: 'AWS::Partition'},
-                                ':lambda:us-east-1:534081306603:layer:console:110'
+                                ':lambda:us-east-1:873528684822:layer:php-84:29'
                             ]
                         ]
                     }

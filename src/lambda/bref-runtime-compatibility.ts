@@ -28,6 +28,9 @@ export interface RuleResult {
     message?: string;
 }
 
+/**
+ * @deprecated
+ */
 export class Rules {
 
     public apply(props: RuleProps, type: FunctionType, runtimes: BrefRuntime[]): RuleResult {

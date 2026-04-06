@@ -59,12 +59,12 @@ module.exports = {
                         assetPathToCopy: path.join(__dirname, '..', '..', '__codebase__', 'public'),
                         functionProps: {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
-                            brefRuntime: BrefRuntime.PHP82FPM,
+                            brefRuntime: BrefRuntime.PHP84,
                         }
                     },
                     queue: {
                         functionProps: {
-                            brefRuntime: BrefRuntime.PHP82,
+                            brefRuntime: BrefRuntime.PHP84,
                             type: FunctionType.QUEUE,
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             lambdaTimeout: 120
@@ -74,7 +74,7 @@ module.exports = {
                         {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             lambdaHandler: LaravelHandler.ARTISAN,
-                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.CONSOLE],
+                            brefRuntime: [BrefRuntime.PHP84],
                             scheduledEvents: [
                                 {
                                     schedule: 'rate(5 minutes)',
@@ -115,12 +115,12 @@ module.exports = {
                         assetPathToCopy: path.join(__dirname, '..', '..', '__codebase__', 'public'),
                         functionProps: {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
-                            brefRuntime: BrefRuntime.PHP82FPM,
+                            brefRuntime: BrefRuntime.PHP84,
                         }
                     },
                     queue: {
                         functionProps: {
-                            brefRuntime: BrefRuntime.PHP82,
+                            brefRuntime: BrefRuntime.PHP84,
                             type: FunctionType.QUEUE,
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             lambdaTimeout: 120
@@ -130,7 +130,7 @@ module.exports = {
                         {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             lambdaHandler: LaravelHandler.ARTISAN,
-                            brefRuntime: [BrefRuntime.PHP82, BrefRuntime.CONSOLE],
+                            brefRuntime: [BrefRuntime.PHP84],
                             scheduledEvents: [
                                 {
                                     schedule: 'rate(5 minutes)',

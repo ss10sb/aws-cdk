@@ -23,7 +23,7 @@ describe('php bref function create', () => {
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}});
         phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
-            brefRuntime: BrefRuntime.PHP81FPM,
+            brefRuntime: BrefRuntime.PHP84,
             type: FunctionType.WEB,
             version: '27'
         });
@@ -42,7 +42,7 @@ describe('php bref function create', () => {
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}});
         phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
-            brefRuntime: BrefRuntime.PHP81FPM,
+            brefRuntime: BrefRuntime.PHP84,
             type: FunctionType.WEB,
             scheduledEvents: [
                 {
@@ -66,7 +66,7 @@ describe('php bref function create', () => {
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}});
         phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
-            brefRuntime: BrefRuntime.PHP81FPM,
+            brefRuntime: BrefRuntime.PHP84,
             type: FunctionType.EVENT
         });
         const template = Template.fromStack(stack);
@@ -84,7 +84,7 @@ describe('php bref function create', () => {
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}});
         phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
-            brefRuntime: [BrefRuntime.PHP81FPM, BrefRuntime.CONSOLE],
+            brefRuntime: [BrefRuntime.PHP84],
             type: FunctionType.EVENT
         });
         const template = Template.fromStack(stack);
@@ -102,7 +102,7 @@ describe('php bref function create', () => {
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}});
         phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
-            brefRuntime: BrefRuntime.PHP81FPM,
+            brefRuntime: BrefRuntime.PHP84,
             type: FunctionType.WEB,
             provisionedConcurrency: {
                 maxCapacity: 5,

@@ -109,7 +109,7 @@ describe('route53 a record', () => {
         const phpbrefFun = new PhpBrefFunction(stack, 'function', {environment: {}, secretKeys: []});
         const func = phpbrefFun.create({
             appPath: path.join(__dirname, '..', '__codebase__'),
-            brefRuntime: BrefRuntime.PHP81FPM
+            brefRuntime: BrefRuntime.PHP84
         });
         const phpHttpApi = new PhpHttpApi(stack, 'http-api');
         const api = phpHttpApi.create({lambdaFunction: func});

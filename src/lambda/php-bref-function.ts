@@ -45,7 +45,8 @@ export class PhpBrefFunction extends CoreFunction<PhpBrefFunctionProps> {
 
     ensureBrefRuntimeEnvSet(props: PhpBrefFunctionProps): void {
         if (!(props?.environment) || !props.environment['BREF_RUNTIME']) {
-            console.error('BREF_RUNTIME environment variable not set. Please set it to: fpm, console or function.');
+            props.environment = props.environment ?? {};
+            props.environment['BREF_RUNTIME'] = 'fpm';
         }
     }
 

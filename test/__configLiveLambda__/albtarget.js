@@ -56,7 +56,7 @@ module.exports = {
                     assetPathToCopy: path.resolve(__dirname, '..', '__codebase__', 'public'),
                     functionProps: {
                         appPath: path.resolve(__dirname, '..', '__codebase__'),
-                        brefRuntime: BrefRuntime.PHP81FPM
+                        brefRuntime: BrefRuntime.PHP84
                     }
                 }
             }
