@@ -10,6 +10,7 @@ export interface BuildStepProps {
     buildEnvironment: BuildEnvironmentProps;
     buildSpec?: { [p: string]: any };
     commands?: string[];
+    installCommands?: string[];
 }
 
 export class BuildStep extends NonConstruct {
@@ -72,6 +73,9 @@ export class BuildStep extends NonConstruct {
     }
 
     protected getInstallCommands(): string[] {
+        if (this.props.installCommands) {
+            return this.props.installCommands;
+        }
         return [
             'php -v',
             'php -r "copy(\'https://getcomposer.org/installer\', \'composer-setup.php\');"',

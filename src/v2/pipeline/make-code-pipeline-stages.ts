@@ -6,7 +6,6 @@ import {StageDeployment} from "aws-cdk-lib/pipelines";
 import {MakeStage} from "../stage/make-stage";
 import {Construct} from "constructs";
 import {MakeStepsResources} from "./support/make-steps-resources";
-import {EnvConfig} from "../../env/env-base-stack";
 import {NamingHelper} from "../../utils/naming-helper";
 import {ConfigStackHelper} from "../../utils/config-stack-helper";
 

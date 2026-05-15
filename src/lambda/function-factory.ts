@@ -2,6 +2,7 @@ import {CoreFunction, CoreFunctionFactoryProps, CoreFunctionProps} from "./core-
 import {Construct} from "constructs";
 import {IFunction, Runtime, RuntimeFamily} from "aws-cdk-lib/aws-lambda";
 import {PhpBrefFunction, PhpBrefFunctionProps} from "./php-bref-function";
+import assert from "node:assert";
 
 export class FunctionFactory {
 
@@ -18,6 +19,8 @@ export class FunctionFactory {
     }
 
     public static createFromProps(scope: Construct, id: string, factoryProps: CoreFunctionFactoryProps, props: Record<string, any>): IFunction {
+        assert(props.appPath, "The appPath is required to create a function.")
+
         FunctionFactory.ensureLambdaRuntime(props);
         if (FunctionFactory.wantsBref(props)) {
             return FunctionFactory.create<PhpBrefFunctionProps, PhpBrefFunction>(PhpBrefFunction, scope, id, factoryProps).create(<PhpBrefFunctionProps>props);

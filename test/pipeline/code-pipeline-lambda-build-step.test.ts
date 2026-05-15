@@ -39,6 +39,41 @@ describe('code pipeline lambda build step', () => {
         templateHelper.template.templateMatches(expected);
     });
 
+    it('should create lambda build step with custom commands', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-pipeline', account: '123pipeline'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const codeStarSource = new CodePipelineCodestarSource(stack, 'source', {
+            connectionArn: "arn:...",
+            owner: "repoOwner",
+            repo: "repoName",
+            branch: 'foo'
+        });
+        const buildStep = new CodePipelineLambdaBuildStep(stack, 'build', {
+            input: codeStarSource.source,
+            buildStep: {
+                installCommands: ['custom install'],
+                commands: ['custom command'],
+                buildEnvironment: {
+
+                }
+            }
+        });
+        const synthStep = new CodePipelineSynthStep(stack, 'synth', {
+            input: buildStep.step,
+            type: EnvBuildType.LAMBDA
+        });
+        const codePipelineProps: CodePipelinePipelineProps = {
+            source: codeStarSource,
+            synth: synthStep
+        };
+        new CodePipelinePipeline(stack, 'pipeline', codePipelineProps);
+        const templateHelper = new TemplateHelper(Template.fromStack(stack));
+        // templateHelper.inspect();
+        const expected = require('../__templates__/code-pipeline-lambda-build-step-custom-commands');
+        templateHelper.template.templateMatches(expected);
+    });
+
     it('should create lambda build step with custom build image', () => {
         const app = new App();
         const stackProps = {env: {region: 'us-pipeline', account: '123pipeline'}};

@@ -1,14 +1,6 @@
 import {NonConstruct} from "../../../core/non-construct";
-import {
-    ApplicationListenerRule,
-    ApplicationTargetGroup,
-    IApplicationLoadBalancer,
-    IApplicationTargetGroup
-} from "aws-cdk-lib/aws-elasticloadbalancingv2";
-import {IDistribution} from "aws-cdk-lib/aws-cloudfront";
 import {PreBuildLookups} from "../../../env/pre-build-lookups";
 import {Construct} from "constructs";
-import {AlbTargetGroupHealthCheck} from "../../../alb/alb-target-group-health-check";
 import {NamingHelper} from "../../../utils/naming-helper";
 import {EnvEnvironmentProps} from "../../../env/env-definitions";
 import {Table} from "aws-cdk-lib/aws-dynamodb";
