@@ -3011,7 +3011,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopfnServiceRole4E724A81', 'Arn']
                 },
-                Runtime: 'nodejs20.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},

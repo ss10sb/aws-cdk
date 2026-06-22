@@ -1,7 +1,7 @@
 import {NonConstruct} from "../core/non-construct";
 import {IFunction} from "aws-cdk-lib/aws-lambda";
 import {Bucket, HttpMethods} from "aws-cdk-lib/aws-s3";
-import {S3Props} from "../s3/s3-bucket";
+import {BaseBucket, S3Props} from "../s3/s3-bucket";
 import {PhpVersion} from "../config/config-definitions";
 import {Construct} from "constructs";
 import {FunctionType} from "./lambda-definitions";
@@ -49,20 +49,20 @@ export class AsAlbTarget extends NonConstruct {
     }
 
     create(props: AsAlbTargetProps): AsAlbTargetResult {
-        let bucket: Bucket | undefined = undefined;
+        let baseBucket: BaseBucket | undefined = undefined;
         if (this.wantsBucket(props)) {
-            bucket = this.createS3Bucket(props);
+            baseBucket = this.createS3Bucket(props);
             if (props.assetPathToCopy) {
-                this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), bucket);
+                this.copyAssetsToS3Bucket(this.getAssetPath(props.assetPathToCopy), baseBucket.bucket);
             }
-            this.addBucketPathToEnvironment(bucket, <CoreFunctionProps>props.functionProps);
+            this.addBucketPathToEnvironment(baseBucket.bucket, <CoreFunctionProps>props.functionProps);
         }
         const func = this.createFunction(props.functionProps);
         this.addFunctionToTargetGroup(func);
 
         return {
             lambdaFunction: func,
-            assetBucket: bucket
+            assetBucket: baseBucket?.bucket
         };
     }
 
@@ -85,7 +85,7 @@ export class AsAlbTarget extends NonConstruct {
         return FunctionFactory.createFromProps(this.scope, this.scope.node.id, this.props.functionFactoryProps, props);
     }
 
-    protected createS3Bucket(props: AsAlbTargetProps): Bucket {
+    protected createS3Bucket(props: AsAlbTargetProps): BaseBucket {
         const bucketProps = props.assetBucket ?? {};
         bucketProps.bucketName = this.getS3AssetsBucketDomain(props).replaceAll('.', '-');
         bucketProps.cors = bucketProps.cors ?? [{

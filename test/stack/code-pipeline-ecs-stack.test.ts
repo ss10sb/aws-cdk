@@ -242,7 +242,7 @@ describe('code pipeline ecs stack', () => {
             }
         ]);
         const templateHelper = new TemplateHelper(Template.fromStack(stack));
-        // templateHelper.inspect();
+        templateHelper.inspect();
         const expected = getExpected('code-pipeline-ecs-stack');
         templateHelper.template.templateMatches(expected);
     });

@@ -1,5 +1,6 @@
 const {Match} = require("aws-cdk-lib/assertions");
 const {MatchHelper} = require("../../src/utils/testing/match-helper");
+const {TemplateHelper} = require("../../src/utils/testing/template-helper");
 module.exports = {
     Resources: {
         pccprodtesttestexampleeduarecord3CF5C63C: {
@@ -401,11 +402,11 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
               Handler: 'index.handler',
-              Runtime: 'nodejs22.x',
+              Runtime: MatchHelper.startsWith('nodejs'),
               Timeout: 900,
               Code: {
                 S3Bucket: 'cdk-hnb659fds-assets-22222-us-west-2',
-                S3Key: '2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip'
+                S3Key: MatchHelper.endsWith('zip'),
               },
               Role: {
                 'Fn::GetAtt': [

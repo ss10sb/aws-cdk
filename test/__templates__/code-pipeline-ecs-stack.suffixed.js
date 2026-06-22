@@ -2288,8 +2288,8 @@ module.exports = {
                                 '    },\n' +
                                 '    "build": {\n' +
                                 '      "commands": [\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"56f7467bbde8a5efebcf57ae9e460027607099bab9f844669dcf5d800172ee5a:11111-us-west-2-b00ae788\\"",\n' +
-                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-def-stage/pccsharedtestpccprodtestdefstagepccprodtestdef27A5C606.assets.json\\" --verbose publish \\"56f7467bbde8a5efebcf57ae9e460027607099bab9f844669dcf5d800172ee5a:22222-us-west-2-ddeea4f5\\""\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-abc-stage/pccsharedtestpccprodtestabcstagepccprodtestabc9A6B29AB.assets.json\\" --verbose publish \\"9b8fce7ae7f25ef82fdbaf6b72523b99d0875c0c9c826642819fb51f11d9b125:11111-us-west-2-c6363e13\\"",\n' +
+                        '        "cdk-assets --path \\"assembly-pcc-shared-test-pcc-prod-test-def-stage/pccsharedtestpccprodtestdefstagepccprodtestdef27A5C606.assets.json\\" --verbose publish \\"9b8fce7ae7f25ef82fdbaf6b72523b99d0875c0c9c826642819fb51f11d9b125:22222-us-west-2-64b05835\\""\n' +
                                 '      ]\n' +
                                 '    }\n' +
                                 '  }\n' +

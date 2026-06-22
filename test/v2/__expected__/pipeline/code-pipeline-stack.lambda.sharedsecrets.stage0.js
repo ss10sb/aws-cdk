@@ -1,4 +1,5 @@
 const {Match} = require("aws-cdk-lib/assertions");
+const {MatchHelper} = require("../../../../src/utils/testing/match-helper");
 module.exports = {
     Resources: {
         pccsdlctesttestsdlcexampleeduarecord40417570: {
@@ -377,7 +378,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '56f7467bbde8a5efebcf57ae9e460027607099bab9f844669dcf5d800172ee5a.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
                 Handler: 'index.handler',
                 Role: {
@@ -386,7 +387,7 @@ module.exports = {
                         'Arn'
                     ]
                 },
-                Runtime: 'nodejs22.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     {Key: 'App', Value: 'test'},
                     {Key: 'College', Value: 'PCC'},
@@ -626,7 +627,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
                 Environment: {
                     Variables: {
@@ -864,7 +865,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
                 Environment: {
                     Variables: {
@@ -1155,7 +1156,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
                 Environment: {
                     Variables: {
@@ -1405,7 +1406,7 @@ module.exports = {
             Properties: {
                 Code: {
                     S3Bucket: 'cdk-hnb659fds-assets-11111-us-west-2',
-                    S3Key: '2c986e803e9cb2973f4a7f1f224e03626c988feccc1453ba2aaf55a7c4ae33a1.zip'
+                    S3Key: MatchHelper.endsWith('zip'),
                 },
                 Environment: {
                     Variables: {

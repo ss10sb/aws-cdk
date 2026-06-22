@@ -17,7 +17,7 @@ import {BaseParameters, StackConfig} from "../config/config-definitions";
 import {EnvEcsParameters} from "./env-ecs-stack";
 import {EnvLambdaParameters} from "./env-lambda-stack";
 import {Dynamodb, DynamoDbProps} from "../dynamodb/dynamodb";
-import {S3Bucket, S3Props} from "../s3/s3-bucket";
+import {BaseBucket, S3Bucket, S3Props} from "../s3/s3-bucket";
 import {EnvBuildType, EnvEndpointType, EnvEnvironmentProps} from "./env-definitions";
 import {ConfigStack, ConfigStackProps} from "../config/config-stack";
 import {AlbTargetGroupHealthCheck} from "../alb/alb-target-group-health-check";
@@ -189,7 +189,7 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
         });
     }
 
-    protected createS3Bucket(name = 's3'): Bucket | undefined {
+    protected createS3Bucket(name = 's3'): BaseBucket | undefined {
         if (this.config.Parameters?.s3) {
             const s3 = new S3Bucket(this, this.node.id);
             return s3.create(name, this.config.Parameters.s3);

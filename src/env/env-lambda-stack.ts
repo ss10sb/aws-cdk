@@ -9,7 +9,7 @@ import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {Functions, FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "../lambda/lambda-definitions";
 import {AlbListenerRuleProps} from "../alb/alb-listener-rule";
 import {AlbTargetGroupProps} from "../alb/alb-target-group";
-import {PhpBrefFunction, PhpBrefFunctionProps} from "../lambda/php-bref-function";
+import {PhpBrefFunctionProps} from "../lambda/php-bref-function";
 import {ConfigStackProps} from "../config/config-stack";
 import {PermissionsEnvLambdaStack} from "../permissions/permissions-env-lamdba-stack";
 import {CoreFunctionFactoryProps} from "../lambda/core-function";
@@ -61,7 +61,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             environment: this.getEnvironment({
                 table: table,
                 queue: queue,
-                s3: s3
+                s3: s3?.bucket
             }),
             secretKeys: this.config.Parameters?.secretKeys ?? [],
         };
@@ -88,7 +88,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             },
             aRecord: aRecord,
             queue: queue,
-            s3: s3,
+            s3: s3?.bucket,
             sesVerify: sesVerify,
             table: table,
             secret: this.lookups.secret,

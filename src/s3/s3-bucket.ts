@@ -13,6 +13,12 @@ export interface S3Props {
     bucketName?: string;
     cors?: CorsRule[];
     objectOwnership?: ObjectOwnership;
+    versioned?: boolean;
+}
+
+export interface BaseBucket {
+    name: string;
+    bucket: Bucket;
 }
 
 export class S3Bucket extends NonConstruct {
@@ -23,12 +29,14 @@ export class S3Bucket extends NonConstruct {
         blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
         removalPolicy: RemovalPolicy.RETAIN,
         enforceSSL: true,
-        encryption: BucketEncryption.KMS_MANAGED
+        encryption: BucketEncryption.KMS_MANAGED,
+        versioned: false,
     }
 
-    public create(name: string, props: S3Props = {}): Bucket {
+    public create(name: string, props: S3Props = {}): BaseBucket {
         const bucketName = props.bucketName ?? this.mixNameWithId(name);
-        return new Bucket(this.scope, bucketName, this.getBucketProps(bucketName, props));
+        const bucket = new Bucket(this.scope, bucketName, this.getBucketProps(bucketName, props));
+        return {name: bucketName, bucket: bucket};
     }
 
     protected getBucketProps(bucketName: string, props: S3Props): BucketProps {
@@ -43,6 +51,7 @@ export class S3Bucket extends NonConstruct {
             bucketKeyEnabled: props.bucketKeyEnabled ?? undefined,
             cors: props.cors ?? undefined,
             objectOwnership: props.objectOwnership ?? this.defaults.objectOwnership,
+            versioned: props.versioned ?? this.defaults.versioned,
         }
     }
 }

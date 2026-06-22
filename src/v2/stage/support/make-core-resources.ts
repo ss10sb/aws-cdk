@@ -14,7 +14,7 @@ import {Queue} from "aws-cdk-lib/aws-sqs";
 import {Sqs, SqsProps} from "../../../sqs/sqs";
 import {Duration} from "aws-cdk-lib";
 import {Bucket} from "aws-cdk-lib/aws-s3";
-import {S3Bucket} from "../../../s3/s3-bucket";
+import {BaseBucket, S3Bucket} from "../../../s3/s3-bucket";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {VerifySesDomain} from "@seeebiii/ses-verify-identities";
 import {Route53Helper} from "../../../utils/route53-helper";
@@ -49,14 +49,14 @@ export class MakeCoreResources extends NonConstruct {
         this.createListenerCertificates(certificates);
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
-        const s3 = this.createS3Bucket();
+        const baseBucket = this.createS3Bucket();
         return {
             aRecord: aRecord,
             sesVerify: sesVerify,
             certificates: certificates,
             table: table,
             queue: queue,
-            s3: s3,
+            s3: baseBucket?.bucket,
             secret: this.lookups.secret,
             sharedSecret: this.lookups.sharedSecret
         }
@@ -133,7 +133,7 @@ export class MakeCoreResources extends NonConstruct {
         });
     }
 
-    protected createS3Bucket(name = 's3'): Bucket | undefined {
+    protected createS3Bucket(name = 's3'): BaseBucket | undefined {
         if (this.config.Parameters?.s3) {
             const s3 = new S3Bucket(this.scope, this.scope.node.id);
             return s3.create(name, this.config.Parameters.s3);

@@ -439,11 +439,11 @@ module.exports = {
             Type: 'AWS::Lambda::Function',
             Properties: {
               Handler: 'index.handler',
-              Runtime: 'nodejs22.x',
+              Runtime: MatchHelper.startsWith('nodejs'),
               Timeout: 900,
               Code: {
                 S3Bucket: 'cdk-hnb659fds-assets-2222-us-west-2',
-                S3Key: '2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip'
+                S3Key: MatchHelper.endsWith('zip'),
               },
               Role: {
                 'Fn::GetAtt': [
@@ -3358,7 +3358,7 @@ module.exports = {
                 Role: {
                     'Fn::GetAtt': ['pccsdlcmyappstartstopfnServiceRole4E724A81', 'Arn']
                 },
-                Runtime: 'nodejs20.x',
+                Runtime: MatchHelper.startsWith('nodejs'),
                 Tags: [
                     {Key: 'App', Value: 'myapp'},
                     {Key: 'College', Value: 'PCC'},

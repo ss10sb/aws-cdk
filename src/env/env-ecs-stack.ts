@@ -71,7 +71,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const healthCheck = this.configureTargetGroupHealthCheck(targetGroup); //v2 make-ecs/lambda
         const table = this.createDynamoDbTable(); //v2 make-stack
         const queue = this.createQueues(); //v2 make-stack
-        const s3 = this.createS3Bucket(); //v2 make-stack
+        const baseBucket = this.createS3Bucket(); //v2 make-stack
         const cluster = this.createCluster();
         const secrets = this.lookups.secrets;
         const tasksAndServices = this.createTasksAndServices({
@@ -82,7 +82,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             environment: this.getEnvironment({
                 table: table,
                 queue: queue,
-                s3: s3
+                s3: baseBucket?.bucket
             })
         }, secrets);
         const startStopFactory = this.createStartStopFactory(cluster);
@@ -94,7 +94,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             tasksAndServices: tasksAndServices,
             aRecord: aRecord,
             queue: queue,
-            s3: s3,
+            s3: baseBucket?.bucket,
             sesVerify: sesVerify,
             startStop: startStopFactory,
             table: table,

@@ -13,7 +13,7 @@ describe('s3 assets', () => {
         s3.create('foo', {});
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
+        // templateHelper.inspect();
         const expected = {
             Resources: {
                 stackbucketfoo69FBD112: {
