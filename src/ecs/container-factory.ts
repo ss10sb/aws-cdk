@@ -20,6 +20,9 @@ import {Secrets} from "../secret/secrets";
 import {EcrRepositoryType} from "../ecr/ecr-definitions";
 import {AbstractFactory} from "../core/abstract-factory";
 import {TaskServiceType} from "./task-definitions";
+import {NfsMount} from "../nfs/nfs-definitions";
+import {EcsS3FilesHelper, EcsS3FilesProps} from "../nfs/ecs-s3-files-helper";
+import {FilesBucket, S3FilesProps} from "../s3/s3-files";
 
 interface ContainerDependencies {
     dependencies: ContainerDependency[];
@@ -72,6 +75,7 @@ export interface ContainerFactoryProps {
     readonly environment?: Record<string, string>;
     readonly commandFactory: ContainerCommandFactory;
     readonly secrets: Secrets;
+    readonly s3Files?: FilesBucket;
 }
 
 export interface ContainerProps {
@@ -91,10 +95,12 @@ export interface ContainerProps {
     readonly dependsOn?: boolean;
     readonly extraHosts?: Record<string, string>;
     readonly readonlyRootFilesystem?: boolean;
+    readonly nfsMount?: NfsMount;
 }
 
 export class ContainerFactory extends AbstractFactory {
 
+    readonly s3FilesHelper: EcsS3FilesHelper;
     readonly props: ContainerFactoryProps;
     readonly defaults: Record<string, any> = {
         essential: true
@@ -103,6 +109,7 @@ export class ContainerFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: ContainerFactoryProps) {
         super(scope, id);
         this.props = props;
+        this.s3FilesHelper = new EcsS3FilesHelper();
     }
 
     create(type: TaskServiceType, taskDefinition: TaskDefinition, props: ContainerProps[]): ContainerDefinition[] {
@@ -117,6 +124,7 @@ export class ContainerFactory extends AbstractFactory {
                 this.mixNameWithId(`container-${containerProps.image}-${type}-${containerType}`)
             );
             const c = taskDefinition.addContainer(name, this.getContainerOptions(name, containerProps));
+            this.handleS3Files(taskDefinition, c, containerProps);
             depFactory.add(
                 c,
                 containerProps.dependency ?? false,
@@ -126,6 +134,15 @@ export class ContainerFactory extends AbstractFactory {
         }
         depFactory.handle();
         return defs;
+    }
+
+    handleS3Files(taskDef: TaskDefinition, containerDef: ContainerDefinition, props: ContainerProps): void {
+        this.s3FilesHelper.handle({
+            taskDef,
+            containerDef,
+            filesBucket: this.props.s3Files,
+            nfsMount: props.nfsMount
+        })
     }
 
     canCreate(taskServiceType: TaskServiceType, containerType: ContainerType): boolean {

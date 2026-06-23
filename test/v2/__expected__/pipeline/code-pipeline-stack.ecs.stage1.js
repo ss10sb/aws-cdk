@@ -1751,10 +1751,10 @@ module.exports = {
                 ]
             }
         },
-        pccprodtesttaskdefscheduledtask0SecurityGroupF9238ECB: {
+        pccprodtesttaskscheduledtask0sg5F506650: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
-                GroupDescription: 'pcc-shared-test/pcc-prod-test-stage/pcc-prod-test/pcc-prod-test-task-def-scheduledtask-0/SecurityGroup',
+                GroupDescription: 'pcc-shared-test/pcc-prod-test-stage/pcc-prod-test/pcc-prod-test-task-scheduledtask-0-sg',
                 SecurityGroupEgress: [
                     {
                         CidrIp: '0.0.0.0/0',
@@ -1806,7 +1806,7 @@ module.exports = {
                                     SecurityGroups: [
                                         {
                                             'Fn::GetAtt': [
-                                                'pccprodtesttaskdefscheduledtask0SecurityGroupF9238ECB',
+                                                'pccprodtesttaskscheduledtask0sg5F506650',
                                                 'GroupId'
                                             ]
                                         }

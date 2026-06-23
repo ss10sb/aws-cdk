@@ -28,7 +28,12 @@ module.exports = {
                             ]
                         }
                     ]
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -60,7 +65,12 @@ module.exports = {
                             ]
                         }
                     ]
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -77,7 +87,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestsynthsteproleDefaultPolicyCA85F73E: {
@@ -341,7 +356,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
@@ -383,7 +403,12 @@ module.exports = {
                     BlockPublicPolicy: true,
                     IgnorePublicAcls: true,
                     RestrictPublicBuckets: true
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -517,7 +542,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelineRoleDefaultPolicy44AD6A4A: {
@@ -1027,6 +1057,11 @@ module.exports = {
                         ],
                         Name: 'pcc-prod-test-stage'
                     }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
                 ]
             },
             DependsOn: [
@@ -1053,7 +1088,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelineSourcerepoOwnerrepoNameCodePipelineActionRoleDefaultPolicyEB25EB7D: {
@@ -1258,7 +1298,12 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelineecrbuildnginxecrstep105D30FA: {
@@ -1358,7 +1403,12 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelineecrbuildphpfpmecrstepC4ABCF85: {
@@ -1458,7 +1508,12 @@ module.exports = {
                         '  }\n' +
                         '}',
                     Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelinepccprodteststagemanualApprovalstepCodePipelineActionRole24035FD1: {
@@ -1480,7 +1535,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelineEventsRoleD1B4EBBF: {
@@ -1495,7 +1555,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelinePipelineEventsRoleDefaultPolicyB7DAF9BB: {
@@ -1550,7 +1615,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelineCodeBuildActionRoleDefaultPolicy1CB8FCEC: {
@@ -1679,7 +1749,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelineUpdatePipelineSelfMutationRoleDefaultPolicyB7B41B80: {
@@ -1958,7 +2033,12 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelineAssetsFileRole8E4F3120: {
@@ -1973,7 +2053,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelineAssetsFileRoleDefaultPolicy628F3D15: {
@@ -2213,7 +2298,12 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestcodepipelineAssetsFileAsset25BAD1BD7: {
@@ -2321,7 +2411,12 @@ module.exports = {
                   ]
                 },
                 Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
           },
           pccsharedtestcodepipelineAssetsFileAsset37A91F8F0: {
@@ -2428,7 +2523,12 @@ module.exports = {
                         ]
                     },
                     Type: 'CODEPIPELINE'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestecrsteproleF733193B: {
@@ -2443,7 +2543,12 @@ module.exports = {
                         }
                     ],
                     Version: '2012-10-17'
-              }
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
             }
         },
         pccsharedtestecrsteproleDefaultPolicy2494C479: {
@@ -2662,7 +2767,16 @@ module.exports = {
                 Roles: [{Ref: 'pccsharedtestecrsteproleF733193B'}]
             }
         },
-          pccsharedtestnotificationruletopic0AF49361: { Type: 'AWS::SNS::Topic' },
+          pccsharedtestnotificationruletopic0AF49361: {
+            Type: 'AWS::SNS::Topic',
+            Properties: {
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ]
+            }
+          },
         pccsharedtestnotificationruletopicadminexampleeduBB0C5B11: {
             Type: 'AWS::SNS::Subscription',
             Properties: {
@@ -2710,6 +2824,7 @@ module.exports = {
                         ]
                     ]
                 },
+              Tags: { App: 'test', College: 'PCC', Environment: 'shared' },
                 Targets: [
                     {
                         TargetAddress: {Ref: 'pccsharedtestnotificationruletopic0AF49361'},
@@ -2723,6 +2838,11 @@ module.exports = {
             Properties: {
                 ScheduleExpression: 'cron(0 8 ? * 2#1 *)',
                 State: 'ENABLED',
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'shared' }
+              ],
                 Targets: [
                     {
                         Arn: {

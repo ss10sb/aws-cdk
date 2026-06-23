@@ -12,10 +12,14 @@ import {ScheduledFargateTask} from "aws-cdk-lib/aws-ecs-patterns";
 import {TaskDefinitionFactory} from "./task-definition-factory";
 import {EcsRunTask, EcsRunTaskProps} from "../task/ecs-run-task";
 import {AbstractFactory} from "../core/abstract-factory";
+import {FilesBucket} from "../s3/s3-files";
+import {EcsS3FilesHelper} from "../nfs/ecs-s3-files-helper";
+import {SecurityGroup} from "aws-cdk-lib/aws-ec2";
 
 export interface EcsTaskFactoryProps {
     readonly cluster: Cluster;
     readonly taskDefinitionFactory: TaskDefinitionFactory;
+    readonly s3Files?: FilesBucket;
 }
 
 export interface EcsTaskConfigProps extends EcsServiceAndTaskConfigProps {
@@ -25,6 +29,7 @@ export interface EcsTaskConfigProps extends EcsServiceAndTaskConfigProps {
 
 export class EcsTaskFactory extends AbstractFactory {
 
+    readonly s3FilesHelper: EcsS3FilesHelper;
     readonly props: EcsTaskFactoryProps;
     readonly defaults: Record<string, any> = {
         platformVersion: FargatePlatformVersion.LATEST
@@ -33,6 +38,7 @@ export class EcsTaskFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: EcsTaskFactoryProps) {
         super(scope, id);
         this.props = props;
+        this.s3FilesHelper = new EcsS3FilesHelper();
     }
 
     create(tasks: EcsTaskConfigProps[]): Wrapper[] {
@@ -112,12 +118,18 @@ export class EcsTaskFactory extends AbstractFactory {
 
     private createRunOnce(task: EcsTaskConfigProps, runTaskProps: EcsRunTaskProps): EcsRunTask {
         const name = this.getTaskName(task);
-        return new EcsRunTask(this.scope, name, runTaskProps);
+        const service = new EcsRunTask(this.scope, name, runTaskProps);
+        this.s3FilesHelper.addIngressToService(service, this.props.s3Files);
+        return service;
     }
 
     private createScheduledTask(task: EcsTaskConfigProps, taskDefinition: FargateTaskDefinition): ScheduledFargateTask {
         const name = this.getTaskName(task);
-        return new ScheduledFargateTask(this.scope, name, {
+        const securityGroup = new SecurityGroup(this.scope, `${name}-sg`, {
+            vpc: this.props.cluster.vpc,
+            allowAllOutbound: true
+        });
+        const service = new ScheduledFargateTask(this.scope, name, {
             scheduledFargateTaskDefinitionOptions: {
                 taskDefinition: taskDefinition
             },
@@ -125,8 +137,12 @@ export class EcsTaskFactory extends AbstractFactory {
             cluster: this.props.cluster,
             platformVersion: this.defaults.platformVersion,
             ruleName: name,
-            enabled: task.enabled ?? true
+            enabled: task.enabled ?? true,
+            securityGroups: [securityGroup]
         });
+        this.s3FilesHelper.addIngressToService(securityGroup, this.props.s3Files);
+
+        return service;
     }
 
     private getSchedule(task: EcsTaskConfigProps): Schedule {

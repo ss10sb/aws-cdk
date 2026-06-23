@@ -7,13 +7,11 @@ import {BaseBucket, S3Bucket, S3Props} from "./s3-bucket";
 
 export interface S3FilesProps extends S3Props {
     vpc: IVpc;
-    mountPath?: string;
 }
 
 export interface FilesBucket extends BaseBucket {
     filesystem: CfnFileSystem;
     securityGroup: SecurityGroup;
-    mountPath: string;
 }
 
 export class S3Files extends NonConstruct {
@@ -36,7 +34,6 @@ export class S3Files extends NonConstruct {
             bucket: bucket,
             filesystem: fs,
             securityGroup: sg,
-            mountPath: props.mountPath ?? '/files'
         };
     }
 

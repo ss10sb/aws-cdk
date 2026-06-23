@@ -17,8 +17,8 @@ import {Bucket} from "aws-cdk-lib/aws-s3";
 import {BaseBucket, S3Bucket} from "../../../s3/s3-bucket";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {VerifySesDomain} from "@seeebiii/ses-verify-identities";
-import {Route53Helper} from "../../../utils/route53-helper";
 import {VerifyDomainWrapper} from "../../../ses/verify-domain-wrapper";
+import {FilesBucket, S3Files} from "../../../s3/s3-files";
 
 export interface CoreMakeResources {
     aRecord?: ARecord;
@@ -27,6 +27,7 @@ export interface CoreMakeResources {
     table?: Table;
     queue?: Queue;
     s3?: Bucket;
+    s3Files?: FilesBucket;
     secret?: ISecret;
     sharedSecret?: ISecret;
 }
@@ -50,6 +51,7 @@ export class MakeCoreResources extends NonConstruct {
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const baseBucket = this.createS3Bucket();
+        const filesBucket = this.createS3FilesBucket();
         return {
             aRecord: aRecord,
             sesVerify: sesVerify,
@@ -57,6 +59,7 @@ export class MakeCoreResources extends NonConstruct {
             table: table,
             queue: queue,
             s3: baseBucket?.bucket,
+            s3Files: filesBucket,
             secret: this.lookups.secret,
             sharedSecret: this.lookups.sharedSecret
         }
@@ -133,10 +136,18 @@ export class MakeCoreResources extends NonConstruct {
         });
     }
 
-    protected createS3Bucket(name = 's3'): BaseBucket | undefined {
+    protected createS3Bucket(): BaseBucket | undefined {
         if (this.config.Parameters?.s3) {
             const s3 = new S3Bucket(this.scope, this.scope.node.id);
-            return s3.create(name, this.config.Parameters.s3);
+            return s3.create('s3', this.config.Parameters.s3);
+        }
+    }
+
+    protected createS3FilesBucket(): FilesBucket | undefined {
+        if (this.config.Parameters?.s3Files) {
+            this.config.Parameters.s3Files['vpc'] = this.lookups.vpc;
+            const s3 = new S3Files(this.scope, this.scope.node.id);
+            return s3.create(this.config.Parameters.s3Files);
         }
     }
 

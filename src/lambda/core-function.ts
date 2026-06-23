@@ -13,6 +13,9 @@ import {ILogGroup, LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 import fs from "fs";
 import path from "path";
 import {LambdaTimeout} from "./lamda-timeout";
+import {FilesBucket} from "../s3/s3-files";
+import {LambdaS3FilesHelper} from "../nfs/lambda-s3-files-helper";
+import {NfsMount} from "../nfs/nfs-definitions";
 
 export interface CoreFunctionProps {
     readonly appPath: string;
@@ -28,6 +31,7 @@ export interface CoreFunctionProps {
     lambdaTimeout?: number;
     type?: FunctionType;
     useBref?: boolean;
+    nfsMount?: NfsMount;
 }
 
 export interface CoreFunctionFactoryProps {
@@ -36,9 +40,11 @@ export interface CoreFunctionFactoryProps {
     sharedSecret?: ISecret;
     environment: { [key: string]: string };
     secretKeys: string[];
+    s3Files?: FilesBucket;
 }
 
 export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstruct {
+    readonly s3FilesHelper: LambdaS3FilesHelper;
     readonly defaults: Record<string, any> = {
         memorySize: 512,
         version: 'latest',
@@ -51,6 +57,7 @@ export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstr
         super(scope, id);
         this.factoryProps = factoryProps;
         this.nameIncrementer = new NameIncrementer();
+        this.s3FilesHelper = new LambdaS3FilesHelper();
     }
 
     public create(props: PropsType): IFunction {
@@ -62,11 +69,20 @@ export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstr
         if (props.provisionedConcurrency) {
             this.addProvisionedConcurrency(func, props.provisionedConcurrency);
         }
+        this.addNfsMount(func, props);
         return func;
     }
 
     public getDefaultTimeout(type: FunctionType, apiGateway = true): number {
         return LambdaTimeout.timeout(type, apiGateway);
+    }
+
+    protected addNfsMount(func: IFunction, props: PropsType): void {
+        this.s3FilesHelper.handle({
+            func,
+            nfsMount: props.nfsMount,
+            filesBucket: this.factoryProps.s3Files
+        });
     }
 
     protected addProvisionedConcurrency(func: IFunction, props: ProvisionedConcurrencyProps): void {

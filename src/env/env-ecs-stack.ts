@@ -17,6 +17,7 @@ import {PermissionsEnvEcsStack} from "../permissions/permissions-env-ecs-stack";
 import {ConfigStackProps} from "../config/config-stack";
 import {ClusterFactory} from "../ecs/cluster-factory";
 import {Secrets} from "../secret/secrets";
+import {FilesBucket} from "../s3/s3-files";
 
 export interface EnvTasksAndServicesProps {
     readonly cluster: Cluster;
@@ -24,6 +25,7 @@ export interface EnvTasksAndServicesProps {
     readonly repositoryFactory: EcrRepositoryFactory;
     readonly environment?: Record<string, any>;
     readonly queue?: Queue;
+    readonly s3Files?: FilesBucket;
 }
 
 export interface EnvEcsParameters extends EnvParameters {
@@ -72,6 +74,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const table = this.createDynamoDbTable(); //v2 make-stack
         const queue = this.createQueues(); //v2 make-stack
         const baseBucket = this.createS3Bucket(); //v2 make-stack
+        const filesBucket = this.createS3FilesBucket();
         const cluster = this.createCluster();
         const secrets = this.lookups.secrets;
         const tasksAndServices = this.createTasksAndServices({
@@ -79,6 +82,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             targetGroup: targetGroup,
             queue: queue,
             repositoryFactory: this.envProps.repositoryFactory,
+            s3Files: filesBucket,
             environment: this.getEnvironment({
                 table: table,
                 queue: queue,
@@ -95,6 +99,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: baseBucket?.bucket,
+            s3Files: filesBucket?.bucket,
             sesVerify: sesVerify,
             startStop: startStopFactory,
             table: table,
@@ -132,7 +137,8 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
                 secretKeys: this.config.Parameters?.secretKeys,
                 sharedSecretKeys: this.config.Parameters?.sharedSecretKeys,
                 environment: props.environment,
-                secrets: secrets
+                secrets: secrets,
+                s3Files: props.s3Files
             },
             queueFactoryProps: {
                 cluster: props.cluster,
@@ -141,16 +147,19 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
                 sharedSecretKeys: this.config.Parameters?.sharedSecretKeys,
                 environment: props.environment,
                 secrets: secrets,
-                queue: props.queue
+                queue: props.queue,
+                s3Files: props.s3Files
             },
             standardServiceFactoryProps: {
                 cluster: props.cluster,
-                targetGroup: props.targetGroup
+                targetGroup: props.targetGroup,
+                s3Files: props.s3Files
             },
             taskDefinitionFactoryProps: {},
             taskFactoryProps: {
                 cluster: props.cluster,
-                skipCreateTask: this.config.Parameters?.canCreateTask ?? true
+                skipCreateTask: this.config.Parameters?.canCreateTask ?? true,
+                s3Files: props.s3Files
             }
         });
         return factory.create(this.config.Parameters?.tasks ?? [], this.config.Parameters?.services ?? [], this.config.Parameters?.queue);

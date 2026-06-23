@@ -746,10 +746,10 @@ module.exports = {
                 ]
             }
         },
-        pccsdlcmyapptaskdefscheduledtask0SecurityGroup55A61535: {
+        pccsdlcmyapptaskscheduledtask0sg4BEF5873: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
-                GroupDescription: 'pcc-shared-stack/pcc-sdlc-myapp/pcc-sdlc-myapp-task-def-scheduledtask-0/SecurityGroup',
+                GroupDescription: 'pcc-shared-stack/pcc-sdlc-myapp/pcc-sdlc-myapp-task-scheduledtask-0-sg',
                 SecurityGroupEgress: [
                     {
                         CidrIp: '0.0.0.0/0',
@@ -798,7 +798,7 @@ module.exports = {
                                     SecurityGroups: [
                                         {
                                             'Fn::GetAtt': [
-                                                'pccsdlcmyapptaskdefscheduledtask0SecurityGroup55A61535',
+                                                'pccsdlcmyapptaskscheduledtask0sg4BEF5873',
                                                 'GroupId'
                                             ]
                                         }

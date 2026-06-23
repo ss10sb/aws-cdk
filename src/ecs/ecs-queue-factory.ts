@@ -13,6 +13,8 @@ import {EcrRepositoryType} from "../ecr/ecr-definitions";
 import {EcrRepositoryFactory} from "../ecr/ecr-repository-factory";
 import {Secrets} from "../secret/secrets";
 import {AbstractFactory} from "../core/abstract-factory";
+import {FilesBucket} from "../s3/s3-files";
+import {EcsS3FilesHelper} from "../nfs/ecs-s3-files-helper";
 
 export interface EcsQueueConfigProps extends BaseServiceAndTaskProps, QueueConfigProps {
     readonly image: EcrRepositoryType | string;
@@ -34,10 +36,12 @@ export interface EcsQueueFactoryProps {
     readonly secrets: Secrets;
     readonly commandFactory: ContainerCommandFactory;
     readonly queue?: Queue;
+    readonly s3Files?: FilesBucket;
 }
 
 export class EcsQueueFactory extends AbstractFactory {
 
+    readonly s3FilesHelper: EcsS3FilesHelper;
     readonly props: EcsQueueFactoryProps;
     readonly defaults: Record<string, any> = {
         assignPublicIp: false,
@@ -50,6 +54,7 @@ export class EcsQueueFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: EcsQueueFactoryProps) {
         super(scope, id);
         this.props = props;
+        this.s3FilesHelper = new EcsS3FilesHelper();
     }
 
     create(props: EcsQueueConfigProps): Wrapper {
@@ -74,6 +79,7 @@ export class EcsQueueFactory extends AbstractFactory {
             maxReceiveCount: props.maxReceiveCount ?? undefined,
             scalingSteps: props.scalingSteps ?? this.getScalingSteps(),
         });
+        this.s3FilesHelper.addIngressToService(service.service, this.props.s3Files);
         return {
             type: props.type,
             taskDefinition: service.taskDefinition,

@@ -1,8 +1,6 @@
 import {StackProps} from "aws-cdk-lib";
 import {EnvConfig} from "../env/env-base-stack";
 import {EcrRepositoriesProps} from "../ecr/ecr-repositories";
-import {IBuildImage} from "aws-cdk-lib/aws-codebuild";
-import {BuildEnvironmentProps, BuildImageProps} from "../v2/build/build-step-environment";
 import {BuildStepProps} from "../v2/build/build-step";
 
 export enum PhpVersion {

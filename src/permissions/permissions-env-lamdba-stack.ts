@@ -36,6 +36,9 @@ export class PermissionsEnvLambdaStack extends NonConstruct {
         if (this.props.s3) {
             PermissionsS3.functionsCanReadWriteS3(this.props.functions, this.props.s3);
         }
+        if (this.props.s3Files) {
+            PermissionsS3.functionsCanReadWriteS3(this.props.functions, this.props.s3Files);
+        }
     }
 
     private tablePermissions() {

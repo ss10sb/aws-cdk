@@ -15,11 +15,14 @@ import {Construct} from "constructs";
 import {TaskDefinitionFactory} from "./task-definition-factory";
 import {IApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {AbstractFactory} from "../core/abstract-factory";
+import {FilesBucket} from "../s3/s3-files";
+import {EcsS3FilesHelper} from "../nfs/ecs-s3-files-helper";
 
 export interface EcsStandardServiceFactoryProps {
     readonly cluster: Cluster;
     readonly targetGroup: IApplicationTargetGroup;
     readonly taskDefinitionFactory: TaskDefinitionFactory;
+    readonly s3Files?: FilesBucket;
 }
 
 export interface EcsStandardServiceBaseProps {
@@ -41,6 +44,7 @@ export interface EcsStandardServiceConfigProps extends EcsServiceAndTaskConfigPr
 
 export class EcsStandardServiceFactory extends AbstractFactory {
 
+    readonly s3FilesHelper: EcsS3FilesHelper;
     readonly props: EcsStandardServiceFactoryProps;
     readonly defaults: Record<string, any> = {
         assignPublicIp: false,
@@ -51,6 +55,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: EcsStandardServiceFactoryProps) {
         super(scope, id);
         this.props = props;
+        this.s3FilesHelper = new EcsS3FilesHelper();
     }
 
     create(services: EcsStandardServiceConfigProps[]): Wrapper[] {
@@ -75,6 +80,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
             targetGroup: targetGroup,
             serviceProps: serviceProps
         });
+        this.s3FilesHelper.addIngressToService(service, this.props.s3Files);
         return {
             type: serviceProps.type,
             taskDefinition: taskDefinition,

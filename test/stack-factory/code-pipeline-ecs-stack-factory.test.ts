@@ -212,7 +212,7 @@ function getConfig(): Record<string, any> {
 }
 
 function getExpected() {
-    return require('../__templates__/code-pipeline-ecs-stack');
+    return require('../__templates__/code-pipeline-ecs-stack.tags');
 }
 
 function getExpectedWithSuffixes() {

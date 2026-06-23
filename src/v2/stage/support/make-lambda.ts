@@ -2,12 +2,12 @@ import {MakeBase} from "./make-base";
 import {ApplicationTargetGroup, HealthCheck, TargetType} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {AlbListenerRuleProps} from "../../../alb/alb-listener-rule";
 import {AlbTargetGroupProps} from "../../../alb/alb-target-group";
-import {PhpBrefFunction, PhpBrefFunctionProps} from "../../../lambda/php-bref-function";
+import {PhpBrefFunctionProps} from "../../../lambda/php-bref-function";
 import {FunctionType, FunctionWrapper, LambdaQueueConfigProps} from "../../../lambda/lambda-definitions";
 import {AlbResources, MakeAlbResources} from "./make-alb-resources";
 import {Queue} from "aws-cdk-lib/aws-sqs";
 import {SqsEventSource} from "aws-cdk-lib/aws-lambda-event-sources";
-import {EnvEndpointType, EnvEnvironmentProps} from "../../../env/env-definitions";
+import {EnvEnvironmentProps} from "../../../env/env-definitions";
 import {PermissionsEnvLambdaStack} from "../../../permissions/permissions-env-lamdba-stack";
 import {MakeParameters} from "../make-definitions";
 import {LaravelHandler} from "../../../lambda/bref-definitions";
@@ -70,6 +70,7 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             aRecord: services.aRecord,
             queue: services.queue,
             s3: services.s3,
+            s3Files: services.s3Files?.bucket,
             sesVerify: services.sesVerify,
             table: services.table,
             secret: this.lookups.secret,

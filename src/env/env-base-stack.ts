@@ -34,6 +34,7 @@ import {AcmCertificate, DnsValidatedCertificateProps} from "../acm/acm-certifica
 import {Certificate} from "aws-cdk-lib/aws-certificatemanager";
 import {EmailIdentity} from "aws-cdk-lib/aws-ses";
 import {DkimIdentity} from "../ses/dkim-identity";
+import {FilesBucket, S3Files, S3FilesProps} from "../s3/s3-files";
 
 export interface EnvConfig extends StackConfig {
     readonly Parameters: EnvEcsParameters | EnvLambdaParameters;
@@ -46,6 +47,7 @@ export interface EnvParameters extends BaseParameters {
     readonly subdomain?: string;
     readonly alarmEmails?: string[];
     readonly s3?: S3Props;
+    readonly s3Files?: S3FilesProps;
     readonly secretKeys?: string[];
     readonly sharedSecretKeys?: string[];
     readonly steps?: Record<string, object>;
@@ -189,10 +191,18 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
         });
     }
 
-    protected createS3Bucket(name = 's3'): BaseBucket | undefined {
+    protected createS3Bucket(): BaseBucket | undefined {
         if (this.config.Parameters?.s3) {
             const s3 = new S3Bucket(this, this.node.id);
-            return s3.create(name, this.config.Parameters.s3);
+            return s3.create('s3', this.config.Parameters.s3);
+        }
+    }
+
+    protected createS3FilesBucket(): FilesBucket | undefined {
+        if (this.config.Parameters?.s3Files) {
+            this.config.Parameters.s3Files['vpc'] = this.lookups.vpc;
+            const s3 = new S3Files(this, this.node.id);
+            return s3.create(this.config.Parameters.s3Files);
         }
     }
 
@@ -214,8 +224,7 @@ export abstract class EnvBaseStack<T extends EnvConfig> extends ConfigStack {
         return albTargetGroup.create(this.getTargetGroupParams());
     }
 
-    protected getTargetGroupParams(): AlbTargetGroupProps
-    {
+    protected getTargetGroupParams(): AlbTargetGroupProps {
         return this.config.Parameters?.targetGroup ?? {}
     }
 

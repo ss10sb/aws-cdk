@@ -52,6 +52,9 @@ export class PermissionsEnvEcsStack extends NonConstruct {
         if (this.props.s3) {
             PermissionsS3.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3);
         }
+        if (this.props.s3Files) {
+            PermissionsS3.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3Files);
+        }
     }
 
     private startStopPermissions() {

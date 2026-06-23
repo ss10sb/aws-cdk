@@ -217,10 +217,10 @@ module.exports = {
                 Roles: [ { Ref: 'taskdeftaskdefscheduledtask0EventsRole74C5B51F' } ]
             }
         },
-        taskdeftaskdefscheduledtask0SecurityGroup82793FEA: {
+        tasktaskscheduledtask0sg0E69AB46: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
-                GroupDescription: 'stack/task-def-task-def-scheduledtask-0/SecurityGroup',
+                GroupDescription: 'stack/task-task-scheduledtask-0-sg',
                 SecurityGroupEgress: [
                     {
                         CidrIp: '0.0.0.0/0',
@@ -281,7 +281,7 @@ module.exports = {
                                     SecurityGroups: [
                                         {
                                             'Fn::GetAtt': [
-                                                'taskdeftaskdefscheduledtask0SecurityGroup82793FEA',
+                                                'tasktaskscheduledtask0sg0E69AB46',
                                                 'GroupId'
                                             ]
                                         }

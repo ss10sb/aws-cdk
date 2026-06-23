@@ -54,6 +54,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const s3 = this.createS3Bucket();
+        const s3Files = this.createS3FilesBucket();
         this.functionFactoryProps = {
             vpc: this.lookups.vpc,
             secret: this.lookups.secret,
@@ -89,6 +90,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: s3?.bucket,
+            s3Files: s3Files?.bucket,
             sesVerify: sesVerify,
             table: table,
             secret: this.lookups.secret,

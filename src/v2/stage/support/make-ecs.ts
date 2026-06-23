@@ -56,6 +56,7 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
             targetGroup: albServices.targetGroup,
             queue: services.queue,
             repositoryFactory: this.parameters.repositoryFactory,
+            s3Files: services.s3Files,
             environment: this.getBaseEnvironmentFromCoreServices(services),
         }, this.lookups.secrets);
         const startStopFactory = this.createStartStopFactory(cluster);
@@ -69,6 +70,7 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
             aRecord: services.aRecord,
             queue: services.queue,
             s3: services.s3,
+            s3Files: services.s3Files?.bucket,
             sesVerify: services.sesVerify,
             table: services.table,
             secrets: services.secret,
@@ -127,7 +129,8 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
                 secretKeys: this.parameters.secretKeys,
                 sharedSecretKeys: this.parameters.sharedSecretKeys,
                 environment: props.environment,
-                secrets: secrets
+                secrets: secrets,
+                s3Files: props.s3Files
             },
             queueFactoryProps: {
                 cluster: props.cluster,
@@ -136,15 +139,18 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
                 sharedSecretKeys: this.parameters.sharedSecretKeys,
                 environment: props.environment,
                 secrets: secrets,
-                queue: props.queue
+                queue: props.queue,
+                s3Files: props.s3Files
             },
             standardServiceFactoryProps: {
                 cluster: props.cluster,
-                targetGroup: props.targetGroup
+                targetGroup: props.targetGroup,
+                s3Files: props.s3Files
             },
             taskDefinitionFactoryProps: {},
             taskFactoryProps: {
-                cluster: props.cluster
+                cluster: props.cluster,
+                s3Files: props.s3Files
             }
         });
         return factory.create(this.parameters.ecs.tasks ?? [], this.parameters.ecs.services ?? [], this.parameters.ecs.queue);
