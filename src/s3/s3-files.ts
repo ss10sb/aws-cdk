@@ -4,8 +4,9 @@ import {CfnFileSystem, CfnMountTarget} from "aws-cdk-lib/aws-s3files";
 import {IpAddressType, IVpc, Peer, Port, SecurityGroup} from "aws-cdk-lib/aws-ec2";
 import {NonConstruct} from "../core/non-construct";
 import {BaseBucket, S3Bucket, S3Props} from "./s3-bucket";
-import {CfnResource} from "aws-cdk-lib";
+import {CfnResource, Stack} from "aws-cdk-lib";
 import {NameIncrementer} from "../utils/name-incrementer";
+import {Construct} from "constructs";
 
 export interface S3FilesProps extends S3Props {
     vpc: IVpc;
@@ -14,6 +15,7 @@ export interface S3FilesProps extends S3Props {
 export interface FilesBucket extends BaseBucket {
     filesystem: CfnFileSystem;
     securityGroup: SecurityGroup;
+    scope: Construct;
 }
 
 export class S3Files extends NonConstruct {
@@ -32,6 +34,7 @@ export class S3Files extends NonConstruct {
         }
         const sg = this.addSecurityGroup(name, props.vpc, fs);
         return {
+            scope: this.scope,
             name: name,
             bucket: bucket,
             filesystem: fs,
@@ -44,7 +47,7 @@ export class S3Files extends NonConstruct {
         const fileSystemArn = s3.filesystem.getAtt('FileSystemArn').toString();
         const baseName = s3.name + '-fs-policy';
         const incrementer = new NameIncrementer();
-        new CfnResource(s3.filesystem.stack, incrementer.next(baseName), {
+        new CfnResource(s3.scope, incrementer.next(baseName), {
             type: 'AWS::S3Files::FileSystemPolicy',
             properties: {
                 FileSystemId: fileSystemId,
