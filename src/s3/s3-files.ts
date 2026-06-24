@@ -63,7 +63,7 @@ export class S3Files extends NonConstruct {
 
     protected createFilesRole(bucketName: string): Role {
         return new Role(this.scope, bucketName + '-nfs-role', {
-            assumedBy: new ServicePrincipal('s3files.amazonaws.com')
+            assumedBy: new ServicePrincipal('elasticfilesystem.amazonaws.com')
         });
     }
 }
