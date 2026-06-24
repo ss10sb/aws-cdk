@@ -7,6 +7,7 @@ import {TemplateHelper} from "../../src/utils/testing/template-helper";
 import {CoreFunction} from "../../src/lambda/core-function";
 import {Runtime} from "aws-cdk-lib/aws-lambda";
 import {resetStaticProps} from "../../src/utils/reset-static-props";
+import {S3Files} from "../../src/s3/s3-files";
 
 describe('core function create', () => {
 
@@ -31,7 +32,7 @@ describe('core function create', () => {
         templateHelper.template.templateMatches(expected);
     });
 
-    it('should create the a nodejs function', () => {
+    it('should create a nodejs function', () => {
         const app = new App();
         const stackProps = {env: {region: 'us-east-1', account: '12344'}};
         const stack = new Stack(app, 'stack', stackProps);
@@ -47,6 +48,28 @@ describe('core function create', () => {
         const templateHelper = new TemplateHelper(template);
         // templateHelper.inspect();
         const expected = getExpected('core-function-defaults.nodejs');
+        templateHelper.template.templateMatches(expected);
+    });
+
+    it('should create the default function', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const vpc = VpcHelper.getVpcById(stack, 'vpc123');
+        const s3 = new S3Files(stack, 'stack');
+        const filesBucket = s3.create({vpc});
+        const coreFun = new CoreFunction(stack, 'function', {vpc: vpc, secretKeys: [], environment: {}, s3Files: filesBucket});
+        coreFun.create({
+            appPath: path.join(__dirname, '..', '__codebase__'),
+            type: FunctionType.WEB,
+            nfsMount: {
+                mountPath: '/files'
+            }
+        });
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        // templateHelper.inspect();
+        const expected = getExpected('core-function-defaults.s3Files');
         templateHelper.template.templateMatches(expected);
     });
 

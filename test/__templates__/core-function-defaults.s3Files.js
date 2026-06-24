@@ -1,0 +1,274 @@
+const {MatchHelper} = require("../../src/utils/testing/match-helper");
+module.exports = {
+    Resources: {
+        stacks3filesA500DFEA: {
+            Type: 'AWS::S3::Bucket',
+            Properties: {
+                BucketEncryption: {
+                    ServerSideEncryptionConfiguration: [
+                        {
+                            ServerSideEncryptionByDefault: {SSEAlgorithm: 'aws:kms'}
+                        }
+                    ]
+                },
+                BucketName: 'stack-s3-files',
+                OwnershipControls: {Rules: [{ObjectOwnership: 'BucketOwnerEnforced'}]},
+                PublicAccessBlockConfiguration: {
+                    BlockPublicAcls: true,
+                    BlockPublicPolicy: true,
+                    IgnorePublicAcls: true,
+                    RestrictPublicBuckets: true
+                },
+                VersioningConfiguration: {Status: 'Enabled'}
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+        },
+        stacks3filesPolicyDA68A662: {
+            Type: 'AWS::S3::BucketPolicy',
+            Properties: {
+                Bucket: {Ref: 'stacks3filesA500DFEA'},
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 's3:*',
+                            Condition: {Bool: {'aws:SecureTransport': 'false'}},
+                            Effect: 'Deny',
+                            Principal: {AWS: '*'},
+                            Resource: [
+                                {'Fn::GetAtt': ['stacks3filesA500DFEA', 'Arn']},
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            {
+                                                'Fn::GetAtt': ['stacks3filesA500DFEA', 'Arn']
+                                            },
+                                            '/*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        stacks3filesnfsroleD3DF3C5C: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 's3files.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                }
+            }
+        },
+        stacks3filesnfsroleDefaultPolicy5935F81E: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+                PolicyDocument: {
+                    Statement: [
+                        {
+                            Action: [
+                                's3:GetObject*',
+                                's3:GetBucket*',
+                                's3:List*',
+                                's3:DeleteObject*',
+                                's3:PutObject',
+                                's3:PutObjectLegalHold',
+                                's3:PutObjectRetention',
+                                's3:PutObjectTagging',
+                                's3:PutObjectVersionTagging',
+                                's3:Abort*'
+                            ],
+                            Effect: 'Allow',
+                            Resource: [
+                                {'Fn::GetAtt': ['stacks3filesA500DFEA', 'Arn']},
+                                {
+                                    'Fn::Join': [
+                                        '',
+                                        [
+                                            {
+                                                'Fn::GetAtt': ['stacks3filesA500DFEA', 'Arn']
+                                            },
+                                            '/*'
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                PolicyName: 'stacks3filesnfsroleDefaultPolicy5935F81E',
+                Roles: [{Ref: 'stacks3filesnfsroleD3DF3C5C'}]
+            }
+        },
+        stacks3filesnfs: {
+            Type: 'AWS::S3Files::FileSystem',
+            Properties: {
+                Bucket: {'Fn::GetAtt': ['stacks3filesA500DFEA', 'Arn']},
+                RoleArn: {'Fn::GetAtt': ['stacks3filesnfsroleD3DF3C5C', 'Arn']}
+            }
+        },
+        stacks3filesnfssgF8F88AD5: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+                GroupDescription: 'S3 Files traffic',
+                SecurityGroupEgress: [
+                    {
+                        CidrIp: '0.0.0.0/0',
+                        Description: 'Allow all outbound traffic by default',
+                        IpProtocol: '-1'
+                    }
+                ],
+                SecurityGroupIngress: [
+                    {
+                        CidrIp: '1.2.3.4/5',
+                        Description: 'Allow NFS from VPC',
+                        FromPort: 2049,
+                        IpProtocol: 'tcp',
+                        ToPort: 2049
+                    }
+                ],
+                VpcId: 'vpc-12345'
+            }
+        },
+        stacks3filesnfssgfromstackfunctionwebfn0SecurityGroup9F97A0772049430FB1ED: {
+            Type: 'AWS::EC2::SecurityGroupIngress',
+            Properties: {
+                Description: 'NFS',
+                FromPort: 2049,
+                GroupId: {'Fn::GetAtt': ['stacks3filesnfssgF8F88AD5', 'GroupId']},
+                IpProtocol: 'tcp',
+                SourceSecurityGroupId: {
+                    'Fn::GetAtt': ['functionwebfn0SecurityGroupCFD2651F', 'GroupId']
+                },
+                ToPort: 2049
+            }
+        },
+        stacks3filesnfsmt0: {
+            Type: 'AWS::S3Files::MountTarget',
+            Properties: {
+                FileSystemId: {Ref: 'stacks3filesnfs'},
+                SecurityGroups: [
+                    {
+                        'Fn::GetAtt': ['stacks3filesnfssgF8F88AD5', 'GroupId']
+                    }
+                ],
+                SubnetId: 'p-12345'
+            }
+        },
+        stacks3filesnfsmt1: {
+            Type: 'AWS::S3Files::MountTarget',
+            Properties: {
+                FileSystemId: {Ref: 'stacks3filesnfs'},
+                SecurityGroups: [
+                    {
+                        'Fn::GetAtt': ['stacks3filesnfssgF8F88AD5', 'GroupId']
+                    }
+                ],
+                SubnetId: 'p-67890'
+            }
+        },
+        functionwebfn0lgD95A7CF9: {
+            Type: 'AWS::Logs::LogGroup',
+            Properties: {RetentionInDays: 30},
+            UpdateReplacePolicy: 'Delete',
+            DeletionPolicy: 'Delete'
+        },
+        functionwebfn0ServiceRole21C72759: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+                AssumeRolePolicyDocument: {
+                    Statement: [
+                        {
+                            Action: 'sts:AssumeRole',
+                            Effect: 'Allow',
+                            Principal: {Service: 'lambda.amazonaws.com'}
+                        }
+                    ],
+                    Version: '2012-10-17'
+                },
+                ManagedPolicyArns: [
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+                            ]
+                        ]
+                    },
+                    {
+                        'Fn::Join': [
+                            '',
+                            [
+                                'arn:',
+                                {Ref: 'AWS::Partition'},
+                                ':iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+                            ]
+                        ]
+                    }
+                ]
+            },
+            DependsOn: ['stacks3filesnfs']
+        },
+        functionwebfn0SecurityGroupCFD2651F: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+                GroupDescription: 'Automatic security group for Lambda Function stackfunctionwebfn0A4DC51CC',
+                SecurityGroupEgress: [
+                    {
+                        CidrIp: '0.0.0.0/0',
+                        Description: 'Allow all outbound traffic by default',
+                        IpProtocol: '-1'
+                    }
+                ],
+                VpcId: 'vpc-12345'
+            },
+            DependsOn: ['stacks3filesnfs']
+        },
+        functionwebfn0DF20C809: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+                Code: {
+                    S3Bucket: 'cdk-hnb659fds-assets-12344-us-east-1',
+                    S3Key: MatchHelper.endsWith('zip')
+                },
+                FileSystemConfigs: [
+                    {
+                        Arn: {Ref: 'stacks3filesnfs'},
+                        LocalMountPath: '/files'
+                    }
+                ],
+                FunctionName: 'function-web-fn-0',
+                Handler: 'public/index.php',
+                LoggingConfig: {LogGroup: {Ref: 'functionwebfn0lgD95A7CF9'}},
+                MemorySize: 512,
+                Role: {
+                    'Fn::GetAtt': ['functionwebfn0ServiceRole21C72759', 'Arn']
+                },
+                Runtime: 'provided.al2023',
+                Timeout: 28,
+                VpcConfig: {
+                    SecurityGroupIds: [
+                        {
+                            'Fn::GetAtt': ['functionwebfn0SecurityGroupCFD2651F', 'GroupId']
+                        }
+                    ],
+                    SubnetIds: ['p-12345', 'p-67890']
+                }
+            },
+            DependsOn: ['functionwebfn0ServiceRole21C72759', 'stacks3filesnfs']
+        }
+    }
+}

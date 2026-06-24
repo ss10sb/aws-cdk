@@ -3,6 +3,6 @@ export enum NfsType {
 }
 
 export interface NfsMount {
-    readonly type: NfsType;
+    readonly type?: NfsType;
     readonly mountPath: string;
 }
