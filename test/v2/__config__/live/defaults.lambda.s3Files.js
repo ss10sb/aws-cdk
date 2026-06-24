@@ -109,6 +109,7 @@ module.exports = {
                 steps: {
                     manualApproval: {}
                 },
+                s3Files: {},
                 lambda: {
                     listenerRule: {
                         priority: 100,

@@ -1,9 +1,11 @@
 import {Bucket} from "aws-cdk-lib/aws-s3";
-import {Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
+import {IRole, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam";
 import {CfnFileSystem, CfnMountTarget} from "aws-cdk-lib/aws-s3files";
-import {IVpc, Peer, Port, SecurityGroup} from "aws-cdk-lib/aws-ec2";
+import {IpAddressType, IVpc, Peer, Port, SecurityGroup} from "aws-cdk-lib/aws-ec2";
 import {NonConstruct} from "../core/non-construct";
 import {BaseBucket, S3Bucket, S3Props} from "./s3-bucket";
+import {CfnResource} from "aws-cdk-lib";
+import {NameIncrementer} from "../utils/name-incrementer";
 
 export interface S3FilesProps extends S3Props {
     vpc: IVpc;
@@ -37,6 +39,35 @@ export class S3Files extends NonConstruct {
         };
     }
 
+    static fileSystemPolicy(s3: FilesBucket, role: IRole): void {
+        const fileSystemId = s3.filesystem.getAtt('FileSystemId').toString();
+        const fileSystemArn = s3.filesystem.getAtt('FileSystemArn').toString();
+        const baseName = s3.name + '-fs-policy';
+        const incrementer = new NameIncrementer();
+        new CfnResource(s3.filesystem.stack, incrementer.next(baseName), {
+            type: 'AWS::S3Files::FileSystemPolicy',
+            properties: {
+                FileSystemId: fileSystemId,
+                Policy: {
+                    Version: '2012-10-17',
+                    Statement: [
+                        {
+                            Effect: 'Allow',
+                            Principal: {
+                                AWS: role.roleArn,
+                            },
+                            Action: [
+                                's3files:ClientMount',
+                                's3files:ClientWrite',
+                            ],
+                            Resource: fileSystemArn,
+                        },
+                    ],
+                },
+            },
+        })
+    }
+
     protected addSecurityGroup(bucketName: string, vpc: IVpc, fs: CfnFileSystem): SecurityGroup {
         const sg = new SecurityGroup(this.scope, bucketName + '-nfs-sg', {
             vpc: vpc,
@@ -44,11 +75,13 @@ export class S3Files extends NonConstruct {
             allowAllOutbound: true
         });
         sg.addIngressRule(Peer.ipv4(vpc.vpcCidrBlock), Port.tcp(2049), 'Allow NFS from VPC');
+        const fileSystemId = fs.getAtt('FileSystemId').toString();
         vpc.privateSubnets.forEach((subnet, index) => {
             new CfnMountTarget(this.scope, bucketName + '-nfs-mt-' + index, {
-                fileSystemId: fs.ref,
+                fileSystemId: fileSystemId,
                 subnetId: subnet.subnetId,
-                securityGroups: [sg.securityGroupId]
+                securityGroups: [sg.securityGroupId],
+                ipAddressType: IpAddressType.IPV4
             })
         })
         return sg;

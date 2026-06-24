@@ -24,19 +24,19 @@ describe('s3', () => {
                         BucketEncryption: {
                             ServerSideEncryptionConfiguration: [
                                 {
-                                    ServerSideEncryptionByDefault: {SSEAlgorithm: 'aws:kms'}
+                                    ServerSideEncryptionByDefault: { SSEAlgorithm: 'aws:kms' }
                                 }
                             ]
                         },
                         BucketName: 'stack-bucket-s3-files',
-                        OwnershipControls: {Rules: [{ObjectOwnership: 'BucketOwnerEnforced'}]},
+                        OwnershipControls: { Rules: [ { ObjectOwnership: 'BucketOwnerEnforced' } ] },
                         PublicAccessBlockConfiguration: {
                             BlockPublicAcls: true,
                             BlockPublicPolicy: true,
                             IgnorePublicAcls: true,
                             RestrictPublicBuckets: true
                         },
-                        VersioningConfiguration: {Status: 'Enabled'}
+                        VersioningConfiguration: { Status: 'Enabled' }
                     },
                     UpdateReplacePolicy: 'Retain',
                     DeletionPolicy: 'Retain'
@@ -44,24 +44,24 @@ describe('s3', () => {
                 stackbuckets3filesPolicy2C434124: {
                     Type: 'AWS::S3::BucketPolicy',
                     Properties: {
-                        Bucket: {Ref: 'stackbuckets3files2028AFD4'},
+                        Bucket: { Ref: 'stackbuckets3files2028AFD4' },
                         PolicyDocument: {
                             Statement: [
                                 {
                                     Action: 's3:*',
-                                    Condition: {Bool: {'aws:SecureTransport': 'false'}},
+                                    Condition: { Bool: { 'aws:SecureTransport': 'false' } },
                                     Effect: 'Deny',
-                                    Principal: {AWS: '*'},
+                                    Principal: { AWS: '*' },
                                     Resource: [
                                         {
-                                            'Fn::GetAtt': ['stackbuckets3files2028AFD4', 'Arn']
+                                            'Fn::GetAtt': [ 'stackbuckets3files2028AFD4', 'Arn' ]
                                         },
                                         {
                                             'Fn::Join': [
                                                 '',
                                                 [
                                                     {
-                                                        'Fn::GetAtt': ['stackbuckets3files2028AFD4', 'Arn']
+                                                        'Fn::GetAtt': [ 'stackbuckets3files2028AFD4', 'Arn' ]
                                                     },
                                                     '/*'
                                                 ]
@@ -82,7 +82,7 @@ describe('s3', () => {
                                 {
                                     Action: 'sts:AssumeRole',
                                     Effect: 'Allow',
-                                    Principal: {Service: 's3files.amazonaws.com'}
+                                    Principal: { Service: 'elasticfilesystem.amazonaws.com' }
                                 }
                             ],
                             Version: '2012-10-17'
@@ -110,14 +110,14 @@ describe('s3', () => {
                                     Effect: 'Allow',
                                     Resource: [
                                         {
-                                            'Fn::GetAtt': ['stackbuckets3files2028AFD4', 'Arn']
+                                            'Fn::GetAtt': [ 'stackbuckets3files2028AFD4', 'Arn' ]
                                         },
                                         {
                                             'Fn::Join': [
                                                 '',
                                                 [
                                                     {
-                                                        'Fn::GetAtt': ['stackbuckets3files2028AFD4', 'Arn']
+                                                        'Fn::GetAtt': [ 'stackbuckets3files2028AFD4', 'Arn' ]
                                                     },
                                                     '/*'
                                                 ]
@@ -129,15 +129,15 @@ describe('s3', () => {
                             Version: '2012-10-17'
                         },
                         PolicyName: 'stackbuckets3filesnfsroleDefaultPolicy8F6B3059',
-                        Roles: [{Ref: 'stackbuckets3filesnfsroleC4B20C4D'}]
+                        Roles: [ { Ref: 'stackbuckets3filesnfsroleC4B20C4D' } ]
                     }
                 },
                 stackbuckets3filesnfs: {
                     Type: 'AWS::S3Files::FileSystem',
                     Properties: {
-                        Bucket: {'Fn::GetAtt': ['stackbuckets3files2028AFD4', 'Arn']},
+                        Bucket: { 'Fn::GetAtt': [ 'stackbuckets3files2028AFD4', 'Arn' ] },
                         RoleArn: {
-                            'Fn::GetAtt': ['stackbuckets3filesnfsroleC4B20C4D', 'Arn']
+                            'Fn::GetAtt': [ 'stackbuckets3filesnfsroleC4B20C4D', 'Arn' ]
                         }
                     }
                 },
@@ -167,10 +167,11 @@ describe('s3', () => {
                 stackbuckets3filesnfsmt0: {
                     Type: 'AWS::S3Files::MountTarget',
                     Properties: {
-                        FileSystemId: {Ref: 'stackbuckets3filesnfs'},
+                        FileSystemId: { 'Fn::GetAtt': [ 'stackbuckets3filesnfs', 'FileSystemId' ] },
+                        IpAddressType: 'ipv4',
                         SecurityGroups: [
                             {
-                                'Fn::GetAtt': ['stackbuckets3filesnfssg1C8F8B2D', 'GroupId']
+                                'Fn::GetAtt': [ 'stackbuckets3filesnfssg1C8F8B2D', 'GroupId' ]
                             }
                         ],
                         SubnetId: 'p-12345'
@@ -179,10 +180,11 @@ describe('s3', () => {
                 stackbuckets3filesnfsmt1: {
                     Type: 'AWS::S3Files::MountTarget',
                     Properties: {
-                        FileSystemId: {Ref: 'stackbuckets3filesnfs'},
+                        FileSystemId: { 'Fn::GetAtt': [ 'stackbuckets3filesnfs', 'FileSystemId' ] },
+                        IpAddressType: 'ipv4',
                         SecurityGroups: [
                             {
-                                'Fn::GetAtt': ['stackbuckets3filesnfssg1C8F8B2D', 'GroupId']
+                                'Fn::GetAtt': [ 'stackbuckets3filesnfssg1C8F8B2D', 'GroupId' ]
                             }
                         ],
                         SubnetId: 'p-67890'

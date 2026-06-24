@@ -90,7 +90,7 @@ export class EnvLambdaStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: s3?.bucket,
-            s3Files: s3Files?.bucket,
+            s3Files: s3Files,
             sesVerify: sesVerify,
             table: table,
             secret: this.lookups.secret,

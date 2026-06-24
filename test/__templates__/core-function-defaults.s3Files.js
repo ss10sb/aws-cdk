@@ -63,7 +63,7 @@ module.exports = {
                         {
                             Action: 'sts:AssumeRole',
                             Effect: 'Allow',
-                            Principal: {Service: 's3files.amazonaws.com'}
+                    Principal: { Service: 'elasticfilesystem.amazonaws.com' }
                         }
                     ],
                     Version: '2012-10-17'
@@ -157,7 +157,8 @@ module.exports = {
         stacks3filesnfsmt0: {
             Type: 'AWS::S3Files::MountTarget',
             Properties: {
-                FileSystemId: {Ref: 'stacks3filesnfs'},
+              FileSystemId: { 'Fn::GetAtt': [ 'stacks3filesnfs', 'FileSystemId' ] },
+              IpAddressType: 'ipv4',
                 SecurityGroups: [
                     {
                         'Fn::GetAtt': ['stacks3filesnfssgF8F88AD5', 'GroupId']
@@ -169,7 +170,8 @@ module.exports = {
         stacks3filesnfsmt1: {
             Type: 'AWS::S3Files::MountTarget',
             Properties: {
-                FileSystemId: {Ref: 'stacks3filesnfs'},
+              FileSystemId: { 'Fn::GetAtt': [ 'stacks3filesnfs', 'FileSystemId' ] },
+              IpAddressType: 'ipv4',
                 SecurityGroups: [
                     {
                         'Fn::GetAtt': ['stacks3filesnfssgF8F88AD5', 'GroupId']

@@ -6,6 +6,7 @@ import {EmailIdentity} from "aws-cdk-lib/aws-ses";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {VerifySesDomain as OldVerify} from "../ses/verify-ses-domain";
 import {VerifySesDomain} from "@seeebiii/ses-verify-identities";
+import {FilesBucket} from "../s3/s3-files";
 
 export enum EnvBuildType {
     ECS,
@@ -26,7 +27,7 @@ export interface EnvStackServicesProps {
     readonly aRecord?: ARecord;
     readonly queue?: Queue;
     readonly s3?: Bucket;
-    readonly s3Files?: Bucket;
+    readonly s3Files?: FilesBucket;
     readonly sesVerify?: VerifySesDomain | OldVerify;
     readonly dkimIdentity?: EmailIdentity;
     readonly table?: Table;

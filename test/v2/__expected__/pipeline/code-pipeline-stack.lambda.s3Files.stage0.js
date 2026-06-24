@@ -497,7 +497,7 @@ module.exports = {
                   {
                     Action: 'sts:AssumeRole',
                     Effect: 'Allow',
-                    Principal: { Service: 's3files.amazonaws.com' }
+                    Principal: { Service: 'elasticfilesystem.amazonaws.com' }
                   }
                 ],
                 Version: '2012-10-17'
@@ -597,7 +597,8 @@ module.exports = {
           pccsdlctests3filesnfsmt0: {
             Type: 'AWS::S3Files::MountTarget',
             Properties: {
-              FileSystemId: { Ref: 'pccsdlctests3filesnfs' },
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              IpAddressType: 'ipv4',
               SecurityGroups: [
                 {
                   'Fn::GetAtt': [ 'pccsdlctests3filesnfssg75B55B33', 'GroupId' ]
@@ -609,7 +610,8 @@ module.exports = {
           pccsdlctests3filesnfsmt1: {
             Type: 'AWS::S3Files::MountTarget',
             Properties: {
-              FileSystemId: { Ref: 'pccsdlctests3filesnfs' },
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              IpAddressType: 'ipv4',
               SecurityGroups: [
                 {
                   'Fn::GetAtt': [ 'pccsdlctests3filesnfssg75B55B33', 'GroupId' ]
@@ -1792,6 +1794,98 @@ module.exports = {
                 Action: 'lambda:InvokeFunction',
                 FunctionName: {'Fn::GetAtt': ['pccsdlctestwebfn051C9C4DD', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
+            }
+          },
+          pccsdlctests3filesfspolicy0: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccsdlctesteventfn0ServiceRole5B8A432E', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          pccsdlctests3filesfspolicy1: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccsdlctestqueuefn0ServiceRole474925C9', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          pccsdlctests3filesfspolicy2: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccsdlctestwebfn0ServiceRoleBF73EA7E', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          pccsdlctests3filesfspolicy3: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccsdlctestqueuefn0ServiceRole474925C9', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
             }
         }
     },

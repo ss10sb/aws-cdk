@@ -70,7 +70,7 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             aRecord: services.aRecord,
             queue: services.queue,
             s3: services.s3,
-            s3Files: services.s3Files?.bucket,
+            s3Files: services.s3Files,
             sesVerify: services.sesVerify,
             table: services.table,
             secret: this.lookups.secret,

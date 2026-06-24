@@ -428,6 +428,198 @@ module.exports = {
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete'
         },
+          pccprodtests3files7DDBF04D: {
+            Type: 'AWS::S3::Bucket',
+            Properties: {
+              BucketEncryption: {
+                ServerSideEncryptionConfiguration: [
+                  {
+                    ServerSideEncryptionByDefault: { SSEAlgorithm: 'aws:kms' }
+                  }
+                ]
+              },
+              BucketName: 'pcc-prod-test-s3-files',
+              OwnershipControls: { Rules: [ { ObjectOwnership: 'BucketOwnerEnforced' } ] },
+              PublicAccessBlockConfiguration: {
+                BlockPublicAcls: true,
+                BlockPublicPolicy: true,
+                IgnorePublicAcls: true,
+                RestrictPublicBuckets: true
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ],
+              VersioningConfiguration: { Status: 'Enabled' }
+            },
+            UpdateReplacePolicy: 'Retain',
+            DeletionPolicy: 'Retain'
+          },
+          pccprodtests3filesPolicy1A89047D: {
+            Type: 'AWS::S3::BucketPolicy',
+            Properties: {
+              Bucket: { Ref: 'pccprodtests3files7DDBF04D' },
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: 's3:*',
+                    Condition: { Bool: { 'aws:SecureTransport': 'false' } },
+                    Effect: 'Deny',
+                    Principal: { AWS: '*' },
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                Version: '2012-10-17'
+              }
+            }
+          },
+          pccprodtests3filesnfsrole37C85E6F: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: { Service: 'elasticfilesystem.amazonaws.com' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            }
+          },
+          pccprodtests3filesnfsroleDefaultPolicyDC4F3998: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject',
+                      's3:PutObjectLegalHold',
+                      's3:PutObjectRetention',
+                      's3:PutObjectTagging',
+                      's3:PutObjectVersionTagging',
+                      's3:Abort*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'pccprodtests3filesnfsroleDefaultPolicyDC4F3998',
+              Roles: [ { Ref: 'pccprodtests3filesnfsrole37C85E6F' } ]
+            }
+          },
+          pccprodtests3filesnfs: {
+            Type: 'AWS::S3Files::FileSystem',
+            Properties: {
+              Bucket: { 'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ] },
+              RoleArn: {
+                'Fn::GetAtt': [ 'pccprodtests3filesnfsrole37C85E6F', 'Arn' ]
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ]
+            }
+          },
+          pccprodtests3filesnfssg5A02C837: {
+            Type: 'AWS::EC2::SecurityGroup',
+            Properties: {
+              GroupDescription: 'S3 Files traffic',
+              SecurityGroupEgress: [
+                {
+                  CidrIp: '0.0.0.0/0',
+                  Description: 'Allow all outbound traffic by default',
+                  IpProtocol: '-1'
+                }
+              ],
+              SecurityGroupIngress: [
+                {
+                  CidrIp: '1.2.3.4/5',
+                  Description: 'Allow NFS from VPC',
+                  FromPort: 2049,
+                  IpProtocol: 'tcp',
+                  ToPort: 2049
+                }
+              ],
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'prod' }
+              ],
+              VpcId: 'vpc-12345'
+            }
+          },
+          pccprodtests3filesnfsmt0: {
+            Type: 'AWS::S3Files::MountTarget',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemId' ] },
+              IpAddressType: 'ipv4',
+              SecurityGroups: [
+                {
+                  'Fn::GetAtt': [ 'pccprodtests3filesnfssg5A02C837', 'GroupId' ]
+                }
+              ],
+              SubnetId: 'p-12345'
+            }
+          },
+          pccprodtests3filesnfsmt1: {
+            Type: 'AWS::S3Files::MountTarget',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemId' ] },
+              IpAddressType: 'ipv4',
+              SecurityGroups: [
+                {
+                  'Fn::GetAtt': [ 'pccprodtests3filesnfssg5A02C837', 'GroupId' ]
+                }
+              ],
+              SubnetId: 'p-67890'
+            }
+          },
         pccprodtesttgAE852883: {
             Type: 'AWS::ElasticLoadBalancingV2::TargetGroup',
             Properties: {
@@ -537,6 +729,37 @@ module.exports = {
                             Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject',
+                      's3:PutObjectLegalHold',
+                      's3:PutObjectRetention',
+                      's3:PutObjectTagging',
+                      's3:PutObjectVersionTagging',
+                      's3:Abort*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  {
                             Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
@@ -818,6 +1041,37 @@ module.exports = {
                             Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject',
+                      's3:PutObjectLegalHold',
+                      's3:PutObjectRetention',
+                      's3:PutObjectTagging',
+                      's3:PutObjectVersionTagging',
+                      's3:Abort*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  {
                             Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
@@ -1320,6 +1574,37 @@ module.exports = {
                             Resource: {'Fn::GetAtt': ['pccprodtestqueue7472DA6D', 'Arn']}
                         },
                         {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject',
+                      's3:PutObjectLegalHold',
+                      's3:PutObjectRetention',
+                      's3:PutObjectTagging',
+                      's3:PutObjectVersionTagging',
+                      's3:Abort*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': [ 'pccprodtests3files7DDBF04D', 'Arn' ]
+                            },
+                            '/*'
+                          ]
+                        ]
+                      }
+                    ]
+                  },
+                  {
                             Action: ['ses:SendEmail', 'ses:SendRawEmail'],
                             Effect: 'Allow',
                             Resource: '*'
@@ -1503,6 +1788,98 @@ module.exports = {
                 Action: 'lambda:InvokeFunction',
                 FunctionName: {'Fn::GetAtt': ['pccprodtestwebfn0B6D4CE6D', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
+            }
+          },
+          pccprodtests3filesfspolicy0: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccprodtesteventfn0ServiceRoleF3F26E3C', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          pccprodtests3filesfspolicy1: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccprodtestqueuefn0ServiceRole654705B9', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          pccprodtests3filesfspolicy2: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccprodtestwebfn0ServiceRole6B6FD81D', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          pccprodtests3filesfspolicy3: {
+            Type: 'AWS::S3Files::FileSystemPolicy',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemId' ] },
+              Policy: {
+                Version: '2012-10-17',
+                Statement: [
+                  {
+                    Effect: 'Allow',
+                    Principal: {
+                      AWS: {
+                        'Fn::GetAtt': [ 'pccprodtestqueuefn0ServiceRole654705B9', 'Arn' ]
+                      }
+                    },
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccprodtests3filesnfs', 'FileSystemArn' ]
+                    }
+                  }
+                ]
+              }
             }
         }
     },

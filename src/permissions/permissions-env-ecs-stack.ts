@@ -8,6 +8,7 @@ import {NonConstruct} from "../core/non-construct";
 import {EnvEcsStackServicesProps} from "../env/env-ecs-stack";
 import {PermissionsExecuteCommand} from "./permissions-execute-command";
 import {PermissionsSecret} from "./permissions-secret";
+import {PermissionsS3Files} from "./permissions-s3-files";
 
 export class PermissionsEnvEcsStack extends NonConstruct {
 
@@ -53,7 +54,7 @@ export class PermissionsEnvEcsStack extends NonConstruct {
             PermissionsS3.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3);
         }
         if (this.props.s3Files) {
-            PermissionsS3.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3Files);
+            PermissionsS3Files.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3Files);
         }
     }
 

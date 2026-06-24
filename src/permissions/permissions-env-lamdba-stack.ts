@@ -6,6 +6,7 @@ import {PermissionsDynamodb} from "./permissions-dynamodb";
 import {PermissionsSecret} from "./permissions-secret";
 import {NonConstruct} from "../core/non-construct";
 import {EnvLambdaStackServicesProps} from "../env/env-lambda-stack";
+import {PermissionsS3Files} from "./permissions-s3-files";
 
 export class PermissionsEnvLambdaStack extends NonConstruct {
 
@@ -37,7 +38,7 @@ export class PermissionsEnvLambdaStack extends NonConstruct {
             PermissionsS3.functionsCanReadWriteS3(this.props.functions, this.props.s3);
         }
         if (this.props.s3Files) {
-            PermissionsS3.functionsCanReadWriteS3(this.props.functions, this.props.s3Files);
+            PermissionsS3Files.functionsCanReadWriteS3(this.props.functions, this.props.s3Files);
         }
     }
 

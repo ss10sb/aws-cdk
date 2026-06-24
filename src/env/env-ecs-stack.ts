@@ -99,7 +99,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
             aRecord: aRecord,
             queue: queue,
             s3: baseBucket?.bucket,
-            s3Files: filesBucket?.bucket,
+            s3Files: filesBucket,
             sesVerify: sesVerify,
             startStop: startStopFactory,
             table: table,
