@@ -74,7 +74,7 @@ export class EnvEcsStack<T extends EnvConfig> extends EnvBaseStack<T> {
         const table = this.createDynamoDbTable(); //v2 make-stack
         const queue = this.createQueues(); //v2 make-stack
         const baseBucket = this.createS3Bucket(); //v2 make-stack
-        const filesBucket = this.createS3FilesBucket();
+        const filesBucket = undefined; // this.createS3FilesBucket();
         const cluster = this.createCluster();
         const secrets = this.lookups.secrets;
         const tasksAndServices = this.createTasksAndServices({

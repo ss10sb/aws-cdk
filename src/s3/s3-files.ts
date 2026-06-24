@@ -4,7 +4,7 @@ import {CfnFileSystem, CfnMountTarget} from "aws-cdk-lib/aws-s3files";
 import {IpAddressType, IVpc, Peer, Port, SecurityGroup} from "aws-cdk-lib/aws-ec2";
 import {NonConstruct} from "../core/non-construct";
 import {BaseBucket, S3Bucket, S3Props} from "./s3-bucket";
-import {CfnResource, Stack} from "aws-cdk-lib";
+import {CfnResource} from "aws-cdk-lib";
 import {NameIncrementer} from "../utils/name-incrementer";
 import {Construct} from "constructs";
 
