@@ -1,7 +1,7 @@
 import {ScheduledEvent, ScheduledEventProps} from "./scheduled-event";
 import {ProvisionedConcurrency, ProvisionedConcurrencyProps} from "./provisioned-concurrency";
 import {FunctionType} from "./lambda-definitions";
-import {Code, Function, FunctionProps, IFunction, ILayerVersion, Runtime} from "aws-cdk-lib/aws-lambda";
+import {Code, FileSystem, Function, FunctionProps, IFunction, ILayerVersion, Runtime} from "aws-cdk-lib/aws-lambda";
 import {IVpc} from "aws-cdk-lib/aws-ec2";
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager";
 import {NonConstruct} from "../core/non-construct";
@@ -16,6 +16,7 @@ import {LambdaTimeout} from "./lamda-timeout";
 import {FilesBucket} from "../s3/s3-files";
 import {LambdaS3FilesHelper} from "../nfs/lambda-s3-files-helper";
 import {NfsMount} from "../nfs/nfs-definitions";
+import {S3AccessPoint} from "../nfs/s3-access-point";
 
 export interface CoreFunctionProps {
     readonly appPath: string;
@@ -57,7 +58,7 @@ export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstr
         super(scope, id);
         this.factoryProps = factoryProps;
         this.nameIncrementer = new NameIncrementer();
-        this.s3FilesHelper = new LambdaS3FilesHelper();
+        this.s3FilesHelper = new LambdaS3FilesHelper(this.scope, this.mixNameWithId('s3-files'));
     }
 
     public create(props: PropsType): IFunction {
@@ -69,7 +70,11 @@ export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstr
         if (props.provisionedConcurrency) {
             this.addProvisionedConcurrency(func, props.provisionedConcurrency);
         }
-        this.addNfsMount(func, props);
+        this.s3FilesHelper.handle({
+            func,
+            nfsMount: props.nfsMount,
+            filesBucket: this.factoryProps.s3Files
+        });
         return func;
     }
 
@@ -77,12 +82,12 @@ export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstr
         return LambdaTimeout.timeout(type, apiGateway);
     }
 
-    protected addNfsMount(func: IFunction, props: PropsType): void {
-        this.s3FilesHelper.handle({
-            func,
-            nfsMount: props.nfsMount,
-            filesBucket: this.factoryProps.s3Files
-        });
+    protected getFileSystem(props: PropsType): FileSystem | undefined {
+        if (this.factoryProps.s3Files && props.nfsMount) {
+            const s3AccessPoint = new S3AccessPoint(this.scope, this.mixNameWithId(`${this.getType(props)}-s3-files`));
+            const accessPoint = s3AccessPoint.create(this.factoryProps.s3Files.filesystem, props.nfsMount);
+            return this.s3FilesHelper.getLambdaFileSystem(accessPoint, props.nfsMount);
+        }
     }
 
     protected addProvisionedConcurrency(func: IFunction, props: ProvisionedConcurrencyProps): void {
@@ -159,7 +164,8 @@ export class CoreFunction<PropsType extends CoreFunctionProps> extends NonConstr
             environment: this.getEnvironment(props),
             logGroup: this.createLogGroup(funcName),
             memorySize: props.lambdaMemorySize ?? this.defaults.memorySize,
-            reservedConcurrentExecutions: props.reservedConcurrentExecutions
+            reservedConcurrentExecutions: props.reservedConcurrentExecutions,
+            filesystem: this.getFileSystem(props)
         };
     }
 

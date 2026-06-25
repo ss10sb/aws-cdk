@@ -62,7 +62,7 @@ module.exports = {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             brefRuntime: BrefRuntime.PHP84,
                             nfsMount: {
-                                mountPath: '/files'
+                                mountPath: '/mnt/files'
                             }
                         }
                     },
@@ -80,7 +80,7 @@ module.exports = {
                             lambdaHandler: LaravelHandler.ARTISAN,
                             brefRuntime: [BrefRuntime.PHP84],
                             nfsMount: {
-                                mountPath: '/files'
+                                mountPath: '/mnt/files'
                             },
                             scheduledEvents: [
                                 {
@@ -125,7 +125,7 @@ module.exports = {
                             appPath: path.join(__dirname, '..', '..', '__codebase__'),
                             brefRuntime: BrefRuntime.PHP84,
                             nfsMount: {
-                                mountPath: '/files'
+                                mountPath: '/mnt/files'
                             }
                         }
                     },
@@ -143,7 +143,7 @@ module.exports = {
                             lambdaHandler: LaravelHandler.ARTISAN,
                             brefRuntime: [BrefRuntime.PHP84],
                             nfsMount: {
-                                mountPath: '/files'
+                                mountPath: '/mnt/files'
                             },
                             scheduledEvents: [
                                 {

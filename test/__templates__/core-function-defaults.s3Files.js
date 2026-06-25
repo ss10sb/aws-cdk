@@ -18,8 +18,7 @@ module.exports = {
                     BlockPublicPolicy: true,
                     IgnorePublicAcls: true,
                     RestrictPublicBuckets: true
-                },
-                VersioningConfiguration: {Status: 'Enabled'}
+              }
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -76,6 +75,77 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
+                    Action: 's3:ListBucket*',
+                    Effect: 'Allow',
+                    Resource: { 'Fn::GetAtt': [ 'stacks3filesA500DFEA', 'Arn' ] }
+                  },
+                  {
+                    Action: [
+                      's3:AbortMultipartUpload',
+                      's3:DeleteObject',
+                      's3:GetObject*',
+                      's3:List*',
+                      's3:PutObject*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          {
+                            'Fn::GetAtt': [ 'stacks3filesA500DFEA', 'Arn' ]
+                          },
+                          '/*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      'events:DeleteRule',
+                      'events:DisableRule',
+                      'events:EnableRule',
+                      'events:PutRule',
+                      'events:PutTargets',
+                      'events:RemoveTargets'
+                    ],
+                    Condition: {
+                      StringEquals: {
+                        'events:ManagedBy': 'elasticfilesystem.amazonaws.com'
+                      }
+                    },
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':events:*:*:rule/DO-NOT-DELETE-S3-Files*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      'events:DescribeRule',
+                      'events:ListRuleNamesByTarget',
+                      'events:ListRules',
+                      'events:ListTargetsByRule'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':events:*:*:rule/*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
                             Action: [
                                 's3:GetObject*',
                                 's3:GetBucket*',
@@ -118,6 +188,30 @@ module.exports = {
                 RoleArn: {'Fn::GetAtt': ['stacks3filesnfsroleD3DF3C5C', 'Arn']}
             }
         },
+          stacks3filesnfsstacks3filesap00BDD77AA: {
+            Type: 'AWS::S3Files::AccessPoint',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'stacks3filesnfs', 'FileSystemId' ] },
+              PosixUser: { Gid: '1000', Uid: '1000' },
+              RootDirectory: {
+                CreationPermissions: { OwnerGid: '1000', OwnerUid: '1000', Permissions: '750' },
+                Path: '/'
+              }
+            }
+          },
+          stacks3filesnfsstacks3filesap0MountTargetSG0fromstackfunctionwebfn0SecurityGroup9F97A0772049639B4EB4: {
+            Type: 'AWS::EC2::SecurityGroupIngress',
+            Properties: {
+              Description: 'from stackfunctionwebfn0SecurityGroup9F97A077:2049',
+              FromPort: 2049,
+              GroupId: { 'Fn::GetAtt': [ 'stacks3filesnfssgF8F88AD5', 'GroupId' ] },
+              IpProtocol: 'tcp',
+              SourceSecurityGroupId: {
+                'Fn::GetAtt': [ 'functionwebfn0SecurityGroupCFD2651F', 'GroupId' ]
+              },
+              ToPort: 2049
+            }
+          },
         stacks3filesnfssgF8F88AD5: {
             Type: 'AWS::EC2::SecurityGroup',
             Properties: {
@@ -139,19 +233,6 @@ module.exports = {
                     }
                 ],
                 VpcId: 'vpc-12345'
-            }
-        },
-        stacks3filesnfssgfromstackfunctionwebfn0SecurityGroup9F97A0772049430FB1ED: {
-            Type: 'AWS::EC2::SecurityGroupIngress',
-            Properties: {
-                Description: 'NFS',
-                FromPort: 2049,
-                GroupId: {'Fn::GetAtt': ['stacks3filesnfssgF8F88AD5', 'GroupId']},
-                IpProtocol: 'tcp',
-                SourceSecurityGroupId: {
-                    'Fn::GetAtt': ['functionwebfn0SecurityGroupCFD2651F', 'GroupId']
-                },
-                ToPort: 2049
             }
         },
         stacks3filesnfsmt0: {
@@ -222,7 +303,35 @@ module.exports = {
                     }
                 ]
             },
-            DependsOn: ['stacks3filesnfs']
+            DependsOn: [ 'stacks3filesnfsmt0', 'stacks3filesnfsmt1' ]
+          },
+          functionwebfn0ServiceRoleDefaultPolicy96DB82DF: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: 's3files:ClientMount',
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'stacks3filesnfsstacks3filesap00BDD77AA',
+                        'AccessPointArn'
+                      ]
+                    }
+                  },
+                  {
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Effect: 'Allow',
+                    Resource: { Ref: 'stacks3filesnfs' }
+                  }
+                ],
+                Version: '2012-10-17'
+              },
+              PolicyName: 'functionwebfn0ServiceRoleDefaultPolicy96DB82DF',
+              Roles: [ { Ref: 'functionwebfn0ServiceRole21C72759' } ]
+            },
+            DependsOn: [ 'stacks3filesnfsmt0', 'stacks3filesnfsmt1' ]
         },
         functionwebfn0SecurityGroupCFD2651F: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -237,7 +346,7 @@ module.exports = {
                 ],
                 VpcId: 'vpc-12345'
             },
-            DependsOn: ['stacks3filesnfs']
+            DependsOn: [ 'stacks3filesnfsmt0', 'stacks3filesnfsmt1' ]
         },
         functionwebfn0DF20C809: {
             Type: 'AWS::Lambda::Function',
@@ -248,8 +357,13 @@ module.exports = {
                 },
                 FileSystemConfigs: [
                     {
-                        Arn: {Ref: 'stacks3filesnfs'},
-                        LocalMountPath: '/files'
+                        Arn: {
+                            'Fn::GetAtt': [
+                      'stacks3filesnfsstacks3filesap00BDD77AA',
+                                'AccessPointArn'
+                            ]
+                        },
+                        LocalMountPath: '/mnt/files'
                     }
                 ],
                 FunctionName: 'function-web-fn-0',
@@ -270,7 +384,13 @@ module.exports = {
                     SubnetIds: ['p-12345', 'p-67890']
                 }
             },
-            DependsOn: ['functionwebfn0ServiceRole21C72759', 'stacks3filesnfs']
+            DependsOn: [
+                'functionwebfn0ServiceRoleDefaultPolicy96DB82DF',
+                'functionwebfn0ServiceRole21C72759',
+                'stacks3filesnfsmt0',
+                'stacks3filesnfsmt1',
+              'stacks3filesnfsstacks3filesap0MountTargetSG0fromstackfunctionwebfn0SecurityGroup9F97A0772049639B4EB4'
+            ]
         }
     }
 }

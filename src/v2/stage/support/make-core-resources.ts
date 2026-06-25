@@ -51,7 +51,7 @@ export class MakeCoreResources extends NonConstruct {
         const table = this.createDynamoDbTable();
         const queue = this.createQueues();
         const baseBucket = this.createS3Bucket();
-        const filesBucket = undefined; // this.createS3FilesBucket();
+        const filesBucket = this.createS3FilesBucket();
         return {
             aRecord: aRecord,
             sesVerify: sesVerify,

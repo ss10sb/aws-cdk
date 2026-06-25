@@ -13,10 +13,12 @@ import {PermissionsS3Files} from "./permissions-s3-files";
 export class PermissionsEnvEcsStack extends NonConstruct {
 
     readonly props: EnvEcsStackServicesProps;
+    readonly permissionsS3Files: PermissionsS3Files;
 
     constructor(scope: Construct, id: string, props: EnvEcsStackServicesProps) {
         super(scope, id);
         this.props = props;
+        this.permissionsS3Files = new PermissionsS3Files(scope, id);
         this.handlePermissions();
     }
 
@@ -54,7 +56,7 @@ export class PermissionsEnvEcsStack extends NonConstruct {
             PermissionsS3.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3);
         }
         if (this.props.s3Files) {
-            PermissionsS3Files.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3Files);
+            this.permissionsS3Files.tasksServicesCanReadWriteS3(this.props.tasksAndServices, this.props.s3Files);
         }
     }
 

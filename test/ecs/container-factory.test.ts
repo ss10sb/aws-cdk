@@ -11,6 +11,8 @@ import {ContainerFactory} from "../../src/ecs/container-factory";
 import {EcrRepositoryFactory} from "../../src/ecr/ecr-repository-factory";
 import {ContainerCommandFactory} from "../../src/ecs/container-command-factory";
 import {NameIncrementer} from "../../src/utils/name-incrementer";
+import {S3Files} from "../../src/s3/s3-files";
+import {VpcHelper} from "../../src/utils/vpc-helper";
 
 const ecrRepoProps = {
     repositories: [EcrRepositoryType.NGINX, EcrRepositoryType.PHPFPM]
@@ -1159,4 +1161,45 @@ describe('container factory', () => {
             }
         ]);
     });
+
+    it('creates a container with an s3 files mount', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const vpc = VpcHelper.getVpcById(stack, 'vpc123');
+        const td = new TaskDefinition(stack, 'td', {
+            compatibility: Compatibility.FARGATE,
+            cpu: '256',
+            memoryMiB: '512'
+        });
+        const ecrRepositories = new EcrRepositories('my-repos', ecrRepoProps);
+        const s3 = new S3Files(stack, 'stack-bucket');
+        const filesBucket = s3.create({vpc});
+        const containerFactory = new ContainerFactory(stack, 'container', {
+            commandFactory: new ContainerCommandFactory(stack, 'command', {}),
+            repositoryFactory: new EcrRepositoryFactory(stack, 'repos', ecrRepositories),
+            secrets: new Secrets(stack, 'secrets'),
+            s3Files: filesBucket
+        });
+        const containerProps = [
+            {
+                image: EcrRepositoryType.PHPFPM,
+                cpu: 256,
+                memoryLimitMiB: 512,
+                nfsMount: {
+                    mountPath: '/mnt/files'
+                }
+            }
+        ];
+        containerFactory.create(TaskServiceType.WEB_SERVICE, td, containerProps);
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        templateHelper.inspect();
+        const expected = getExpected('ecs-container.s3Files');
+        // templateHelper.template.templateMatches(expected);
+    });
+
+    function getExpected(name: string) {
+        return require('../__templates__/' + name + '.js');
+    }
 });

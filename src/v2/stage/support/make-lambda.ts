@@ -51,6 +51,7 @@ export class MakeLambda<T extends MakeLambdaParameters> extends MakeBase<T> {
             sharedSecret: this.lookups.sharedSecret,
             environment: this.getBaseEnvironmentFromCoreServices(services),
             secretKeys: this.parameters?.secretKeys ?? [],
+            s3Files: services.s3Files,
         }
         const functionWrappers = this.createFunctions();
         wrappers.push(...functionWrappers);

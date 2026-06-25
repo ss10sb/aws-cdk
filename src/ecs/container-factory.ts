@@ -109,7 +109,7 @@ export class ContainerFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: ContainerFactoryProps) {
         super(scope, id);
         this.props = props;
-        this.s3FilesHelper = new EcsS3FilesHelper();
+        this.s3FilesHelper = new EcsS3FilesHelper(this.scope, this.mixNameWithId('s3-files'));
     }
 
     create(type: TaskServiceType, taskDefinition: TaskDefinition, props: ContainerProps[]): ContainerDefinition[] {

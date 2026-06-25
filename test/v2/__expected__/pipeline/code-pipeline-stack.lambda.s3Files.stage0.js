@@ -450,8 +450,7 @@ module.exports = {
                 { Key: 'App', Value: 'test' },
                 { Key: 'College', Value: 'PCC' },
                 { Key: 'Environment', Value: 'sdlc' }
-              ],
-              VersioningConfiguration: { Status: 'Enabled' }
+              ]
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain'
@@ -515,6 +514,79 @@ module.exports = {
               PolicyDocument: {
                 Statement: [
                   {
+                    Action: 's3:ListBucket*',
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [ 'pccsdlctests3filesD5B3472D', 'Arn' ]
+                    }
+                  },
+                  {
+                    Action: [
+                      's3:AbortMultipartUpload',
+                      's3:DeleteObject',
+                      's3:GetObject*',
+                      's3:List*',
+                      's3:PutObject*'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          {
+                            'Fn::GetAtt': [ 'pccsdlctests3filesD5B3472D', 'Arn' ]
+                          },
+                          '/*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      'events:DeleteRule',
+                      'events:DisableRule',
+                      'events:EnableRule',
+                      'events:PutRule',
+                      'events:PutTargets',
+                      'events:RemoveTargets'
+                    ],
+                    Condition: {
+                      StringEquals: {
+                        'events:ManagedBy': 'elasticfilesystem.amazonaws.com'
+                      }
+                    },
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':events:*:*:rule/DO-NOT-DELETE-S3-Files*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
+                    Action: [
+                      'events:DescribeRule',
+                      'events:ListRuleNamesByTarget',
+                      'events:ListRules',
+                      'events:ListTargetsByRule'
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::Join': [
+                        '',
+                        [
+                          'arn:',
+                          { Ref: 'AWS::Partition' },
+                          ':events:*:*:rule/*'
+                        ]
+                      ]
+                    }
+                  },
+                  {
                     Action: [
                       's3:GetObject*',
                       's3:GetBucket*',
@@ -564,6 +636,68 @@ module.exports = {
                 { Key: 'College', Value: 'PCC' },
                 { Key: 'Environment', Value: 'sdlc' }
               ]
+            }
+          },
+          pccsdlctests3filesnfspccsdlctestevents3filesap063EB210B: {
+            Type: 'AWS::S3Files::AccessPoint',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              PosixUser: { Gid: '1000', Uid: '1000' },
+              RootDirectory: {
+                CreationPermissions: { OwnerGid: '1000', OwnerUid: '1000', Permissions: '750' },
+                Path: '/'
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          pccsdlctests3filesnfspccsdlctestevents3filesap0MountTargetSG0frompccsharedtestpccsdlcteststagepccsdlctestpccsdlctesteventfn0SecurityGroup041C2CE02049A1182203: {
+            Type: 'AWS::EC2::SecurityGroupIngress',
+            Properties: {
+              Description: 'from pccsharedtestpccsdlcteststagepccsdlctestpccsdlctesteventfn0SecurityGroup041C2CE0:2049',
+              FromPort: 2049,
+              GroupId: {
+                'Fn::GetAtt': [ 'pccsdlctests3filesnfssg75B55B33', 'GroupId' ]
+              },
+              IpProtocol: 'tcp',
+              SourceSecurityGroupId: {
+                'Fn::GetAtt': [ 'pccsdlctesteventfn0SecurityGroup29416485', 'GroupId' ]
+              },
+              ToPort: 2049
+            }
+          },
+          pccsdlctests3filesnfspccsdlctestwebs3filesap03AD48A13: {
+            Type: 'AWS::S3Files::AccessPoint',
+            Properties: {
+              FileSystemId: { 'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemId' ] },
+              PosixUser: { Gid: '1000', Uid: '1000' },
+              RootDirectory: {
+                CreationPermissions: { OwnerGid: '1000', OwnerUid: '1000', Permissions: '750' },
+                Path: '/'
+              },
+              Tags: [
+                { Key: 'App', Value: 'test' },
+                { Key: 'College', Value: 'PCC' },
+                { Key: 'Environment', Value: 'sdlc' }
+              ]
+            }
+          },
+          pccsdlctests3filesnfspccsdlctestwebs3filesap0MountTargetSG0frompccsharedtestpccsdlcteststagepccsdlctestpccsdlctestwebfn0SecurityGroup92F4596C20491E44BE32: {
+            Type: 'AWS::EC2::SecurityGroupIngress',
+            Properties: {
+              Description: 'from pccsharedtestpccsdlcteststagepccsdlctestpccsdlctestwebfn0SecurityGroup92F4596C:2049',
+              FromPort: 2049,
+              GroupId: {
+                'Fn::GetAtt': [ 'pccsdlctests3filesnfssg75B55B33', 'GroupId' ]
+              },
+              IpProtocol: 'tcp',
+              SourceSecurityGroupId: {
+                'Fn::GetAtt': [ 'pccsdlctestwebfn0SecurityGroup124542E5', 'GroupId' ]
+              },
+              ToPort: 2049
             }
           },
           pccsdlctests3filesnfssg75B55B33: {
@@ -712,7 +846,8 @@ module.exports = {
                     {Key: 'College', Value: 'PCC'},
                     {Key: 'Environment', Value: 'sdlc'}
                 ]
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
         },
         pccsdlctesteventfn0ServiceRoleDefaultPolicyC994CC2E: {
             Type: 'AWS::IAM::Policy',
@@ -720,6 +855,21 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
+                    Action: 's3files:ClientMount',
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsdlctests3filesnfspccsdlctestevents3filesap063EB210B',
+                        'AccessPointArn'
+                      ]
+                    }
+                  },
+                  {
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Effect: 'Allow',
+                    Resource: { Ref: 'pccsdlctests3filesnfs' }
+                  },
+                  {
                             Action: [
                                 'sqs:SendMessage',
                                 'sqs:GetQueueAttributes',
@@ -815,7 +965,8 @@ module.exports = {
                 },
                 PolicyName: 'pccsdlctesteventfn0ServiceRoleDefaultPolicyC994CC2E',
                 Roles: [{Ref: 'pccsdlctesteventfn0ServiceRole5B8A432E'}]
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
         },
         pccsdlctesteventfn0SecurityGroup29416485: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -834,7 +985,8 @@ module.exports = {
                     {Key: 'Environment', Value: 'sdlc'}
                 ],
                 VpcId: 'vpc-12345'
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
         },
         pccsdlctesteventfn00E8A306A: {
             Type: 'AWS::Lambda::Function',
@@ -875,6 +1027,17 @@ module.exports = {
                         }
                     }
                 },
+              FileSystemConfigs: [
+                {
+                  Arn: {
+                    'Fn::GetAtt': [
+                      'pccsdlctests3filesnfspccsdlctestevents3filesap063EB210B',
+                      'AccessPointArn'
+                    ]
+                  },
+                  LocalMountPath: '/mnt/files'
+                }
+              ],
                 FunctionName: 'pcc-sdlc-test-event-fn-0',
                 Handler: 'artisan',
                 Layers: [
@@ -915,7 +1078,10 @@ module.exports = {
             },
             DependsOn: [
                 'pccsdlctesteventfn0ServiceRoleDefaultPolicyC994CC2E',
-                'pccsdlctesteventfn0ServiceRole5B8A432E'
+              'pccsdlctesteventfn0ServiceRole5B8A432E',
+              'pccsdlctests3filesnfsmt0',
+              'pccsdlctests3filesnfsmt1',
+              'pccsdlctests3filesnfspccsdlctestevents3filesap0MountTargetSG0frompccsharedtestpccsdlcteststagepccsdlctestpccsdlctesteventfn0SecurityGroup041C2CE02049A1182203'
             ]
         },
         pccsdlctesteventfn0scheduledevent091D241D0: {
@@ -1557,7 +1723,8 @@ module.exports = {
                     {Key: 'College', Value: 'PCC'},
                     {Key: 'Environment', Value: 'sdlc'}
                 ]
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
         },
         pccsdlctestwebfn0ServiceRoleDefaultPolicy78EAC02D: {
             Type: 'AWS::IAM::Policy',
@@ -1565,6 +1732,21 @@ module.exports = {
                 PolicyDocument: {
                     Statement: [
                         {
+                    Action: 's3files:ClientMount',
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': [
+                        'pccsdlctests3filesnfspccsdlctestwebs3filesap03AD48A13',
+                        'AccessPointArn'
+                      ]
+                    }
+                  },
+                  {
+                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Effect: 'Allow',
+                    Resource: { Ref: 'pccsdlctests3filesnfs' }
+                  },
+                  {
                             Action: [
                                 'sqs:SendMessage',
                                 'sqs:GetQueueAttributes',
@@ -1660,7 +1842,8 @@ module.exports = {
                 },
                 PolicyName: 'pccsdlctestwebfn0ServiceRoleDefaultPolicy78EAC02D',
                 Roles: [{Ref: 'pccsdlctestwebfn0ServiceRoleBF73EA7E'}]
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
         },
         pccsdlctestwebfn0SecurityGroup124542E5: {
             Type: 'AWS::EC2::SecurityGroup',
@@ -1679,7 +1862,8 @@ module.exports = {
                     {Key: 'Environment', Value: 'sdlc'}
                 ],
                 VpcId: 'vpc-12345'
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
         },
         pccsdlctestwebfn051C9C4DD: {
             Type: 'AWS::Lambda::Function',
@@ -1748,6 +1932,17 @@ module.exports = {
                         }
                     }
                 },
+              FileSystemConfigs: [
+                {
+                  Arn: {
+                    'Fn::GetAtt': [
+                      'pccsdlctests3filesnfspccsdlctestwebs3filesap03AD48A13',
+                      'AccessPointArn'
+                    ]
+                  },
+                  LocalMountPath: '/mnt/files'
+                }
+              ],
                 FunctionName: 'pcc-sdlc-test-web-fn-0',
                 Handler: 'public/index.php',
                 Layers: [
@@ -1784,6 +1979,9 @@ module.exports = {
                 }
             },
             DependsOn: [
+              'pccsdlctests3filesnfsmt0',
+              'pccsdlctests3filesnfsmt1',
+              'pccsdlctests3filesnfspccsdlctestwebs3filesap0MountTargetSG0frompccsharedtestpccsdlcteststagepccsdlctestpccsdlctestwebfn0SecurityGroup92F4596C20491E44BE32',
                 'pccsdlctestwebfn0ServiceRoleDefaultPolicy78EAC02D',
                 'pccsdlctestwebfn0ServiceRoleBF73EA7E'
             ]
@@ -1794,7 +1992,8 @@ module.exports = {
                 Action: 'lambda:InvokeFunction',
                 FunctionName: {'Fn::GetAtt': ['pccsdlctestwebfn051C9C4DD', 'Arn']},
                 Principal: 'elasticloadbalancing.amazonaws.com'
-            }
+            },
+            DependsOn: [ 'pccsdlctests3filesnfsmt0', 'pccsdlctests3filesnfsmt1' ]
           },
           pccsdlctests3filesfspolicy0: {
             Type: 'AWS::S3Files::FileSystemPolicy',
@@ -1810,7 +2009,11 @@ module.exports = {
                         'Fn::GetAtt': [ 'pccsdlctesteventfn0ServiceRole5B8A432E', 'Arn' ]
                       }
                     },
-                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Action: [
+                      's3files:ClientMount',
+                      's3files:ClientWrite',
+                      's3files:ClientRootAccess'
+                    ],
                     Resource: {
                       'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
                     }
@@ -1833,7 +2036,11 @@ module.exports = {
                         'Fn::GetAtt': [ 'pccsdlctestqueuefn0ServiceRole474925C9', 'Arn' ]
                       }
                     },
-                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Action: [
+                      's3files:ClientMount',
+                      's3files:ClientWrite',
+                      's3files:ClientRootAccess'
+                    ],
                     Resource: {
                       'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
                     }
@@ -1856,7 +2063,11 @@ module.exports = {
                         'Fn::GetAtt': [ 'pccsdlctestwebfn0ServiceRoleBF73EA7E', 'Arn' ]
                       }
                     },
-                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Action: [
+                      's3files:ClientMount',
+                      's3files:ClientWrite',
+                      's3files:ClientRootAccess'
+                    ],
                     Resource: {
                       'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
                     }
@@ -1879,7 +2090,11 @@ module.exports = {
                         'Fn::GetAtt': [ 'pccsdlctestqueuefn0ServiceRole474925C9', 'Arn' ]
                       }
                     },
-                    Action: [ 's3files:ClientMount', 's3files:ClientWrite' ],
+                    Action: [
+                      's3files:ClientMount',
+                      's3files:ClientWrite',
+                      's3files:ClientRootAccess'
+                    ],
                     Resource: {
                       'Fn::GetAtt': [ 'pccsdlctests3filesnfs', 'FileSystemArn' ]
                     }
