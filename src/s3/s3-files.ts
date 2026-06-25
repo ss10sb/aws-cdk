@@ -27,6 +27,7 @@ export class S3Files extends NonConstruct {
     }
 
     create(props: S3FilesProps): FilesBucket {
+        props.versioned = true;
         const s3 = new S3Bucket(this.scope, this.id);
         const baseBucket = s3.create('s3-files', props);
         this.id = baseBucket.name;

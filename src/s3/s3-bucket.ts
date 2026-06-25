@@ -1,5 +1,13 @@
-import {BlockPublicAccess, Bucket, BucketEncryption, BucketProps, CorsRule, ObjectOwnership} from "aws-cdk-lib/aws-s3";
-import {RemovalPolicy} from "aws-cdk-lib";
+import {
+    BlockPublicAccess,
+    Bucket,
+    BucketEncryption,
+    BucketProps,
+    CorsRule,
+    LifecycleRule,
+    ObjectOwnership
+} from "aws-cdk-lib/aws-s3";
+import {Duration, RemovalPolicy} from "aws-cdk-lib";
 import {Key} from "aws-cdk-lib/aws-kms";
 import {NonConstruct} from "../core/non-construct";
 
@@ -40,6 +48,16 @@ export class S3Bucket extends NonConstruct {
     }
 
     protected getBucketProps(bucketName: string, props: S3Props): BucketProps {
+        let lifecycleRules: LifecycleRule[] | undefined;
+        if (props.versioned) {
+            lifecycleRules = [
+                {
+                    id: 'expire-old-files',
+                    enabled: true,
+                    expiration: Duration.days(14),
+                }
+            ];
+        }
         return {
             bucketName: bucketName,
             blockPublicAccess: props.blockPublicAccess ?? this.defaults.blockPublicAccess,
@@ -52,6 +70,7 @@ export class S3Bucket extends NonConstruct {
             cors: props.cors ?? undefined,
             objectOwnership: props.objectOwnership ?? this.defaults.objectOwnership,
             versioned: props.versioned ?? this.defaults.versioned,
+            lifecycleRules: lifecycleRules,
         }
     }
 }
