@@ -54,7 +54,7 @@ export class EcsQueueFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: EcsQueueFactoryProps) {
         super(scope, id);
         this.props = props;
-        this.s3FilesHelper = new EcsS3FilesHelper();
+        this.s3FilesHelper = new EcsS3FilesHelper(scope, this.mixNameWithId('s3-files'));
     }
 
     create(props: EcsQueueConfigProps): Wrapper {

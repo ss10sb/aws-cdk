@@ -55,7 +55,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
     constructor(scope: Construct, id: string, props: EcsStandardServiceFactoryProps) {
         super(scope, id);
         this.props = props;
-        this.s3FilesHelper = new EcsS3FilesHelper();
+        this.s3FilesHelper = new EcsS3FilesHelper(scope, this.mixNameWithId('s3-files'));
     }
 
     create(services: EcsStandardServiceConfigProps[]): Wrapper[] {
