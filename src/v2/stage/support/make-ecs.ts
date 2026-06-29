@@ -56,7 +56,7 @@ export class MakeEcs<T extends MakeEcsParameters> extends MakeBase<T> {
             targetGroup: albServices.targetGroup,
             queue: services.queue,
             repositoryFactory: this.parameters.repositoryFactory,
-            s3Files: undefined, //services.s3Files,
+            s3Files: services.s3Files,
             environment: this.getBaseEnvironmentFromCoreServices(services),
         }, this.lookups.secrets);
         const startStopFactory = this.createStartStopFactory(cluster);
