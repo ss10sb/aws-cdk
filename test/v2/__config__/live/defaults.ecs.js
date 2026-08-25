@@ -248,7 +248,7 @@ module.exports = {
                             type: TaskServiceType.WEB_SERVICE,
                             attachToTargetGroup: true,
                             enableExecuteCommand: true,
-                            healthCheckGracePeriod: Duration.minutes(3),
+                            healthCheckGracePeriod: 3,
                             scalable: {
                                 types: [ScalableTypes.CPU, ScalableTypes.MEMORY],
                                 scaleAt: 75,

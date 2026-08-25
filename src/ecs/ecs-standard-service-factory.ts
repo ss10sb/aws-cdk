@@ -41,7 +41,7 @@ export interface EcsStandardServiceConfigProps extends EcsServiceAndTaskConfigPr
     readonly assignPublicIp?: boolean;
     readonly scalable?: ScalableProps;
     readonly attachToTargetGroup: boolean;
-    readonly healthCheckGracePeriod?: Duration;
+    readonly healthCheckGracePeriod?: number;
 }
 
 export class EcsStandardServiceFactory extends AbstractFactory {
@@ -52,7 +52,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
         assignPublicIp: false,
         platformVersion: FargatePlatformVersion.LATEST,
         desiredCount: 1,
-        healthCheckGracePeriod: Duration.minutes(1)
+        healthCheckGracePeriod: 1
     }
 
     constructor(scope: Construct, id: string, props: EcsStandardServiceFactoryProps) {
@@ -101,7 +101,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
             desiredCount: props.serviceProps.desiredCount ?? this.defaults.desiredCount,
             assignPublicIp: props.serviceProps.assignPublicIp ?? this.defaults.assignPublicIp,
             enableExecuteCommand: props.serviceProps.enableExecuteCommand ?? undefined,
-            healthCheckGracePeriod: props.serviceProps.healthCheckGracePeriod ?? this.defaults.healthCheckGracePeriod,
+            healthCheckGracePeriod: Duration.minutes(props.serviceProps.healthCheckGracePeriod ?? this.defaults.healthCheckGracePeriod),
         });
         if (props.serviceProps.attachToTargetGroup) {
             props.targetGroup.addTarget(service);
