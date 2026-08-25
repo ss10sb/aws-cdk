@@ -1194,9 +1194,9 @@ describe('container factory', () => {
         containerFactory.create(TaskServiceType.WEB_SERVICE, td, containerProps);
         const template = Template.fromStack(stack);
         const templateHelper = new TemplateHelper(template);
-        templateHelper.inspect();
+        // templateHelper.inspect();
         const expected = getExpected('ecs-container.s3Files');
-        // templateHelper.template.templateMatches(expected);
+        templateHelper.template.templateMatches(expected);
     });
 
     function getExpected(name: string) {

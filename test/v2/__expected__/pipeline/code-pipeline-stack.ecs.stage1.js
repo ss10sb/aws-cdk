@@ -2249,7 +2249,7 @@ module.exports = {
                 DesiredCount: 1,
                 EnableECSManagedTags: false,
                 EnableExecuteCommand: true,
-                HealthCheckGracePeriodSeconds: 60,
+                HealthCheckGracePeriodSeconds: 180,
                 LaunchType: 'FARGATE',
                 LoadBalancers: [
                     {

@@ -104,7 +104,7 @@ export class EcsStandardServiceFactory extends AbstractFactory {
             healthCheckGracePeriod: props.serviceProps.healthCheckGracePeriod ?? this.defaults.healthCheckGracePeriod,
         });
         if (props.serviceProps.attachToTargetGroup) {
-            service.attachToApplicationTargetGroup(props.targetGroup);
+            props.targetGroup.addTarget(service);
         }
         if (props.serviceProps.scalable) {
             this.scalableTarget(service, props.serviceProps.scalable);

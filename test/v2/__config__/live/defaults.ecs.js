@@ -7,6 +7,7 @@ const {EcrRepositoryType} = require("../../../../src/ecr/ecr-definitions");
 const {TaskServiceType, ScalableTypes, SchedulableTypes} = require("../../../../src/ecs/task-definitions");
 const {ContainerType} = require("../../../../src/ecs/container-definitions");
 const {ContainerEntryPoint, ContainerCommand} = require("../../../../src/ecs/container-command-factory");
+const {Duration} = require("aws-cdk-lib");
 
 module.exports = {
     Name: common.Name,
@@ -247,6 +248,7 @@ module.exports = {
                             type: TaskServiceType.WEB_SERVICE,
                             attachToTargetGroup: true,
                             enableExecuteCommand: true,
+                            healthCheckGracePeriod: Duration.minutes(3),
                             scalable: {
                                 types: [ScalableTypes.CPU, ScalableTypes.MEMORY],
                                 scaleAt: 75,
