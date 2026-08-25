@@ -17,6 +17,7 @@ import {IApplicationTargetGroup} from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import {AbstractFactory} from "../core/abstract-factory";
 import {FilesBucket} from "../s3/s3-files";
 import {EcsS3FilesHelper} from "../nfs/ecs-s3-files-helper";
+import {Duration} from "aws-cdk-lib";
 
 export interface EcsStandardServiceFactoryProps {
     readonly cluster: Cluster;
@@ -40,6 +41,7 @@ export interface EcsStandardServiceConfigProps extends EcsServiceAndTaskConfigPr
     readonly assignPublicIp?: boolean;
     readonly scalable?: ScalableProps;
     readonly attachToTargetGroup: boolean;
+    readonly healthCheckGracePeriod?: Duration;
 }
 
 export class EcsStandardServiceFactory extends AbstractFactory {
@@ -49,7 +51,8 @@ export class EcsStandardServiceFactory extends AbstractFactory {
     readonly defaults: Record<string, any> = {
         assignPublicIp: false,
         platformVersion: FargatePlatformVersion.LATEST,
-        desiredCount: 1
+        desiredCount: 1,
+        healthCheckGracePeriod: Duration.minutes(1)
     }
 
     constructor(scope: Construct, id: string, props: EcsStandardServiceFactoryProps) {
@@ -97,7 +100,8 @@ export class EcsStandardServiceFactory extends AbstractFactory {
             taskDefinition: props.taskDefinition,
             desiredCount: props.serviceProps.desiredCount ?? this.defaults.desiredCount,
             assignPublicIp: props.serviceProps.assignPublicIp ?? this.defaults.assignPublicIp,
-            enableExecuteCommand: props.serviceProps.enableExecuteCommand ?? undefined
+            enableExecuteCommand: props.serviceProps.enableExecuteCommand ?? undefined,
+            healthCheckGracePeriod: props.serviceProps.healthCheckGracePeriod ?? this.defaults.healthCheckGracePeriod,
         });
         if (props.serviceProps.attachToTargetGroup) {
             service.attachToApplicationTargetGroup(props.targetGroup);

@@ -1,6 +1,6 @@
 import {resetStaticProps} from "../../src/utils/reset-static-props";
 import {Match, Template} from "aws-cdk-lib/assertions";
-import {App, Stack} from "aws-cdk-lib";
+import {App, Duration, Stack} from "aws-cdk-lib";
 import {ClusterFactory} from "../../src/ecs/cluster-factory";
 import {ContainerCommand, ContainerEntryPoint} from "../../src/ecs/container-command-factory";
 import {ScalableTypes, TaskServiceType} from "../../src/ecs/task-definitions";
@@ -180,6 +180,111 @@ describe('fargate factory', () => {
         const templateHelper = new TemplateHelper(template);
         // templateHelper.inspect();
         const expected = require('../__templates__/fargate-factory.defaults');
+        templateHelper.template.templateMatches(expected);
+    });
+
+    it('should create fargate deployment with custom health check grace period', () => {
+        const app = new App();
+        const stackProps = {env: {region: 'us-east-1', account: '12344'}};
+        const stack = new Stack(app, 'stack', stackProps);
+        const secretKeys = ['FOO', 'BAR'];
+        const environment = {
+            FIZZ: 'buzz'
+        };
+        const envConfig = <EnvConfig>{
+            Name: 'test',
+            College: 'PCC',
+            Environment: ConfigEnvironments.PROD,
+            Parameters: {
+                targetGroup: {},
+                listenerRule: {
+                    priority: 100,
+                    conditions: {
+                        hostHeaders: ['test.example.edu']
+                    }
+                },
+                services: [],
+                tasks: []
+            }
+        }
+        const ecrRepositories = new EcrRepositories('stack', ecrRepoProps);
+        const ecrRepositoryFactory = new EcrRepositoryFactory(stack, 'stack', ecrRepositories);
+        const secrets = new Secrets(stack, 'stack');
+        const vpc = VpcHelper.getVpcById(stack, 'vpcId');
+        const clusterFactory = new ClusterFactory(stack, 'stack', {
+            vpc: vpc
+        });
+        const cluster = clusterFactory.create();
+        const albTargetGroup = new AlbTargetGroup(stack, 'target-group', vpc);
+        const targetGroup = albTargetGroup.create(envConfig.Parameters.targetGroup ?? {});
+        const fargateFactory = new FargateFactory(stack, 'stack', {
+            commandFactoryProps: {},
+            containerFactoryProps: {
+                repositoryFactory: ecrRepositoryFactory,
+                secretKeys: secretKeys,
+                environment: environment,
+                secrets: secrets
+            },
+            queueFactoryProps: {
+                cluster: cluster,
+                repositoryFactory: ecrRepositoryFactory,
+                secretKeys: secretKeys,
+                environment: environment,
+                secrets: secrets
+            },
+            standardServiceFactoryProps: {
+                cluster: cluster,
+                targetGroup: targetGroup
+            },
+            taskDefinitionFactoryProps: {},
+            taskFactoryProps: {
+                cluster: cluster,
+                skipCreateTask: false
+            }
+        });
+        const services = [
+            {
+                type: TaskServiceType.WEB_SERVICE,
+                attachToTargetGroup: true,
+                enableExecuteCommand: true,
+                healthCheckGracePeriod: Duration.minutes(3),
+                scalable: {
+                    types: [ScalableTypes.CPU, ScalableTypes.MEMORY],
+                    scaleAt: 75,
+                    minCapacity: 1,
+                    maxCapacity: 2
+                },
+                taskDefinition: {
+                    cpu: '256',
+                    memoryMiB: '512',
+                    containers: [
+                        {
+                            image: 'nginx',
+                            cpu: 64,
+                            memoryLimitMiB: 64,
+                            portMappings: [{
+                                containerPort: 80
+                            }]
+                        },
+                        {
+                            image: 'phpfpm',
+                            hasSecrets: true,
+                            hasEnv: true,
+                            cpu: 128,
+                            memoryLimitMiB: 128,
+                            portMappings: [{
+                                containerPort: 9000
+                            }]
+                        }
+                    ]
+                }
+            }
+        ];
+        fargateFactory.create([], services, undefined);
+        const template = Template.fromStack(stack);
+        const templateHelper = new TemplateHelper(template);
+        // templateHelper.inspect();
+        const expected = require('../__templates__/fargate-factory.graceperiod');
         templateHelper.template.templateMatches(expected);
     });
 });
